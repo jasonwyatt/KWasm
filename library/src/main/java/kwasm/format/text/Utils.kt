@@ -43,16 +43,16 @@ fun CharSequence.parseLongSign(): Pair<Int, Long> = when(this[0]) {
 
 /** Parses a digit (as a [Byte]) from the receiving [CharSequence] at the given [index]. */
 fun CharSequence.parseDigit(index: Int, context: ParseContext? = null): Byte =
-    when (val c = this[index]) {
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> (c.toInt() - 48).toByte()
-        'a', 'b', 'c', 'd', 'e', 'f' -> (c.toInt() - 97 + 10).toByte()
-        'A', 'B', 'C', 'D', 'E', 'F' -> (c.toInt() - 65 + 10).toByte()
-        '_' -> NumberConstants.UNDERSCORE
-        else -> throw ParseException(
-            "Illegal char '$c' in expected number.",
-            context.shiftColumnBy(index)
-        )
-    }
+    this[index].parseDigit(context)
+fun IntArray.parseDigit(index: Int, context: ParseContext? = null): Byte =
+    this[index].toChar().parseDigit(context)
+fun Char.parseDigit(context: ParseContext? = null): Byte = when (this) {
+    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> (toInt() - 48).toByte()
+    'a', 'b', 'c', 'd', 'e', 'f' -> (toInt() - 97 + 10).toByte()
+    'A', 'B', 'C', 'D', 'E', 'F' -> (toInt() - 65 + 10).toByte()
+    '_' -> NumberConstants.UNDERSCORE
+    else -> throw ParseException("Illegal char '$this' in expected number.", context)
+}
 
 /**
  * Parses a `stringelem` from the receiving [CharSequence] at the given [index] as a [StringChar].
@@ -68,12 +68,17 @@ fun CharSequence.parseStringElem(
     index: Int,
     inoutVal: StringChar = StringChar(),
     context: ParseContext? = null
+): StringChar = codePoints().toArray().parseStringElem(index, inoutVal, context)
+fun IntArray.parseStringElem(
+    index: Int,
+    inoutVal: StringChar = StringChar(),
+    context: ParseContext? = null
 ): StringChar {
     return if (
-        this[index] == '\\' &&
-        index <= this.length - 3 &&
-        this[index + 1].isHexDigit() &&
-        this[index + 2].isHexDigit()
+        this[index] == BACKSLASH &&
+        index <= this.size - 3 &&
+        this[index + 1].toChar().isHexDigit() &&
+        this[index + 2].toChar().isHexDigit()
     ) {
         inoutVal.sequenceLength = 3
         inoutVal.value = 16 * parseDigit(index + 1, context) + parseDigit(index + 2, context)
@@ -113,18 +118,23 @@ fun CharSequence.parseStringChar(
     index: Int,
     inoutVal: StringChar = StringChar(),
     context: ParseContext? = null
-): StringChar {
-    val c = this[index].toInt()
+): StringChar = codePoints().toArray().parseStringChar(index, inoutVal, context)
+
+fun IntArray.parseStringChar(
+    index: Int,
+    inoutVal: StringChar = StringChar(),
+    context: ParseContext? = null
+) : StringChar {
+    val c = this[index]
     when {
-        c >= SPACE && c != DELETE && c != DQUOTE && c != BACKSLASH -> {
-            inoutVal.sequenceLength = 1
-            inoutVal.value = c
-        }
         c == BACKSLASH -> {
-            val escaped = this.takeIf { index <= it.length - 2 }?.get(index + 1)?.toInt()
+            val escaped = this.takeIf { index <= it.size - 2 }?.get(index + 1)
                 ?: throw ParseException("Attempting to escape an empty sequence", context)
+            val unicodeMatchString = String(this, index, this.size - index)
             val unicodeMatch =
-                UNICODE_PATTERN.get().find(this, index)?.takeIf { it.range.first == index }
+                UNICODE_PATTERN.get()
+                    .find(unicodeMatchString)
+                    ?.takeIf { it.range.first == 0 }
 
             inoutVal.sequenceLength = 2
             inoutVal.value = when {
@@ -155,8 +165,18 @@ fun CharSequence.parseStringChar(
                     }
                     unicodeValue
                 }
-                else -> throw ParseException("Invalid escape sequence: $c$escaped", context)
+                else -> {
+                    val cString = c.toStringAsCodepoint()
+                    val escapedString = escaped.toStringAsCodepoint()
+                    throw ParseException(
+                        "Invalid escape sequence: $cString$escapedString", context
+                    )
+                }
             }
+        }
+        c >= SPACE && c != DELETE && c != DQUOTE && c != BACKSLASH -> {
+            inoutVal.sequenceLength = 1
+            inoutVal.value = c
         }
         else -> throw ParseException("Invalid StringChar: $c (U+$c)", context.shiftColumnBy(index))
     }
@@ -201,6 +221,8 @@ data class CanonincalNaN(val magnitude: Int) {
  */
 fun Int.canon(context: ParseContext? = null): Long =
     2.0.pow(this.significand(context) - 1).toLong()
+
+private fun Int.toStringAsCodepoint(): String = String(intArrayOf(this), 0, 1)
 
 internal object NumberConstants {
     val negativeLongWithOffset = 1 to -1L

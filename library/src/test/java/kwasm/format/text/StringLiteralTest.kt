@@ -15,6 +15,7 @@
 package kwasm.format.text
 
 import com.google.common.truth.Truth.assertThat
+import kwasm.format.ParseContext
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -36,8 +37,15 @@ class StringLiteralTest {
     @Test
     fun parsesComplexString() {
         val actual = StringLiteral(
-            "\"Hello! \\u{1f44b}\\n\\u{4f60}\\u{597D} \\u{1F44B}\\n\\n\\\"wasm rocks\\\"\""
+            "\"Hello! \\u{1f44b}\\n\\u{4f60}\\u{597D} \\u{1F44B}\\n\\n\\\"wasm rocks\\\"\"",
+            ParseContext("StringLiteralTest.kt", 0, 0)
         )
+        assertThat(actual.value).isEqualTo("Hello! 👋\n你好 👋\n\n\"wasm rocks\"")
+    }
+
+    @Test
+    fun parsesComplexString_withEmbeddedUnicode() {
+        val actual = StringLiteral("\"Hello! 👋\\n你好 👋\\n\\n\\\"wasm rocks\\\"\"")
         assertThat(actual.value).isEqualTo("Hello! 👋\n你好 👋\n\n\"wasm rocks\"")
     }
 }

@@ -29,7 +29,7 @@ import kwasm.format.shiftColumnBy
  *
  * The JVM will crash if the string is 4 billion characters, so no need to perform the check.
  */
-class StringLiteral(private val sequence: CharSequence, private val context: ParseContext? = null) {
+open class StringLiteral(private val sequence: CharSequence, private val context: ParseContext? = null) {
     val value: String by lazy {
         val builder = StringBuilder()
 
@@ -40,11 +40,11 @@ class StringLiteral(private val sequence: CharSequence, private val context: Par
             throw ParseException("Expecting closing \" for StringLiteral", context)
         }
 
-        val internalSequence = sequence.subSequence(1, sequence.length - 1)
+        val internalSequence = sequence.subSequence(1, sequence.length - 1).codePoints().toArray()
 
         val stringElem = StringChar()
         var i = 0
-        while (i < internalSequence.length) {
+        while (i < internalSequence.size) {
             internalSequence.parseStringElem(i, stringElem, context.shiftColumnBy(i + 1))
             builder.appendCodePoint(stringElem.value)
             i += stringElem.sequenceLength
