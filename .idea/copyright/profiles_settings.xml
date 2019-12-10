@@ -1,0 +1,11 @@
+<component name="CopyrightManager">
+  <settings default="KWasm">
+    <module2copyright>
+      <element module="Project Files" copyright="KWasm" />
+    </module2copyright>
+    <LanguageOptions name="XML">
+      <option name="fileTypeOverride" value="3" />
+      <option name="prefixLines" value="false" />
+    </LanguageOptions>
+  </settings>
+</component>
