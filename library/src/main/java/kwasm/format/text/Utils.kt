@@ -17,20 +17,31 @@ package kwasm.format.text
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import kwasm.format.shiftColumnBy
+import kwasm.format.text.StringConstants.BACKSLASH
+import kwasm.format.text.StringConstants.DELETE
+import kwasm.format.text.StringConstants.DQUOTE
+import kwasm.format.text.StringConstants.N
+import kwasm.format.text.StringConstants.NEWLINE
+import kwasm.format.text.StringConstants.QUOTE
+import kwasm.format.text.StringConstants.R
+import kwasm.format.text.StringConstants.RETURN
+import kwasm.format.text.StringConstants.SPACE
+import kwasm.format.text.StringConstants.T
+import kwasm.format.text.StringConstants.TAB
+import kwasm.format.text.StringConstants.UNICODE_PATTERN
 import kotlin.math.pow
 
+/**
+ * Parses a sign (`+` or `-`) from the beginning of the receiving [CharSequence], and returns the
+ * sign value and intended offset for parsing the remainder of the value.
+ */
 fun CharSequence.parseLongSign(): Pair<Int, Long> = when(this[0]) {
     '-' -> NumberConstants.negativeLongWithOffset
     '+' -> NumberConstants.positiveLongWithOffset
     else -> NumberConstants.positiveLong
 }
 
-fun CharSequence.parseDoubleSign(): Pair<Int, Double> = when(this[0]) {
-    '-' -> NumberConstants.negativeDoubleWithOffset
-    '+' -> NumberConstants.positiveDoubleWithOffset
-    else -> NumberConstants.positiveDouble
-}
-
+/** Parses a digit (as a [Byte]) from the receiving [CharSequence] at the given [index]. */
 fun CharSequence.parseDigit(index: Int, context: ParseContext? = null): Byte =
     when (val c = this[index]) {
         '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> (c.toInt() - 48).toByte()
@@ -42,6 +53,123 @@ fun CharSequence.parseDigit(index: Int, context: ParseContext? = null): Byte =
             context.shiftColumnBy(index)
         )
     }
+
+/**
+ * Parses a `stringelem` from the receiving [CharSequence] at the given [index] as a [StringChar].
+ *
+ * From [the docs](https://webassembly.github.io/spec/core/text/values.html#text-string):
+ *
+ * ```
+ *   stringelem ::= s:stringchar                => s as StringChar
+ *                  '∖' n:hexdigit m:hexdigit   => StringChar(16 * n + m, 3)
+ * ```
+ */
+fun CharSequence.parseStringElem(
+    index: Int,
+    inoutVal: StringChar = StringChar(),
+    context: ParseContext? = null
+): StringChar {
+    return if (
+        this[index] == '\\' &&
+        index <= this.length - 3 &&
+        this[index + 1].isHexDigit() &&
+        this[index + 2].isHexDigit()
+    ) {
+        inoutVal.sequenceLength = 3
+        inoutVal.value = 16 * parseDigit(index + 1, context) + parseDigit(index + 2, context)
+        inoutVal
+    } else {
+        parseStringChar(index, inoutVal, context)
+    }
+}
+
+private fun Char.isHexDigit(): Boolean {
+    return when (this) {
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> true
+        'a', 'b', 'c', 'd', 'e', 'f' -> true
+        'A', 'B', 'C', 'D', 'E', 'F' -> true
+        else -> false
+    }
+}
+
+/**
+ * Parses a [StringChar] from the receiving [CharSequence] at the given [index].
+ *
+ * From [the docs](https://webassembly.github.io/spec/core/text/values.html#text-string):
+ *
+ * ```
+ *   stringchar ::= c:char                  => c (if c ≥ U+20 ∧ c ≠ U+7F ∧ c ≠ ‘"’ ∧ c ≠ ‘∖’)
+ *                  '∖t'                    => U+09
+ *                  '∖n'                    => U+0A
+ *                  '∖r'                    => U+0D
+ *                  '∖"'                    => U+22
+ *                  '∖''                    => U+27
+ *                  '∖\'                    => U+5C
+ *                  '∖u{' n:hexnum '}'      => U+(n) (if n < 0xD800 ∨ 0xE000 ≤ n < 0x110000)
+ * ```
+ */
+@UseExperimental(ExperimentalUnsignedTypes::class)
+fun CharSequence.parseStringChar(
+    index: Int,
+    inoutVal: StringChar = StringChar(),
+    context: ParseContext? = null
+): StringChar {
+    val c = this[index].toInt()
+    when {
+        c >= SPACE && c != DELETE && c != DQUOTE && c != BACKSLASH -> {
+            inoutVal.sequenceLength = 1
+            inoutVal.value = c
+        }
+        c == BACKSLASH -> {
+            val escaped = this.takeIf { index <= it.length - 2 }?.get(index + 1)?.toInt()
+                ?: throw ParseException("Attempting to escape an empty sequence", context)
+            val unicodeMatch =
+                UNICODE_PATTERN.get().find(this, index)?.takeIf { it.range.first == index }
+
+            inoutVal.sequenceLength = 2
+            inoutVal.value = when {
+                escaped == T -> TAB
+                escaped == N -> NEWLINE
+                escaped == R -> RETURN
+                escaped == DQUOTE -> DQUOTE
+                escaped == QUOTE -> QUOTE
+                escaped == BACKSLASH -> BACKSLASH
+                unicodeMatch != null -> {
+                    // Parse a hex number from the match.
+                    val hexNum = unicodeMatch.groups[1]?.value?.let {
+                        Num(
+                            it,
+                            context.shiftColumnBy(unicodeMatch.groups[1]?.range?.first ?: 0)
+                        ).apply { forceHex = true }
+                    } ?: throw ParseException(
+                        "Illegal unicode value: ${unicodeMatch.value}",
+                        context
+                    )
+
+                    inoutVal.sequenceLength = unicodeMatch.value.length
+
+                    // Check that the value is within the supported range.
+                    val unicodeValue = hexNum.value.toInt()
+                    if (unicodeValue >= 0xD800 && unicodeValue !in 0xE000 until 0x110000) {
+                        throw ParseException("Unicode value out of valid range", context)
+                    }
+                    unicodeValue
+                }
+                else -> throw ParseException("Invalid escape sequence: $c$escaped", context)
+            }
+        }
+        else -> throw ParseException("Invalid StringChar: $c (U+$c)", context.shiftColumnBy(index))
+    }
+    return inoutVal
+}
+
+/**
+ * Represents a single character as a unicode codepoint, and its original length in a wast file as
+ * part of a string literal.
+ */
+data class StringChar(var value: Int = -1, var sequenceLength: Int = 1) {
+    override fun toString(): String = String(codePoints = intArrayOf(value), offset = 0, length = 1)
+}
 
 /**
  * From [the docs](https://webassembly.github.io/spec/core/syntax/values.html#aux-significand).
@@ -78,11 +206,28 @@ internal object NumberConstants {
     val negativeLongWithOffset = 1 to -1L
     val positiveLongWithOffset = 1 to 1L
     val positiveLong = 0 to 1L
-    val negativeDoubleWithOffset = 1 to -1.0
-    val positiveDoubleWithOffset = 1 to 1.0
-    val positiveDouble = 0 to 1.0
 
     const val UNDERSCORE = (-1).toByte()
 
     const val DEFAULT_FLOAT_MAGNITUDE = 64
+}
+
+internal object StringConstants {
+    const val T = 't'.toInt()
+    const val N = 'n'.toInt()
+    const val R = 'r'.toInt()
+    const val SPACE = '\u0020'.toInt()
+    const val DELETE = '\u007F'.toInt()
+    const val QUOTE = '\u0027'.toInt()
+    const val DQUOTE = '\u0022'.toInt()
+    const val BACKSLASH = '\u005C'.toInt()
+    const val TAB = '\u0009'.toInt()
+    const val NEWLINE = '\u000A'.toInt()
+    const val RETURN = '\u000D'.toInt()
+
+    val UNICODE_PATTERN = object : ThreadLocal<Regex>() {
+        override fun initialValue(): Regex {
+            return "\\\\u\\{([0-9a-fA-F]+)\\}".toRegex()
+        }
+    }
 }
