@@ -1,0 +1,2 @@
+include ':testapp', ':library'
+rootProject.name='KWasm'

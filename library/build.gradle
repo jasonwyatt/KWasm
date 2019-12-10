@@ -1,0 +1,20 @@
+apply plugin: 'kotlin'
+
+repositories {
+    google()
+    jcenter()
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    testImplementation 'junit:junit:4.12'
+    testImplementation "com.google.truth:truth:1.0"
+    testImplementation "org.assertj:assertj-core:3.11.1"
+}
+
+compileKotlin {
+    kotlinOptions {
+        freeCompilerArgs = ["-XXLanguage:+InlineClasses", "-Xuse-experimental=kotlin.Experimental"]
+    }
+}
