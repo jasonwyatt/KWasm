@@ -14,9 +14,11 @@
 
 package kwasm.format
 
+/**
+ * An exception which is thrown by the text-based wasm interpreter when a parsing error occurs
+ * during evaluation.
+ */
 data class ParseException(
-    val errorMsg: String,
+    private val errorMsg: String,
     val parseContext: ParseContext? = null
-) : Exception(
-    "(${parseContext ?: "Unknown Context"}) $errorMsg"
-)
+) : Exception("(${parseContext ?: "Unknown Context"}) $errorMsg")
