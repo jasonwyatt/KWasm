@@ -226,8 +226,6 @@ internal object StringConstants {
     const val RETURN = '\u000D'.toInt()
 
     val UNICODE_PATTERN = object : ThreadLocal<Regex>() {
-        override fun initialValue(): Regex {
-            return "\\\\u\\{([0-9a-fA-F]+)\\}".toRegex()
-        }
+        override fun initialValue(): Regex = "\\\\u\\{([0-9a-fA-F]+)\\}".toRegex()
     }
 }
