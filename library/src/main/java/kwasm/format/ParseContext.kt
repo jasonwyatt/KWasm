@@ -14,6 +14,17 @@
 
 package kwasm.format
 
+/**
+ * Reflects the current location within a text-based wasm module.
+ *
+ * Primarily used in conjunction with [ParseException].
+ */
 data class ParseContext(val fileName: String, val lineNumber: Int, val column: Int) {
-    override fun toString(): String = "${fileName}L$lineNumber:$column"
+    override fun toString(): String = "${fileName}:$lineNumber:$column"
 }
+
+/**
+ * Returns a [ParseContext] with the [ParseContext.column] value shifted by the given [amount], or
+ * `null` if the reciever is null.
+ */
+fun ParseContext?.shiftColumnBy(amount: Int) = this?.copy(column = column + amount)

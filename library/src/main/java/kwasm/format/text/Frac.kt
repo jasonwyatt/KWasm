@@ -16,6 +16,7 @@ package kwasm.format.text
 
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
+import kwasm.format.shiftColumnBy
 
 /**
  * From [the docs](https://webassembly.github.io/spec/core/text/values.html#floating-point).
@@ -46,7 +47,7 @@ class Frac(private val sequence: CharSequence, private val context: ParseContext
             // d:digit q:frac
             val q = Frac(
                 sequence.subSequence(1, sequence.length),
-                context?.copy(column = context.column + 1)
+                context.shiftColumnBy(1)
             )
             q.forceHex = forceHex
             return@lazy (digits[0] + q.value) / divisor
@@ -58,7 +59,7 @@ class Frac(private val sequence: CharSequence, private val context: ParseContext
         val p = digits[2].toDouble()
         val q = Frac(
             if (sequence.length > 3) sequence.subSequence(3, sequence.length) else "",
-            context?.copy(column = context.column + 3)
+            context.shiftColumnBy(3)
         )
         q.forceHex = forceHex
 

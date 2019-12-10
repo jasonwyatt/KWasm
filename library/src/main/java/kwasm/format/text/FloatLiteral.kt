@@ -16,6 +16,7 @@ package kwasm.format.text
 
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
+import kwasm.format.shiftColumnBy
 import kotlin.math.pow
 
 /**
@@ -78,7 +79,7 @@ class FloatLiteral(
                 val (sequenceOffset, sign) = sequence.parseLongSign()
                 val floatValue = determineFloatValue(
                     sequence.subSequence(sequenceOffset, sequence.length),
-                    context?.copy(column = context.column + sequenceOffset)
+                    context.shiftColumnBy(sequenceOffset)
                 )
                 sign * floatValue
             }
@@ -99,7 +100,7 @@ class FloatLiteral(
     ): Double = if (sequence.startsWith("0x")) {
         determineHexFloatValue(
             sequence.subSequence(2, sequence.length),
-            context?.copy(column = context.column + 2)
+            context.shiftColumnBy(2)
         )
     } else {
         determineDecimalFloatValue(sequence, context)
@@ -198,7 +199,7 @@ class FloatLiteral(
         val p = Num(sequence.subSequence(0, dotIndex), context)
         val q = Frac(
             sequence.subSequence(dotIndex + 1, sequence.length),
-            context?.copy(column = context.column + dotIndex + 1)
+            context.shiftColumnBy(dotIndex + 1)
         )
         return p to q
     }
@@ -211,7 +212,7 @@ class FloatLiteral(
         val p = Num(sequence.subSequence(0, eIndex), context)
         val exponent = IntegerLiteral.Signed(
             sequence.subSequence(eIndex + 1, sequence.length),
-            context = context?.copy(column = context.column + eIndex + 1)
+            context = context.shiftColumnBy(eIndex + 1)
         )
         return p to exponent
     }
@@ -225,11 +226,11 @@ class FloatLiteral(
         val p = Num(sequence.subSequence(0, dotIndex), context)
         val frac = Frac(
             sequence.subSequence(dotIndex + 1, eIndex),
-            context?.copy(column = context.column + dotIndex + 1)
+            context.shiftColumnBy(dotIndex + 1)
         )
         val exponent = IntegerLiteral.Signed(
             sequence.subSequence(eIndex + 1, sequence.length),
-            context = context?.copy(column = context.column + eIndex + 1)
+            context = context.shiftColumnBy(eIndex + 1)
         )
         return Triple(p, frac, exponent)
     }

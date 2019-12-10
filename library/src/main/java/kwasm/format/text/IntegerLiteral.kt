@@ -16,6 +16,7 @@ package kwasm.format.text
 
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
+import kwasm.format.shiftColumnBy
 import kotlin.math.pow
 
 /**
@@ -77,7 +78,7 @@ sealed class IntegerLiteral<Type>(
                 expectHex = true
                 num = Num(
                     sequence.subSequence(2, sequence.length),
-                    context?.copy(column = context.column + 2)
+                    context.shiftColumnBy(2)
                 )
             } else {
                 expectHex = false
@@ -112,13 +113,13 @@ sealed class IntegerLiteral<Type>(
                 expectHex = true
                 num = Num(
                     sequence.subSequence(sequenceOffset + 2, sequence.length),
-                    context?.copy(column = context.column + 2 + sequenceOffset)
+                    context.shiftColumnBy(2 + sequenceOffset)
                 )
             } else {
                 expectHex = false
                 num = Num(
                     sequence.subSequence(sequenceOffset, sequence.length),
-                    context?.copy(column = context.column + sequenceOffset)
+                    context.shiftColumnBy(sequenceOffset)
                 )
             }
 

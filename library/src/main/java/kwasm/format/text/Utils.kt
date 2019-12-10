@@ -16,6 +16,7 @@ package kwasm.format.text
 
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
+import kwasm.format.shiftColumnBy
 import kotlin.math.pow
 
 fun CharSequence.parseLongSign(): Pair<Int, Long> = when(this[0]) {
@@ -38,7 +39,7 @@ fun CharSequence.parseDigit(index: Int, context: ParseContext? = null): Byte =
         '_' -> NumberConstants.UNDERSCORE
         else -> throw ParseException(
             "Illegal char '$c' in expected number.",
-            context?.copy(column = context.column + index)
+            context.shiftColumnBy(index)
         )
     }
 
