@@ -3,6 +3,21 @@
 # KWasm
 Kotlin Interpreter for WebAssembly
 
+## Milestones
+
+The development of KWasm will be done in a series of milestones:
+
+1. Implement text-based Wasm Parser Capability & AST-generation.
+1. Use the text-based Wasm Parser to develop/test the interpretation of the AST.
+1. Implement a binary wasm parser with AST-generation.
+
+With optional milestones:
+
+4. Implement a WASM->Kotlin transpiler.
+1. Implement a WASM->JVM Bytecode compiler.
+
+Where milestones 2 and 3 are parallelizable.
+
 ## License
 
 ```
