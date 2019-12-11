@@ -141,10 +141,8 @@ sealed class Type<T>(
     class MemoryType(
         sequence: CharSequence,
         context: ParseContext? = null
-    ) : Type<Unit>(sequence, context) {
-        override fun parseValue() {
-            TODO("not implemented")
-        }
+    ) : Type<Limits>(sequence, context) {
+        override fun parseValue(): Limits = Limits(sequence, context)
     }
 
     class TableType(
