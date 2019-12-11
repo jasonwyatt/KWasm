@@ -35,7 +35,7 @@ import kotlin.math.pow
  * Parses a sign (`+` or `-`) from the beginning of the receiving [CharSequence], and returns the
  * sign value and intended offset for parsing the remainder of the value.
  */
-fun CharSequence.parseLongSign(): Pair<Int, Long> = when(this[0]) {
+fun CharSequence.parseLongSign(): Pair<Int, Long> = when (this[0]) {
     '-' -> NumberConstants.negativeLongWithOffset
     '+' -> NumberConstants.positiveLongWithOffset
     else -> NumberConstants.positiveLong
@@ -44,8 +44,10 @@ fun CharSequence.parseLongSign(): Pair<Int, Long> = when(this[0]) {
 /** Parses a digit (as a [Byte]) from the receiving [CharSequence] at the given [index]. */
 fun CharSequence.parseDigit(index: Int, context: ParseContext? = null): Byte =
     this[index].parseDigit(context)
+
 fun IntArray.parseDigit(index: Int, context: ParseContext? = null): Byte =
     this[index].toChar().parseDigit(context)
+
 fun Char.parseDigit(context: ParseContext? = null): Byte = when (this) {
     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> (toInt() - 48).toByte()
     'a', 'b', 'c', 'd', 'e', 'f' -> (toInt() - 97 + 10).toByte()
@@ -69,6 +71,7 @@ fun CharSequence.parseStringElem(
     inoutVal: StringChar = StringChar(),
     context: ParseContext? = null
 ): StringChar = codePoints().toArray().parseStringElem(index, inoutVal, context)
+
 fun IntArray.parseStringElem(
     index: Int,
     inoutVal: StringChar = StringChar(),
@@ -121,11 +124,33 @@ fun CharSequence.parseStringChar(
 ): StringChar = codePoints().toArray().parseStringChar(index, inoutVal, context)
 
 @UseExperimental(ExperimentalUnsignedTypes::class)
+fun CharSequence.toUInt(context: ParseContext? = null): UInt {
+    if ("-" in this) {
+        throw ParseException("Negative values are not allowed in limits", context)
+    }
+    var powerVal = 1.toUInt()
+    var power = 0
+    val value = ByteArray(this.length)
+    repeat(this.length) { index -> value[index] = this.parseDigit(index, context) }
+    val convertedValue = value.foldRightIndexed(0.toUInt()) { _, charVal, acc ->
+        if (power > 0) {
+            powerVal *= 10u
+        }
+        power++
+        val byteVal = charVal.toInt()
+        acc + byteVal.toUInt() * powerVal
+    }
+    if (convertedValue.toString() != this) {
+        throw ParseException("Value overflow, specified value was larger than UInt.MAX_VALUE", context)
+    }
+    return convertedValue
+}
+
 fun IntArray.parseStringChar(
     index: Int,
     inoutVal: StringChar = StringChar(),
     context: ParseContext? = null
-) : StringChar {
+): StringChar {
     val c = this[index]
     when {
         c == BACKSLASH -> {
