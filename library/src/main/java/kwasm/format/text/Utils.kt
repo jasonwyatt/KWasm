@@ -224,6 +224,18 @@ fun Int.canon(context: ParseContext? = null): Long =
 
 private fun Int.toStringAsCodepoint(): String = String(intArrayOf(this), 0, 1)
 
+fun getOperationAndParameters(sequence: CharSequence, context: ParseContext?): Pair<CharSequence, List<CharSequence>> {
+    if (sequence.first() != '(') {
+        throw ParseException("Expecting opening ( for Operation", context)
+    }
+    if (sequence.last() != ')') {
+        throw ParseException("Expecting closing ) for Operation", context)
+    }
+
+    val splitSequence = sequence.substring(1, sequence.lastIndex).split("\\s".toRegex())
+    return Pair(splitSequence[0], splitSequence.subList(1,splitSequence.lastIndex+1))
+}
+
 internal object NumberConstants {
     val negativeLongWithOffset = 1 to -1L
     val positiveLongWithOffset = 1 to 1L
