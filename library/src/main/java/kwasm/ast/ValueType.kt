@@ -14,6 +14,18 @@
 
 package kwasm.ast
 
+/**
+ * From [the docs](https://webassembly.github.io/spec/core/text/types.html#value-types):
+ *
+ * Where valtype is a [kwasm.format.text.Type.ValueType]:
+ *
+ * ```
+ *   valtype ::=  { 'i32' -> I32
+ *                  'i64' -> I64
+ *                  'f32' -> F32
+ *                  'f64' -> F64 }
+ * ```
+ */
 enum class ValueType {
     I32, I64, F32, F64
 }

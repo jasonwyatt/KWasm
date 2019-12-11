@@ -58,9 +58,16 @@ class TypeTest {
     }
 
     @Test
-    fun parseInvalidResultType_DifferentFunction(){
-        val actual = Type.ResultType("(foo blah)",null)
+    fun parseValidResultType_EmptySequence(){
+        val actual = Type.ResultType("",null)
         assertThat(actual.value).isEqualTo(null)
+    }
+
+    @Test
+    fun parseInvalidResultType_DifferentFunction(){
+        Assertions.assertThatThrownBy {
+            Type.ResultType("(foo blah)",null).value
+        }.isInstanceOf(ParseException::class.java).hasMessageContaining("Invalid ResultType syntax")
     }
 
     @Test
