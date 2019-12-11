@@ -112,14 +112,14 @@ sealed class Type<T>(
             // If sequence doesn't contain a space, that means we are only dealing with 1 number
             return if (" " !in sequence) {
                 if (sequence.isEmpty()) {
-                    throw ParseException("Invalid number of arguments. Expected 1 or 2 but found 0")
+                    throw ParseException("Invalid number of arguments. Expected 1 or 2 but found 0", context)
                 }
                 val min = IntegerLiteral.Unsigned(sequence, 32, context)
                 Limit(min, IntegerLiteral.Unsigned(UInt.MAX_VALUE.toString(), 32, null))
             } else {
                 val numbers = sequence.split(" ")
                 if (numbers.size != 2) {
-                    throw ParseException("Invalid number of arguments. Expected 1 or 2 but found ${numbers.size}")
+                    throw ParseException("Invalid number of arguments. Expected 1 or 2 but found ${numbers.size}", context)
                 }
                 val min = IntegerLiteral.Unsigned(numbers[0], 32, context)
                 val max = IntegerLiteral.Unsigned(
