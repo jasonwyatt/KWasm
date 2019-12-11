@@ -12,10 +12,11 @@
  * limitations under the License.
  */
 
-package kwasm.ast
+package kwasm.runtime
 
 import com.google.common.truth.Truth.assertThat
 import kwasm.KWasmRuntimeException
+import kwasm.ast.Identifier
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Before
 import org.junit.Test

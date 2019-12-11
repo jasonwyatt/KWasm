@@ -15,7 +15,6 @@
 package kwasm.format.text
 
 import kwasm.ast.Identifier
-import kwasm.ast.IdentifierContext
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 

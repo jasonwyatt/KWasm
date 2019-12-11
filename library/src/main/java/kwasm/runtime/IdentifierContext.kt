@@ -12,9 +12,10 @@
  * limitations under the License.
  */
 
-package kwasm.ast
+package kwasm.runtime
 
 import kwasm.KWasmRuntimeException
+import kwasm.ast.Identifier
 
 /**
  * From [the docs](https://webassembly.github.io/spec/core/text/conventions.html#contexts):
