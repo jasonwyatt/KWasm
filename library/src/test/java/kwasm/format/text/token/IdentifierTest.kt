@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package kwasm.format.text
+package kwasm.format.text.token
 
 import com.google.common.truth.Truth.assertThat
 import kwasm.format.ParseException
@@ -89,7 +89,8 @@ class IdentifierTest {
 
     @Test
     fun getAstValue_throwsWhenAskingFor_typeDef() {
-        val parseNode = Identifier("\$this_should_fail,_later")
+        val parseNode =
+            Identifier("\$this_should_fail,_later")
         assertThatThrownBy { parseNode.getAstValue<kwasm.ast.Identifier.TypeDef>() }
             .isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Unsupported AST Identifier")

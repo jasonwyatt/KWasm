@@ -15,7 +15,12 @@
 package kwasm.format.text
 
 import kwasm.format.ParseContext
-import kwasm.format.text.token.StringLiteral
+import java.io.Reader
 
-/** A [Name] is a direct subclass of [StringLiteral]. */
-class Name(sequence: CharSequence, context: ParseContext? = null) : StringLiteral(sequence, context)
+/** A tokenizer capable of splitting a raw text-format WASM file into its component tokens. */
+class Tokenizer(
+    private val source: Reader,
+    private val context: ParseContext? = ParseContext("Unknown File", 0, 0)
+) {
+
+}

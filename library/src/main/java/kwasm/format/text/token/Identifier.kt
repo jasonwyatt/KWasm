@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package kwasm.format.text
+package kwasm.format.text.token
 
 import kwasm.ast.Identifier
 import kwasm.format.ParseContext
@@ -36,12 +36,12 @@ import kwasm.format.ParseException
  */
 class Identifier(
     private val sequence: CharSequence,
-    val context: ParseContext? = null
-) {
+    override val context: ParseContext? = null
+) : Token {
     val value: String by lazy {
         if (sequence.first() != '$') throw ParseException("Identifier must begin with $", context)
 
-        if (!ID_PATTERN.get().matches(sequence)) {
+        if (!PATTERN.get().matches(sequence)) {
             throw ParseException("Invalid identifier: $sequence", context)
         }
 
@@ -65,9 +65,10 @@ class Identifier(
         } as IdentifierType
 
     companion object {
-        val ID_PATTERN = object : ThreadLocal<Regex>() {
-            override fun initialValue(): Regex =
-                "\\\$[0-9a-zA-Z!#$%&'*+-./:<=>?@^_`|~\\\\]+".toRegex()
+        const val IDCHAR_REGEX_CLASS = "a-zA-Z0-9!#\$%&'*+\\-./:<=>?@\\\\^_`|~"
+
+        val PATTERN = object : ThreadLocal<Regex>() {
+            override fun initialValue(): Regex = "\\\$[$IDCHAR_REGEX_CLASS]+".toRegex()
         }
     }
 }

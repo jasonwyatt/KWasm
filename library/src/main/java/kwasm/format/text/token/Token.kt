@@ -12,10 +12,14 @@
  * limitations under the License.
  */
 
-package kwasm.format.text
+package kwasm.format.text.token
 
 import kwasm.format.ParseContext
-import kwasm.format.text.token.StringLiteral
 
-/** A [Name] is a direct subclass of [StringLiteral]. */
-class Name(sequence: CharSequence, context: ParseContext? = null) : StringLiteral(sequence, context)
+/** A base type for all valid text-format WebAssembly tokens. */
+interface Token {
+    /** Location of where the token was found in the .wast file. */
+    val context: ParseContext?
+}
+
+

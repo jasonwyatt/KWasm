@@ -12,11 +12,13 @@
  * limitations under the License.
  */
 
-package kwasm.format.text
+package kwasm.format.text.token
 
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import kwasm.format.shiftColumnBy
+import kwasm.format.text.token.util.StringChar
+import kwasm.format.text.token.util.parseStringElem
 
 /**
  * A [String] literal.

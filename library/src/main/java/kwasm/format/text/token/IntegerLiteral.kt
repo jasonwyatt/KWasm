@@ -12,11 +12,13 @@
  * limitations under the License.
  */
 
-package kwasm.format.text
+package kwasm.format.text.token
 
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import kwasm.format.shiftColumnBy
+import kwasm.format.text.token.util.Num
+import kwasm.format.text.token.util.parseLongSign
 import kotlin.math.pow
 
 /**
@@ -47,8 +49,8 @@ import kotlin.math.pow
 sealed class IntegerLiteral<Type>(
     protected val sequence: CharSequence,
     magnitude: Int = 64,
-    protected val context: ParseContext? = null
-) {
+    override val context: ParseContext? = null
+) : Token {
     val value: Type by lazy {
         val res = parseValue()
         if (!checkMagnitude(res, magnitude)) {
@@ -134,6 +136,12 @@ sealed class IntegerLiteral<Type>(
             val doubleValue = value.toDouble()
             val extent = 2.0.pow(magnitude - 1)
             return -extent <= doubleValue && doubleValue < extent
+        }
+    }
+
+    companion object {
+        val PATTERN =  object : ThreadLocal<Regex>() {
+            override fun initialValue(): Regex = "[-+]?(0x)?(${Num.PATTERN.get()})".toRegex()
         }
     }
 }

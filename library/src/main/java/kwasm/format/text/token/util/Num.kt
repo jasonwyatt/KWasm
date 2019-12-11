@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package kwasm.format.text
+package kwasm.format.text.token.util
 
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
@@ -60,5 +60,11 @@ class Num(private val sequence: CharSequence, context: ParseContext? = null) {
         val value = ByteArray(sequence.length)
         repeat(sequence.length) { index -> value[index] = sequence.parseDigit(index, context) }
         value
+    }
+
+    companion object {
+        val PATTERN = object : ThreadLocal<Regex>() {
+            override fun initialValue(): Regex = "([0-9a-fA-F]_?)*[0-9a-fA-F]".toRegex()
+        }
     }
 }

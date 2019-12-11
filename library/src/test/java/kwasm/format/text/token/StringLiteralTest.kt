@@ -12,10 +12,11 @@
  * limitations under the License.
  */
 
-package kwasm.format.text
+package kwasm.format.text.token
 
 import com.google.common.truth.Truth.assertThat
 import kwasm.format.ParseContext
+import kwasm.format.text.token.StringLiteral
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -30,7 +31,8 @@ class StringLiteralTest {
 
     @Test
     fun parsesSimpleString() {
-        val actual = StringLiteral("\"This is a test of it's capabilities!\"")
+        val actual =
+            StringLiteral("\"This is a test of it's capabilities!\"")
         assertThat(actual.value).isEqualTo("This is a test of it's capabilities!")
     }
 
@@ -45,7 +47,8 @@ class StringLiteralTest {
 
     @Test
     fun parsesComplexString_withEmbeddedUnicode() {
-        val actual = StringLiteral("\"Hello! 👋\\n你好 👋\\n\\n\\\"wasm rocks\\\"\"")
+        val actual =
+            StringLiteral("\"Hello! 👋\\n你好 👋\\n\\n\\\"wasm rocks\\\"\"")
         assertThat(actual.value).isEqualTo("Hello! 👋\n你好 👋\n\n\"wasm rocks\"")
     }
 }

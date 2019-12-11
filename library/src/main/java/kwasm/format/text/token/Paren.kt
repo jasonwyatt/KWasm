@@ -12,10 +12,14 @@
  * limitations under the License.
  */
 
-package kwasm.format.text
+package kwasm.format.text.token
 
 import kwasm.format.ParseContext
-import kwasm.format.text.token.StringLiteral
 
-/** A [Name] is a direct subclass of [StringLiteral]. */
-class Name(sequence: CharSequence, context: ParseContext? = null) : StringLiteral(sequence, context)
+/** Representations of Open/Close Parentheses in source WebAssembly. */
+sealed class Paren : Token {
+    /** Representation of `(`, and its location within the source. */
+    data class Open(override val context: ParseContext? = null) : Paren()
+    /** Representation of `)`, and its location within the source. */
+    data class Close(override val context: ParseContext? = null) : Paren()
+}

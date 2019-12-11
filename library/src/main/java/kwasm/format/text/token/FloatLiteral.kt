@@ -7,16 +7,22 @@
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
- * express or implied. See the License for the specific language governing permissions and
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
-package kwasm.format.text
+package kwasm.format.text.token
 
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import kwasm.format.shiftColumnBy
+import kwasm.format.text.token.util.CanonincalNaN
+import kwasm.format.text.token.util.Frac
+import kwasm.format.text.token.util.Num
+import kwasm.format.text.token.util.NumberConstants
+import kwasm.format.text.token.util.parseLongSign
+import kwasm.format.text.token.util.significand
 import kotlin.math.pow
 
 /**
@@ -62,7 +68,10 @@ class FloatLiteral(
             sequence == NAN_LITERAL -> if (magnitude == 32) NAN_32_VALUE else NAN_64_VALUE
             sequence.startsWith(HEXNAN_LITERAL_PREFIX) -> {
                 val n = Num(
-                    sequence.subSequence(HEXNAN_LITERAL_PREFIX.length, sequence.length),
+                    sequence.subSequence(
+                        HEXNAN_LITERAL_PREFIX.length,
+                        sequence.length
+                    ),
                     context
                 )
                 n.forceHex = true
@@ -129,19 +138,33 @@ class FloatLiteral(
         return if (dotIndex == -1 && eIndex == -1) {
             // Case 1.
             val p = case1(sequence, context)
-            assertNoHexChars(context, p)
+            assertNoHexChars(
+                context,
+                p
+            )
             p.value.toDouble()
         } else if (dotIndex != -1 && eIndex == -1) {
             val (p, q) = case2(sequence, dotIndex, context)
-            assertNoHexChars(context, p, q)
+            assertNoHexChars(
+                context,
+                p,
+                q
+            )
             p.value.toDouble() + q.value
         } else if (dotIndex == -1 && eIndex != -1) {
             val (p, exponent) = case3(sequence, eIndex, context)
-            assertNoHexChars(context, p)
+            assertNoHexChars(
+                context,
+                p
+            )
             p.value.toDouble() * 10.0.pow(exponent.value.toInt())
         } else {
             val (p, q, exponent) = case4(sequence, dotIndex, eIndex, context)
-            assertNoHexChars(context, p, q)
+            assertNoHexChars(
+                context,
+                p,
+                q
+            )
             (p.value.toDouble() + q.value) * 10.0.pow(exponent.value.toInt())
         }
     }
@@ -189,14 +212,18 @@ class FloatLiteral(
         }
     }
 
-    private fun case1(sequence: CharSequence, context: ParseContext?): Num = Num(sequence, context)
+    private fun case1(sequence: CharSequence, context: ParseContext?): Num =
+        Num(sequence, context)
 
     private fun case2(
         sequence: CharSequence,
         dotIndex: Int,
         context: ParseContext?
     ): Pair<Num, Frac> {
-        val p = Num(sequence.subSequence(0, dotIndex), context)
+        val p = Num(
+            sequence.subSequence(0, dotIndex),
+            context
+        )
         val q = Frac(
             sequence.subSequence(dotIndex + 1, sequence.length),
             context.shiftColumnBy(dotIndex + 1)
@@ -209,7 +236,10 @@ class FloatLiteral(
         eIndex: Int,
         context: ParseContext?
     ): Pair<Num, IntegerLiteral.Signed> {
-        val p = Num(sequence.subSequence(0, eIndex), context)
+        val p = Num(
+            sequence.subSequence(0, eIndex),
+            context
+        )
         val exponent = IntegerLiteral.Signed(
             sequence.subSequence(eIndex + 1, sequence.length),
             context = context.shiftColumnBy(eIndex + 1)
@@ -223,7 +253,10 @@ class FloatLiteral(
         eIndex: Int,
         context: ParseContext?
     ): Triple<Num, Frac, IntegerLiteral.Signed> {
-        val p = Num(sequence.subSequence(0, dotIndex), context)
+        val p = Num(
+            sequence.subSequence(0, dotIndex),
+            context
+        )
         val frac = Frac(
             sequence.subSequence(dotIndex + 1, eIndex),
             context.shiftColumnBy(dotIndex + 1)
@@ -236,6 +269,16 @@ class FloatLiteral(
     }
 
     companion object {
+        private val FLOAT_PATTERN = object : ThreadLocal<Regex>() {
+            override fun initialValue(): Regex =
+                "(0x)?(${Num.PATTERN.get()})(\\.${Frac.PATTERN.get()})?([EePp][+-]?${Num.PATTERN.get()})?".toRegex()
+        }
+
+        val PATTERN = object : ThreadLocal<Regex>() {
+            override fun initialValue(): Regex =
+                "[+-]?((${FLOAT_PATTERN.get()})|(inf|nan(:0x${Num.PATTERN.get()})?))".toRegex()
+        }
+
         private const val INFINITY_LITERAL = "inf"
         private const val NAN_LITERAL = "nan"
         private const val HEXNAN_LITERAL_PREFIX = "nan:0x"
