@@ -138,6 +138,12 @@ sealed class Type<T>(
         }
     }
 
+    /**
+     * From https://webassembly.github.io/spec/core/text/types.html#memory-types:
+     * ```
+     *   memtype ::= lim:limits => lim
+     * ```
+     */
     class MemoryType(
         sequence: CharSequence,
         context: ParseContext? = null
