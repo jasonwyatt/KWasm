@@ -56,9 +56,7 @@ sealed class Type<T>(
         context: ParseContext? = null
     ) : Type<kwasm.ast.ValueType?>(sequence, context) {
         override fun parseValue(): kwasm.ast.ValueType? {
-            if(sequence=="") {
-                return null
-            }
+            if (sequence.isEmpty()) return null
             val keywordAndParameters = getOperationAndParameters(sequence, context)
             if(keywordAndParameters.first != "result" || keywordAndParameters.second.size > 1){
                 throw ParseException("Invalid ResultType syntax", context.shiftColumnBy(1))
