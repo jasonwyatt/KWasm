@@ -12,5 +12,12 @@
  * limitations under the License.
  */
 
-include ':library'
-rootProject.name='KWasm'
+package kwasm
+
+import java.lang.Exception
+
+/** An error encountered while running a wasm program. */
+data class KWasmRuntimeException(
+    override val message: String,
+    override val cause: Throwable? = null
+) : Exception()

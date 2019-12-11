@@ -14,6 +14,8 @@
 
 package kwasm.format.text
 
+import kwasm.ast.Identifier
+import kwasm.ast.IdentifierContext
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 
@@ -33,7 +35,10 @@ import kwasm.format.ParseException
  *              ':', '<', '=', '>', '?', '@', '\', '^', '_', '`', '|', '~'
  * ```
  */
-class Identifier(private val sequence: CharSequence, private val context: ParseContext? = null) {
+class Identifier(
+    private val sequence: CharSequence,
+    val context: ParseContext? = null
+) {
     val value: String by lazy {
         if (sequence.first() != '$') throw ParseException("Identifier must begin with $", context)
 
@@ -43,6 +48,22 @@ class Identifier(private val sequence: CharSequence, private val context: ParseC
 
         "$sequence"
     }
+
+    /** Gets an instance of a [kwasm.ast.Identifier] based on the [value]. */
+    inline fun <reified IdentifierType : Identifier> getAstValue(): IdentifierType =
+        when (IdentifierType::class) {
+            Identifier.Type::class -> Identifier.Type(stringRepr = value)
+            Identifier.Function::class -> Identifier.Function(stringRepr = value)
+            Identifier.Global::class -> Identifier.Global(stringRepr = value)
+            Identifier.Label::class -> Identifier.Label(stringRepr = value)
+            Identifier.Local::class -> Identifier.Local(stringRepr = value)
+            Identifier.Memory::class -> Identifier.Memory(stringRepr = value)
+            Identifier.Table::class -> Identifier.Table(stringRepr = value)
+            else -> throw ParseException(
+                "Unsupported AST Identifier type: ${IdentifierType::class.java}",
+                context
+            )
+        } as IdentifierType
 
     companion object {
         val ID_PATTERN = object : ThreadLocal<Regex>() {
