@@ -119,7 +119,10 @@ sealed class Type<T>(
             } else {
                 val numbers = sequence.split(" ")
                 if (numbers.size != 2) {
-                    throw ParseException("Invalid number of arguments. Expected 1 or 2 but found ${numbers.size}", context)
+                    throw ParseException(
+                        "Invalid number of arguments. Expected 1 or 2 but found ${numbers.size}",
+                        context
+                    )
                 }
                 val min = IntegerLiteral.Unsigned(numbers[0], 32, context)
                 val max = IntegerLiteral.Unsigned(
