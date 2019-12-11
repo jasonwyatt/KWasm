@@ -123,29 +123,6 @@ fun CharSequence.parseStringChar(
     context: ParseContext? = null
 ): StringChar = codePoints().toArray().parseStringChar(index, inoutVal, context)
 
-@UseExperimental(ExperimentalUnsignedTypes::class)
-fun CharSequence.toUInt(context: ParseContext? = null): UInt {
-    if ("-" in this) {
-        throw ParseException("Negative values are not allowed in limits", context)
-    }
-    var powerVal = 1.toUInt()
-    var power = 0
-    val value = ByteArray(this.length)
-    repeat(this.length) { index -> value[index] = this.parseDigit(index, context) }
-    val convertedValue = value.foldRightIndexed(0.toUInt()) { _, charVal, acc ->
-        if (power > 0) {
-            powerVal *= 10u
-        }
-        power++
-        val byteVal = charVal.toInt()
-        acc + byteVal.toUInt() * powerVal
-    }
-    if (convertedValue.toString() != this) {
-        throw ParseException("Value overflow, specified value was larger than UInt.MAX_VALUE", context)
-    }
-    return convertedValue
-}
-
 fun IntArray.parseStringChar(
     index: Int,
     inoutVal: StringChar = StringChar(),
@@ -259,7 +236,7 @@ fun getOperationAndParameters(sequence: CharSequence, context: ParseContext?): P
     }
 
     val splitSequence = sequence.substring(1, sequence.lastIndex).split("\\s".toRegex())
-    return Pair(splitSequence[0], splitSequence.subList(1,splitSequence.lastIndex+1))
+    return Pair(splitSequence[0], splitSequence.subList(1, splitSequence.lastIndex + 1))
 }
 
 internal object NumberConstants {

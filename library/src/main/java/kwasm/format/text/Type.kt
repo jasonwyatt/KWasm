@@ -14,6 +14,7 @@
 
 package kwasm.format.text
 
+import kwasm.ast.Limit
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import kwasm.format.shiftColumnBy
@@ -95,6 +96,8 @@ sealed class Type<T>(
     }
 
     /**
+     * From: https://webassembly.github.io/spec/core/text/types.html#limits
+     *
      * ```
      *   limits ::=  n:u32        => {min n, max ϵ}
      *           |   n:u32  m:u32 => {min n, max m}
@@ -103,32 +106,31 @@ sealed class Type<T>(
     class Limits(
         sequence: CharSequence,
         context: ParseContext? = null
-    ) : Type<Pair<UInt, UInt>>(sequence, context) {
+    ) : Type<Limit>(sequence, context) {
 
-        override fun parseValue(): Pair<UInt, UInt> {
+        override fun parseValue(): Limit {
             // If sequence doesn't contain a space, that means we are only dealing with 1 number
             return if (" " !in sequence) {
                 if (sequence.isEmpty()) {
                     throw ParseException("Invalid number of arguments. Expected 1 or 2 but found 0")
                 }
-                val min = sequence.toUInt(context)
-                context.shiftColumnBy(sequence.length + 1)
-                Pair(min, UInt.MAX_VALUE)
+                val min = IntegerLiteral.Unsigned(sequence, 32, context)
+                Limit(min, IntegerLiteral.Unsigned(UInt.MAX_VALUE.toString(), 32, null))
             } else {
                 val numbers = sequence.split(" ")
                 if (numbers.size != 2) {
                     throw ParseException("Invalid number of arguments. Expected 1 or 2 but found ${numbers.size}")
                 }
-                val min = numbers[0].toUInt(context)
-                context.shiftColumnBy(numbers[0].length + 1)
-                val max = numbers[1].toUInt()
-                context.shiftColumnBy(numbers[1].length + 1)
-                if (min > max) {
+                val min = IntegerLiteral.Unsigned(numbers[0], 32, context)
+                val max = IntegerLiteral.Unsigned(
+                    numbers[1], 32,
+                    context.shiftColumnBy(numbers[0].length + 1)
+                )
+                if (min.value > max.value) {
                     // We must undo the context shift if we encounter this error
-                    context.shiftColumnBy(-1 * (numbers[0].length + numbers[1].length + 2))
                     throw ParseException("Invalid Range specified, min > max. Found min: $min, max: $max", context)
                 }
-                Pair(min, max)
+                Limit(min, max)
             }
         }
     }
