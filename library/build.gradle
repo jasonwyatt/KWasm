@@ -13,6 +13,7 @@
  */
 
 apply plugin: 'kotlin'
+apply plugin: 'kotlinx-atomicfu'
 
 repositories {
     google()

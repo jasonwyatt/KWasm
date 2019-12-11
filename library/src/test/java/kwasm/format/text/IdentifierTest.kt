@@ -58,4 +58,40 @@ class IdentifierTest {
             assertThat(actual.value).isEqualTo("$$it")
         }
     }
+
+    @Test
+    fun getAstValue_buildsAstIdentifier() {
+        val stringValue = "\$test"
+        val parseNode = Identifier(stringValue)
+
+        val expectedType = kwasm.ast.Identifier.Type(stringValue)
+        assertThat(parseNode.getAstValue<kwasm.ast.Identifier.Type>()).isEqualTo(expectedType)
+
+        val expectedFunction = kwasm.ast.Identifier.Function(stringValue)
+        assertThat(parseNode.getAstValue<kwasm.ast.Identifier.Function>())
+            .isEqualTo(expectedFunction)
+
+        val expectedGlobal = kwasm.ast.Identifier.Global(stringValue)
+        assertThat(parseNode.getAstValue<kwasm.ast.Identifier.Global>()).isEqualTo(expectedGlobal)
+
+        val expectedLabel = kwasm.ast.Identifier.Label(stringValue)
+        assertThat(parseNode.getAstValue<kwasm.ast.Identifier.Label>()).isEqualTo(expectedLabel)
+
+        val expectedLocal = kwasm.ast.Identifier.Local(stringValue)
+        assertThat(parseNode.getAstValue<kwasm.ast.Identifier.Local>()).isEqualTo(expectedLocal)
+
+        val expectedMemory = kwasm.ast.Identifier.Memory(stringValue)
+        assertThat(parseNode.getAstValue<kwasm.ast.Identifier.Memory>()).isEqualTo(expectedMemory)
+
+        val expectedTable = kwasm.ast.Identifier.Table(stringValue)
+        assertThat(parseNode.getAstValue<kwasm.ast.Identifier.Table>()).isEqualTo(expectedTable)
+    }
+
+    @Test
+    fun getAstValue_throwsWhenAskingFor_typeDef() {
+        val parseNode = Identifier("\$this_should_fail,_later")
+        assertThatThrownBy { parseNode.getAstValue<kwasm.ast.Identifier.TypeDef>() }
+            .isInstanceOf(ParseException::class.java)
+            .hasMessageContaining("Unsupported AST Identifier")
+    }
 }

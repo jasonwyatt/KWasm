@@ -44,7 +44,7 @@ class Num(private val sequence: CharSequence, context: ParseContext? = null) {
         val multiplier = (if (foundHexChars || forceHex) 16 else 10).toULong()
         var powerVal = 1.toULong()
         var power = 0
-        digits.foldRightIndexed(0.toULong()) { index, byteVal, acc ->
+        digits.foldRightIndexed(0.toULong()) { _, byteVal, acc ->
             if (byteVal == NumberConstants.UNDERSCORE) return@foldRightIndexed acc
             if (power > 0) {
                 powerVal *= multiplier

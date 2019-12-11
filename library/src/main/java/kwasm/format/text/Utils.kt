@@ -120,6 +120,7 @@ fun CharSequence.parseStringChar(
     context: ParseContext? = null
 ): StringChar = codePoints().toArray().parseStringChar(index, inoutVal, context)
 
+@UseExperimental(ExperimentalUnsignedTypes::class)
 fun IntArray.parseStringChar(
     index: Int,
     inoutVal: StringChar = StringChar(),
