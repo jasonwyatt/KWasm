@@ -15,36 +15,61 @@
 package kwasm.format.text
 
 import kwasm.format.ParseContext
+import kwasm.format.ParseException
+import kwasm.format.shiftColumnBy
 
-sealed class Type(
+/**
+ * This sealed class encapsulates all Types defined in
+ * [the docs](https://webassembly.github.io/spec/core/text/types.html)
+ *
+ * @param T the Object representing the value related to the type and value parsed
+ */
+sealed class Type<T>(
     protected val sequence: CharSequence,
     protected val context: ParseContext? = null
 ) {
+    val value: T by lazy { parseValue() }
 
-    protected abstract fun parseValue(): Unit
-
+    protected abstract fun parseValue(): T
+    /**
+     * Encapsulates kwasm.ast.ValueType for parsing. Parses the sequence in accordance
+     * to the definition in [the docs](https://webassembly.github.io/spec/core/text/types.html#value-types)
+     *
+     * @constructor Parses the sequence passed in and populates the appropriate parsed value.
+     * @throws ParseException when the sequence falls outside of the spec definition
+     */
     class ValueType(
         sequence: CharSequence,
         context: ParseContext? = null
-    ) : Type(sequence, context) {
-        override fun parseValue() {
-            TODO("not implemented")
+    ) : Type<kwasm.ast.ValueType>(sequence, context) {
+        override fun parseValue(): kwasm.ast.ValueType = when (sequence){
+                "i32" -> kwasm.ast.ValueType.I32
+                "i64" -> kwasm.ast.ValueType.I64
+                "f32" -> kwasm.ast.ValueType.F32
+                "f64" -> kwasm.ast.ValueType.F64
+                else -> throw ParseException("Invalid ValueType", context)
+            }
         }
-    }
 
     class ResultType(
         sequence: CharSequence,
         context: ParseContext? = null
-    ) : Type(sequence, context) {
-        override fun parseValue() {
-            TODO("not implemented")
+    ) : Type<kwasm.ast.ValueType?>(sequence, context) {
+        override fun parseValue(): kwasm.ast.ValueType? {
+            if (sequence.isEmpty()) return null
+            val keywordAndParameters = getOperationAndParameters(sequence, context)
+            if(keywordAndParameters.first != "result" || keywordAndParameters.second.size > 1){
+                throw ParseException("Invalid ResultType syntax", context.shiftColumnBy(1))
+            }
+            // Context is shifted by 8 to shift past '(result ' to the start of the actual ValueType
+            return ValueType(keywordAndParameters.second[0], context.shiftColumnBy(8)).value
         }
     }
 
     class FunctionType(
         sequence: CharSequence,
         context: ParseContext? = null
-    ) : Type(sequence, context) {
+    ) : Type<Unit>(sequence, context) {
         override fun parseValue() {
             TODO("not implemented")
         }
@@ -53,7 +78,7 @@ sealed class Type(
     class Param(
         sequence: CharSequence,
         context: ParseContext? = null
-    ) : Type(sequence, context) {
+    ) : Type<Unit>(sequence, context) {
         override fun parseValue() {
             TODO("not implemented")
         }
@@ -62,7 +87,7 @@ sealed class Type(
     class Result(
         sequence: CharSequence,
         context: ParseContext? = null
-    ) : Type(sequence, context) {
+    ) : Type<Unit>(sequence, context) {
         override fun parseValue() {
             TODO("not implemented")
         }
@@ -71,7 +96,7 @@ sealed class Type(
     class Limits(
         sequence: CharSequence,
         context: ParseContext? = null
-    ) : Type(sequence, context) {
+    ) : Type<Unit>(sequence, context) {
         override fun parseValue() {
             TODO("not implemented")
         }
@@ -80,7 +105,7 @@ sealed class Type(
     class MemoryType(
         sequence: CharSequence,
         context: ParseContext? = null
-    ) : Type(sequence, context) {
+    ) : Type<Unit>(sequence, context) {
         override fun parseValue() {
             TODO("not implemented")
         }
@@ -89,7 +114,7 @@ sealed class Type(
     class TableType(
         sequence: CharSequence,
         context: ParseContext? = null
-    ) : Type(sequence, context) {
+    ) : Type<Unit>(sequence, context) {
         override fun parseValue() {
             TODO("not implemented")
         }
@@ -98,7 +123,7 @@ sealed class Type(
     class ElementType(
         sequence: CharSequence,
         context: ParseContext? = null
-    ) : Type(sequence, context) {
+    ) : Type<Unit>(sequence, context) {
         override fun parseValue() {
             TODO("not implemented")
         }
@@ -107,7 +132,7 @@ sealed class Type(
     class GlobalType(
         sequence: CharSequence,
         context: ParseContext? = null
-    ) : Type(sequence, context) {
+    ) : Type<Unit>(sequence, context) {
         override fun parseValue() {
             TODO("not implemented")
         }
