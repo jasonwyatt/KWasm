@@ -45,7 +45,7 @@ jobs:
       - store_test_results:
           path: library
 
-  build:
+  compile:
     docker:
       - image: circleci/android:api-29
 
