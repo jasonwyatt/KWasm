@@ -110,3 +110,15 @@ jobs:
 
       # Deploy the docs
       - run: ./gradlew orchidDeploy
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build
+  test:
+    jobs:
+      - test
+  docs:
+    jobs:
+      - docs
