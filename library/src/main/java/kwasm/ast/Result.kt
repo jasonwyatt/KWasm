@@ -24,4 +24,4 @@ package kwasm.ast
  *   result   ::=  ‘(’ ‘result’  t:valtype ‘)’  => t
  * ```
  */
-data class Result(val valType: ValueType)
+data class Result(val valTypeEnum: ValueTypeEnum) : AstNode

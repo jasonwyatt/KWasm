@@ -33,7 +33,7 @@ package kwasm.ast
 sealed class Identifier(
     open val unique: Int?,
     open val stringRepr: String?
-) {
+) : AstNode {
     data class Type(
         override val stringRepr: String? = null,
         override val unique: Int? = "$stringRepr".hashCode()

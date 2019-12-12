@@ -15,7 +15,7 @@
 package kwasm.format.text
 
 import com.google.common.truth.Truth.assertThat
-import kwasm.ast.ValueType
+import kwasm.ast.ValueTypeEnum
 import kwasm.format.ParseException
 import org.assertj.core.api.Assertions
 import org.junit.Test
@@ -23,28 +23,28 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class ValueTypeTest {
+class ValueTypeEnumTest {
     @Test
-    fun parseValidValueType(){
-        var expected = ValueType.I32
+    fun parseValidValueType() {
+        var expected = ValueTypeEnum.I32
         var actual = Type.ValueType("i32", null)
         assertThat(actual.value).isEqualTo(expected)
 
-        expected = ValueType.I64
+        expected = ValueTypeEnum.I64
         actual = Type.ValueType("i64", null)
         assertThat(actual.value).isEqualTo(expected)
 
-        expected = ValueType.F32
+        expected = ValueTypeEnum.F32
         actual = Type.ValueType("f32", null)
         assertThat(actual.value).isEqualTo(expected)
 
-        expected = ValueType.F64
+        expected = ValueTypeEnum.F64
         actual = Type.ValueType("f64", null)
         assertThat(actual.value).isEqualTo(expected)
     }
 
     @Test
-    fun parseInvalidValueType(){
+    fun parseInvalidValueType() {
         Assertions.assertThatThrownBy {
             Type.ValueType("abc", null).value
         }.isInstanceOf(ParseException::class.java).hasMessageContaining("Invalid ValueType")

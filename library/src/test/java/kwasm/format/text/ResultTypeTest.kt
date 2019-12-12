@@ -15,7 +15,7 @@
 package kwasm.format.text
 
 import com.google.common.truth.Truth
-import kwasm.ast.ValueType
+import kwasm.ast.ValueTypeEnum
 import kwasm.format.ParseException
 import org.assertj.core.api.Assertions
 import org.junit.Test
@@ -26,7 +26,7 @@ import org.junit.runners.JUnit4
 class ResultTypeTest {
     @Test
     fun parseValidResultType_Exists() {
-        val expected = kwasm.ast.Result(ValueType.I32)
+        val expected = kwasm.ast.Result(ValueTypeEnum.I32)
         val actual = Type.ResultType("(result i32)", null)
         Truth.assertThat(actual.value?.value).isEqualTo(expected)
     }

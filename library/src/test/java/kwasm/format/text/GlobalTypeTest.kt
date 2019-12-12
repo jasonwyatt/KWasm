@@ -15,7 +15,7 @@
 package kwasm.format.text
 
 import com.google.common.truth.Truth
-import kwasm.ast.ValueType
+import kwasm.ast.ValueTypeEnum
 import kwasm.format.ParseException
 import org.assertj.core.api.Assertions
 import org.junit.Test
@@ -26,17 +26,17 @@ import org.junit.runners.JUnit4
 class GlobalTypeTest {
     @Test
     fun parseValidGlobalType_NonMutable() {
-        val expectedValuetype = ValueType.I32
+        val expectedValuetype = ValueTypeEnum.I32
         val actual = Type.GlobalType("i32", null)
-        Truth.assertThat(actual.value.valueType).isEqualTo(expectedValuetype)
+        Truth.assertThat(actual.value.valueTypeEnum).isEqualTo(expectedValuetype)
         Truth.assertThat(actual.value.mutable).isFalse()
     }
 
     @Test
     fun parseValidResultType_Mutable() {
-        val expectedValuetype = ValueType.I32
+        val expectedValuetype = ValueTypeEnum.I32
         val actual = Type.GlobalType("(mut i32)", null)
-        Truth.assertThat(actual.value.valueType).isEqualTo(expectedValuetype)
+        Truth.assertThat(actual.value.valueTypeEnum).isEqualTo(expectedValuetype)
         Truth.assertThat(actual.value.mutable).isTrue()
     }
 

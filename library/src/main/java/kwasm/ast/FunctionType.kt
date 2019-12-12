@@ -28,5 +28,5 @@ package kwasm.ast
  */
 data class FunctionType(
     val parameters: List<Param>,
-    val returnValues: List<ValueType>
-)
+    val returnValueEnums: List<ValueTypeEnum>
+) : AstNode

@@ -48,12 +48,12 @@ sealed class Type<T>(
     class ValueType(
         sequence: CharSequence,
         context: ParseContext? = null
-    ) : Type<kwasm.ast.ValueType>(sequence, context) {
-        override fun parseValue(): kwasm.ast.ValueType = when (sequence) {
-            "i32" -> kwasm.ast.ValueType.I32
-            "i64" -> kwasm.ast.ValueType.I64
-            "f32" -> kwasm.ast.ValueType.F32
-            "f64" -> kwasm.ast.ValueType.F64
+    ) : Type<kwasm.ast.ValueTypeEnum>(sequence, context) {
+        override fun parseValue(): kwasm.ast.ValueTypeEnum = when (sequence) {
+            "i32" -> kwasm.ast.ValueTypeEnum.I32
+            "i64" -> kwasm.ast.ValueTypeEnum.I64
+            "f32" -> kwasm.ast.ValueTypeEnum.F32
+            "f64" -> kwasm.ast.ValueTypeEnum.F64
             else -> throw ParseException("Invalid ValueType", context)
         }
     }
@@ -85,7 +85,7 @@ sealed class Type<T>(
                 throw ParseException("Invalid FunctionType syntax", context.shiftColumnBy(1))
             } else {
                 val params = mutableListOf<kwasm.ast.Param>()
-                val returnValues = mutableListOf<kwasm.ast.ValueType>()
+                val returnValues = mutableListOf<kwasm.ast.ValueTypeEnum>()
                 var inParenthesis = false
                 var parsingParams = true
                 var internalSequence = ""
@@ -106,7 +106,7 @@ sealed class Type<T>(
                                 params.add(Param(internalSequence, context).value)
                             } else if (internalSequence.contains("(result")) {
                                 parsingParams = false
-                                returnValues.add(Result(internalSequence, context).value.valType)
+                                returnValues.add(Result(internalSequence, context).value.valTypeEnum)
                             } else {
                                 throw ParseException("Invalid FunctionType Syntax", context)
                             }
