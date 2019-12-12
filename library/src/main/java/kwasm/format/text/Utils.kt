@@ -35,7 +35,7 @@ import kotlin.math.pow
  * Parses a sign (`+` or `-`) from the beginning of the receiving [CharSequence], and returns the
  * sign value and intended offset for parsing the remainder of the value.
  */
-fun CharSequence.parseLongSign(): Pair<Int, Long> = when(this[0]) {
+fun CharSequence.parseLongSign(): Pair<Int, Long> = when (this[0]) {
     '-' -> NumberConstants.negativeLongWithOffset
     '+' -> NumberConstants.positiveLongWithOffset
     else -> NumberConstants.positiveLong
@@ -44,8 +44,10 @@ fun CharSequence.parseLongSign(): Pair<Int, Long> = when(this[0]) {
 /** Parses a digit (as a [Byte]) from the receiving [CharSequence] at the given [index]. */
 fun CharSequence.parseDigit(index: Int, context: ParseContext? = null): Byte =
     this[index].parseDigit(context)
+
 fun IntArray.parseDigit(index: Int, context: ParseContext? = null): Byte =
     this[index].toChar().parseDigit(context)
+
 fun Char.parseDigit(context: ParseContext? = null): Byte = when (this) {
     '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> (toInt() - 48).toByte()
     'a', 'b', 'c', 'd', 'e', 'f' -> (toInt() - 97 + 10).toByte()
@@ -69,6 +71,7 @@ fun CharSequence.parseStringElem(
     inoutVal: StringChar = StringChar(),
     context: ParseContext? = null
 ): StringChar = codePoints().toArray().parseStringElem(index, inoutVal, context)
+
 fun IntArray.parseStringElem(
     index: Int,
     inoutVal: StringChar = StringChar(),
@@ -120,12 +123,11 @@ fun CharSequence.parseStringChar(
     context: ParseContext? = null
 ): StringChar = codePoints().toArray().parseStringChar(index, inoutVal, context)
 
-@UseExperimental(ExperimentalUnsignedTypes::class)
 fun IntArray.parseStringChar(
     index: Int,
     inoutVal: StringChar = StringChar(),
     context: ParseContext? = null
-) : StringChar {
+): StringChar {
     val c = this[index]
     when {
         c == BACKSLASH -> {
@@ -234,7 +236,7 @@ fun getOperationAndParameters(sequence: CharSequence, context: ParseContext?): P
     }
 
     val splitSequence = sequence.substring(1, sequence.lastIndex).split("\\s".toRegex())
-    return Pair(splitSequence[0], splitSequence.subList(1,splitSequence.lastIndex+1))
+    return Pair(splitSequence[0], splitSequence.subList(1, splitSequence.lastIndex + 1))
 }
 
 internal object NumberConstants {
