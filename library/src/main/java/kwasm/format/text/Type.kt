@@ -135,7 +135,7 @@ sealed class Type<T>(
                     // We must undo the context shift if we encounter this error
                     throw ParseException("Invalid Range specified, min > max. Found min: $min, max: $max", context)
                 }
-                Limit(min.value, max.value)
+                Limit(min, max)
             }
         }
     }
