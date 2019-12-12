@@ -88,7 +88,7 @@ workflows:
       - build
   docs:
     jobs:
-      - docs
+      - docs:
         filters:
           branches:
             only:
