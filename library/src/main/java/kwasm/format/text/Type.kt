@@ -149,7 +149,7 @@ sealed class Type<T>(
         sequence: CharSequence,
         context: ParseContext? = null
     ) : Type<Memory>(sequence, context) {
-        override fun parseValue(): Memory = Memory(Limits(sequence, context))
+        override fun parseValue(): Memory = Memory(Limits(sequence, context).value)
     }
 
     class TableType(

@@ -30,8 +30,8 @@ class MemoryTypeTest {
         val expectedMin = 123456.toULong()
         val expectedMax = UInt.MAX_VALUE.toULong()
         val memoryType = Type.MemoryType("123456")
-        Truth.assertThat(memoryType.value.limits.value.min.value).isEqualTo(expectedMin)
-        Truth.assertThat(memoryType.value.limits.value.max.value).isEqualTo(expectedMax)
+        Truth.assertThat(memoryType.value.limits.min.value).isEqualTo(expectedMin)
+        Truth.assertThat(memoryType.value.limits.max.value).isEqualTo(expectedMax)
     }
 
     @Test
@@ -39,8 +39,8 @@ class MemoryTypeTest {
         val expectedMin = UInt.MAX_VALUE.toULong()
         val expectedMax = UInt.MAX_VALUE.toULong()
         val memoryType = Type.MemoryType(UInt.MAX_VALUE.toString())
-        Truth.assertThat(memoryType.value.limits.value.min.value).isEqualTo(expectedMin)
-        Truth.assertThat(memoryType.value.limits.value.max.value).isEqualTo(expectedMax)
+        Truth.assertThat(memoryType.value.limits.min.value).isEqualTo(expectedMin)
+        Truth.assertThat(memoryType.value.limits.max.value).isEqualTo(expectedMax)
     }
 
     @Test
@@ -48,14 +48,14 @@ class MemoryTypeTest {
         val expectedMin = UInt.MIN_VALUE.toULong()
         val expectedMax = UInt.MAX_VALUE.toULong()
         val memoryType = Type.MemoryType(UInt.MIN_VALUE.toString())
-        Truth.assertThat(memoryType.value.limits.value.min.value).isEqualTo(expectedMin)
-        Truth.assertThat(memoryType.value.limits.value.max.value).isEqualTo(expectedMax)
+        Truth.assertThat(memoryType.value.limits.min.value).isEqualTo(expectedMin)
+        Truth.assertThat(memoryType.value.limits.max.value).isEqualTo(expectedMax)
     }
 
     @Test
     fun parseNegativeMin_throwsParseExceptionWithNegativeNumberMessage() {
         val memoryType = Type.MemoryType("-123456")
-        Assertions.assertThatThrownBy { memoryType.value.limits.value.min.value }
+        Assertions.assertThatThrownBy { memoryType.value.limits.min.value }
             .isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Illegal char")
     }
@@ -63,7 +63,7 @@ class MemoryTypeTest {
     @Test
     fun parseABitLargerThanMaxVal_throwsParseExceptionWithValueOverflowMessage() {
         val memoryType = Type.MemoryType("4294967296")
-        Assertions.assertThatThrownBy { memoryType.value.limits.value.min.value }
+        Assertions.assertThatThrownBy { memoryType.value.limits.min.value }
             .isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Illegal value")
     }
@@ -71,7 +71,7 @@ class MemoryTypeTest {
     @Test
     fun parseALotLargerThanMaxVal_throwsParseExceptionWithValueOverflowMessage() {
         val memoryType = Type.MemoryType("100000000000")
-        Assertions.assertThatThrownBy { memoryType.value.limits.value.min.value }
+        Assertions.assertThatThrownBy { memoryType.value.limits.min.value }
             .isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Illegal value")
     }
@@ -81,14 +81,14 @@ class MemoryTypeTest {
         val expectedMin = 123456.toUInt().toULong()
         val expectedMax = 234567.toUInt().toULong()
         val memoryType = Type.MemoryType("123456 234567")
-        Truth.assertThat(memoryType.value.limits.value.min.value).isEqualTo(expectedMin)
-        Truth.assertThat(memoryType.value.limits.value.max.value).isEqualTo(expectedMax)
+        Truth.assertThat(memoryType.value.limits.min.value).isEqualTo(expectedMin)
+        Truth.assertThat(memoryType.value.limits.max.value).isEqualTo(expectedMax)
     }
 
     @Test
     fun parseTwoNumbers_withMinGreaterThanMax_throwsParseExceptionWithInvalidRangeMessage() {
         val memoryType = Type.MemoryType("234567 123456")
-        Assertions.assertThatThrownBy { memoryType.value.limits.value }
+        Assertions.assertThatThrownBy { memoryType.value.limits }
             .isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Invalid Range specified, min > max.")
     }
@@ -96,7 +96,7 @@ class MemoryTypeTest {
     @Test
     fun parseTwoValuesWithNegativeMin_throwsParseExceptionWithNegativeNumberMessage() {
         val memoryType = Type.MemoryType("-123456 234567")
-        Assertions.assertThatThrownBy { memoryType.value.limits.value }
+        Assertions.assertThatThrownBy { memoryType.value.limits }
             .isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Illegal char")
     }
@@ -104,7 +104,7 @@ class MemoryTypeTest {
     @Test
     fun parseTwoValuesWithMinABitLargerThanMaxVal_throwsParseExceptionWithValueOverflowMessage() {
         val memoryType = Type.MemoryType("4294967296 234567")
-        Assertions.assertThatThrownBy { memoryType.value.limits.value }
+        Assertions.assertThatThrownBy { memoryType.value.limits }
             .isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Illegal value")
     }
@@ -112,7 +112,7 @@ class MemoryTypeTest {
     @Test
     fun parseTwoValuesWithMinALotLargerThanMaxVal_throwsParseExceptionWithValueOverflowMessage() {
         val memoryType = Type.MemoryType("100000000000 234567")
-        Assertions.assertThatThrownBy { memoryType.value.limits.value }
+        Assertions.assertThatThrownBy { memoryType.value.limits }
             .isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Illegal value")
     }
@@ -120,7 +120,7 @@ class MemoryTypeTest {
     @Test
     fun parseTwoValuesWithNegativeMax_throwsParseExceptionWithNegativeNumberMessage() {
         val memoryType = Type.MemoryType("123456 -234567")
-        Assertions.assertThatThrownBy { memoryType.value.limits.value }
+        Assertions.assertThatThrownBy { memoryType.value.limits }
             .isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Illegal char")
     }
@@ -128,7 +128,7 @@ class MemoryTypeTest {
     @Test
     fun parseTwoValuesWithMaxABitLargerThanMaxVal_throwsParseExceptionWithValueOverflowMessage() {
         val memoryType = Type.MemoryType("1234567 4294967296")
-        Assertions.assertThatThrownBy { memoryType.value.limits.value }
+        Assertions.assertThatThrownBy { memoryType.value.limits }
             .isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Illegal value")
     }
@@ -136,7 +136,7 @@ class MemoryTypeTest {
     @Test
     fun parseTwoValuesWithMaxALotLargerThanMaxVal_throwsParseExceptionWithValueOverflowMessage() {
         val memoryType = Type.MemoryType("1234567 100000000000")
-        Assertions.assertThatThrownBy { memoryType.value.limits.value }
+        Assertions.assertThatThrownBy { memoryType.value.limits }
             .isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Illegal value")
     }
@@ -144,7 +144,7 @@ class MemoryTypeTest {
     @Test
     fun parseNoValues_throwsParseExceptionWithIncorrectNumberOfArgumentsException() {
         val memoryType = Type.MemoryType("")
-        Assertions.assertThatThrownBy { memoryType.value.limits.value }
+        Assertions.assertThatThrownBy { memoryType.value.limits }
             .isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Invalid number of arguments.")
     }
@@ -152,7 +152,7 @@ class MemoryTypeTest {
     @Test
     fun parseThreeValues_throwsParseExceptionWithIncorrectNumberOfArgumentsException() {
         val memoryType = Type.MemoryType("1234567 2345678 3456789")
-        Assertions.assertThatThrownBy { memoryType.value.limits.value }
+        Assertions.assertThatThrownBy { memoryType.value.limits }
             .isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Invalid number of arguments.")
     }
