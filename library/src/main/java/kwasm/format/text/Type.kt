@@ -58,10 +58,10 @@ sealed class Type<T>(
     class ResultType(
         sequence: CharSequence,
         context: ParseContext? = null
-    ) : Type<kwasm.ast.ValueType?>(sequence, context) {
-        override fun parseValue(): kwasm.ast.ValueType? {
+    ) : Type<Result?>(sequence, context) {
+        override fun parseValue(): Result? {
             if (sequence.isEmpty()) return null
-            return Result(sequence, context).value
+            return Result(sequence, context)
         }
     }
 
@@ -109,9 +109,7 @@ sealed class Type<T>(
                             }
                             internalSequence = ""
                         }
-                        else -> {
-                            internalSequence += "$token "
-                        }
+                        else -> internalSequence += "$token "
                     }
                 }
                 return FunctionType(params, returnValues)

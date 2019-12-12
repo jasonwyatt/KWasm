@@ -21,7 +21,7 @@ package kwasm.ast
  * Where param is a [kwasm.format.text.Type.Param]:
  *
  * ```
- *   param    ::=  ‘(’ ‘param’  id?  t:valtype ‘)’                 -> t
+ *   param    ::=  ‘(’ ‘param’  id?  t:valtype ‘)’  => t
  * ```
  */
 data class Param(val id: Identifier.Local?, val valType: ValueType)

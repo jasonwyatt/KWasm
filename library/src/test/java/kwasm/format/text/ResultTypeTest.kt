@@ -28,7 +28,7 @@ class ResultTypeTest {
     fun parseValidResultType_Exists() {
         val expected = ValueType.I32
         val actual = Type.ResultType("(result i32)", null)
-        Truth.assertThat(actual.value).isEqualTo(expected)
+        Truth.assertThat(actual.value?.value).isEqualTo(expected)
     }
 
     @Test
@@ -40,14 +40,14 @@ class ResultTypeTest {
     @Test
     fun parseInvalidResultType_DifferentFunction() {
         Assertions.assertThatThrownBy {
-            Type.ResultType("(foo blah)", null).value
+            Type.ResultType("(foo blah)", null).value?.value
         }.isInstanceOf(ParseException::class.java).hasMessageContaining("Invalid Result syntax")
     }
 
     @Test
     fun parseInvalidResultType_BadValueType() {
         Assertions.assertThatThrownBy {
-            Type.ResultType("(result blah)", null).value
+            Type.ResultType("(result blah)", null).value?.value
         }.isInstanceOf(ParseException::class.java).hasMessageContaining("Invalid ValueType")
     }
 }

@@ -21,30 +21,12 @@ package kwasm.ast
  * Where functype is a [kwasm.format.text.Type.FunctionType]:
  *
  * ```
- *   functype ::=  ‘(’ ‘func’  t∗1:vec(param)  t∗2:vec(result) ‘)’ -> [t∗1]→[t∗2]
- *   param    ::=  ‘(’ ‘param’  id?  t:valtype ‘)’                 -> t
- *   result   ::=  ‘(’ ‘result’  t:valtype ‘)’                     -> t
+ *   functype ::=  ‘(’ ‘func’  t*1:vec(param)  t*2:vec(result) ‘)’ => [t*1]→[t*2]
+ *   param    ::=  ‘(’ ‘param’  id?  t:valtype ‘)’                 => t
+ *   result   ::=  ‘(’ ‘result’  t:valtype ‘)’                     => t
  * ```
  */
 data class FunctionType(
     val parameters: List<Param>,
     val returnValues: List<ValueType>
-) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as FunctionType
-
-        if (parameters != other.parameters) return false
-        if (returnValues != other.returnValues) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = parameters.hashCode()
-        result = 31 * result + returnValues.hashCode()
-        return result
-    }
-}
+)
