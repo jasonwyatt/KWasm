@@ -15,6 +15,7 @@
 package kwasm.format.text
 
 import kwasm.ast.Limit
+import kwasm.ast.Memory
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import kwasm.format.shiftColumnBy
@@ -96,7 +97,7 @@ sealed class Type<T>(
     }
 
     /**
-     * From: https://webassembly.github.io/spec/core/text/types.html#limits
+     * From [the spec](]https://webassembly.github.io/spec/core/text/types.html#limits):
      *
      * ```
      *   limits ::=  n:u32        => {min n, max ϵ}
@@ -139,7 +140,7 @@ sealed class Type<T>(
     }
 
     /**
-     * From https://webassembly.github.io/spec/core/text/types.html#memory-types:
+     * From [the spec](https://webassembly.github.io/spec/core/text/types.html#memory-types):
      * ```
      *   memtype ::= lim:limits => lim
      * ```
@@ -147,8 +148,8 @@ sealed class Type<T>(
     class MemoryType(
         sequence: CharSequence,
         context: ParseContext? = null
-    ) : Type<Limits>(sequence, context) {
-        override fun parseValue(): Limits = Limits(sequence, context)
+    ) : Type<Memory>(sequence, context) {
+        override fun parseValue(): Memory = Memory(Limits(sequence, context))
     }
 
     class TableType(
