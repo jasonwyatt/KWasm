@@ -15,6 +15,7 @@
 package kwasm.format.text
 
 import kwasm.ast.FunctionType
+import kwasm.ast.GlobalType
 import kwasm.ast.Identifier
 import kwasm.ast.Limit
 import kwasm.ast.Memory
@@ -244,12 +245,34 @@ sealed class Type<T>(
         }
     }
 
+    /**
+     * Encapsulates kwasm.ast.GlobalType for parsing. Parses the sequence in accordance
+     * to the definition in [the docs](https://webassembly.github.io/spec/core/text/types.html#global-types)
+     *
+     * @constructor Parses the sequence passed in and populates the appropriate parsed value.
+     * @throws ParseException when the sequence falls outside of the spec definition
+     */
     class GlobalType(
         sequence: CharSequence,
         context: ParseContext? = null
-    ) : Type<Unit>(sequence, context) {
-        override fun parseValue() {
-            TODO("not implemented")
+    ) : Type<kwasm.ast.GlobalType>(sequence, context) {
+        override fun parseValue(): kwasm.ast.GlobalType {
+            // The immutable case is just a ValueType
+            return if (sequence.first() != '(') {
+                GlobalType(ValueType(sequence, context).value, false)
+            } else {
+                val keywordAndParameters = getOperationAndParameters(sequence, context)
+                if (keywordAndParameters.first != "mut" || keywordAndParameters.second.size > 1) {
+                    throw ParseException("Invalid GlobalType syntax", context.shiftColumnBy(1))
+                }
+                // Context is shifted by 8 to shift past '(mut ' to the start of the actual ValueType
+                GlobalType(
+                    ValueType(
+                        keywordAndParameters.second[0],
+                        context.shiftColumnBy(5)
+                    ).value, true
+                )
+            }
         }
     }
 }
