@@ -15,11 +15,26 @@
 package kwasm.format.text.token
 
 import kwasm.format.ParseContext
+import kwasm.format.text.token.util.TokenMatchResult
 
 /** Representations of Open/Close Parentheses in source WebAssembly. */
 sealed class Paren : Token {
     /** Representation of `(`, and its location within the source. */
     data class Open(override val context: ParseContext? = null) : Paren()
     /** Representation of `)`, and its location within the source. */
-    data class Close(override val context: ParseContext? = null) : Paren()
+    data class Closed(override val context: ParseContext? = null) : Paren()
 }
+
+fun RawToken.findParen(): TokenMatchResult? {
+    sequence.indexOf('(').takeIf { it >= 0 }
+        ?.let { return TokenMatchResult(it, "(") }
+    sequence.indexOf(')').takeIf { it >= 0 }
+        ?.let { return TokenMatchResult(it, ")") }
+    return null
+}
+
+fun RawToken.isOpenParen(): Boolean = sequence == "("
+
+fun RawToken.isClosedParen(): Boolean = sequence == ")"
+
+fun RawToken.toParen() = if (isOpenParen()) Paren.Open(context) else Paren.Closed(context)

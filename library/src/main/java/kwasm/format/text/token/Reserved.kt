@@ -16,6 +16,7 @@ package kwasm.format.text.token
 
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
+import kwasm.format.text.token.util.TokenMatchResult
 
 /**
  * Represents a reserved word.
@@ -39,8 +40,17 @@ data class Reserved(
     }
 
     companion object {
-        val PATTERN = object : ThreadLocal<Regex>() {
-            override fun initialValue(): Regex = "[${Identifier.IDCHAR_REGEX_CLASS}]+".toRegex()
+        internal val PATTERN = object : ThreadLocal<Regex>() {
+            override fun initialValue(): Regex = "([${Identifier.IDCHAR_REGEX_CLASS}]+)".toRegex()
         }
     }
 }
+
+fun RawToken.findReserved(): TokenMatchResult? {
+    val match = Reserved.PATTERN.get().findAll(sequence).maxBy { it.value.length } ?: return null
+    return TokenMatchResult(match.range.first, match.value)
+}
+
+fun RawToken.isReserved(): Boolean = Reserved.PATTERN.get().matchEntire(sequence) != null
+
+fun RawToken.toReserved(): Reserved = Reserved(sequence, context)

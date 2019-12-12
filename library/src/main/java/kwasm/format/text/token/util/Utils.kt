@@ -32,6 +32,33 @@ import kwasm.format.text.token.util.StringConstants.UNICODE_PATTERN
 import kotlin.math.pow
 
 /**
+ * Pattern to check for valid StringChar elements.
+ * From [the docs](https://webassembly.github.io/spec/core/text/values.html#text-string):
+ *
+ * ```
+ *   stringchar ::= c:char                  => c (if c ≥ U+20 ∧ c ≠ U+7F ∧ c ≠ ‘"’ ∧ c ≠ ‘∖’)
+ *                  '∖t'                    => U+09
+ *                  '∖n'                    => U+0A
+ *                  '∖r'                    => U+0D
+ *                  '∖"'                    => U+22
+ *                  '∖''                    => U+27
+ *                  '∖\'                    => U+5C
+ *                  '∖u{' n:hexnum '}'      => U+(n) (if n < 0xD800 ∨ 0xE000 ≤ n < 0x110000)
+ * ```
+ */
+const val STRINGCHAR_PATTERN = "([^$DELETE\"\\\\]|(\\\\(t|n|r|\"|\'|'|u\\{([0-9a-fA-F]+)\\})))"
+
+/**
+ * From [the docs](https://webassembly.github.io/spec/core/text/values.html#text-string):
+ *
+ * ```
+ *   stringelem ::= s:stringchar                => s as StringChar
+ *                  '∖' n:hexdigit m:hexdigit   => StringChar(16 * n + m, 3)
+ * ```
+ */
+const val STRINGELEM_PATTERN = "(($STRINGCHAR_PATTERN)|(\\\\[0-9a-fA-F]{2}))"
+
+/**
  * Parses a sign (`+` or `-`) from the beginning of the receiving [CharSequence], and returns the
  * sign value and intended offset for parsing the remainder of the value.
  */
@@ -88,13 +115,11 @@ fun IntArray.parseStringElem(
     }
 }
 
-private fun Char.isHexDigit(): Boolean {
-    return when (this) {
-        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> true
-        'a', 'b', 'c', 'd', 'e', 'f' -> true
-        'A', 'B', 'C', 'D', 'E', 'F' -> true
-        else -> false
-    }
+private fun Char.isHexDigit(): Boolean = when (this) {
+    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> true
+    'a', 'b', 'c', 'd', 'e', 'f' -> true
+    'A', 'B', 'C', 'D', 'E', 'F' -> true
+    else -> false
 }
 
 /**
@@ -222,6 +247,9 @@ data class CanonincalNaN(val magnitude: Int) {
  */
 fun Int.canon(context: ParseContext? = null): Long =
     2.0.pow(this.significand(context) - 1).toLong()
+
+/** Return value of [RawToken]'s `find\[Token]` extension methods. */
+data class TokenMatchResult(val index: Int, val sequence: CharSequence)
 
 private fun Int.toStringAsCodepoint(): String = String(intArrayOf(this), 0, 1)
 

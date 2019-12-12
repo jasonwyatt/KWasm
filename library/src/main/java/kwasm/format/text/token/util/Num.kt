@@ -63,8 +63,7 @@ class Num(private val sequence: CharSequence, context: ParseContext? = null) {
     }
 
     companion object {
-        val PATTERN = object : ThreadLocal<Regex>() {
-            override fun initialValue(): Regex = "([0-9a-fA-F]_?)*[0-9a-fA-F]".toRegex()
-        }
+        const val DECIMAL_PATTERN = "([0-9]_?)*[0-9]"
+        const val HEX_PATTERN = "([0-9a-fA-F]_?)*[0-9a-fA-F]"
     }
 }

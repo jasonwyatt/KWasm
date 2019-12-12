@@ -15,7 +15,9 @@
 package kwasm.format.text.token
 
 import com.google.common.truth.Truth.assertThat
+import kwasm.format.ParseContext
 import kwasm.format.ParseException
+import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -136,5 +138,45 @@ class IntegerLiteralTest {
             IntegerLiteral.Signed("8", 4).value
         }.isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Illegal value")
+    }
+
+    @Test
+    fun findIntegerLiteral_whenExists_returnsValidTokenMatchResult() {
+        val input = RawToken("     +0.5e10      asldkj", CONTEXT)
+        val actual = input.findIntegerLiteral() ?: Assertions.fail("Didn't find int literal.")
+        assertThat(actual.sequence).isEqualTo("+0")
+        assertThat(actual.index).isEqualTo(5)
+    }
+
+    @Test
+    fun findIntegerLiteral_whenMultipleExist_returnsLongestValidTokenMatchResult() {
+        val input = RawToken("     +0.5e10   -0x1234.56789   asldkj", CONTEXT)
+        val actual = input.findIntegerLiteral() ?: Assertions.fail("Didn't find int literal.")
+        assertThat(actual.sequence).isEqualTo("-0x1234")
+        assertThat(actual.index).isEqualTo(15)
+    }
+
+    @Test
+    fun findIntegerLiteral_whenNoneExist_returnsNull() {
+        val input = RawToken("non num", CONTEXT)
+        assertThat(input.findIntegerLiteral()).isNull()
+    }
+
+    @Test
+    fun isIntegerLiteral_returnsTrue_ifEntireSequenceIsFloat() {
+        val input = RawToken("-12345789", CONTEXT)
+        assertThat(input.isIntegerLiteral()).isTrue()
+    }
+
+    @Test
+    fun isIntegerLiteral_returnsFalse_ifEntireSequenceIsNotAFloat() {
+        assertThat(RawToken("non num", CONTEXT).isIntegerLiteral()).isFalse()
+        assertThat(RawToken("1 num", CONTEXT).isIntegerLiteral()).isFalse()
+        assertThat(RawToken("non 1", CONTEXT).isIntegerLiteral()).isFalse()
+        assertThat(RawToken("-1.5e10", CONTEXT).isIntegerLiteral()).isFalse()
+    }
+
+    companion object {
+        private val CONTEXT = ParseContext("unknown", 1, 1)
     }
 }

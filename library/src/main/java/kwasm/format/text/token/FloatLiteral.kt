@@ -19,6 +19,7 @@ import kwasm.format.ParseException
 import kwasm.format.shiftColumnBy
 import kwasm.format.text.token.util.CanonincalNaN
 import kwasm.format.text.token.util.Frac
+import kwasm.format.text.token.util.TokenMatchResult
 import kwasm.format.text.token.util.Num
 import kwasm.format.text.token.util.NumberConstants
 import kwasm.format.text.token.util.parseLongSign
@@ -54,8 +55,8 @@ import kotlin.math.pow
 class FloatLiteral(
     private val sequence: CharSequence,
     magnitude: Int = NumberConstants.DEFAULT_FLOAT_MAGNITUDE,
-    private val context: ParseContext? = null
-) {
+    override val context: ParseContext? = null
+) : Token {
     var magnitude: Int = magnitude
         set(value) {
             check(value == 32 || value == 64) { "Magnitude must be either 32 or 64" }
@@ -269,14 +270,19 @@ class FloatLiteral(
     }
 
     companion object {
+        private val DECIMAL_FLOAT_PATTERN =
+            "((${Num.DECIMAL_PATTERN})(\\.${Frac.DECIMAL_PATTERN})?([Ee][+-]?${Num.DECIMAL_PATTERN})?)"
+        private val HEX_FLOAT_PATTERN =
+            "(0x(${Num.HEX_PATTERN})(\\.${Frac.HEX_PATTERN})?([Pp][+-]?${Num.HEX_PATTERN})?)"
+
         private val FLOAT_PATTERN = object : ThreadLocal<Regex>() {
             override fun initialValue(): Regex =
-                "(0x)?(${Num.PATTERN.get()})(\\.${Frac.PATTERN.get()})?([EePp][+-]?${Num.PATTERN.get()})?".toRegex()
+                "(${HEX_FLOAT_PATTERN}|${DECIMAL_FLOAT_PATTERN})".toRegex()
         }
 
-        val PATTERN = object : ThreadLocal<Regex>() {
+        internal val PATTERN = object : ThreadLocal<Regex>() {
             override fun initialValue(): Regex =
-                "[+-]?((${FLOAT_PATTERN.get()})|(inf|nan(:0x${Num.PATTERN.get()})?))".toRegex()
+                "([+-]?((${FLOAT_PATTERN.get()})|(inf|nan(:0x${Num.HEX_PATTERN})?)))".toRegex()
         }
 
         private const val INFINITY_LITERAL = "inf"
@@ -296,3 +302,13 @@ class FloatLiteral(
         }
     }
 }
+
+fun RawToken.findFloatLiteral(): TokenMatchResult? {
+    val match =
+        FloatLiteral.PATTERN.get().findAll(sequence).maxBy { it.value.length } ?: return null
+    return TokenMatchResult(match.range.first, match.value)
+}
+
+fun RawToken.isFloatLiteral(): Boolean = FloatLiteral.PATTERN.get().matchEntire(sequence) != null
+
+fun RawToken.toFloatLiteral(): FloatLiteral = FloatLiteral(sequence, context = context)

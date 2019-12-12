@@ -17,6 +17,7 @@ package kwasm.format.text.token
 import com.google.common.truth.Truth.assertThat
 import kwasm.format.ParseContext
 import kwasm.format.text.token.StringLiteral
+import org.assertj.core.api.Assertions.fail
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -50,5 +51,63 @@ class StringLiteralTest {
         val actual =
             StringLiteral("\"Hello! 👋\\n你好 👋\\n\\n\\\"wasm rocks\\\"\"")
         assertThat(actual.value).isEqualTo("Hello! 👋\n你好 👋\n\n\"wasm rocks\"")
+    }
+
+    @Test
+    fun findStringLiteral_returnsValidMatch_whenExists() {
+        val text = "\"Hello! 👋\\n你好 👋\\n\\n\\\"wasm rocks\\\"\""
+        val token = RawToken("not  a string $text  -0x547 \\\\u{1}", CONTEXT)
+        val match = token.findStringLiteral() ?: fail("No string found")
+        assertThat(match.sequence).isEqualTo(text)
+        assertThat(match.index).isEqualTo(14)
+
+        val emptyToken = RawToken("   \"\"", CONTEXT)
+        val emptyMatch = emptyToken.findStringLiteral() ?: fail("No string found")
+        assertThat(emptyMatch.sequence).isEqualTo("\"\"")
+        assertThat(emptyMatch.index).isEqualTo(3)
+    }
+
+    @Test
+    fun findStringLiteral_returnsLongestMatch_whenMultipleExist() {
+        val token = RawToken("\"short\"   \"longer\"  \"longest\"", CONTEXT)
+        val match = token.findStringLiteral() ?: fail("No string found")
+        assertThat(match.sequence).isEqualTo("\"longest\"")
+        assertThat(match.index).isEqualTo(20)
+    }
+
+    @Test
+    fun findStringLiteral_returnsNull_whenNoneExist() {
+        assertThat(RawToken("\" asdfasdf", CONTEXT).findStringLiteral()).isNull()
+        assertThat(RawToken("asdfasdf \"", CONTEXT).findStringLiteral()).isNull()
+        assertThat(RawToken("asdfasdf \"", CONTEXT).findStringLiteral()).isNull()
+        assertThat(RawToken("", CONTEXT).findStringLiteral()).isNull()
+        assertThat(RawToken("-1.5e10", CONTEXT).findStringLiteral()).isNull()
+    }
+
+    @Test
+    fun isStringLiteral_returnsTrue_whenEntireSequenceIsString() {
+        assertThat(RawToken("\"\"", CONTEXT).isStringLiteral()).isTrue()
+        assertThat(RawToken("\"\\\"\"", CONTEXT).isStringLiteral()).isTrue()
+        assertThat(
+            RawToken(
+                "\"Hello! 👋\\n你好 👋\\n\\n\\\"wasm rocks\\\"\"",
+                CONTEXT
+            ).isStringLiteral()
+        ).isTrue()
+    }
+
+    @Test
+    fun isStringLiteral_returnsFalse_whenSequence_isNotEntirely_String() {
+        assertThat(RawToken("", CONTEXT).isStringLiteral()).isFalse()
+        assertThat(
+            RawToken("\"this is a string\" but_this_isn't", CONTEXT).isStringLiteral()
+        ).isFalse()
+        assertThat(
+            RawToken("this isn't a string \"but_this_is\"", CONTEXT).isStringLiteral()
+        ).isFalse()
+    }
+
+    companion object {
+        private val CONTEXT = ParseContext("Unknown", 1, 1)
     }
 }

@@ -17,7 +17,9 @@ package kwasm.format.text.token
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import kwasm.format.shiftColumnBy
+import kwasm.format.text.token.util.STRINGELEM_PATTERN
 import kwasm.format.text.token.util.StringChar
+import kwasm.format.text.token.util.TokenMatchResult
 import kwasm.format.text.token.util.parseStringElem
 
 /**
@@ -31,7 +33,10 @@ import kwasm.format.text.token.util.parseStringElem
  *
  * The JVM will crash if the string is 4 billion characters, so no need to perform the check.
  */
-open class StringLiteral(private val sequence: CharSequence, private val context: ParseContext? = null) {
+open class StringLiteral(
+    private val sequence: CharSequence,
+    override val context: ParseContext? = null
+) : Token {
     val value: String by lazy {
         val builder = StringBuilder()
 
@@ -58,4 +63,20 @@ open class StringLiteral(private val sequence: CharSequence, private val context
     override fun equals(other: Any?): Boolean = other is StringLiteral && other.value == value
 
     override fun hashCode(): Int = value.hashCode()
+
+    companion object {
+        internal val PATTERN = object : ThreadLocal<Regex>() {
+            override fun initialValue(): Regex = "(\"($STRINGELEM_PATTERN)*\")".toRegex()
+        }
+    }
 }
+
+fun RawToken.findStringLiteral(): TokenMatchResult? {
+    val match = StringLiteral.PATTERN.get().findAll(sequence)
+        .maxBy { it.value.length } ?: return null
+    return TokenMatchResult(match.range.first, match.value)
+}
+
+fun RawToken.isStringLiteral(): Boolean = StringLiteral.PATTERN.get().matchEntire(sequence) != null
+
+fun RawToken.toStringLiteral(): StringLiteral = StringLiteral(sequence, context)

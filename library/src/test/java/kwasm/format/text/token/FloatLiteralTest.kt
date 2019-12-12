@@ -15,8 +15,10 @@
 package kwasm.format.text.token
 
 import com.google.common.truth.Truth.assertThat
+import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.assertj.core.api.Assertions.fail
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -209,7 +211,43 @@ class FloatLiteralTest {
             .hasMessageContaining("Invalid exponent")
     }
 
+    @Test
+    fun findFloatLiteral_whenExists_returnsValidTokenMatchResult() {
+        val input = RawToken("     +0.5e10      asldkj", CONTEXT)
+        val actual = input.findFloatLiteral() ?: fail("Didn't find float literal.")
+        assertThat(actual.sequence).isEqualTo("+0.5e10")
+        assertThat(actual.index).isEqualTo(5)
+    }
+
+    @Test
+    fun findFloatLiteral_whenMultipleExist_returnsLongestValidTokenMatchResult() {
+        val input = RawToken("     +0.5e10   -0x1234.56789   asldkj", CONTEXT)
+        val actual = input.findFloatLiteral() ?: fail("Didn't find float literal.")
+        assertThat(actual.sequence).isEqualTo("-0x1234.56789")
+        assertThat(actual.index).isEqualTo(15)
+    }
+
+    @Test
+    fun findFloatLiteral_whenNoneExist_returnsNull() {
+        val input = RawToken("non num", CONTEXT)
+        assertThat(input.findFloatLiteral()).isNull()
+    }
+
+    @Test
+    fun isFloatLiteral_returnsTrue_ifEntireSequenceIsFloat() {
+        val input = RawToken("-12345789.01e+34", CONTEXT)
+        assertThat(input.isFloatLiteral()).isTrue()
+    }
+
+    @Test
+    fun isFloatLiteral_returnsFalse_ifEntireSequenceIsNotAFloat() {
+        assertThat(RawToken("non num", CONTEXT).isFloatLiteral()).isFalse()
+        assertThat(RawToken("1 num", CONTEXT).isFloatLiteral()).isFalse()
+        assertThat(RawToken("non 1", CONTEXT).isFloatLiteral()).isFalse()
+    }
+
     companion object {
         private const val TOLERANCE = 1e-10
+        private val CONTEXT = ParseContext("Unknown.wast", 1, 1)
     }
 }

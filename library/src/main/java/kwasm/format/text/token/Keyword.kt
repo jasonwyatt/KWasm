@@ -16,6 +16,7 @@ package kwasm.format.text.token
 
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
+import kwasm.format.text.token.util.TokenMatchResult
 
 /**
  * Represents a text-format wasm keyword.
@@ -39,9 +40,18 @@ data class Keyword(
     }
 
     companion object {
-        val PATTERN = object : ThreadLocal<Regex>() {
+        internal val PATTERN = object : ThreadLocal<Regex>() {
             override fun initialValue(): Regex =
                 "[a-z][${Identifier.IDCHAR_REGEX_CLASS}]*".toRegex()
         }
     }
 }
+
+fun RawToken.findKeyword(): TokenMatchResult? {
+    val match = Keyword.PATTERN.get().findAll(sequence).maxBy { it.value.length } ?: return null
+    return TokenMatchResult(match.range.first, match.value)
+}
+
+fun RawToken.isKeyword(): Boolean = Keyword.PATTERN.get().matchEntire(sequence) != null
+
+fun RawToken.toKeyword(): Keyword = Keyword(sequence, context)

@@ -15,8 +15,10 @@
 package kwasm.format.text.token
 
 import com.google.common.truth.Truth.assertThat
+import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.assertj.core.api.Assertions.fail
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -94,5 +96,45 @@ class IdentifierTest {
         assertThatThrownBy { parseNode.getAstValue<kwasm.ast.Identifier.TypeDef>() }
             .isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Unsupported AST Identifier")
+    }
+
+    @Test
+    fun findIdentifier_returnsValidResult_whenIdentifierExists() {
+        val token = RawToken(" a $   \$mytoken     asdf", CONTEXT)
+        val match = token.findIdentifier() ?: fail("Match not found.")
+        assertThat(match.sequence).isEqualTo("\$mytoken")
+        assertThat(match.index).isEqualTo(7)
+    }
+
+    @Test
+    fun findIdentifier_returnsMaxLengthResult_whenMultipleIdentifiersExist() {
+        val token = RawToken("\$short \$longer \$longest", CONTEXT)
+        val match = token.findIdentifier() ?: fail("Match not found.")
+        assertThat(match.sequence).isEqualTo("\$longest")
+        assertThat(match.index).isEqualTo(15)
+    }
+
+    @Test
+    fun isIdentifier_returnsTrue_whenEntireStringIsIdentifier() {
+        assertThat(
+            RawToken("\$this\$whole\$thing_is-atoken!", CONTEXT).isIdentifier()
+        ).isTrue()
+    }
+
+    @Test
+    fun isIdentifier_returnsFalse_ifWholeStringIsNotAnIdentifier() {
+        assertThat(
+            RawToken("   \$token", CONTEXT).isIdentifier()
+        ).isFalse()
+        assertThat(
+            RawToken("\$token   ", CONTEXT).isIdentifier()
+        ).isFalse()
+        assertThat(
+            RawToken("\$token \$another", CONTEXT).isIdentifier()
+        ).isFalse()
+    }
+
+    companion object {
+        private val CONTEXT = ParseContext("Unknown", 1, 1)
     }
 }

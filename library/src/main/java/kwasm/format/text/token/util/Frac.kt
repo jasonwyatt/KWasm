@@ -73,8 +73,7 @@ class Frac(private val sequence: CharSequence, private val context: ParseContext
     }
 
     companion object {
-        val PATTERN = object : ThreadLocal<Regex>() {
-            override fun initialValue(): Regex = "${Num.PATTERN}|^$".toRegex()
-        }
+        const val DECIMAL_PATTERN = "(${Num.DECIMAL_PATTERN}|^$)"
+        const val HEX_PATTERN = "(${Num.HEX_PATTERN}|^$)"
     }
 }
