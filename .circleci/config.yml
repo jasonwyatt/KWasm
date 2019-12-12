@@ -87,10 +87,10 @@ workflows:
     jobs:
       - build
   docs:
-    filters:
-      branches:
-        only:
-          - master
-          - beta
     jobs:
       - docs
+        filters:
+          branches:
+            only:
+              - master
+              - beta
