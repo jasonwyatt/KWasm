@@ -103,7 +103,7 @@ sealed class Type<T>(
                                 params.add(Param(internalSequence, context).value)
                             } else if (internalSequence.contains("(result")) {
                                 parsingParams = false
-                                returnValues.add(Result(internalSequence, context).value)
+                                returnValues.add(Result(internalSequence, context).value.valType)
                             } else {
                                 throw ParseException("Invalid FunctionType Syntax", context)
                             }
@@ -152,14 +152,19 @@ sealed class Type<T>(
     class Result(
         sequence: CharSequence,
         context: ParseContext? = null
-    ) : Type<kwasm.ast.ValueType>(sequence, context) {
-        override fun parseValue(): kwasm.ast.ValueType {
+    ) : Type<kwasm.ast.Result>(sequence, context) {
+        override fun parseValue(): kwasm.ast.Result {
             val keywordAndParameters = getOperationAndParameters(sequence, context)
             if (keywordAndParameters.first != "result" || keywordAndParameters.second.size > 1) {
                 throw ParseException("Invalid Result syntax", context.shiftColumnBy(1))
             }
             // Context is shifted by 8 to shift past '(result ' to the start of the actual ValueType
-            return ValueType(keywordAndParameters.second[0], context.shiftColumnBy(8)).value
+            return kwasm.ast.Result(
+                ValueType(
+                    keywordAndParameters.second[0],
+                    context.shiftColumnBy(8)
+                ).value
+            )
         }
     }
 
@@ -187,7 +192,10 @@ sealed class Type<T>(
             } else {
                 val numbers = sequence.split(" ")
                 if (numbers.size != 2) {
-                    throw ParseException("Invalid number of arguments. Expected 1 or 2 but found ${numbers.size}", context)
+                    throw ParseException(
+                        "Invalid number of arguments. Expected 1 or 2 but found ${numbers.size}",
+                        context
+                    )
                 }
                 val min = IntegerLiteral.Unsigned(numbers[0], 32, context)
                 val max = IntegerLiteral.Unsigned(

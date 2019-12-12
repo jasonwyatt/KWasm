@@ -26,7 +26,7 @@ import org.junit.runners.JUnit4
 class ResultTypeTest {
     @Test
     fun parseValidResultType_Exists() {
-        val expected = ValueType.I32
+        val expected = kwasm.ast.Result(ValueType.I32)
         val actual = Type.ResultType("(result i32)", null)
         Truth.assertThat(actual.value?.value).isEqualTo(expected)
     }
