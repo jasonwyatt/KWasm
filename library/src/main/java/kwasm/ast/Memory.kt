@@ -14,8 +14,5 @@
 
 package kwasm.ast
 
-/**
- * This is a data class that represents the limits of a Limits object.
- */
-@UseExperimental(ExperimentalUnsignedTypes::class)
-data class Limit(val min: UInt, val max: UInt)
+/** This data class is used to represent the structure of a MemoryType */
+data class Memory(val limits: Limit)
