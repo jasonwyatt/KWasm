@@ -1,0 +1,40 @@
+site:
+  about:
+    siteName: KWasm
+    siteDescription: An Embeddable WebAssembly Interpreter for the JVM
+
+theme:
+  primaryColor: '#DE9149'
+  legacySearch: false
+  social:
+    github: 'jasonwyatt/KWasm'
+  metaComponents:
+    - type: 'orchidSearch'
+  menu:
+    - type: 'separator'
+      title: 'KWasm Library API Docs'
+    - type: 'sourcedocPages'
+      moduleType: 'kotlindoc'
+      moduleName: 'kwasm-library'
+      node: 'packages'
+      asSubmenu: true
+      submenuTitle: 'Packages'
+
+kotlindoc:
+  sourceDirs: ['./../../../../library/src/main/java']
+  sourcePages:
+    menu:
+      - type: 'sourcedocPageLinks'
+        moduleType: 'kotlindoc'
+        itemTitleType: 'ID'
+        includeItems: true
+
+services:
+  publications:
+    stages:
+      githubPages:
+        branch: gh-pages
+        repo: 'KWasm'
+        username: 'jasonwyatt'
+      githubReleases:
+        repo: 'jasonwyatt/KWasm'
