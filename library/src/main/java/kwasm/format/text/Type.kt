@@ -19,6 +19,7 @@ import kwasm.ast.Memory
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import kwasm.format.shiftColumnBy
+import kwasm.format.text.token.IntegerLiteral
 
 /**
  * This sealed class encapsulates all Types defined in
@@ -134,7 +135,7 @@ sealed class Type<T>(
                     // We must undo the context shift if we encounter this error
                     throw ParseException("Invalid Range specified, min > max. Found min: $min, max: $max", context)
                 }
-                Limit(min, max)
+                Limit(min.value, max.value)
             }
         }
     }
