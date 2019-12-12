@@ -16,4 +16,4 @@ package kwasm.format.text
 
 import kwasm.ast.AstNode
 
-data class ParseResult<T : AstNode>(val astNode: T, val nextIndex: Int)
+data class ParseResult<T : AstNode>(val astNode: T, val parseLength: Int)
