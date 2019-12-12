@@ -86,11 +86,10 @@ workflows:
   pr-check:
     jobs:
       - build
-  docs:
+  doc-publish:
     jobs:
       - docs:
-        filters:
-          branches:
-            only:
-              - master
-              - beta
+          filters:
+            branches:
+              only:
+                - master
