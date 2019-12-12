@@ -23,7 +23,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class TypeTest {
+class ValueTypeTest {
     @Test
     fun parseValidValueType(){
         var expected = ValueType.I32
@@ -47,33 +47,6 @@ class TypeTest {
     fun parseInvalidValueType(){
         Assertions.assertThatThrownBy {
             Type.ValueType("abc", null).value
-        }.isInstanceOf(ParseException::class.java).hasMessageContaining("Invalid ValueType")
-    }
-
-    @Test
-    fun parseValidResultType_Exists(){
-        val expected = ValueType.I32
-        val actual = Type.ResultType("(result i32)",null)
-        assertThat(actual.value).isEqualTo(expected)
-    }
-
-    @Test
-    fun parseValidResultType_EmptySequence(){
-        val actual = Type.ResultType("",null)
-        assertThat(actual.value).isEqualTo(null)
-    }
-
-    @Test
-    fun parseInvalidResultType_DifferentFunction(){
-        Assertions.assertThatThrownBy {
-            Type.ResultType("(foo blah)",null).value
-        }.isInstanceOf(ParseException::class.java).hasMessageContaining("Invalid ResultType syntax")
-    }
-
-    @Test
-    fun parseInvalidResultType_BadValueType(){
-        Assertions.assertThatThrownBy {
-            Type.ResultType("(result blah)", null).value
         }.isInstanceOf(ParseException::class.java).hasMessageContaining("Invalid ValueType")
     }
 }
