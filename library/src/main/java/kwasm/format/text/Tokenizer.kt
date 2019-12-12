@@ -84,6 +84,7 @@ class Tokenizer {
     // TODO: it might be worth considering making a lot of these functions `inline fun`s.
     private fun buildActualTokensFrom(token: RawToken): List<Token> = when {
         token.sequence.isEmpty() -> emptyList()
+        // If the entire sequence is whitespace, we can ignore it.
         Format.PATTERN.get().matchEntire(token.sequence) != null -> emptyList()
         token.isKeyword() -> listOf(token.toKeyword())
         token.isIntegerLiteral() -> listOf(token.toIntegerLiteral())
