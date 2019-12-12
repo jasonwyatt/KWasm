@@ -12,10 +12,7 @@
  * limitations under the License.
  */
 
-package kwasm.format.text
+package kwasm.ast
 
-import kwasm.format.ParseContext
-import kwasm.format.text.token.StringLiteral
-
-/** A [Name] is a direct subclass of [StringLiteral]. */
-class Name(sequence: CharSequence, context: ParseContext? = null) : StringLiteral(sequence, context)
+/** This data class is used to represent the structure of a MemoryType */
+data class Memory(val limits: Limit)

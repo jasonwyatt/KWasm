@@ -12,10 +12,22 @@
  * limitations under the License.
  */
 
-package kwasm.format.text
+package kwasm.format.text.whitespace
 
-import kwasm.format.ParseContext
-import kwasm.format.text.token.StringLiteral
+/**
+ * Format whitespace elements are spaces, tabs, newlines, and carriage returns.
+ *
+ * From [the docs](https://webassembly.github.io/spec/core/text/lexical.html#text-format):
+ *
+ * ```
+ *   format ::= ' ' | U+09 | U+0A | U+0D
+ * ```
+ */
+object Format {
+    val PATTERN_STRING = "[ \t\n\r]+"
+    val PATTERN = object : ThreadLocal<Regex>() {
+        override fun initialValue(): Regex = PATTERN_STRING.toRegex()
+    }
+}
 
-/** A [Name] is a direct subclass of [StringLiteral]. */
-class Name(sequence: CharSequence, context: ParseContext? = null) : StringLiteral(sequence, context)
+

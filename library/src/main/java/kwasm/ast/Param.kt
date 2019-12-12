@@ -12,10 +12,16 @@
  * limitations under the License.
  */
 
-package kwasm.format.text
+package kwasm.ast
 
-import kwasm.format.ParseContext
-import kwasm.format.text.token.StringLiteral
-
-/** A [Name] is a direct subclass of [StringLiteral]. */
-class Name(sequence: CharSequence, context: ParseContext? = null) : StringLiteral(sequence, context)
+/**
+ * Data class to hold a parameter's id and valuetype
+ * from [the docs](https://webassembly.github.io/spec/core/text/types.html#function-types):
+ *
+ * Where param is a [kwasm.format.text.Type.Param]:
+ *
+ * ```
+ *   param    ::=  ‘(’ ‘param’  id?  t:valtype ‘)’  => t
+ * ```
+ */
+data class Param(val id: Identifier.Local?, val valType: ValueType)

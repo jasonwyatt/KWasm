@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package kwasm.format.text
+package kwasm.format.text.token.util
 
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
@@ -70,5 +70,10 @@ class Frac(private val sequence: CharSequence, private val context: ParseContext
         val value = ByteArray(sequence.length)
         repeat(sequence.length) { index -> value[index] = sequence.parseDigit(index, context) }
         value
+    }
+
+    companion object {
+        const val DECIMAL_PATTERN = "(${Num.DECIMAL_PATTERN}|^$)"
+        const val HEX_PATTERN = "(${Num.HEX_PATTERN}|^$)"
     }
 }

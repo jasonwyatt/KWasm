@@ -12,11 +12,14 @@
  * limitations under the License.
  */
 
-package kwasm.format.text
+package kwasm.format.text.token
 
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import kwasm.format.shiftColumnBy
+import kwasm.format.text.token.util.Num
+import kwasm.format.text.token.util.TokenMatchResult
+import kwasm.format.text.token.util.parseLongSign
 import kotlin.math.pow
 
 /**
@@ -47,8 +50,8 @@ import kotlin.math.pow
 sealed class IntegerLiteral<Type>(
     protected val sequence: CharSequence,
     magnitude: Int = 64,
-    protected val context: ParseContext? = null
-) {
+    override val context: ParseContext? = null
+) : Token {
     val value: Type by lazy {
         val res = parseValue()
         if (!checkMagnitude(res, magnitude)) {
@@ -65,6 +68,8 @@ sealed class IntegerLiteral<Type>(
 
     protected abstract fun parseValue(): Type
     protected abstract fun checkMagnitude(value: Type, magnitude: Int): Boolean
+    abstract fun toUnsigned(): Unsigned
+    abstract fun toSigned(): Signed
 
     class Unsigned(
         sequence: CharSequence,
@@ -94,6 +99,10 @@ sealed class IntegerLiteral<Type>(
 
         override fun checkMagnitude(value: ULong, magnitude: Int): Boolean =
             value.toDouble() < 2.0.pow(magnitude)
+
+        override fun toUnsigned(): Unsigned = this
+
+        override fun toSigned(): Signed = Signed(sequence, magnitude, context)
     }
 
     class Signed(
@@ -135,5 +144,34 @@ sealed class IntegerLiteral<Type>(
             val extent = 2.0.pow(magnitude - 1)
             return -extent <= doubleValue && doubleValue < extent
         }
+
+        override fun toUnsigned(): Unsigned = Unsigned(sequence, magnitude, context)
+
+        override fun toSigned(): Signed = this
+    }
+
+    companion object {
+        private const val DECIMAL_PATTERN = "(${Num.DECIMAL_PATTERN})"
+        private const val HEX_PATTERN = "(0x(${Num.HEX_PATTERN}))"
+
+        internal val PATTERN =  object : ThreadLocal<Regex>() {
+            override fun initialValue(): Regex = "([-+]?($HEX_PATTERN|$DECIMAL_PATTERN))".toRegex()
+        }
     }
 }
+
+fun RawToken.findIntegerLiteral(): TokenMatchResult? {
+    val match = IntegerLiteral.PATTERN.get().findAll(sequence)
+        .maxBy { it.value.length } ?: return null
+    return TokenMatchResult(match.range.first, match.value)
+}
+
+fun RawToken.isIntegerLiteral(): Boolean =
+    IntegerLiteral.PATTERN.get().matchEntire(sequence) != null
+
+fun RawToken.toIntegerLiteral(): IntegerLiteral<*> =
+    if ('-' in sequence || '+' in sequence) {
+        IntegerLiteral.Signed(sequence, context = context)
+    } else {
+        IntegerLiteral.Unsigned(sequence, context = context)
+    }
