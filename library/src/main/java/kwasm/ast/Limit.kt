@@ -14,10 +14,8 @@
 
 package kwasm.ast
 
-import kwasm.format.text.IntegerLiteral
-import kwasm.format.text.Type.Limits
-
 /**
- * This is a data class that represents the limits of a [Limits] object.
+ * This is a data class that represents the limits of a Limits object.
  */
-data class Limit(val min: IntegerLiteral.Unsigned, val max: IntegerLiteral.Unsigned)
+@UseExperimental(ExperimentalUnsignedTypes::class)
+data class Limit(val min: UInt, val max: UInt)

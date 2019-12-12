@@ -27,35 +27,35 @@ class LimitsTest {
 
     @Test
     fun parseSingleNumber_setMinToCorrectValue() {
-        val expectedMin = 123456.toULong()
-        val expectedMax = UInt.MAX_VALUE.toULong()
+        val expectedMin = 123456.toUInt()
+        val expectedMax = UInt.MAX_VALUE
         val limits = Type.Limits("123456")
-        Truth.assertThat(limits.value.min.value).isEqualTo(expectedMin)
-        Truth.assertThat(limits.value.max.value).isEqualTo(expectedMax)
+        Truth.assertThat(limits.value.min).isEqualTo(expectedMin)
+        Truth.assertThat(limits.value.max).isEqualTo(expectedMax)
     }
 
     @Test
     fun parseMaxVal_setMinToMaxVal() {
-        val expectedMin = UInt.MAX_VALUE.toULong()
-        val expectedMax = UInt.MAX_VALUE.toULong()
+        val expectedMin = UInt.MAX_VALUE
+        val expectedMax = UInt.MAX_VALUE
         val limits = Type.Limits(UInt.MAX_VALUE.toString())
-        Truth.assertThat(limits.value.min.value).isEqualTo(expectedMin)
-        Truth.assertThat(limits.value.max.value).isEqualTo(expectedMax)
+        Truth.assertThat(limits.value.min).isEqualTo(expectedMin)
+        Truth.assertThat(limits.value.max).isEqualTo(expectedMax)
     }
 
     @Test
     fun parseMinVal_setMinToMinVal() {
-        val expectedMin = UInt.MIN_VALUE.toULong()
-        val expectedMax = UInt.MAX_VALUE.toULong()
+        val expectedMin = UInt.MIN_VALUE
+        val expectedMax = UInt.MAX_VALUE
         val limits = Type.Limits(UInt.MIN_VALUE.toString())
-        Truth.assertThat(limits.value.min.value).isEqualTo(expectedMin)
-        Truth.assertThat(limits.value.max.value).isEqualTo(expectedMax)
+        Truth.assertThat(limits.value.min).isEqualTo(expectedMin)
+        Truth.assertThat(limits.value.max).isEqualTo(expectedMax)
     }
 
     @Test
     fun parseNegativeMin_throwsParseExceptionWithNegativeNumberMessage() {
         val limits = Type.Limits("-123456")
-        Assertions.assertThatThrownBy { limits.value.min.value }
+        Assertions.assertThatThrownBy { limits.value.min }
             .isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Illegal char")
     }
@@ -63,7 +63,7 @@ class LimitsTest {
     @Test
     fun parseABitLargerThanMaxVal_throwsParseExceptionWithValueOverflowMessage() {
         val limits = Type.Limits("4294967296")
-        Assertions.assertThatThrownBy { limits.value.min.value }
+        Assertions.assertThatThrownBy { limits.value.min }
             .isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Illegal value")
     }
@@ -71,18 +71,18 @@ class LimitsTest {
     @Test
     fun parseALotLargerThanMaxVal_throwsParseExceptionWithValueOverflowMessage() {
         val limits = Type.Limits("100000000000")
-        Assertions.assertThatThrownBy { limits.value.min.value }
+        Assertions.assertThatThrownBy { limits.value.min }
             .isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Illegal value")
     }
 
     @Test
     fun parseTwoNumbers_setMinAndMaxToCorrectValue() {
-        val expectedMin = 123456.toUInt().toULong()
-        val expectedMax = 234567.toUInt().toULong()
+        val expectedMin = 123456.toUInt()
+        val expectedMax = 234567.toUInt()
         val limits = Type.Limits("123456 234567")
-        Truth.assertThat(limits.value.min.value).isEqualTo(expectedMin)
-        Truth.assertThat(limits.value.max.value).isEqualTo(expectedMax)
+        Truth.assertThat(limits.value.min).isEqualTo(expectedMin)
+        Truth.assertThat(limits.value.max).isEqualTo(expectedMax)
     }
 
     @Test

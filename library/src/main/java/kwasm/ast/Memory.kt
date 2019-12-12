@@ -14,7 +14,5 @@
 
 package kwasm.ast
 
-import kwasm.format.text.Type
-
-/** This data class is used to represent the structure of a [Type.MemoryType] */
+/** This data class is used to represent the structure of a MemoryType */
 data class Memory(val limits: Limit)
