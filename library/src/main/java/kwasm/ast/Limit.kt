@@ -19,3 +19,4 @@ package kwasm.ast
  */
 @UseExperimental(ExperimentalUnsignedTypes::class)
 data class Limit(val min: UInt, val max: UInt)
+

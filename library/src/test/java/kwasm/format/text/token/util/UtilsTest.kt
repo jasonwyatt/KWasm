@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package kwasm.format.text
+package kwasm.format.text.token.util
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test

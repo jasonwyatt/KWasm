@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package kwasm.format.text
+package kwasm.format.text.token.util
 
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
@@ -60,5 +60,10 @@ class Num(private val sequence: CharSequence, context: ParseContext? = null) {
         val value = ByteArray(sequence.length)
         repeat(sequence.length) { index -> value[index] = sequence.parseDigit(index, context) }
         value
+    }
+
+    companion object {
+        const val DECIMAL_PATTERN = "([0-9]_?)*[0-9]"
+        const val HEX_PATTERN = "([0-9a-fA-F]_?)*[0-9a-fA-F]"
     }
 }

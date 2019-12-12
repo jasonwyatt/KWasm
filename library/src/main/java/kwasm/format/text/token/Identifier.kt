@@ -12,11 +12,12 @@
  * limitations under the License.
  */
 
-package kwasm.format.text
+package kwasm.format.text.token
 
 import kwasm.ast.Identifier
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
+import kwasm.format.text.token.util.TokenMatchResult
 
 /**
  * From [the docs](https://webassembly.github.io/spec/core/text/values.html#text-id):
@@ -34,14 +35,14 @@ import kwasm.format.ParseException
  *              ':', '<', '=', '>', '?', '@', '\', '^', '_', '`', '|', '~'
  * ```
  */
-class Identifier(
+data class Identifier(
     private val sequence: CharSequence,
-    val context: ParseContext? = null
-) {
+    override val context: ParseContext? = null
+) : Token {
     val value: String by lazy {
         if (sequence.first() != '$') throw ParseException("Identifier must begin with $", context)
 
-        if (!ID_PATTERN.get().matches(sequence)) {
+        if (!PATTERN.get().matches(sequence)) {
             throw ParseException("Invalid identifier: $sequence", context)
         }
 
@@ -65,9 +66,21 @@ class Identifier(
         } as IdentifierType
 
     companion object {
-        val ID_PATTERN = object : ThreadLocal<Regex>() {
-            override fun initialValue(): Regex =
-                "\\\$[0-9a-zA-Z!#$%&'*+-./:<=>?@^_`|~\\\\]+".toRegex()
+        internal const val IDCHAR_REGEX_CLASS = "a-zA-Z0-9!#\\\$%&'*+\\-./:<=>?@\\\\^_`|~"
+
+        internal val PATTERN = object : ThreadLocal<Regex>() {
+            override fun initialValue(): Regex = "(\\\$[$IDCHAR_REGEX_CLASS]+)".toRegex()
         }
     }
 }
+
+fun RawToken.findIdentifier(): TokenMatchResult? {
+    val match = kwasm.format.text.token.Identifier.PATTERN.get()
+        .findAll(sequence).maxBy { it.value.length } ?: return null
+    return TokenMatchResult(match.range.first, match.value)
+}
+
+fun RawToken.isIdentifier(): Boolean =
+    kwasm.format.text.token.Identifier.PATTERN.get().matchEntire(sequence) != null
+
+fun RawToken.toIdentifier(): kwasm.format.text.token.Identifier = Identifier(sequence, context)

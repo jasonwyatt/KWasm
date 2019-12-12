@@ -19,6 +19,7 @@ import kwasm.ast.Memory
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import kwasm.format.shiftColumnBy
+import kwasm.format.text.token.IntegerLiteral
 
 /**
  * This sealed class encapsulates all Types defined in

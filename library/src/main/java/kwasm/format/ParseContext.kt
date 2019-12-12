@@ -24,7 +24,13 @@ data class ParseContext(val fileName: String, val lineNumber: Int, val column: I
 }
 
 /**
- * Returns a [ParseContext] with the [ParseContext.column] value shifted by the given [amount], or
- * `null` if the reciever is null.
+ * Returns a new [ParseContext] with the [ParseContext.column] value shifted by the given [amount],
+ * or `null` if the receiver is null.
  */
 fun ParseContext?.shiftColumnBy(amount: Int) = this?.copy(column = column + amount)
+
+/**
+ * Returns a new [ParseContext] with the [ParseContext.lineNumber] value shifted by the given
+ * [amount] or `null` if the receiver is null.
+ */
+fun ParseContext?.shiftLineNumberBy(amount: Int) = this?.copy(lineNumber = lineNumber + amount)
