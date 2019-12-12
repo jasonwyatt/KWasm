@@ -26,6 +26,8 @@ package kwasm.ast
  *                  'f64' -> F64 }
  * ```
  */
-enum class ValueType {
+enum class ValueTypeEnum {
     I32, I64, F32, F64
 }
+
+data class ValueType(val valueType: ValueTypeEnum) : AstNode

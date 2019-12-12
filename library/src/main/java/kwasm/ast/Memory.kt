@@ -15,4 +15,4 @@
 package kwasm.ast
 
 /** This data class is used to represent the structure of a MemoryType */
-data class Memory(val limits: Limit)
+data class Memory(val limits: Limit) : AstNode

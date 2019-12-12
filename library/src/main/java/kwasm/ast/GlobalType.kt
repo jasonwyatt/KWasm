@@ -25,4 +25,4 @@ package kwasm.ast
  *                   ‘(’ ‘mut’  t:valtype ‘)’ => var t
  * ```
  */
-data class GlobalType(val valueType: ValueType, val mutable: Boolean)
+data class GlobalType(val valueTypeEnum: ValueTypeEnum, val mutable: Boolean) : AstNode

@@ -12,16 +12,8 @@
  * limitations under the License.
  */
 
-package kwasm.ast
+package kwasm.format.text
 
-/**
- * Data class to hold a parameter's id and valuetype
- * from [the docs](https://webassembly.github.io/spec/core/text/types.html#function-types):
- *
- * Where param is a [kwasm.format.text.Type.Param]:
- *
- * ```
- *   param    ::=  ‘(’ ‘param’  id?  t:valtype ‘)’  => t
- * ```
- */
-data class Param(val id: Identifier.Local?, val valTypeEnum: ValueTypeEnum) : AstNode
+import kwasm.ast.AstNode
+
+data class ParseResult(val astNode: AstNode, val nextIndex: Int)

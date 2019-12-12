@@ -17,7 +17,7 @@ package kwasm.format.text
 import com.google.common.truth.Truth
 import kwasm.ast.Identifier
 import kwasm.ast.Param
-import kwasm.ast.ValueType
+import kwasm.ast.ValueTypeEnum
 import kwasm.format.ParseException
 import org.assertj.core.api.Assertions
 import org.junit.Test
@@ -28,14 +28,14 @@ import org.junit.runners.JUnit4
 class ParamTest {
     @Test
     fun parseValidParam_withId() {
-        val expected = Param(Identifier.Local("\$val1"), ValueType.I32)
+        val expected = Param(Identifier.Local("\$val1"), ValueTypeEnum.I32)
         val actual = Type.Param("(param \$val1 i32)", null)
         Truth.assertThat(actual.value).isEqualTo(expected)
     }
 
     @Test
     fun parseValidParam_withoutId() {
-        val expected = Param(null, ValueType.I32)
+        val expected = Param(null, ValueTypeEnum.I32)
         val actual = Type.Param("(param i32)", null)
         Truth.assertThat(actual.value).isEqualTo(expected)
     }
