@@ -38,5 +38,5 @@ package kwasm.ast
  */
 sealed class Index<T : Identifier> : AstNode {
     data class ByInt(val indexVal: UInt) : Index<Identifier>()
-    data class ByLabel<T : Identifier>(val indexVal: T) : Index<T>()
+    data class ByIdentifier<T : Identifier>(val indexVal: T) : Index<T>()
 }

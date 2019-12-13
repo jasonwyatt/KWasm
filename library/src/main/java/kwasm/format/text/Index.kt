@@ -29,7 +29,7 @@ import kwasm.format.text.token.Token
 @UseExperimental(ExperimentalUnsignedTypes::class)
 inline fun <reified T : kwasm.ast.Identifier> List<Token>.parseIndex(
     fromIndex: Int
-): ParseResult<out Index<T>> = when (val token = this[fromIndex]) {
+): ParseResult<out Index<T>> = when (val token = getOrNull(fromIndex)) {
     is IntegerLiteral.Unsigned -> {
         token.magnitude = 32
         @Suppress("UNCHECKED_CAST")
@@ -48,9 +48,12 @@ inline fun <reified T : kwasm.ast.Identifier> List<Token>.parseIndex(
             else -> throw ParseException("Invalid identifier type expected", token.context)
         }
 
-        ParseResult(Index.ByLabel(id as T), 1)
+        ParseResult(Index.ByIdentifier(id as T), 1)
     }
-    else -> throw ParseException("Expected index", token.context)
+    else -> throw ParseException(
+        "Expected an index",
+        token?.context ?: getOrNull(fromIndex - 1)?.context
+    )
 }
 
 /**
@@ -64,13 +67,22 @@ inline fun <reified T : kwasm.ast.Identifier> List<Token>.parseIndices(
     min: Int = 0,
     max: Int = Int.MAX_VALUE
 ): ParseResult<AstNodeList<out Index<T>>> {
+    if (fromIndex !in 0 until size) {
+        if (min == 0) return ParseResult(AstNodeList(emptyList()), 0)
+        throw ParseException(
+            "Expected at least $min ${if (min > 1) "indices" else "index"}, found 0",
+            getOrNull(fromIndex - 1)?.context
+        )
+    }
+
     var indicesFound = 0
     var tokensRead = 0
     val indices = mutableListOf<Index<T>>()
 
-    while (indicesFound < max) {
+    while (indicesFound < max && fromIndex + tokensRead < size) {
         try {
             val index = parseIndex<T>(fromIndex + tokensRead)
+            indices += index.astNode
             tokensRead += index.parseLength
             indicesFound++
         } catch (e: ParseException) { break }
@@ -78,8 +90,8 @@ inline fun <reified T : kwasm.ast.Identifier> List<Token>.parseIndices(
 
     if (indices.size < min) {
         throw ParseException(
-            "Expected at least $min indices, found ${indices.size}",
-            this[fromIndex].context
+            "Expected at least $min ${if (min > 1) "indices" else "index"}, found ${indices.size}",
+            getOrNull(fromIndex)?.context
         )
     }
 
