@@ -21,16 +21,24 @@ import kwasm.format.text.token.Keyword
 import kwasm.format.text.token.Paren
 import kwasm.format.text.token.Token
 
+/**
+ * Parses a Param from a list of Tokens.
+ * from [the docs](https://webassembly.github.io/spec/core/text/types.html#function-types):
+ *
+ * ```
+ *   param    ::=  ‘(’ ‘param’  id?  t:valtype ‘)’  => t
+ * ```
+ */
 fun List<Token>.parseParam(currentIndex: Int): ParseResult<Param> {
     var parsedTokens = 0
     val openParen = this[currentIndex]
     if (openParen !is Paren.Open) {
-        throw ParseException("Invalid Param: Expecting ( token", openParen.context)
+        throw ParseException("Invalid Param: Expecting \"(\"", openParen.context)
     }
     parsedTokens++
     val keyword = this[currentIndex + 1]
     if (keyword !is Keyword || keyword.value != "param") {
-        throw ParseException("Invalid Param: Expecting param token", keyword.context)
+        throw ParseException("Invalid Param: Expecting \"param\"", keyword.context)
     }
     parsedTokens++
     val valueTypeIndex: Int

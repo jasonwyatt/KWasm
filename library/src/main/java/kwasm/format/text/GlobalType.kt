@@ -20,17 +20,26 @@ import kwasm.format.text.token.Keyword
 import kwasm.format.text.token.Paren
 import kwasm.format.text.token.Token
 
+/**
+ * Parses a GlobalType from a list of Tokens.
+ * From [the docs](https://webassembly.github.io/spec/core/text/types.html#global-types):
+ *
+ * ```
+ *   globaltype ::=  t:valtype                => const t
+ *                   ‘(’ ‘mut’  t:valtype ‘)’ => var t
+ * ```
+ */
 fun List<Token>.parseGlobalType(currentIndex: Int): ParseResult<GlobalType> {
     val maybeOpenParen = this[currentIndex]
     return if (maybeOpenParen is Paren.Open) {
         val keyword = this[currentIndex + 1]
         if (keyword !is Keyword || keyword.value != "mut") {
-            throw ParseException("Invalid GlobalType: Expecting mut token", keyword.context)
+            throw ParseException("Invalid GlobalType: Expecting \"mut\"", keyword.context)
         }
         val valueTypeParseResult = this.parseValueType(currentIndex + 2)
-        val closeParen = this[currentIndex + 3]
+        val closeParen = this[currentIndex + valueTypeParseResult.parseLength + 2]
         if (closeParen !is Paren.Closed) {
-            throw ParseException("Invalid GlobalType: Expecting ) token", closeParen.context)
+            throw ParseException("Invalid GlobalType: Expecting \")\"", closeParen.context)
         }
         ParseResult(GlobalType(valueTypeParseResult.astNode, true), valueTypeParseResult.parseLength + 3)
     } else {

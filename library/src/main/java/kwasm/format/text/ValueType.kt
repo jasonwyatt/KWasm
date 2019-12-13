@@ -20,15 +20,24 @@ import kwasm.format.ParseException
 import kwasm.format.text.token.Keyword
 import kwasm.format.text.token.Token
 
-
+/**
+ * Parses a ValueType from a list of Tokens.
+ * From [the docs](https://webassembly.github.io/spec/core/text/types.html#value-types):
+ *
+ * ```
+ *   valtype ::=  { 'i32' -> I32
+ *                  'i64' -> I64
+ *                  'f32' -> F32
+ *                  'f64' -> F64 }
+ * ```
+ */
 fun List<Token>.parseValueType(currentIndex: Int): ParseResult<ValueType> {
     val valueTypeToken = this[currentIndex]
     if (valueTypeToken !is Keyword) {
         throw ParseException("Invalid ValueType: Expecting keyword token", valueTypeToken.context)
     }
-    val valueType: ValueTypeEnum
 
-    valueType = when (valueTypeToken.value) {
+    val valueType = when (valueTypeToken.value) {
         "i32" -> ValueTypeEnum.I32
         "i64" -> ValueTypeEnum.I64
         "f32" -> ValueTypeEnum.F32
@@ -36,5 +45,4 @@ fun List<Token>.parseValueType(currentIndex: Int): ParseResult<ValueType> {
         else -> throw ParseException("Invalid ValueType: Expecting i32, i64, f32, or f64", valueTypeToken.context)
     }
     return ParseResult(ValueType(valueType), 1)
-
 }

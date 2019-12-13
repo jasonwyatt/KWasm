@@ -21,19 +21,27 @@ import kwasm.format.text.token.Keyword
 import kwasm.format.text.token.Paren
 import kwasm.format.text.token.Token
 
+/**
+ * Parses a Result from a list of Tokens.
+ * from [the docs](https://webassembly.github.io/spec/core/text/types.html#function-types):
+ *
+ * ```
+ *   result   ::=  ‘(’ ‘result’  t:valtype ‘)’  => t
+ * ```
+ */
 fun List<Token>.parseResult(currentIndex: Int): ParseResult<Result> {
     val openParen = this[currentIndex]
     if (openParen !is Paren.Open) {
-        throw ParseException("Invalid Result: Expecting ( token", openParen.context)
+        throw ParseException("Invalid Result: Expecting \"(\"", openParen.context)
     }
     val keyword = this[currentIndex + 1]
     if (keyword !is Keyword || keyword.value != "result") {
-        throw ParseException("Invalid Result: Expecting result token", keyword.context)
+        throw ParseException("Invalid Result: Expecting \"result\"", keyword.context)
     }
     val valueTypeParseResult = this.parseValueType(currentIndex + 2)
-    val closeParen = this[currentIndex + 3]
+    val closeParen = this[currentIndex + valueTypeParseResult.parseLength + 2]
     if (closeParen !is Paren.Closed) {
-        throw ParseException("Invalid Result: Expecting ) token", closeParen.context)
+        throw ParseException("Invalid Result: Expecting \")\"", closeParen.context)
     }
     return ParseResult(Result(valueTypeParseResult.astNode), valueTypeParseResult.parseLength + 3)
 }

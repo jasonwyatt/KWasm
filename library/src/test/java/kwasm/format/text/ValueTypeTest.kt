@@ -16,10 +16,8 @@ package kwasm.format.text
 
 import com.google.common.truth.Truth.assertThat
 import kwasm.ast.ValueTypeEnum
+import kwasm.format.ParseContext
 import kwasm.format.ParseException
-import kwasm.format.text.token.Keyword
-import kwasm.format.text.token.Reserved
-import kwasm.format.text.token.Token
 import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,29 +25,33 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class ValueTypeTest {
+
+    private val context = ParseContext("ValueTypeTest.wasm", 1, 1)
+    private val tokenizer = Tokenizer()
+
     @Test
     fun parseValidValueType() {
         var expected = ParseResult(kwasm.ast.ValueType(ValueTypeEnum.I32), 1)
-        var actual = listOf<Token>(Keyword("i32", null)).parseValueType(0)
+        var actual = tokenizer.tokenize("i32", context).parseValueType(0)
         assertThat(actual).isEqualTo(expected)
 
         expected = ParseResult(kwasm.ast.ValueType(ValueTypeEnum.I64), 1)
-        actual = listOf<Token>(Keyword("i64", null)).parseValueType(0)
+        actual = tokenizer.tokenize("i64", context).parseValueType(0)
         assertThat(actual).isEqualTo(expected)
 
         expected = ParseResult(kwasm.ast.ValueType(ValueTypeEnum.F32), 1)
-        actual = listOf<Token>(Keyword("f32", null)).parseValueType(0)
+        actual = tokenizer.tokenize("f32", context).parseValueType(0)
         assertThat(actual).isEqualTo(expected)
 
         expected = ParseResult(kwasm.ast.ValueType(ValueTypeEnum.F64), 1)
-        actual = listOf<Token>(Keyword("f64", null)).parseValueType(0)
+        actual = tokenizer.tokenize("f64", context).parseValueType(0)
         assertThat(actual).isEqualTo(expected)
     }
 
     @Test
     fun parseInvalidValueType_ValidKeyword() {
         Assertions.assertThatThrownBy {
-            listOf<Token>(Keyword("abc", null)).parseValueType(0)
+            tokenizer.tokenize("abc", context).parseValueType(0)
         }.isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Invalid ValueType: Expecting i32, i64, f32, or f64")
     }
@@ -57,7 +59,7 @@ class ValueTypeTest {
     @Test
     fun parseInvalidValueType_invalidKeyword() {
         Assertions.assertThatThrownBy {
-            listOf<Token>(Reserved("\$abc", null)).parseValueType(0)
+            tokenizer.tokenize("\$abc", context).parseValueType(0)
         }.isInstanceOf(ParseException::class.java).hasMessageContaining("Invalid ValueType: Expecting keyword token")
     }
 }

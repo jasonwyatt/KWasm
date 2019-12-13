@@ -18,6 +18,14 @@ import kwasm.ast.ResultType
 import kwasm.format.text.token.Keyword
 import kwasm.format.text.token.Token
 
+/**
+ * Parses a Result from a list of Tokens.
+ * From [the docs](https://webassembly.github.io/spec/core/text/types.html#result-types):
+ *
+ * ```
+ *   resultType   ::=  (t:result)?  => [t?]
+ * ```
+ */
 fun List<Token>.parseResultType(currentIndex: Int): ParseResult<ResultType> {
     val maybeResultKeyword = this[currentIndex + 1]
     if (maybeResultKeyword !is Keyword || maybeResultKeyword.value != "result") {

@@ -16,9 +16,8 @@ package kwasm.format.text
 
 import com.google.common.truth.Truth
 import kwasm.ast.ValueTypeEnum
+import kwasm.format.ParseContext
 import kwasm.format.ParseException
-import kwasm.format.text.token.Keyword
-import kwasm.format.text.token.Paren
 import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,33 +25,28 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class ResultTypeTest {
+
+    private val context = ParseContext("ResultTypeTest.wasm", 1, 1)
+    private val tokenizer = Tokenizer()
+
     @Test
     fun parseValidResultType_Exists() {
         val expected = ParseResult(kwasm.ast.ResultType(kwasm.ast.Result(kwasm.ast.ValueType(ValueTypeEnum.I32))), 4)
-        val actual = listOf(
-            Paren.Open(), Keyword("result"),
-            Keyword("i32"), Paren.Closed()
-        ).parseResultType(0)
+        val actual = tokenizer.tokenize("(result i32)", context).parseResultType(0)
         Truth.assertThat(actual).isEqualTo(expected)
     }
 
     @Test
     fun parseInvalidResultType_DifferentFunction() {
         val expected = ParseResult(kwasm.ast.ResultType(null), 0)
-        val actual = listOf(
-            Paren.Open(), Keyword("foo"),
-            Keyword("bar"), Paren.Closed()
-        ).parseResultType(0)
+        val actual = tokenizer.tokenize("(foo bar)", context).parseResultType(0)
         Truth.assertThat(actual).isEqualTo(expected)
     }
 
     @Test
     fun parseInvalidResultType_BadValueType() {
         Assertions.assertThatThrownBy {
-            listOf(
-                Paren.Open(), Keyword("result"),
-                Keyword("blah"), Paren.Closed()
-            ).parseResultType(0)
+            tokenizer.tokenize("(result blah)", context).parseResultType(0)
         }.isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Invalid ValueType: Expecting i32, i64, f32, or f64")
     }
