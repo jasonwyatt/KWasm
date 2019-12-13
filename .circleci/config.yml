@@ -85,7 +85,10 @@ workflows:
   version: 2
   pr-check:
     jobs:
-      - build
+      - build:
+          filters:
+            branches:
+                ignore: gh-pages
   doc-publish:
     jobs:
       - docs:
