@@ -26,7 +26,7 @@ kotlindoc:
     menu:
       - type: 'sourcedocPageLinks'
         moduleType: 'kotlindoc'
-        itemTitleType: 'ID'
+        itemTitleType: 'SIGNATURE'
         includeItems: true
 
 services:
