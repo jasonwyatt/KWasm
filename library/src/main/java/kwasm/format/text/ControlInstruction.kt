@@ -24,6 +24,9 @@ import kwasm.ast.ControlInstruction.NoOp
 import kwasm.ast.ControlInstruction.Return
 import kwasm.ast.ControlInstruction.Unreachable
 import kwasm.ast.Identifier
+import kwasm.ast.Instruction
+import kwasm.ast.astNodeListOf
+import kwasm.format.ParseException
 import kwasm.format.text.token.Token
 
 /** This file contains parsing implementations for all of the various [ControlInstruction]s. */
@@ -54,7 +57,9 @@ import kwasm.format.text.token.Token
  * ```
  */
 fun List<Token>.parseControlInstruction(fromIndex: Int): ParseResult<out ControlInstruction>? =
-    parseUnreachableContInstruction(fromIndex)
+    parseBlockOrLoopContInstruction(fromIndex)
+        ?: parseIfContInstruction(fromIndex)
+        ?: parseUnreachableContInstruction(fromIndex)
         ?: parseNoOpContInstruction(fromIndex)
         ?: parseReturnContInstruction(fromIndex)
         ?: parseBreakContInstruction(fromIndex)
@@ -62,6 +67,125 @@ fun List<Token>.parseControlInstruction(fromIndex: Int): ParseResult<out Control
         ?: parseBreakTableContInstruction(fromIndex)
         ?: parseCallContInstruction(fromIndex)
         ?: parseCallIndirectContInstruction(fromIndex)
+
+private fun List<Token>.parseBlockOrLoopContInstruction(
+    fromIndex: Int
+): ParseResult<out ControlInstruction>? {
+    var tokensParsed = 0
+
+    val blockOpener = getOrNull(fromIndex)?.asKeywordMatching("block")
+    val loopOpener = getOrNull(fromIndex)?.asKeywordMatching("loop")
+    if (blockOpener == null && loopOpener == null) return null
+    val opener = requireNotNull(blockOpener ?: loopOpener)
+    tokensParsed++
+
+    val label = parseLabel(fromIndex + tokensParsed)
+    tokensParsed += label.parseLength
+    val resultType = parseResultType(fromIndex + tokensParsed)
+    tokensParsed += resultType.parseLength
+    val instructions = parseInstructions(fromIndex + tokensParsed)
+    tokensParsed += instructions.parseLength
+
+    getOrNull(fromIndex + tokensParsed)?.asKeywordMatching("end") ?:
+        throw ParseException(
+            "Expected \"end\" for block ${opener.value}",
+            getOrNull(fromIndex + tokensParsed)?.context
+                ?: getOrNull(fromIndex + tokensParsed - 1)?.context
+        )
+    tokensParsed++
+
+    val closingId = getOrNull(fromIndex + tokensParsed) as? kwasm.format.text.token.Identifier
+    if (closingId?.value != null && closingId.value != label.astNode.stringRepr) {
+        throw ParseException(
+            "Identifier after \"end\": ${closingId.value} does not match ${opener.value} opening" +
+                " identifier: ${label.astNode.stringRepr}",
+            closingId.context ?: getOrNull(fromIndex + tokensParsed - 1)?.context
+        )
+    }
+    if (closingId != null) tokensParsed++
+
+    return if (opener.value == "block") {
+        ParseResult(
+            ControlInstruction.Block(label.astNode, resultType.astNode, instructions.astNode),
+            tokensParsed
+        )
+    } else {
+        ParseResult(
+            ControlInstruction.Loop(label.astNode, resultType.astNode, instructions.astNode),
+            tokensParsed
+        )
+    }
+}
+
+private fun List<Token>.parseIfContInstruction(
+    fromIndex: Int
+): ParseResult<out ControlInstruction>? {
+    var tokensParsed = 0
+
+    getOrNull(fromIndex)?.asKeywordMatching("if") ?: return null
+    tokensParsed++
+
+    val label = parseLabel(fromIndex + tokensParsed)
+    tokensParsed += label.parseLength
+    val resultType = parseResultType(fromIndex + tokensParsed)
+    tokensParsed += resultType.parseLength
+
+    val positiveInstructions = parseInstructions(fromIndex + tokensParsed)
+    tokensParsed += positiveInstructions.parseLength
+
+    // Parse the optional `else` block, and check its id
+    val negativeInstructions =
+        getOrNull(fromIndex + tokensParsed)
+            ?.asKeywordMatching("else")
+            ?.let {
+                tokensParsed++
+
+                val elseId =
+                    getOrNull(fromIndex + tokensParsed) as? kwasm.format.text.token.Identifier
+
+                if (elseId != null && elseId.value != label.astNode.stringRepr) {
+                    throw ParseException(
+                        "Identifier after \"else\": ${elseId.value} does not match if/else" +
+                            " opening identifier: ${label.astNode.stringRepr}",
+                        elseId.context
+                    )
+                }
+
+                if (elseId != null) tokensParsed++
+                parseInstructions(fromIndex + tokensParsed)
+            }
+            // There is no else block.
+            ?: ParseResult(astNodeListOf<Instruction>(), 0)
+    tokensParsed += negativeInstructions.parseLength
+
+    getOrNull(fromIndex + tokensParsed)?.asKeywordMatching("end") ?:
+    throw ParseException(
+        "Expected \"end\" for if/else",
+        getOrNull(fromIndex + tokensParsed)?.context
+            ?: getOrNull(fromIndex + tokensParsed - 1)?.context
+    )
+    tokensParsed++
+
+    val closingId = getOrNull(fromIndex + tokensParsed) as? kwasm.format.text.token.Identifier
+    if (closingId != null && closingId.value != label.astNode.stringRepr) {
+        throw ParseException(
+            "Identifier after \"end\": ${closingId.value} does not match if/else opening" +
+                " identifier: ${label.astNode.stringRepr}",
+            closingId.context
+        )
+    }
+    if (closingId != null) tokensParsed++
+
+    return ParseResult(
+        ControlInstruction.If(
+            label.astNode,
+            resultType.astNode,
+            positiveInstructions.astNode,
+            negativeInstructions.astNode
+        ),
+        tokensParsed
+    )
+}
 
 private fun List<Token>.parseUnreachableContInstruction(
     fromIndex: Int

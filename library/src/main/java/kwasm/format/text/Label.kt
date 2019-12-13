@@ -38,14 +38,17 @@ import kwasm.format.text.token.Token
  *
  * **Note:** Composition will be left up to the interpreter.
  */
-fun List<Token>.parseLabel(startIndex: Int): ParseResult<Label> {
+fun List<Token>.parseLabel(
+    startIndex: Int,
+    vararg allowedKeywordsForEmpty: Keyword
+): ParseResult<Label> {
     val identifier = this.getOrNull(startIndex)
 
-    val idString = if (identifier is kwasm.format.text.token.Identifier) {
-        identifier.value
-    } else if (identifier is Keyword || identifier is Reserved) {
-        throw ParseException("Invalid identifier", identifier.context)
-    } else null
+    val idString = when (identifier) {
+        is kwasm.format.text.token.Identifier -> identifier.value
+        is Reserved -> throw ParseException("Invalid identifier", identifier.context)
+        else -> null
+    }
 
     val parseLength = if (idString.isNullOrEmpty()) 0 else 1
     val identifierAst = Label(idString)
