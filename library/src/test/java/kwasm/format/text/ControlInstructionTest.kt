@@ -28,7 +28,6 @@ import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.assertj.core.api.Assertions.fail
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -37,6 +36,372 @@ import org.junit.runners.JUnit4
 class ControlInstructionTest {
     private val tokenizer = Tokenizer()
     private val context = ParseContext("ControlInstructionTest.wat", 1, 1)
+
+    @Test
+    fun parse_parsesBlock() {
+        val parsed = tokenizer.tokenize(
+            """
+                block
+                    nop
+                    return
+                    unreachable
+                end
+            """.trimIndent(),
+            context
+        ).parseControlInstruction(0) ?: fail("Expected an instruction")
+        assertThat(parsed.parseLength).isEqualTo(5)
+        val block = parsed.astNode as? ControlInstruction.Block ?: fail("Expected a block")
+        assertThat(block.label.stringRepr).isNull()
+        assertThat(block.result.result).isNull()
+        assertThat(block.instructions).hasSize(3)
+        assertThat(block.instructions[0]).isEqualTo(ControlInstruction.NoOp)
+        assertThat(block.instructions[1]).isEqualTo(ControlInstruction.Return)
+        assertThat(block.instructions[2]).isEqualTo(ControlInstruction.Unreachable)
+    }
+
+    @Test
+    fun parse_parsesBlock_withReturnType() {
+        val parsed = tokenizer.tokenize(
+            """
+                block (result i32)
+                    nop
+                    return
+                    unreachable
+                end
+            """.trimIndent(),
+            context
+        ).parseControlInstruction(0) ?: fail("Expected an instruction")
+        assertThat(parsed.parseLength).isEqualTo(9)
+        val block = parsed.astNode as? ControlInstruction.Block ?: fail("Expected a block")
+        assertThat(block.label.stringRepr).isNull()
+        assertThat(block.result.result).isEqualTo(Result(ValueType(ValueTypeEnum.I32)))
+        assertThat(block.instructions).hasSize(3)
+        assertThat(block.instructions[0]).isEqualTo(ControlInstruction.NoOp)
+        assertThat(block.instructions[1]).isEqualTo(ControlInstruction.Return)
+        assertThat(block.instructions[2]).isEqualTo(ControlInstruction.Unreachable)
+    }
+
+    @Test
+    fun parse_parsesBlock_withLabel() {
+        val parsed = tokenizer.tokenize(
+            """
+                block ${'$'}myBlock
+                    nop
+                    return
+                    unreachable
+                end
+            """.trimIndent(),
+            context
+        ).parseControlInstruction(0) ?: fail("Expected an instruction")
+        assertThat(parsed.parseLength).isEqualTo(6)
+        val block = parsed.astNode as? ControlInstruction.Block ?: fail("Expected a block")
+        assertThat(block.label.stringRepr).isEqualTo("\$myBlock")
+        assertThat(block.result.result).isNull()
+        assertThat(block.instructions).hasSize(3)
+        assertThat(block.instructions[0]).isEqualTo(ControlInstruction.NoOp)
+        assertThat(block.instructions[1]).isEqualTo(ControlInstruction.Return)
+        assertThat(block.instructions[2]).isEqualTo(ControlInstruction.Unreachable)
+    }
+
+    @Test
+    fun parse_parsesBlock_withLabel_andEndLabel() {
+        val parsed = tokenizer.tokenize(
+            """
+                block ${'$'}myBlock
+                    nop
+                    return
+                    unreachable
+                end ${'$'}myBlock
+            """.trimIndent(),
+            context
+        ).parseControlInstruction(0) ?: fail("Expected an instruction")
+        assertThat(parsed.parseLength).isEqualTo(7)
+        val block = parsed.astNode as? ControlInstruction.Block ?: fail("Expected a block")
+        assertThat(block.label.stringRepr).isEqualTo("\$myBlock")
+        assertThat(block.result.result).isNull()
+        assertThat(block.instructions).hasSize(3)
+        assertThat(block.instructions[0]).isEqualTo(ControlInstruction.NoOp)
+        assertThat(block.instructions[1]).isEqualTo(ControlInstruction.Return)
+        assertThat(block.instructions[2]).isEqualTo(ControlInstruction.Unreachable)
+    }
+
+    @Test
+    fun parse_throws_whenBlock_hasNoEnd() {
+        assertThatThrownBy {
+            tokenizer.tokenize(
+                """
+                    block
+                        nop
+                        return
+                        unreachable
+                """.trimIndent(),
+                context
+            ).parseControlInstruction(0)
+        }.isInstanceOf(ParseException::class.java)
+            .hasMessageContaining("Expected \"end\"")
+    }
+
+    @Test
+    fun parse_throws_whenBlock_endLabel_mismatchesOpenerLabel() {
+        assertThatThrownBy {
+            tokenizer.tokenize(
+                """
+                    block
+                        nop
+                        return
+                        unreachable
+                    end ${'$'}myBlock
+                """.trimIndent(),
+                context
+            ).parseControlInstruction(0)
+        }.isInstanceOf(ParseException::class.java)
+
+        assertThatThrownBy {
+            tokenizer.tokenize(
+                """
+                    block ${'$'}myBlock 
+                        nop
+                        return
+                        unreachable
+                    end ${'$'}oops
+                """.trimIndent(),
+                context
+            ).parseControlInstruction(0)
+        }.isInstanceOf(ParseException::class.java)
+    }
+
+    @Test
+    fun parse_parsesLoop() {
+        val parsed = tokenizer.tokenize(
+            """
+                loop
+                    nop
+                    return
+                    unreachable
+                end
+            """.trimIndent(),
+            context
+        ).parseControlInstruction(0) ?: fail("Expected an instruction")
+        assertThat(parsed.parseLength).isEqualTo(5)
+        val block = parsed.astNode as? ControlInstruction.Loop ?: fail("Expected a loop")
+        assertThat(block.label.stringRepr).isNull()
+        assertThat(block.result.result).isNull()
+        assertThat(block.instructions).hasSize(3)
+        assertThat(block.instructions[0]).isEqualTo(ControlInstruction.NoOp)
+        assertThat(block.instructions[1]).isEqualTo(ControlInstruction.Return)
+        assertThat(block.instructions[2]).isEqualTo(ControlInstruction.Unreachable)
+    }
+
+    @Test
+    fun parse_parsesLoop_withLabel() {
+        val parsed = tokenizer.tokenize(
+            """
+                loop ${'$'}myLoop
+                    nop
+                    return
+                    unreachable
+                end
+            """.trimIndent(),
+            context
+        ).parseControlInstruction(0) ?: fail("Expected an instruction")
+        assertThat(parsed.parseLength).isEqualTo(6)
+        val block = parsed.astNode as? ControlInstruction.Loop ?: fail("Expected a loop")
+        assertThat(block.label.stringRepr).isEqualTo("\$myLoop")
+        assertThat(block.result.result).isNull()
+        assertThat(block.instructions).hasSize(3)
+        assertThat(block.instructions[0]).isEqualTo(ControlInstruction.NoOp)
+        assertThat(block.instructions[1]).isEqualTo(ControlInstruction.Return)
+        assertThat(block.instructions[2]).isEqualTo(ControlInstruction.Unreachable)
+    }
+
+    @Test
+    fun parse_parsesLoop_withLabel_andEndLabel() {
+        val parsed = tokenizer.tokenize(
+            """
+                loop ${'$'}myLoop
+                    nop
+                    return
+                    unreachable
+                end ${'$'}myLoop
+            """.trimIndent(),
+            context
+        ).parseControlInstruction(0) ?: fail("Expected an instruction")
+        assertThat(parsed.parseLength).isEqualTo(7)
+        val block = parsed.astNode as? ControlInstruction.Loop ?: fail("Expected a loop")
+        assertThat(block.label.stringRepr).isEqualTo("\$myLoop")
+        assertThat(block.result.result).isNull()
+        assertThat(block.instructions).hasSize(3)
+        assertThat(block.instructions[0]).isEqualTo(ControlInstruction.NoOp)
+        assertThat(block.instructions[1]).isEqualTo(ControlInstruction.Return)
+        assertThat(block.instructions[2]).isEqualTo(ControlInstruction.Unreachable)
+    }
+
+    @Test
+    fun parse_throws_whenLoop_hasNoEnd() {
+        assertThatThrownBy {
+            tokenizer.tokenize(
+                """
+                    loop
+                        nop
+                        return
+                        unreachable
+                """.trimIndent(),
+                context
+            ).parseControlInstruction(0)
+        }.isInstanceOf(ParseException::class.java)
+            .hasMessageContaining("Expected \"end\"")
+    }
+
+    @Test
+    fun parse_throws_whenLoop_endLabel_mismatchesOpenerLabel() {
+        assertThatThrownBy {
+            tokenizer.tokenize(
+                """
+                    loop
+                        nop
+                        return
+                        unreachable
+                    end ${'$'}myBlock
+                """.trimIndent(),
+                context
+            ).parseControlInstruction(0)
+        }.isInstanceOf(ParseException::class.java)
+
+        assertThatThrownBy {
+            tokenizer.tokenize(
+                """
+                    loop ${'$'}myLoop
+                        nop
+                        return
+                        unreachable
+                    end ${'$'}oops
+                """.trimIndent(),
+                context
+            ).parseControlInstruction(0)
+        }.isInstanceOf(ParseException::class.java)
+    }
+
+    @Test
+    fun parse_parsesIf() {
+        val parsed = tokenizer.tokenize(
+            """
+                if
+                    nop
+                    return
+                    unreachable
+                end
+            """.trimIndent(),
+            context
+        ).parseControlInstruction(0) ?: fail("Expected an instruction")
+        assertThat(parsed.parseLength).isEqualTo(5)
+        val block = parsed.astNode as? ControlInstruction.If ?: fail("Expected an if")
+        assertThat(block.label.stringRepr).isNull()
+        assertThat(block.result.result).isNull()
+        assertThat(block.positiveInstructions).hasSize(3)
+        assertThat(block.positiveInstructions[0]).isEqualTo(ControlInstruction.NoOp)
+        assertThat(block.positiveInstructions[1]).isEqualTo(ControlInstruction.Return)
+        assertThat(block.positiveInstructions[2]).isEqualTo(ControlInstruction.Unreachable)
+        assertThat(block.negativeInstructions).isEmpty()
+    }
+
+    @Test
+    fun parse_parsesIfElse() {
+        val parsed = tokenizer.tokenize(
+            """
+                if
+                    nop
+                    return
+                    unreachable
+                else
+                    nop
+                end
+            """.trimIndent(),
+            context
+        ).parseControlInstruction(0) ?: fail("Expected an instruction")
+        assertThat(parsed.parseLength).isEqualTo(7)
+        val block = parsed.astNode as? ControlInstruction.If ?: fail("Expected an if")
+        assertThat(block.label.stringRepr).isNull()
+        assertThat(block.result.result).isNull()
+        assertThat(block.positiveInstructions).hasSize(3)
+        assertThat(block.positiveInstructions[0]).isEqualTo(ControlInstruction.NoOp)
+        assertThat(block.positiveInstructions[1]).isEqualTo(ControlInstruction.Return)
+        assertThat(block.positiveInstructions[2]).isEqualTo(ControlInstruction.Unreachable)
+        assertThat(block.negativeInstructions).hasSize(1)
+        assertThat(block.negativeInstructions[0]).isEqualTo(ControlInstruction.NoOp)
+    }
+
+    @Test
+    fun throws_whenIfElse_isMalformed() {
+        assertThatThrownBy {
+            tokenizer.tokenize(
+                """
+                if
+                    nop
+                    return
+                else
+                    unreachable
+                else ;; hmm, extra else here
+                    nop
+                end
+            """.trimIndent(),
+                context
+            ).parseControlInstruction(0)
+        }.isInstanceOf(ParseException::class.java)
+
+        assertThatThrownBy {
+            tokenizer.tokenize(
+                """
+                if
+                    nop
+                    return
+                    nop
+                ;; missing 'end'
+            """.trimIndent(),
+                context
+            ).parseControlInstruction(0)
+        }.isInstanceOf(ParseException::class.java)
+
+        assertThatThrownBy {
+            tokenizer.tokenize(
+                """
+                if
+                    nop
+                    return
+                else
+                    nop
+                ;; missing 'end'
+            """.trimIndent(),
+                context
+            ).parseControlInstruction(0)
+        }.isInstanceOf(ParseException::class.java)
+
+        assertThatThrownBy {
+            tokenizer.tokenize(
+                """
+                if
+                    nop
+                    return
+                    nop
+                end ${'$'}badId
+            """.trimIndent(),
+                context
+            ).parseControlInstruction(0)
+        }.isInstanceOf(ParseException::class.java)
+
+        assertThatThrownBy {
+            tokenizer.tokenize(
+                """
+                if
+                    nop
+                    return
+                else ${'$'}badId
+                    nop
+                end
+            """.trimIndent(),
+                context
+            ).parseControlInstruction(0)
+        }.isInstanceOf(ParseException::class.java)
+    }
 
     @Test
     fun parse_parsesUnreachable() {
