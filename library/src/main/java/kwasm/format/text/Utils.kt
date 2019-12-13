@@ -16,6 +16,8 @@ package kwasm.format.text
 
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
+import kwasm.format.text.token.Keyword
+import kwasm.format.text.token.Token
 
 fun getOperationAndParameters(sequence: CharSequence, context: ParseContext?): Pair<CharSequence, List<CharSequence>> {
     if (sequence.first() != '(') {
@@ -27,4 +29,20 @@ fun getOperationAndParameters(sequence: CharSequence, context: ParseContext?): P
 
     val splitSequence = sequence.substring(1, sequence.lastIndex).split("\\s".toRegex())
     return Pair(splitSequence[0], splitSequence.subList(1,splitSequence.lastIndex+1))
+}
+
+/** Determines whether or not the [Token] is a [Keyword] matching the provided [keywordValue]. */
+fun Token.isKeyword(keywordValue: String): Boolean =
+    this is Keyword && this.value == keywordValue
+
+/**
+ * Casts the [Token] into a [Keyword] and returns it if its [Keyword.value] is [value].
+ * Returns `null` if either condition is unmet.
+ */
+fun Token.asKeywordMatching(value: String): Keyword? =
+    (this as? Keyword)?.takeIf { it.value == value }
+
+/** Asserts that the [Token] is a [Keyword] matching the provided [keywordValue]. */
+fun Token.assertIsKeyword(keywordValue: String) {
+    if (!isKeyword(keywordValue)) throw ParseException("Expected \"$keywordValue\"", context)
 }

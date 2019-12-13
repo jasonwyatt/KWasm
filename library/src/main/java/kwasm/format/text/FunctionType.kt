@@ -14,6 +14,7 @@
 
 package kwasm.format.text
 
+import kwasm.ast.AstNodeList
 import kwasm.ast.FunctionType
 import kwasm.ast.Param
 import kwasm.format.ParseException
@@ -45,26 +46,26 @@ fun List<Token>.parseFunctionType(currentIndex: Int): ParseResult<FunctionType> 
     parsedTokens++
     val nextParamIndex = currentIndex + 2
     val parsedParamList = this.parseParamList(nextParamIndex)
-    parsedTokens += parsedParamList.second
+    parsedTokens += parsedParamList.parseLength
 
-    val nextResultIndex = nextParamIndex + parsedParamList.second
+    val nextResultIndex = nextParamIndex + parsedParamList.parseLength
     val parsedResultList = this.parseResultList(nextResultIndex)
-    parsedTokens += parsedResultList.second
+    parsedTokens += parsedResultList.parseLength
 
-    val closingParenIndex = nextResultIndex + parsedResultList.second
+    val closingParenIndex = nextResultIndex + parsedResultList.parseLength
     val closeParen = this[closingParenIndex]
     if (closeParen !is Paren.Closed) {
         throw ParseException("Invalid FunctionType: Expecting \")\"", closeParen.context)
     }
     parsedTokens++
-    return ParseResult(FunctionType(parsedParamList.first, parsedResultList.first), parsedTokens)
+    return ParseResult(FunctionType(parsedParamList.astNode, parsedResultList.astNode), parsedTokens)
 }
 
 /**
  * Parses a list of Param from a list of tokens.
  * @return a Pair containing the list of Params and an integer tracking the number of tokens parsed
  */
-fun List<Token>.parseParamList(currentIndex: Int): Pair<List<Param>, Int> {
+fun List<Token>.parseParamList(currentIndex: Int): ParseResult<AstNodeList<Param>> {
     var parsedTokens = 0
     var nextParamIndex = currentIndex
     val paramList = mutableListOf<Param>()
@@ -79,14 +80,14 @@ fun List<Token>.parseParamList(currentIndex: Int): Pair<List<Param>, Int> {
             break
         }
     }
-    return Pair(paramList, parsedTokens)
+    return ParseResult(AstNodeList(paramList), parsedTokens)
 }
 
 /**
  * Parses a list of Result from a list of tokens.
  * @return a Pair containing the list of Results and an integer tracking the number of tokens parsed
  */
-fun List<Token>.parseResultList(currentIndex: Int): Pair<List<kwasm.ast.Result>, Int> {
+fun List<Token>.parseResultList(currentIndex: Int): ParseResult<AstNodeList<kwasm.ast.Result>> {
     var parsedTokens = 0
     var nextResultIndex = currentIndex
     val resultList = mutableListOf<kwasm.ast.Result>()
@@ -101,5 +102,5 @@ fun List<Token>.parseResultList(currentIndex: Int): Pair<List<kwasm.ast.Result>,
             break
         }
     }
-    return Pair(resultList, parsedTokens)
+    return ParseResult(AstNodeList(resultList), parsedTokens)
 }

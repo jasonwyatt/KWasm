@@ -25,7 +25,7 @@ package kwasm.ast
  * instructions, to indicate the matching delimiters.
  *
  * ```
- *   blockinstrI ::=
+ *   blockinstr(I) ::=
  *      ‘block’ I′:label(I) rt:resulttype (in:instr(I′))* ‘end’ id?
  *          => block rt in* end (if id? = ϵ ∨ id? = label)
  *      ‘loop’ I′:label(I) rt:resulttype (in:instr(I′))* ‘end’ id?
@@ -75,18 +75,18 @@ sealed class ControlInstruction : Instruction {
 
     object NoOp : ControlInstruction()
 
-    data class Break(val label: Identifier.Label) : ControlInstruction()
+    data class Break(val labelIndex: Index<Identifier.Label>) : ControlInstruction()
 
-    data class BreakIf(val label: Identifier.Label) : ControlInstruction()
+    data class BreakIf(val labelIndex: Index<Identifier.Label>) : ControlInstruction()
 
     data class BreakTable(
-        val targets: List<Identifier.Label>,
-        val defaultTarget: Identifier.Label
+        val targets: List<Index<Identifier.Label>>,
+        val defaultTarget: Index<Identifier.Label>
     ) : ControlInstruction()
 
     object Return : ControlInstruction()
 
-    data class Call(val function: Identifier.Function) : ControlInstruction()
+    data class Call(val functionIndex: Index<Identifier.Function>) : ControlInstruction()
 
     data class CallIndirect(val typeUse: TypeUse) : ControlInstruction()
 }

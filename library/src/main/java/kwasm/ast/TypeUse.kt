@@ -51,7 +51,7 @@ package kwasm.ast
  * definitions are reused by consecutive expansions.
  */
 data class TypeUse(
-    val identifier: Identifier.Type?,
+    val index: Index<Identifier.Type>?,
     val params: List<Param>,
     val results: List<Result>
 ) : AstNode
