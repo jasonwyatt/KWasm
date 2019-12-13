@@ -54,8 +54,8 @@ sealed class IntegerLiteral<Type>(
 ) : Token {
     val value: Type by lazy {
         val res = parseValue()
-        if (!checkMagnitude(res, magnitude)) {
-            throw ParseException("Illegal value: $res, for expected magnitude: $magnitude", context)
+        if (!checkMagnitude(res, this.magnitude)) {
+            throw ParseException("Illegal value: $res, for expected magnitude: ${this.magnitude}", context)
         }
         res
     }
@@ -154,7 +154,7 @@ sealed class IntegerLiteral<Type>(
         private const val DECIMAL_PATTERN = "(${Num.DECIMAL_PATTERN})"
         private const val HEX_PATTERN = "(0x(${Num.HEX_PATTERN}))"
 
-        internal val PATTERN =  object : ThreadLocal<Regex>() {
+        internal val PATTERN = object : ThreadLocal<Regex>() {
             override fun initialValue(): Regex = "([-+]?($HEX_PATTERN|$DECIMAL_PATTERN))".toRegex()
         }
     }
