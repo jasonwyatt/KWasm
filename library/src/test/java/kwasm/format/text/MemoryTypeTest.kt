@@ -14,10 +14,10 @@
 
 package kwasm.format.text
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -35,8 +35,9 @@ class MemoryTypeTest {
         val expectedMax = UInt.MAX_VALUE
         val tokens = tokenizer.tokenize("(memory $expectedMin)", context)
         val parseResult = tokens.parseMemoryType(0)
-        Truth.assertThat(parseResult.astNode.limits.min).isEqualTo(expectedMin)
-        Truth.assertThat(parseResult.astNode.limits.max).isEqualTo(expectedMax)
+        assertThat(parseResult.astNode.limits.min).isEqualTo(expectedMin)
+        assertThat(parseResult.astNode.limits.max).isEqualTo(expectedMax)
+        assertThat(parseResult.parseLength).isEqualTo(4)
     }
 
     @Test
@@ -45,8 +46,9 @@ class MemoryTypeTest {
         val expectedMax = UInt.MAX_VALUE
         val tokens = tokenizer.tokenize("(memory $expectedMin)", context)
         val parseResult = tokens.parseMemoryType(0)
-        Truth.assertThat(parseResult.astNode.limits.min).isEqualTo(expectedMin)
-        Truth.assertThat(parseResult.astNode.limits.max).isEqualTo(expectedMax)
+        assertThat(parseResult.astNode.limits.min).isEqualTo(expectedMin)
+        assertThat(parseResult.astNode.limits.max).isEqualTo(expectedMax)
+        assertThat(parseResult.parseLength).isEqualTo(4)
     }
 
     @Test
@@ -55,14 +57,15 @@ class MemoryTypeTest {
         val expectedMax = UInt.MAX_VALUE
         val tokens = tokenizer.tokenize("(memory $expectedMin)", context)
         val parseResult = tokens.parseMemoryType(0)
-        Truth.assertThat(parseResult.astNode.limits.min).isEqualTo(expectedMin)
-        Truth.assertThat(parseResult.astNode.limits.max).isEqualTo(expectedMax)
+        assertThat(parseResult.astNode.limits.min).isEqualTo(expectedMin)
+        assertThat(parseResult.astNode.limits.max).isEqualTo(expectedMax)
+        assertThat(parseResult.parseLength).isEqualTo(4)
     }
 
     @Test
     fun parseNegativeMin_throwsParseExceptionWithNegativeNumberMessage() {
         val tokens = tokenizer.tokenize("(memory -123456)", context)
-        Assertions.assertThatThrownBy { tokens.parseMemoryType(0) }
+        assertThatThrownBy { tokens.parseMemoryType(0) }
             .isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Expected integer literal")
     }
@@ -70,7 +73,7 @@ class MemoryTypeTest {
     @Test
     fun parseABitLargerThanMaxVal_throwsParseExceptionWithValueOverflowMessage() {
         val tokens = tokenizer.tokenize("(memory 4294967296)", context)
-        Assertions.assertThatThrownBy { tokens.parseMemoryType(0) }
+        assertThatThrownBy { tokens.parseMemoryType(0) }
             .isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Illegal value")
     }
@@ -78,7 +81,7 @@ class MemoryTypeTest {
     @Test
     fun parseALotLargerThanMaxVal_throwsParseExceptionWithValueOverflowMessage() {
         val tokens = tokenizer.tokenize("(memory 100000000000)", context)
-        Assertions.assertThatThrownBy { tokens.parseMemoryType(0) }
+        assertThatThrownBy { tokens.parseMemoryType(0) }
             .isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Illegal value")
     }
@@ -89,14 +92,15 @@ class MemoryTypeTest {
         val expectedMax = 234567.toUInt()
         val tokens = tokenizer.tokenize("(memory $expectedMin $expectedMax)", context)
         val parseResult = tokens.parseMemoryType(0)
-        Truth.assertThat(parseResult.astNode.limits.min).isEqualTo(expectedMin)
-        Truth.assertThat(parseResult.astNode.limits.max).isEqualTo(expectedMax)
+        assertThat(parseResult.astNode.limits.min).isEqualTo(expectedMin)
+        assertThat(parseResult.astNode.limits.max).isEqualTo(expectedMax)
+        assertThat(parseResult.parseLength).isEqualTo(5)
     }
 
     @Test
     fun parseTwoNumbers_withMinGreaterThanMax_throwsParseExceptionWithInvalidRangeMessage() {
         val tokens = tokenizer.tokenize("(memory 234567 123456)", context)
-        Assertions.assertThatThrownBy { tokens.parseMemoryType(0) }
+        assertThatThrownBy { tokens.parseMemoryType(0) }
             .isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Arguments out of order, min > max.")
     }
@@ -104,7 +108,7 @@ class MemoryTypeTest {
     @Test
     fun parseTwoValuesWithNegativeMin_throwsParseExceptionWithNegativeNumberMessage() {
         val tokens = tokenizer.tokenize("(memory -123456 234567)", context)
-        Assertions.assertThatThrownBy { tokens.parseMemoryType(0) }
+        assertThatThrownBy { tokens.parseMemoryType(0) }
             .isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Expected integer literal")
     }
@@ -112,7 +116,7 @@ class MemoryTypeTest {
     @Test
     fun parseTwoValuesWithMinABitLargerThanMaxVal_throwsParseExceptionWithValueOverflowMessage() {
         val tokens = tokenizer.tokenize("(memory 4294967296 234567)", context)
-        Assertions.assertThatThrownBy { tokens.parseMemoryType(0) }
+        assertThatThrownBy { tokens.parseMemoryType(0) }
             .isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Illegal value")
     }
@@ -120,7 +124,7 @@ class MemoryTypeTest {
     @Test
     fun parseTwoValuesWithMinALotLargerThanMaxVal_throwsParseExceptionWithValueOverflowMessage() {
         val tokens = tokenizer.tokenize("(memory 100000000000 234567)", context)
-        Assertions.assertThatThrownBy { tokens.parseMemoryType(0) }
+        assertThatThrownBy { tokens.parseMemoryType(0) }
             .isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Illegal value")
     }
@@ -128,7 +132,7 @@ class MemoryTypeTest {
     @Test
     fun parseTwoValuesWithNegativeMax_throwsParseExceptionWithNegativeNumberMessage() {
         val tokens = tokenizer.tokenize("(memory 123456 -234567)", context)
-        Assertions.assertThatThrownBy { tokens.parseMemoryType(0) }
+        assertThatThrownBy { tokens.parseMemoryType(0) }
             .isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Expected integer literal")
     }
@@ -136,7 +140,7 @@ class MemoryTypeTest {
     @Test
     fun parseTwoValuesWithMaxABitLargerThanMaxVal_throwsParseExceptionWithValueOverflowMessage() {
         val tokens = tokenizer.tokenize("(memory 1234567 4294967296)", context)
-        Assertions.assertThatThrownBy { tokens.parseMemoryType(0) }
+        assertThatThrownBy { tokens.parseMemoryType(0) }
             .isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Illegal value")
     }
@@ -144,7 +148,7 @@ class MemoryTypeTest {
     @Test
     fun parseTwoValuesWithMaxALotLargerThanMaxVal_throwsParseExceptionWithValueOverflowMessage() {
         val tokens = tokenizer.tokenize("(memory 1234567 100000000000)", context)
-        Assertions.assertThatThrownBy { tokens.parseMemoryType(0) }
+        assertThatThrownBy { tokens.parseMemoryType(0) }
             .isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Illegal value")
     }
@@ -152,7 +156,7 @@ class MemoryTypeTest {
     @Test
     fun parseNoValues_throwsParseExceptionWithIncorrectNumberOfArgumentsException() {
         val tokens = tokenizer.tokenize("(memory)", context)
-        Assertions.assertThatThrownBy { tokens.parseMemoryType(0) }
+        assertThatThrownBy { tokens.parseMemoryType(0) }
             .isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Expected integer literal")
     }
@@ -160,7 +164,7 @@ class MemoryTypeTest {
     @Test
     fun parseThreeValues_throwsParseExceptionWithIncorrectNumberOfArgumentsException() {
         val tokens = tokenizer.tokenize("(memory 1234567 2345678 3456789)", context)
-        Assertions.assertThatThrownBy { tokens.parseMemoryType(0) }
+        assertThatThrownBy { tokens.parseMemoryType(0) }
             .isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Expected Close Paren")
     }
