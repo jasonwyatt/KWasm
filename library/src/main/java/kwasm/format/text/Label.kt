@@ -14,7 +14,9 @@
 
 package kwasm.format.text
 
+import kwasm.ast.AstNodeList
 import kwasm.ast.Identifier
+import kwasm.ast.Identifier.Label
 import kwasm.format.ParseException
 import kwasm.format.text.token.Keyword
 import kwasm.format.text.token.Reserved
@@ -36,7 +38,7 @@ import kwasm.format.text.token.Token
  *
  * **Note:** Composition will be left up to the interpreter.
  */
-fun List<Token>.parseLabel(startIndex: Int): ParseResult<Identifier.Label> {
+fun List<Token>.parseLabel(startIndex: Int): ParseResult<Label> {
     val identifier = this.getOrNull(startIndex)
 
     val idString = if (identifier is kwasm.format.text.token.Identifier) {
@@ -46,7 +48,34 @@ fun List<Token>.parseLabel(startIndex: Int): ParseResult<Identifier.Label> {
     } else null
 
     val parseLength = if (idString.isNullOrEmpty()) 0 else 1
-    val identifierAst = Identifier.Label(idString)
+    val identifierAst = Label(idString)
 
     return ParseResult(identifierAst, parseLength)
+}
+
+/**
+ * Parses a non-empty [Label] from the tokens at the given [startIndex]. If there is no non-empty
+ * [Label], returns `null`.
+ *
+ * See [parseLabel] for details of the grammar.
+ */
+fun List<Token>.parseNonEmptyLabel(startIndex: Int): ParseResult<Label>? =
+    (this[startIndex] as? kwasm.format.text.token.Identifier)
+        ?.let { ParseResult(Label(it.value), 1) }
+
+/**
+ * Parses a [List] of non-empty [Label]s from the tokens at the given [startIndex].  If there are
+ * no non-empty [Label]s, an empty list is returned.
+ */
+fun List<Token>.parseNonEmptyLabelList(startIndex: Int): ParseResult<AstNodeList<Label>> {
+    val result = mutableListOf<Label>()
+    var tokensRead = 0
+
+    while (true) {
+        val parsedLabel = parseNonEmptyLabel(startIndex + tokensRead) ?: break
+        result.add(parsedLabel.astNode)
+        tokensRead += parsedLabel.parseLength
+    }
+
+    return ParseResult(AstNodeList(result), tokensRead)
 }

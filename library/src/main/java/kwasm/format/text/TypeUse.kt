@@ -14,13 +14,17 @@
 
 package kwasm.format.text
 
+import kwasm.ast.Identifier
 import kwasm.ast.TypeUse
+import kwasm.format.ParseException
+import kwasm.format.text.token.Paren
 import kwasm.format.text.token.Token
 
 /**
  * Parses a [TypeUse] out of the [Token] [List] according to the following grammar from
- * [the docs](https://webassembly.github.io/spec/core/text/modules.html#text-typeuse), but showing
- * the format-only. For the required runtime checks are see [TypeUse]:
+ * [the docs](https://webassembly.github.io/spec/core/text/modules.html#text-typeuse).
+ *
+ * For the required runtime checks are see [TypeUse]:
  *
  * ```
  *   typeuse(I) ::=
@@ -30,6 +34,31 @@ import kwasm.format.text.token.Token
  *          ‘(’ ‘type’ x:typeidx(I) ‘)’ (t_1:param)* (t_2:result)*  => TypeUse(x, [t_1], [t_2])
  * ```
  */
-fun List<Token>.parseTypeUse(atIndex: Int): ParseResult<TypeUse> {
-    TODO("Implement me when Type, Param, and Result are merged.")
+fun List<Token>.parseTypeUse(fromIndex: Int): ParseResult<TypeUse> {
+    var tokensParsed = 0
+
+    val typeIndex = if (
+        getOrNull(fromIndex) is Paren.Open
+        && getOrNull(fromIndex + 1)?.isKeyword("type") == true
+    ) {
+        tokensParsed += 2
+        val typeIndex = parseIndex<Identifier.Type>(fromIndex + 2)
+        tokensParsed += typeIndex.parseLength
+        if (getOrNull(fromIndex + tokensParsed) !is Paren.Closed) {
+            throw ParseException(
+                "Expected \")\"",
+                getOrNull(fromIndex + tokensParsed)?.context
+                    ?: getOrNull(fromIndex + tokensParsed - 1)?.context
+            )
+        }
+        tokensParsed++
+        typeIndex.astNode
+    } else null
+
+    val params = parseParamList(fromIndex + tokensParsed)
+    tokensParsed += params.parseLength
+    val results = parseResultList(fromIndex + tokensParsed)
+    tokensParsed += results.parseLength
+
+    return ParseResult(TypeUse(typeIndex, params.astNode, results.astNode), tokensParsed)
 }
