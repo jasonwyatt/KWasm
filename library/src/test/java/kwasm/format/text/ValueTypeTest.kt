@@ -18,7 +18,8 @@ import com.google.common.truth.Truth.assertThat
 import kwasm.ast.ValueTypeEnum
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
-import org.assertj.core.api.Assertions
+import org.junit.Assert
+import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -50,16 +51,15 @@ class ValueTypeTest {
 
     @Test
     fun parseInvalidValueType_ValidKeyword() {
-        Assertions.assertThatThrownBy {
-            tokenizer.tokenize("abc", context).parseValueType(0)
-        }.isInstanceOf(ParseException::class.java)
-            .hasMessageContaining("Invalid ValueType: Expecting i32, i64, f32, or f64")
+        val exception =
+            assertThrows(ParseException::class.java) { tokenizer.tokenize("abc", context).parseValueType(0) }
+        assertThat(exception).hasMessageThat().contains("Invalid ValueType: Expecting i32, i64, f32, or f64")
     }
 
     @Test
     fun parseInvalidValueType_invalidKeyword() {
-        Assertions.assertThatThrownBy {
-            tokenizer.tokenize("\$abc", context).parseValueType(0)
-        }.isInstanceOf(ParseException::class.java).hasMessageContaining("Invalid ValueType: Expecting keyword token")
+        val exception =
+            assertThrows(ParseException::class.java) { tokenizer.tokenize("\$abc", context).parseValueType(0) }
+        assertThat(exception).hasMessageThat().contains("Invalid ValueType: Expecting keyword token")
     }
 }

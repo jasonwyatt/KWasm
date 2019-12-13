@@ -20,7 +20,7 @@ import kwasm.ast.Identifier
 import kwasm.ast.Index
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
-import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -72,19 +72,19 @@ class InstructionTest {
 
     @Test
     fun parsePlural_throwsIf_fromIndexInvalid_withPositiveMin() {
-        assertThatThrownBy {
+        val exception = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("", context).parseInstructions(0, min = 1)
-        }.isInstanceOf(ParseException::class.java)
-            .hasMessageContaining("Expected at least 1 instruction, found 0")
+        }
+        assertThat(exception).hasMessageThat().contains("Expected at least 1 instruction, found 0")
     }
 
     @Test
     fun parsePlural_throwsIf_insufficientInstructionsFound() {
-        assertThatThrownBy {
+        val exception = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("""unreachable not-an-instruction nop""", context)
                 .parseInstructions(0, min = 2)
-        }.isInstanceOf(ParseException::class.java)
-            .hasMessageContaining("Expected at least 2 instructions, found 1")
+        }
+        assertThat(exception).hasMessageThat().contains("Expected at least 2 instructions, found 1")
     }
 
     @Test

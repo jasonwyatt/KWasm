@@ -24,8 +24,8 @@ import kwasm.ast.ValueTypeEnum
 import kwasm.ast.astNodeListOf
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
-import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.assertj.core.api.Assertions.fail
+import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -95,7 +95,7 @@ class TypeUseTest {
     @Test
     fun parses_typeUse_withNoTypeIndex_paramsAndResults() {
         val result = tokenizer.tokenize("(param i32) (param f64) (result i32) (result f32)")
-                .parseTypeUse(0)
+            .parseTypeUse(0)
         assertThat(result.parseLength).isEqualTo(16)
         assertThat(result.astNode.index).isNull()
         assertThat(result.astNode.params).hasSize(2)
@@ -151,11 +151,13 @@ class TypeUseTest {
 
     @Test
     fun throws_whenTypeIndex_isInvalid() {
-        assertThatThrownBy { tokenizer.tokenize("(type not-an-id)").parseTypeUse(0) }
-            .isInstanceOf(ParseException::class.java).hasMessageContaining("Expected an index")
-        assertThatThrownBy {
+        val exception1 =
+            assertThrows(ParseException::class.java) { tokenizer.tokenize("(type not-an-id)").parseTypeUse(0) }
+        assertThat(exception1).hasMessageThat().contains("Expected an index")
+        val exception2 = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(type \$anId ;; but no closing paren").parseTypeUse(0)
-        }.isInstanceOf(ParseException::class.java).hasMessageContaining("Expected \")\"")
+        }
+        assertThat(exception2).hasMessageThat().contains("Expected \")\"")
     }
 
     @Test

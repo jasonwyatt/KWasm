@@ -14,14 +14,14 @@
 
 package kwasm.format.text
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import kwasm.ast.Identifier
 import kwasm.ast.Param
 import kwasm.ast.ValueType
 import kwasm.ast.ValueTypeEnum
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
-import org.assertj.core.api.Assertions
+import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -36,27 +36,29 @@ class ParamTest {
     fun parseValidParam_withId() {
         val expected = ParseResult(Param(Identifier.Local("\$val1"), ValueType(ValueTypeEnum.I32)), 5)
         val actual = tokenizer.tokenize("(param \$val1 i32)", context).parseParam(0)
-        Truth.assertThat(actual).isEqualTo(expected)
+        assertThat(actual).isEqualTo(expected)
     }
 
     @Test
     fun parseValidParam_withoutId() {
         val expected = ParseResult(Param(null, ValueType(ValueTypeEnum.I32)), 4)
         val actual = tokenizer.tokenize("(param i32)", context).parseParam(0)
-        Truth.assertThat(actual).isEqualTo(expected)
+        assertThat(actual).isEqualTo(expected)
     }
 
     @Test
     fun parseInvalidResultType_DifferentFunction() {
-        Assertions.assertThatThrownBy {
+        val exception = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(foo blah)", context).parseParam(0)
-        }.isInstanceOf(ParseException::class.java).hasMessageContaining("Invalid Param: Expecting \"param\"")
+        }
+        assertThat(exception).hasMessageThat().contains("Invalid Param: Expecting \"param\"")
     }
 
     @Test
     fun parseInvalidResultType_MissingValueType() {
-        Assertions.assertThatThrownBy {
+        val exception = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(param \$val1)", context).parseParam(0)
-        }.isInstanceOf(ParseException::class.java).hasMessageContaining("Invalid ValueType: Expecting keyword token")
+        }
+        assertThat(exception).hasMessageThat().contains("Invalid ValueType: Expecting keyword token")
     }
 }

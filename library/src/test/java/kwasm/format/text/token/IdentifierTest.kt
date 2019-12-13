@@ -17,8 +17,8 @@ package kwasm.format.text.token
 import com.google.common.truth.Truth.assertThat
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
-import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.assertj.core.api.Assertions.fail
+import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -28,16 +28,15 @@ class IdentifierTest {
     @Test
     fun emptyIdentifier_fails() {
         val actual = Identifier("$")
-        assertThatThrownBy { actual.value }
-            .isInstanceOf(ParseException::class.java).hasMessageContaining("Invalid identifier")
+        val exception = assertThrows(ParseException::class.java) { actual.value }
+        assertThat(exception).hasMessageThat().contains("Invalid identifier")
     }
 
     @Test
     fun identifierWithNoLeadingBling_fails() {
         val actual = Identifier("test")
-        assertThatThrownBy { actual.value }
-            .isInstanceOf(ParseException::class.java)
-            .hasMessageContaining("Identifier must begin with $")
+        val exception = assertThrows(ParseException::class.java) { actual.value }
+        assertThat(exception).hasMessageThat().contains("Identifier must begin with $")
     }
 
     @Test
@@ -93,9 +92,9 @@ class IdentifierTest {
     fun getAstValue_throwsWhenAskingFor_typeDef() {
         val parseNode =
             Identifier("\$this_should_fail,_later")
-        assertThatThrownBy { parseNode.getAstValue<kwasm.ast.Identifier.TypeDef>() }
-            .isInstanceOf(ParseException::class.java)
-            .hasMessageContaining("Unsupported AST Identifier")
+        val exception =
+            assertThrows(ParseException::class.java) { parseNode.getAstValue<kwasm.ast.Identifier.TypeDef>() }
+        assertThat(exception).hasMessageThat().contains("Unsupported AST Identifier")
     }
 
     @Test

@@ -17,8 +17,8 @@ package kwasm.format.text.token
 import com.google.common.truth.Truth.assertThat
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
-import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.assertj.core.api.Assertions.fail
+import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -89,7 +89,7 @@ class FloatLiteralTest {
         assertThat(actual.value).isWithin(TOLERANCE).of(15.0)
 
         actual = FloatLiteral("0x10.a")
-        assertThat(actual.value).isWithin(TOLERANCE).of(16.0 + 10/16.0)
+        assertThat(actual.value).isWithin(TOLERANCE).of(16.0 + 10 / 16.0)
     }
 
     @Test
@@ -129,86 +129,74 @@ class FloatLiteralTest {
 
         actual = FloatLiteral("0xF.ap2")
         assertThat(actual.value).isWithin(TOLERANCE)
-            .of((15 + 10/16.0) * 2.0.pow(2))
+            .of((15 + 10 / 16.0) * 2.0.pow(2))
 
         actual = FloatLiteral("0xAB.1p-2")
         assertThat(actual.value).isWithin(TOLERANCE)
-            .of((0xAB + 1/16.0) * 2.0.pow(-2))
+            .of((0xAB + 1 / 16.0) * 2.0.pow(-2))
     }
 
     @Test
     fun decimalThrows_whenHexEncountered() {
         // Case 1.
         var actual = FloatLiteral("a")
-        assertThatThrownBy { actual.value }
-            .isInstanceOf(ParseException::class.java)
+        assertThrows(ParseException::class.java) { actual.value }
 
         // Case 2.
         actual = FloatLiteral("a.1")
-        assertThatThrownBy { actual.value }
-            .isInstanceOf(ParseException::class.java)
+        assertThrows(ParseException::class.java) { actual.value }
 
         // Case 2.
         actual = FloatLiteral("1.a")
-        assertThatThrownBy { actual.value }
-            .isInstanceOf(ParseException::class.java)
+        assertThrows(ParseException::class.java) { actual.value }
 
         // Case 3.
         actual = FloatLiteral("aE1")
-        assertThatThrownBy { actual.value }
-            .isInstanceOf(ParseException::class.java)
+        assertThrows(ParseException::class.java) { actual.value }
 
         // Case 3.
         actual = FloatLiteral("1ea")
-        assertThatThrownBy { actual.value }
-            .isInstanceOf(ParseException::class.java)
+        assertThrows(ParseException::class.java) { actual.value }
 
         // Case 4.
         actual = FloatLiteral("5.1eA")
-        assertThatThrownBy { actual.value }
-            .isInstanceOf(ParseException::class.java)
+        assertThrows(ParseException::class.java) { actual.value }
 
         // Case 4.
         actual = FloatLiteral("5.Ae1")
-        assertThatThrownBy { actual.value }
-            .isInstanceOf(ParseException::class.java)
+        assertThrows(ParseException::class.java) { actual.value }
 
         // Case 4.
         actual = FloatLiteral("A.5e1")
-        assertThatThrownBy { actual.value }
-            .isInstanceOf(ParseException::class.java)
+        assertThrows(ParseException::class.java) { actual.value }
     }
 
     @Test
     fun decimalThrows_whenDotIsFirstElement() {
         val actual = FloatLiteral(".5")
-        assertThatThrownBy { actual.value }
-            .isInstanceOf(ParseException::class.java)
-            .hasMessageContaining("Invalid placement for decimal")
+        val exception = assertThrows(ParseException::class.java) { actual.value }
+        assertThat(exception).hasMessageThat().contains("Invalid placement for decimal")
     }
 
     @Test
     fun hexThrows_whenDotIsFirstElement() {
         val actual = FloatLiteral("0x.5")
-        assertThatThrownBy { actual.value }
-            .isInstanceOf(ParseException::class.java)
-            .hasMessageContaining("Invalid placement for decimal")
+        val exception = assertThrows(ParseException::class.java) { actual.value }
+        assertThat(exception).hasMessageThat().contains("Invalid placement for decimal")
     }
 
     @Test
     fun decimalThrows_whenExponentIsEmpty() {
         val actual = FloatLiteral("0.5e")
-        assertThatThrownBy { actual.value }
-            .isInstanceOf(ParseException::class.java)
-            .hasMessageContaining("Invalid exponent")
+        val exception = assertThrows(ParseException::class.java) { actual.value }
+        assertThat(exception).hasMessageThat().contains("Invalid exponent")
     }
 
     @Test
     fun hexThrows_whenExponentIsEmpty() {
         val actual = FloatLiteral("0x0.Ap")
-        assertThatThrownBy { actual.value }
-            .isInstanceOf(ParseException::class.java)
-            .hasMessageContaining("Invalid exponent")
+        val exception = assertThrows(ParseException::class.java) { actual.value }
+        assertThat(exception).hasMessageThat().contains("Invalid exponent")
     }
 
     @Test

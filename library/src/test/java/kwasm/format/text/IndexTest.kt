@@ -19,7 +19,7 @@ import kwasm.ast.Identifier
 import kwasm.ast.Index
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
-import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -32,9 +32,10 @@ class IndexTest {
 
     @Test
     fun parseIndex_throwsWithoutIdentifierOrUint() {
-        assertThatThrownBy {
+        val exception = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("()").parseIndex<Identifier.Type>(0)
-        }.isInstanceOf(ParseException::class.java).hasMessageContaining("Expected an index")
+        }
+        assertThat(exception).hasMessageThat().contains("Expected an index")
     }
 
     @Test
@@ -207,9 +208,9 @@ class IndexTest {
 
     @Test
     fun parseIndices_throwsIf_minIndices_notReached() {
-        assertThatThrownBy {
+        val exception = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("$0 $1").parseIndices<Identifier.Type>(0, min = 3)
-        }.isInstanceOf(ParseException::class.java)
-            .hasMessageContaining("Expected at least 3 indices, found 2")
+        }
+        assertThat(exception).hasMessageThat().contains("Expected at least 3 indices, found 2")
     }
 }

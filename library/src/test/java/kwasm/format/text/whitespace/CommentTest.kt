@@ -17,7 +17,7 @@ package kwasm.format.text.whitespace
 import com.google.common.truth.Truth.assertThat
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
-import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -38,13 +38,15 @@ class CommentTest {
 
     @Test
     fun stripComments_withBlockComment() {
-        val result = Comment.stripComments("""
+        val result = Comment.stripComments(
+            """
             (;
               this is a multiline
                 block comment
                (; with an inner block comment ;)
             ;)
-        """.trimIndent())
+        """.trimIndent()
+        )
         assertThat(result.tokens).isEmpty()
     }
 
@@ -68,22 +70,24 @@ class CommentTest {
             assertThat(token.context?.column).isEqualTo(comments[index].length + 1)
         }
 
-        result = Comment.stripComments("""
+        result = Comment.stripComments(
+            """
             (; a block comment ;) with some text before (; another block comment ;)
-        """.trimIndent(), CONTEXT)
+        """.trimIndent(), CONTEXT
+        )
         assertThat(result.tokens.size).isEqualTo(1)
         assertThat(result.tokens[0].sequence).isEqualTo(" with some text before ")
-        assertThat(result.tokens[0].context?.lineNumber).isEqualTo( 1)
-        assertThat(result.tokens[0].context?.column).isEqualTo( 22)
+        assertThat(result.tokens[0].context?.lineNumber).isEqualTo(1)
+        assertThat(result.tokens[0].context?.column).isEqualTo(22)
     }
 
     @Test
     fun stripComments_fails_ifClosingSequence_forBlockComment_notFound() {
-        assertThatThrownBy {
+        assertThrows(ParseException::class.java) {
             Comment.stripComments("(; this isn't closed")
-        }.isInstanceOf(ParseException::class.java)
+        }
 
-        assertThatThrownBy {
+        assertThrows(ParseException::class.java) {
             Comment.stripComments(
                 """
                 (; this isn't closed
@@ -92,9 +96,9 @@ class CommentTest {
                 even with stuff down here
                 """.trimIndent()
             )
-        }.isInstanceOf(ParseException::class.java)
+        }
 
-        assertThatThrownBy {
+        assertThrows(ParseException::class.java) {
             Comment.stripComments(
                 """
                 (; this isn't closed
@@ -102,9 +106,9 @@ class CommentTest {
                        (; especially when nested ones aren't closed
                 """.trimIndent()
             )
-        }.isInstanceOf(ParseException::class.java)
+        }
 
-        assertThatThrownBy {
+        assertThrows(ParseException::class.java) {
             Comment.stripComments(
                 """
                 (; this isn't closed
@@ -112,7 +116,7 @@ class CommentTest {
                        (; even if this one is ;) 
                 """.trimIndent()
             )
-        }.isInstanceOf(ParseException::class.java)
+        }
     }
 
     @Test
