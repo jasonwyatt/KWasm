@@ -2,8 +2,11 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel>
-      <module name="KWasm.library.main" target="1.8" />
-      <module name="KWasm.library.test" target="1.8" />
+      <module name="KWasm.docs.main" target="11" />
+      <module name="KWasm.docs.orchid" target="11" />
+      <module name="KWasm.docs.test" target="11" />
+      <module name="KWasm.library.main" target="11" />
+      <module name="KWasm.library.test" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>
