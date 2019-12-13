@@ -36,5 +36,3 @@ services:
         branch: gh-pages
         repo: 'KWasm'
         username: 'jasonwyatt'
-      githubReleases:
-        repo: 'jasonwyatt/KWasm'

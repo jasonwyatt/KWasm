@@ -16,6 +16,8 @@ plugins {
     id "com.eden.orchidPlugin" version "0.18.0"
 }
 
+version null
+
 // 1. Include all official Orchid plugins and themes
 dependencies {
     orchidCompile "io.github.javaeden.orchid:OrchidDocs:0.18.0"
@@ -34,5 +36,6 @@ repositories {
 orchid {
     theme = "Editorial"
     githubToken = System.getenv("KWASM_GITHUB_TOKEN")
+    baseUrl = 'https://jasonwyatt.github.io/KWasm/'
     args = ["--experimentalSourceDoc"]
 }
