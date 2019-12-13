@@ -23,7 +23,6 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import kotlin.math.max
 
 @RunWith(JUnit4::class)
 @Suppress("EXPERIMENTAL_UNSIGNED_LITERALS")
@@ -35,7 +34,7 @@ class IndexTest {
     fun parseIndex_throwsWithoutIdentifierOrUint() {
         assertThatThrownBy {
             tokenizer.tokenize("()").parseIndex<Identifier.Type>(0)
-        }.isInstanceOf(ParseException::class.java).hasMessageContaining("Expected index")
+        }.isInstanceOf(ParseException::class.java).hasMessageContaining("Expected an index")
     }
 
     @Test

@@ -21,7 +21,9 @@ import kwasm.ast.Index
 import kwasm.ast.Param
 import kwasm.ast.Result
 import kwasm.ast.TypeUse
+import kwasm.ast.ValueType
 import kwasm.ast.ValueTypeEnum
+import kwasm.ast.astNodeListOf
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -170,7 +172,6 @@ class ControlInstructionTest {
             .isEqualTo(Index.ByIdentifier(Identifier.Function("\$myFun")))
     }
 
-    @Ignore("TODO: remove ignore annotation once ready.")
     @Test
     fun parse_parsesCallIndirect() {
         val parsed = tokenizer
@@ -184,8 +185,8 @@ class ControlInstructionTest {
             .isEqualTo(
                 TypeUse(
                     Index.ByIdentifier(Identifier.Type("\$myType")),
-                    listOf(Param(null, ValueTypeEnum.I32)),
-                    listOf(Result(ValueTypeEnum.F32))
+                    astNodeListOf(Param(null, ValueType(ValueTypeEnum.I32))),
+                    astNodeListOf(Result(ValueType(ValueTypeEnum.F32)))
                 )
             )
     }

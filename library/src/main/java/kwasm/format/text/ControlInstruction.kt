@@ -125,6 +125,6 @@ private fun List<Token>.parseCallIndirectContInstruction(
 ): ParseResult<out ControlInstruction>? {
     this[fromIndex].asKeywordMatching("call_indirect") ?: return null
 
-    // TODO: Finish me once TypeUse is ready.
-    return null
+    val typeUse = parseTypeUse(fromIndex + 1)
+    return ParseResult(CallIndirect(typeUse.astNode), 1 + typeUse.parseLength)
 }

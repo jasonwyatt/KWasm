@@ -19,3 +19,6 @@ interface AstNode
 
 /** A list of [AstNode]s. */
 data class AstNodeList<T : AstNode>(private val members: List<T>) : List<T> by members, AstNode
+
+/** Convenience function to build an [AstNodeList] in a similar manner to other list types. */
+fun <T : AstNode> astNodeListOf(vararg values: T): AstNodeList<T> = AstNodeList(listOf(*values))
