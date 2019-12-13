@@ -1,0 +1,41 @@
+/*
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+plugins {
+    id "com.eden.orchidPlugin" version "0.18.0"
+}
+
+version null
+
+// 1. Include all official Orchid plugins and themes
+dependencies {
+    orchidCompile "io.github.javaeden.orchid:OrchidDocs:0.18.0"
+    orchidCompile "io.github.javaeden.orchid:OrchidKotlindoc:0.18.0"
+    orchidCompile "io.github.javaeden.orchid:OrchidPluginDocs:0.18.0"
+    orchidCompile "io.github.javaeden.orchid:OrchidGithub:0.18.0"
+}
+
+// 2. Get Orchid from Jcenter
+repositories {
+    jcenter()
+    maven { url = "https://kotlin.bintray.com/kotlinx/" }
+}
+
+// 3. Use the 'Editorial' theme, and view the site locally at 'http://localhost:8080'
+orchid {
+    theme = "Editorial"
+    githubToken = System.getenv("KWASM_GITHUB_TOKEN")
+    baseUrl = 'https://jasonwyatt.github.io/KWasm/'
+    args = ["--experimentalSourceDoc"]
+}

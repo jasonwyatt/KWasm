@@ -12,5 +12,7 @@
  * limitations under the License.
  */
 
-include ':library', ':docs'
-rootProject.name='KWasm'
+package kwasm.ast
+
+/** Base for all instruction [AstNode] implementations. */
+interface Instruction : AstNode

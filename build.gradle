@@ -17,11 +17,13 @@
 buildscript {
     ext.kotlin_version = '1.3.61'
     ext.atomicfu_version = '0.14.1'
+    ext.dokka_version = '0.10.0'
+    ext.orchid_version = '0.18.0'
 
     repositories {
         google()
         jcenter()
-
+        maven { url 'https://jitpack.io' }
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -30,12 +32,18 @@ buildscript {
 }
 
 allprojects {
+    version "0.1.0"
+
     repositories {
         google()
         jcenter()
+        maven { url 'https://jitpack.io' }
     }
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+subprojects {
+    tasks.withType(Jar) {
+        archivesBaseName = "kwasm-$project.name"
+    }
 }
+
