@@ -29,13 +29,22 @@ fun List<Token>.parseInstructions(
     min: Int = 0,
     max: Int = Int.MAX_VALUE
 ): ParseResult<AstNodeList<out Instruction>> {
+    if (fromIndex !in 0 until size) {
+        if (min == 0) return ParseResult(AstNodeList(emptyList()), 0)
+        throw ParseException(
+            "Expected at least $min instruction${if (min > 1) "s" else ""}, found 0",
+            getOrNull(fromIndex - 1)?.context
+        )
+    }
+
     val result = mutableListOf<Instruction>()
     var tokensParsed = 0
     var instructionsParsed = 0
 
-    while (instructionsParsed < max) {
+    while (instructionsParsed < max && fromIndex + tokensParsed < size) {
         try {
             val instruction = parseInstruction(fromIndex + tokensParsed) ?: break
+            result += instruction.astNode
             tokensParsed += instruction.parseLength
             instructionsParsed++
         } catch (e: ParseException) { break }
@@ -43,8 +52,9 @@ fun List<Token>.parseInstructions(
 
     if (instructionsParsed < min) {
         throw ParseException(
-            "Expected at least $min instructions, only found $instructionsParsed",
-            this[fromIndex].context
+            "Expected at least $min instruction${if (min > 1) "s" else ""}, " +
+                "found $instructionsParsed",
+            getOrNull(fromIndex)?.context ?: getOrNull(fromIndex - 1)?.context
         )
     }
 

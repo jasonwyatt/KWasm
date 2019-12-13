@@ -196,4 +196,12 @@ class ControlInstructionTest {
             .parseControlInstruction(0)
         assertThat(parsed).isNull()
     }
+
+    @Test
+    fun controlInstruction_usedBy_parseInstruction() {
+        val parsed = tokenizer.tokenize("unreachable", context).parseInstruction(0)
+            ?: fail("Expected instruction")
+        assertThat(parsed.parseLength).isEqualTo(1)
+        assertThat(parsed.astNode).isEqualTo(ControlInstruction.Unreachable)
+    }
 }
