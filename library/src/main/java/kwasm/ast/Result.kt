@@ -18,10 +18,8 @@ package kwasm.ast
  * Data class to hold a result's valuetype
  * from [the docs](https://webassembly.github.io/spec/core/text/types.html#function-types):
  *
- * Where Result is a [kwasm.format.text.Type.Result]:
- *
  * ```
  *   result   ::=  ‘(’ ‘result’  t:valtype ‘)’  => t
  * ```
  */
-data class Result(val valTypeEnum: ValueTypeEnum) : AstNode
+data class Result(val valType: ValueType) : AstNode

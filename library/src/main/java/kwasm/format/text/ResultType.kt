@@ -12,20 +12,17 @@
  * limitations under the License.
  */
 
-package kwasm.ast
+package kwasm.format.text
 
-/**
- * From [the docs](https://webassembly.github.io/spec/core/text/types.html#value-types):
- *
- * ```
- *   valtype ::=  { 'i32' -> I32
- *                  'i64' -> I64
- *                  'f32' -> F32
- *                  'f64' -> F64 }
- * ```
- */
-enum class ValueTypeEnum {
-    I32, I64, F32, F64
+import kwasm.ast.ResultType
+import kwasm.format.text.token.Keyword
+import kwasm.format.text.token.Token
+
+fun List<Token>.parseResultType(currentIndex: Int): ParseResult<ResultType> {
+    val maybeResultKeyword = this[currentIndex + 1]
+    if (maybeResultKeyword !is Keyword || maybeResultKeyword.value != "result") {
+        return ParseResult(ResultType(null), 0)
+    }
+    val parsedResult = this.parseResult(currentIndex)
+    return ParseResult(ResultType(parsedResult.astNode), parsedResult.parseLength)
 }
-
-data class ValueType(val valueType: ValueTypeEnum) : AstNode

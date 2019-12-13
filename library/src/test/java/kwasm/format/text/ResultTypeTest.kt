@@ -17,6 +17,8 @@ package kwasm.format.text
 import com.google.common.truth.Truth
 import kwasm.ast.ValueTypeEnum
 import kwasm.format.ParseException
+import kwasm.format.text.token.Keyword
+import kwasm.format.text.token.Paren
 import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -26,28 +28,32 @@ import org.junit.runners.JUnit4
 class ResultTypeTest {
     @Test
     fun parseValidResultType_Exists() {
-        val expected = kwasm.ast.Result(ValueTypeEnum.I32)
-        val actual = Type.ResultType("(result i32)", null)
-        Truth.assertThat(actual.value?.value).isEqualTo(expected)
-    }
-
-    @Test
-    fun parseValidResultType_EmptySequence() {
-        val actual = Type.ResultType("", null)
-        Truth.assertThat(actual.value).isEqualTo(null)
+        val expected = ParseResult(kwasm.ast.ResultType(kwasm.ast.Result(kwasm.ast.ValueType(ValueTypeEnum.I32))), 4)
+        val actual = listOf(
+            Paren.Open(), Keyword("result"),
+            Keyword("i32"), Paren.Closed()
+        ).parseResultType(0)
+        Truth.assertThat(actual).isEqualTo(expected)
     }
 
     @Test
     fun parseInvalidResultType_DifferentFunction() {
-        Assertions.assertThatThrownBy {
-            Type.ResultType("(foo blah)", null).value?.value
-        }.isInstanceOf(ParseException::class.java).hasMessageContaining("Invalid Result syntax")
+        val expected = ParseResult(kwasm.ast.ResultType(null), 0)
+        val actual = listOf(
+            Paren.Open(), Keyword("foo"),
+            Keyword("bar"), Paren.Closed()
+        ).parseResultType(0)
+        Truth.assertThat(actual).isEqualTo(expected)
     }
 
     @Test
     fun parseInvalidResultType_BadValueType() {
         Assertions.assertThatThrownBy {
-            Type.ResultType("(result blah)", null).value?.value
-        }.isInstanceOf(ParseException::class.java).hasMessageContaining("Invalid ValueType")
+            listOf(
+                Paren.Open(), Keyword("result"),
+                Keyword("blah"), Paren.Closed()
+            ).parseResultType(0)
+        }.isInstanceOf(ParseException::class.java)
+            .hasMessageContaining("Invalid ValueType: Expecting i32, i64, f32, or f64")
     }
 }

@@ -18,11 +18,9 @@ package kwasm.ast
  * Data class encapsulating the value type and mutability of a GlobalType in the spec.
  * From [the docs](https://webassembly.github.io/spec/core/text/types.html#global-types):
  *
- * Where globaltype is a [kwasm.format.text.Type.GlobalType]:
- *
  * ```
  *   globaltype ::=  t:valtype                => const t
  *                   ‘(’ ‘mut’  t:valtype ‘)’ => var t
  * ```
  */
-data class GlobalType(val valueTypeEnum: ValueTypeEnum, val mutable: Boolean) : AstNode
+data class GlobalType(val valueType: ValueType, val mutable: Boolean) : AstNode

@@ -16,10 +16,14 @@ package kwasm.format.text
 
 import com.google.common.truth.Truth.assertThat
 import kwasm.ast.FunctionType
-import kwasm.ast.Identifier
 import kwasm.ast.Param
+import kwasm.ast.Result
+import kwasm.ast.ValueType
 import kwasm.ast.ValueTypeEnum
 import kwasm.format.ParseException
+import kwasm.format.text.token.Identifier
+import kwasm.format.text.token.Keyword
+import kwasm.format.text.token.Paren
 import org.assertj.core.api.Assertions
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -29,48 +33,81 @@ import org.junit.runners.JUnit4
 class FunctionTypeTest {
     @Test
     fun parseValidFunctionType_OneParamOneReturn() {
-        val onlyParam = listOf(Param(Identifier.Local("\$val1"), ValueTypeEnum.I32))
-        val onlyReturnType = listOf(ValueTypeEnum.I32)
-        val expected = FunctionType(onlyParam, onlyReturnType)
-        val actual = Type.FunctionType("(func (param \$val1 i32) (result i32))")
-        assertThat(actual.value).isEqualTo(expected)
+        val onlyParam = listOf(Param(kwasm.ast.Identifier.Local("\$val1"), ValueType(ValueTypeEnum.I32)))
+        val onlyReturnType = listOf(Result(ValueType(ValueTypeEnum.I32)))
+        val expected = ParseResult(FunctionType(onlyParam, onlyReturnType), 12)
+        val actual = listOf(
+            Paren.Open(), Keyword("func"), Paren.Open(),
+            Keyword("param"), Identifier("\$val1"), Keyword("i32"),
+            Paren.Closed(), Paren.Open(), Keyword("result"), Keyword("i32"),
+            Paren.Closed(), Paren.Closed()
+        ).parseFunctionType(0)
+        assertThat(actual).isEqualTo(expected)
     }
 
     @Test
     fun parseValidFunctionType_MultiParamMultiReturn() {
-        val params =
-            listOf(
-                Param(Identifier.Local("\$val1"), ValueTypeEnum.I32),
-                Param(Identifier.Local("\$val2"), ValueTypeEnum.I64)
-            )
-        val returnTypes = listOf(ValueTypeEnum.I32, ValueTypeEnum.I64)
-        val expected = FunctionType(params, returnTypes)
-        val actual = Type.FunctionType("(func (param \$val1 i32) (param \$val2 i64) (result i32) (result i64))")
-        assertThat(actual.value).isEqualTo(expected)
+        val params = listOf(
+            Param(kwasm.ast.Identifier.Local("\$val1"), ValueType(ValueTypeEnum.I32)),
+            Param(kwasm.ast.Identifier.Local("\$val2"), ValueType(ValueTypeEnum.I64))
+        )
+        val returnTypes = listOf(Result(ValueType(ValueTypeEnum.I32)), Result(ValueType(ValueTypeEnum.I64)))
+        val expected = ParseResult(FunctionType(params, returnTypes), 21)
+        val actual = listOf(
+            Paren.Open(), Keyword("func"), Paren.Open(),
+            Keyword("param"), Identifier("\$val1"), Keyword("i32"),
+            Paren.Closed(), Paren.Open(), Keyword("param"), Identifier("\$val2"),
+            Keyword("i64"), Paren.Closed(), Paren.Open(), Keyword("result"),
+            Keyword("i32"), Paren.Closed(), Paren.Open(), Keyword("result"),
+            Keyword("i64"), Paren.Closed(), Paren.Closed()
+        ).parseFunctionType(0)
+        assertThat(actual).isEqualTo(expected)
     }
 
     @Test
     fun parseValidFunctionType_SingleParamVoidReturn() {
-        val params = listOf(Param(Identifier.Local("\$val1"), ValueTypeEnum.I32))
-        val returnTypes = listOf<ValueTypeEnum>()
-        val expected = FunctionType(params, returnTypes)
-        val actual = Type.FunctionType("(func (param \$val1 i32))")
-        assertThat(actual.value).isEqualTo(expected)
+        val onlyParam = listOf(Param(kwasm.ast.Identifier.Local("\$val1"), ValueType(ValueTypeEnum.I32)))
+        val expected = ParseResult(FunctionType(onlyParam, listOf()), 8)
+        val actual = listOf(
+            Paren.Open(), Keyword("func"), Paren.Open(),
+            Keyword("param"), Identifier("\$val1"), Keyword("i32"),
+            Paren.Closed(), Paren.Closed()
+        ).parseFunctionType(0)
+        assertThat(actual).isEqualTo(expected)
     }
 
     @Test
     fun parseValidFunctionType_NoParamSingleReturn() {
-        val params = listOf<Param>()
-        val returnTypes = listOf(ValueTypeEnum.I32)
-        val expected = FunctionType(params, returnTypes)
-        val actual = Type.FunctionType("(func (result i32))")
-        assertThat(actual.value).isEqualTo(expected)
+        val onlyReturnType = listOf(Result(ValueType(ValueTypeEnum.I32)))
+        val expected = ParseResult(FunctionType(listOf(), onlyReturnType), 7)
+        val actual = listOf(
+            Paren.Open(), Keyword("func"), Paren.Open(),
+            Keyword("result"), Keyword("i32"),
+            Paren.Closed(), Paren.Closed()
+        ).parseFunctionType(0)
+        assertThat(actual).isEqualTo(expected)
+    }
+
+    @Test
+    fun parseValidFunctionType_NoParamNoReturn() {
+        val expected = ParseResult(FunctionType(listOf(), listOf()), 3)
+        val actual = listOf(
+            Paren.Open(), Keyword("func"),
+            Paren.Closed()
+        ).parseFunctionType(0)
+        assertThat(actual).isEqualTo(expected)
     }
 
     @Test
     fun parseInvalidFunctionType_FlippedParams() {
         Assertions.assertThatThrownBy {
-            Type.FunctionType("(func (result i32) (param \$val1 i32))").value
-        }.isInstanceOf(ParseException::class.java).hasMessageContaining("Invalid FunctionType Syntax")
+            listOf(
+                Paren.Open(), Keyword("func"), Paren.Open(),
+                Keyword("result"), Keyword("i32"),
+                Paren.Closed(), Paren.Open(), Keyword("param"),
+                Identifier("\$val1"), Keyword("i32"),
+                Paren.Closed(), Paren.Closed()
+            ).parseFunctionType(0)
+        }.isInstanceOf(ParseException::class.java).hasMessageContaining("Invalid FunctionType: Expecting result token")
     }
 }
