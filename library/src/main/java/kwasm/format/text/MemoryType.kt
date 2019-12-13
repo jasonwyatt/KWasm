@@ -15,8 +15,6 @@
 package kwasm.format.text
 
 import kwasm.ast.Memory
-import kwasm.format.ParseException
-import kwasm.format.text.token.Keyword
 import kwasm.format.text.token.Token
 
 /**
@@ -27,13 +25,6 @@ import kwasm.format.text.token.Token
  */
 @UseExperimental(ExperimentalUnsignedTypes::class)
 fun List<Token>.parseMemoryType(startingIndex: Int): ParseResult<Memory> {
-    val keyword =
-        this[startingIndex] as? Keyword ?: throw ParseException("Expected keyword", this[startingIndex].context)
-    if (keyword.value != "memory") throw ParseException(
-        "Expected 'memory' keyword but found ${keyword.value}",
-        keyword.context
-    )
-    val limitsIndex = startingIndex + 1
-    val limits = this.parseLimits(limitsIndex)
-    return ParseResult(Memory(limits.astNode), limits.parseLength + 1)
+    val limits = this.parseLimits(startingIndex)
+    return ParseResult(Memory(limits.astNode), limits.parseLength)
 }
