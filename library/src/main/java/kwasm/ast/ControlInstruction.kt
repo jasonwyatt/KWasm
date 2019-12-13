@@ -30,8 +30,8 @@ package kwasm.ast
  *          => block rt in* end (if id? = ϵ ∨ id? = label)
  *      ‘loop’ I′:label(I) rt:resulttype (in:instr(I′))* ‘end’ id?
  *          => loop rt in* end (if id? = ϵ ∨ id? = label)
- *      ‘if’ I′:label(I) rt:resulttype (in^1:instr(I′))∗ (‘else’ id?^1 (in^2:instr(I'))*)? ‘end’ id?^2
-            => if rt in*^1 else in*2 end (if id?^1 = ϵ ∨ id?^1 = label, id?^2 = ϵ ∨ id?^2 = label)
+ *      ‘if’ I′:label(I) rt:resulttype (in^1:instr(I′))* (‘else’ id?^1 (in^2:instr(I'))*)? ‘end’ id?^2
+ *          => if rt in*^1 else in*2 end (if id?^1 = ϵ ∨ id?^1 = label, id?^2 = ϵ ∨ id?^2 = label)
  * ```
  *
  * All other control instruction are represented verbatim.
@@ -54,19 +54,19 @@ package kwasm.ast
 sealed class ControlInstruction : Instruction {
     data class Block(
         val label: Identifier.Label,
-        val result: Result?,
+        val result: ResultType,
         val instructions: List<Instruction>
     ) : ControlInstruction()
 
     data class Loop(
         val label: Identifier.Label,
-        val result: Result?,
+        val result: ResultType,
         val instructions: List<Instruction>
     ) : ControlInstruction()
 
     data class If(
         val label: Identifier.Label,
-        val result: Result?,
+        val result: ResultType,
         val positiveInstructions: List<Instruction>,
         val negativeInstructions: List<Instruction>
     ) : ControlInstruction()
