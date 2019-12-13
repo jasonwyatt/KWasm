@@ -16,6 +16,7 @@ package kwasm.format.text
 
 import com.google.common.truth.Truth
 import kwasm.ast.ValueTypeEnum
+import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import org.assertj.core.api.Assertions
 import org.junit.Test
@@ -24,30 +25,29 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class ResultTypeTest {
-    @Test
-    fun parseValidResultType_Exists() {
-        val expected = kwasm.ast.Result(ValueTypeEnum.I32)
-        val actual = Type.ResultType("(result i32)", null)
-        Truth.assertThat(actual.value?.value).isEqualTo(expected)
-    }
+
+    private val context = ParseContext("ResultTypeTest.wasm", 1, 1)
+    private val tokenizer = Tokenizer()
 
     @Test
-    fun parseValidResultType_EmptySequence() {
-        val actual = Type.ResultType("", null)
-        Truth.assertThat(actual.value).isEqualTo(null)
+    fun parseValidResultType_Exists() {
+        val expected = ParseResult(kwasm.ast.ResultType(kwasm.ast.Result(kwasm.ast.ValueType(ValueTypeEnum.I32))), 4)
+        val actual = tokenizer.tokenize("(result i32)", context).parseResultType(0)
+        Truth.assertThat(actual).isEqualTo(expected)
     }
 
     @Test
     fun parseInvalidResultType_DifferentFunction() {
-        Assertions.assertThatThrownBy {
-            Type.ResultType("(foo blah)", null).value?.value
-        }.isInstanceOf(ParseException::class.java).hasMessageContaining("Invalid Result syntax")
+        val expected = ParseResult(kwasm.ast.ResultType(null), 0)
+        val actual = tokenizer.tokenize("(foo bar)", context).parseResultType(0)
+        Truth.assertThat(actual).isEqualTo(expected)
     }
 
     @Test
     fun parseInvalidResultType_BadValueType() {
         Assertions.assertThatThrownBy {
-            Type.ResultType("(result blah)", null).value?.value
-        }.isInstanceOf(ParseException::class.java).hasMessageContaining("Invalid ValueType")
+            tokenizer.tokenize("(result blah)", context).parseResultType(0)
+        }.isInstanceOf(ParseException::class.java)
+            .hasMessageContaining("Invalid ValueType: Expecting i32, i64, f32, or f64")
     }
 }

@@ -17,7 +17,9 @@ package kwasm.format.text
 import com.google.common.truth.Truth
 import kwasm.ast.Identifier
 import kwasm.ast.Param
+import kwasm.ast.ValueType
 import kwasm.ast.ValueTypeEnum
+import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import org.assertj.core.api.Assertions
 import org.junit.Test
@@ -26,31 +28,35 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class ParamTest {
+
+    private val context = ParseContext("ParamTest.wasm", 1, 1)
+    private val tokenizer = Tokenizer()
+
     @Test
     fun parseValidParam_withId() {
-        val expected = Param(Identifier.Local("\$val1"), ValueTypeEnum.I32)
-        val actual = Type.Param("(param \$val1 i32)", null)
-        Truth.assertThat(actual.value).isEqualTo(expected)
+        val expected = ParseResult(Param(Identifier.Local("\$val1"), ValueType(ValueTypeEnum.I32)), 5)
+        val actual = tokenizer.tokenize("(param \$val1 i32)", context).parseParam(0)
+        Truth.assertThat(actual).isEqualTo(expected)
     }
 
     @Test
     fun parseValidParam_withoutId() {
-        val expected = Param(null, ValueTypeEnum.I32)
-        val actual = Type.Param("(param i32)", null)
-        Truth.assertThat(actual.value).isEqualTo(expected)
+        val expected = ParseResult(Param(null, ValueType(ValueTypeEnum.I32)), 4)
+        val actual = tokenizer.tokenize("(param i32)", context).parseParam(0)
+        Truth.assertThat(actual).isEqualTo(expected)
     }
 
     @Test
     fun parseInvalidResultType_DifferentFunction() {
         Assertions.assertThatThrownBy {
-            Type.Param("(foo blah)", null).value
-        }.isInstanceOf(ParseException::class.java).hasMessageContaining("Invalid Param syntax")
+            tokenizer.tokenize("(foo blah)", context).parseParam(0)
+        }.isInstanceOf(ParseException::class.java).hasMessageContaining("Invalid Param: Expecting \"param\"")
     }
 
     @Test
     fun parseInvalidResultType_MissingValueType() {
         Assertions.assertThatThrownBy {
-            Type.Param("(param \$val1)", null).value
-        }.isInstanceOf(ParseException::class.java).hasMessageContaining("Invalid ValueType")
+            tokenizer.tokenize("(param \$val1)", context).parseParam(0)
+        }.isInstanceOf(ParseException::class.java).hasMessageContaining("Invalid ValueType: Expecting keyword token")
     }
 }

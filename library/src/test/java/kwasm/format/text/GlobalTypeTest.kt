@@ -15,7 +15,10 @@
 package kwasm.format.text
 
 import com.google.common.truth.Truth
+import kwasm.ast.GlobalType
+import kwasm.ast.ValueType
 import kwasm.ast.ValueTypeEnum
+import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import org.assertj.core.api.Assertions
 import org.junit.Test
@@ -24,33 +27,36 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class GlobalTypeTest {
+
+    private val context = ParseContext("GlobalTypeTest.wasm", 1, 1)
+    private val tokenizer = Tokenizer()
+
     @Test
     fun parseValidGlobalType_NonMutable() {
-        val expectedValuetype = ValueTypeEnum.I32
-        val actual = Type.GlobalType("i32", null)
-        Truth.assertThat(actual.value.valueTypeEnum).isEqualTo(expectedValuetype)
-        Truth.assertThat(actual.value.mutable).isFalse()
+        val expectedValuetype = ParseResult(GlobalType(ValueType(ValueTypeEnum.I32), false), 1)
+        val actual = tokenizer.tokenize("i32", context).parseGlobalType(0)
+        Truth.assertThat(actual).isEqualTo(expectedValuetype)
     }
 
     @Test
     fun parseValidResultType_Mutable() {
-        val expectedValuetype = ValueTypeEnum.I32
-        val actual = Type.GlobalType("(mut i32)", null)
-        Truth.assertThat(actual.value.valueTypeEnum).isEqualTo(expectedValuetype)
-        Truth.assertThat(actual.value.mutable).isTrue()
+        val expectedValuetype = ParseResult(GlobalType(ValueType(ValueTypeEnum.I32), true), 4)
+        val actual = tokenizer.tokenize("(mut i32)", context).parseGlobalType(0)
+        Truth.assertThat(actual).isEqualTo(expectedValuetype)
     }
 
     @Test
     fun parseInvalidResultType_DifferentFunction() {
         Assertions.assertThatThrownBy {
-            Type.GlobalType("(foo blah)", null).value
-        }.isInstanceOf(ParseException::class.java).hasMessageContaining("Invalid GlobalType syntax")
+            tokenizer.tokenize("(foo bar)", context).parseGlobalType(0)
+        }.isInstanceOf(ParseException::class.java).hasMessageContaining("Invalid GlobalType: Expecting \"mut\"")
     }
 
     @Test
     fun parseInvalidResultType_BadValueType() {
         Assertions.assertThatThrownBy {
-            Type.GlobalType("(mut blah)", null).value
-        }.isInstanceOf(ParseException::class.java).hasMessageContaining("Invalid ValueType")
+            tokenizer.tokenize("(mut blah)", context).parseGlobalType(0)
+        }.isInstanceOf(ParseException::class.java)
+            .hasMessageContaining("Invalid ValueType: Expecting i32, i64, f32, or f64")
     }
 }

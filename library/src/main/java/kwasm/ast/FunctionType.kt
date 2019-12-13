@@ -18,8 +18,6 @@ package kwasm.ast
  * Data class to hold the parameters and results of a FunctionType
  * from [the docs](https://webassembly.github.io/spec/core/text/types.html#function-types):
  *
- * Where functype is a [kwasm.format.text.Type.FunctionType]:
- *
  * ```
  *   functype ::=  ‘(’ ‘func’  t*1:vec(param)  t*2:vec(result) ‘)’ => [t*1]→[t*2]
  *   param    ::=  ‘(’ ‘param’  id?  t:valtype ‘)’                 => t
@@ -28,5 +26,5 @@ package kwasm.ast
  */
 data class FunctionType(
     val parameters: List<Param>,
-    val returnValueEnums: List<ValueTypeEnum>
+    val returnValueEnums: List<Result>
 ) : AstNode
