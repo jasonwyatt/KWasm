@@ -19,7 +19,7 @@ package kwasm.format
  *
  * Primarily used in conjunction with [ParseException].
  */
-data class ParseContext(val fileName: String, val lineNumber: Int, val column: Int) {
+data class ParseContext(val fileName: String, val lineNumber: Int = 1, val column: Int = 1) {
     override fun toString(): String = "${fileName}:$lineNumber:$column"
 }
 
