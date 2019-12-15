@@ -97,8 +97,11 @@ sealed class IntegerLiteral<Type>(
             return num.value
         }
 
-        override fun checkMagnitude(value: ULong, magnitude: Int): Boolean =
-            value.toDouble() < 2.0.pow(magnitude)
+        override fun checkMagnitude(value: ULong, magnitude: Int): Boolean = when (magnitude) {
+            32 -> value <= UInt.MAX_VALUE
+            64 -> value <= ULong.MAX_VALUE
+            else -> value.toDouble() < 2.0.pow(magnitude)
+        }
 
         override fun toUnsigned(): Unsigned = this
 
@@ -140,6 +143,8 @@ sealed class IntegerLiteral<Type>(
         }
 
         override fun checkMagnitude(value: Long, magnitude: Int): Boolean {
+            if (magnitude == 32) return value in Int.MIN_VALUE..Int.MAX_VALUE
+            if (magnitude == 64) return value in Long.MIN_VALUE..Long.MAX_VALUE
             val doubleValue = value.toDouble()
             val extent = 2.0.pow(magnitude - 1)
             return -extent <= doubleValue && doubleValue < extent
