@@ -20,24 +20,19 @@ import kwasm.format.text.token.FloatLiteral
 import kwasm.format.text.token.IntegerLiteral
 import kwasm.format.text.token.StringLiteral
 import kwasm.format.text.token.Token
+import kotlin.reflect.KClass
 
 /** Parses a [Literal] of type [T] from the receiving [List] of [Token]s at the given position. */
 @UseExperimental(ExperimentalUnsignedTypes::class)
-inline fun <reified T> List<Token>.parseLiteral(fromIndex: Int): ParseResult<Literal<T>> {
+fun <T : Any> List<Token>.parseLiteral(
+    fromIndex: Int,
+    asClass: KClass<T>
+): ParseResult<Literal<T>> {
     val node = getOrNull(fromIndex)
     val context = node?.context ?: getOrNull(fromIndex - 1)?.context
 
     @Suppress("UNCHECKED_CAST")
-    val literalNode = when (T::class) {
-        Int::class -> {
-            var literalToken = node as? IntegerLiteral.Signed
-                ?: node as? IntegerLiteral.Unsigned
-                ?: throw ParseException("Expected i32", context)
-            literalToken = literalToken.toSigned()
-            literalToken.magnitude = 32
-
-            kwasm.ast.IntegerLiteral.S32(literalToken.value.toInt())
-        }
+    val literalNode = when (asClass) {
         UInt::class -> {
             var literalToken = node as? IntegerLiteral.Signed
                 ?: node as? IntegerLiteral.Unsigned
@@ -47,14 +42,14 @@ inline fun <reified T> List<Token>.parseLiteral(fromIndex: Int): ParseResult<Lit
 
             kwasm.ast.IntegerLiteral.U32(literalToken.value.toUInt())
         }
-        Long::class -> {
+        Int::class -> {
             var literalToken = node as? IntegerLiteral.Signed
                 ?: node as? IntegerLiteral.Unsigned
-                ?: throw ParseException("Expected i64", context)
+                ?: throw ParseException("Expected i32", context)
             literalToken = literalToken.toSigned()
-            literalToken.magnitude = 64
+            literalToken.magnitude = 32
 
-            kwasm.ast.IntegerLiteral.S64(literalToken.value)
+            kwasm.ast.IntegerLiteral.S32(literalToken.value.toInt())
         }
         ULong::class -> {
             var literalToken = node as? IntegerLiteral.Signed
@@ -63,6 +58,15 @@ inline fun <reified T> List<Token>.parseLiteral(fromIndex: Int): ParseResult<Lit
             literalToken = literalToken.toUnsigned()
 
             kwasm.ast.IntegerLiteral.U64(literalToken.value)
+        }
+        Long::class -> {
+            var literalToken = node as? IntegerLiteral.Signed
+                ?: node as? IntegerLiteral.Unsigned
+                ?: throw ParseException("Expected i64", context)
+            literalToken = literalToken.toSigned()
+            literalToken.magnitude = 64
+
+            kwasm.ast.IntegerLiteral.S64(literalToken.value)
         }
         Float::class -> {
             val literalToken = node as? FloatLiteral
@@ -84,7 +88,9 @@ inline fun <reified T> List<Token>.parseLiteral(fromIndex: Int): ParseResult<Lit
 
             kwasm.ast.StringLiteral(literalToken.value)
         }
-        else -> throw ParseException("Expected literal value", context)
+        else -> throw ParseException(
+            "Type ${asClass.java.simpleName} is not a supported literal type", context
+        )
     } as Literal<T>
 
     return ParseResult(literalNode, 1)

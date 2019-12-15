@@ -15,28 +15,48 @@
 package kwasm.ast
 
 /** Base for all literal values in the AST. */
-interface Literal<T> : AstNode {
-    val value: T
+abstract class Literal<T> : AstNode {
+    abstract val value: T
+
+    override fun equals(other: Any?): Boolean = other is Literal<*> && value == other.value
+
+    override fun hashCode(): Int = value.hashCode()
+
+    override fun toString(): String = "${javaClass.simpleName}(value=$value)"
 }
 
-/** Base for all [Literal] classes which represent an integer or long value. */
+/** [Literal] Representation of an unsigned [Int] (as [UInt]). */
 @UseExperimental(ExperimentalUnsignedTypes::class)
-sealed class IntegerLiteral<T> : Literal<T> {
+sealed class IntegerLiteral<T> : Literal<T>() {
     /** [Literal] Representation of an unsigned [Int] (as [UInt]). */
-    data class U32(override val value: UInt) : IntegerLiteral<UInt>()
+    class U32(private val orig: UInt) : IntegerLiteral<UInt>() {
+        override val value: UInt by lazy {
+            // This is a stupid hack around a bug with unsigned types in Kotlin. The issue is that
+            // the JVM sees a java.lang.Integer, not an `int`, and there  is no
+            // java.lang.Integer.toUInt() method.
+            orig.toInt().toUInt()
+        }
+    }
 
     /** [Literal] Representation of a signed [Int]. */
-    data class S32(override val value: Int) : IntegerLiteral<Int>()
+    class S32(override val value: Int) : IntegerLiteral<Int>()
 
     /** [Literal] Representation of an unsigned [Long] (as [ULong]). */
-    data class U64(override val value: ULong) : IntegerLiteral<ULong>()
+    class U64(private val orig: ULong) : IntegerLiteral<ULong>() {
+        override val value: ULong by lazy {
+            // This is a stupid hack around a bug with unsigned types in Kotlin. The issue is that
+            // the JVM sees a java.lang.Long, not a `long`, and there is no java.lang.Long.toUInt()
+            // method.
+            orig.toLong().toULong()
+        }
+    }
 
     /** [Literal] Representation of a signed [Long]. */
-    data class S64(override val value: Long) : IntegerLiteral<Long>()
+    class S64(override val value: Long) : IntegerLiteral<Long>()
 }
 
 /** Base for all [Literal] classes which represent a floating-point value. */
-sealed class FloatLiteral<T> : Literal<T> {
+sealed class FloatLiteral<T> : Literal<T>() {
     /** [Literal] Representation of a [Float]. */
     data class SinglePrecision(override val value: Float) : FloatLiteral<Float>()
 
@@ -45,4 +65,4 @@ sealed class FloatLiteral<T> : Literal<T> {
 }
 
 /** Representation of a [String] as a [Literal]. */
-data class StringLiteral(override val value: String) : Literal<String>
+data class StringLiteral(override val value: String) : Literal<String>()

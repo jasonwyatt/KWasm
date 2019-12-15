@@ -24,7 +24,7 @@ interface Operation : Instruction {
 
 /** Base for all [Instruction]s which return a constant value. */
 interface Constant<T> : Instruction {
-    /** [Literal] node which contains the constant value. */
+    /** [Literal] node which contains the constant's value. */
     val valueAstNode: Literal<T>
 }
 
