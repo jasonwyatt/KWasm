@@ -15,8 +15,8 @@
 package kwasm.runtime
 
 import com.google.common.truth.Truth.assertThat
+import kwasm.KWasmRuntimeException
 import kwasm.ast.Identifier
-import kwasm.format.ParseException
 import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Test
@@ -85,6 +85,6 @@ class IdentifierContextTest {
 
     @Test
     fun getOfIdThrows_ifAskingFor_TypeDef() {
-        assertThrows(ParseException::class.java) { context.get<Identifier.TypeDef>(10) }
+        assertThrows(KWasmRuntimeException::class.java) { context.get<Identifier.TypeDef>(10) }
     }
 }
