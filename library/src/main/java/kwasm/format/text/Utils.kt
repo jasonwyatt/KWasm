@@ -16,20 +16,10 @@ package kwasm.format.text
 
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
+import kwasm.format.parseCheckNotNull
 import kwasm.format.text.token.Keyword
+import kwasm.format.text.token.Paren
 import kwasm.format.text.token.Token
-
-fun getOperationAndParameters(sequence: CharSequence, context: ParseContext?): Pair<CharSequence, List<CharSequence>> {
-    if (sequence.first() != '(') {
-        throw ParseException("Expecting opening ( for Operation", context)
-    }
-    if (sequence.last() != ')') {
-        throw ParseException("Expecting closing ) for Operation", context)
-    }
-
-    val splitSequence = sequence.substring(1, sequence.lastIndex).split("\\s".toRegex())
-    return Pair(splitSequence[0], splitSequence.subList(1,splitSequence.lastIndex+1))
-}
 
 /** Determines whether or not the [Token] is a [Keyword] matching the provided [keywordValue]. */
 fun Token.isKeyword(keywordValue: String): Boolean =
@@ -46,3 +36,35 @@ fun Token.asKeywordMatching(value: String): Keyword? =
 fun Token.assertIsKeyword(keywordValue: String) {
     if (!isKeyword(keywordValue)) throw ParseException("Expected \"$keywordValue\"", context)
 }
+
+/**
+ * Helper to check if a [Token] at a given position within the receiving [List] is a [Paren.Open].
+ */
+fun List<Token>.isOpenParen(atIndex: Int): Boolean = getOrNull(atIndex) is Paren.Open
+
+/**
+ * Helper to check if a [Token] at a given position within the receiving [List] is a [Paren.Closed].
+ */
+fun List<Token>.isClosedParen(atIndex: Int): Boolean = getOrNull(atIndex) is Paren.Closed
+
+/** Helper to get the closest [kwasm.format.ParseContext] from the given position. */
+fun List<Token>.contextAt(index: Int): ParseContext? =
+    getOrNull(index)?.context ?: index.takeIf { it > 0 }?.let { contextAt(index - 1) }
+
+/**
+ * Returns the [Token] as type [T] from the [List] at the given [index], or throws a
+ * [ParseException] with the result of the [message] lambda.
+ */
+inline fun <reified T : Token> List<Token>.getOrThrow(
+    index: Int,
+    crossinline message: () -> String
+): T = parseCheckNotNull(contextAt(index), getOrNull(index) as? T, message)
+
+/**
+ * Returns the [Token] as type [T] from the [List] at the given [index], or throws a
+ * [ParseException] with the provided [message] (or if null: "Expected [T]".
+ */
+inline fun <reified T : Token> List<Token>.getOrThrow(
+    index: Int,
+    message: String? = null
+): T = getOrThrow(index) { message ?: "Expected ${T::class.java.simpleName}" }

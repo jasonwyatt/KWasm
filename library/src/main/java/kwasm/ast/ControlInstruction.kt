@@ -56,28 +56,32 @@ sealed class ControlInstruction : Instruction {
         val label: Identifier.Label,
         val result: ResultType,
         val instructions: List<Instruction>
-    ) : ControlInstruction()
+    ) : ControlInstruction(), BlockInstruction
 
     data class Loop(
         val label: Identifier.Label,
         val result: ResultType,
         val instructions: List<Instruction>
-    ) : ControlInstruction()
+    ) : ControlInstruction(), BlockInstruction
 
     data class If(
         val label: Identifier.Label,
         val result: ResultType,
         val positiveInstructions: List<Instruction>,
         val negativeInstructions: List<Instruction>
-    ) : ControlInstruction()
+    ) : ControlInstruction(), BlockInstruction
 
     object Unreachable : ControlInstruction()
 
     object NoOp : ControlInstruction()
 
-    data class Break(val labelIndex: Index<Identifier.Label>) : ControlInstruction()
+    data class Break(
+        val labelIndex: Index<Identifier.Label>
+    ) : ControlInstruction()
 
-    data class BreakIf(val labelIndex: Index<Identifier.Label>) : ControlInstruction()
+    data class BreakIf(
+        val labelIndex: Index<Identifier.Label>
+    ) : ControlInstruction()
 
     data class BreakTable(
         val targets: List<Index<Identifier.Label>>,

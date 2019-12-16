@@ -22,3 +22,32 @@ data class ParseException(
     private val errorMsg: String,
     val parseContext: ParseContext? = null
 ) : Exception("(${parseContext ?: "Unknown Context"}) $errorMsg")
+
+/** Throws a [ParseException] if the [condition] is not met. */
+inline fun parseCheck(
+    context: ParseContext?,
+    condition: Boolean,
+    crossinline message: () -> String
+) {
+    if (!condition) throw ParseException(message(), context)
+}
+
+/** Throws a [ParseException] if the [condition] is not met. */
+fun parseCheck(context: ParseContext?, condition: Boolean, message: String? = null) {
+    parseCheck(context, condition) { message ?: "Parse Error" }
+}
+
+/** Returns a non-nullable [T] value if it's not null, otherwise: throws a [ParseException]. */
+inline fun <T> parseCheckNotNull(
+    context: ParseContext?,
+    value: T?,
+    crossinline message: () -> String
+): T {
+    if (value == null) throw ParseException(message(), context)
+    return value
+}
+
+/** Returns a non-nullable [T] value if it's not null, otherwise: throws a [ParseException]. */
+fun <T> parseCheckNotNull(context: ParseContext?, value: T?, message: String? = null): T {
+    return parseCheckNotNull(context, value) { message ?: "Parse Error" }
+}

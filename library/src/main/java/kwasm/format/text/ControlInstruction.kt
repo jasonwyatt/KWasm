@@ -190,22 +190,22 @@ private fun List<Token>.parseIfContInstruction(
 private fun List<Token>.parseUnreachableContInstruction(
     fromIndex: Int
 ): ParseResult<out ControlInstruction>? =
-    this[fromIndex].asKeywordMatching("unreachable")?.let { ParseResult(Unreachable, 1) }
+    getOrNull(fromIndex)?.asKeywordMatching("unreachable")?.let { ParseResult(Unreachable, 1) }
 
 private fun List<Token>.parseNoOpContInstruction(
     fromIndex: Int
 ): ParseResult<out ControlInstruction>? =
-    this[fromIndex].asKeywordMatching("nop")?.let { ParseResult(NoOp, 1) }
+    getOrNull(fromIndex)?.asKeywordMatching("nop")?.let { ParseResult(NoOp, 1) }
 
 private fun List<Token>.parseReturnContInstruction(
     fromIndex: Int
 ): ParseResult<out ControlInstruction>? =
-    this[fromIndex].asKeywordMatching("return")?.let { ParseResult(Return, 1) }
+    getOrNull(fromIndex)?.asKeywordMatching("return")?.let { ParseResult(Return, 1) }
 
 private fun List<Token>.parseBreakContInstruction(
     fromIndex: Int
 ): ParseResult<out ControlInstruction>? {
-    this[fromIndex].asKeywordMatching("br") ?: return null
+    getOrNull(fromIndex)?.asKeywordMatching("br") ?: return null
 
     val labelIndex = parseIndex<Identifier.Label>(fromIndex + 1)
     return ParseResult(Break(labelIndex.astNode), 2)
@@ -214,7 +214,7 @@ private fun List<Token>.parseBreakContInstruction(
 private fun List<Token>.parseBreakIfContInstruction(
     fromIndex: Int
 ): ParseResult<out ControlInstruction>? {
-    this[fromIndex].asKeywordMatching("br_if") ?: return null
+    getOrNull(fromIndex)?.asKeywordMatching("br_if") ?: return null
 
     val labelIndex = parseIndex<Identifier.Label>(fromIndex + 1)
     return ParseResult(BreakIf(labelIndex.astNode), 2)
@@ -223,7 +223,7 @@ private fun List<Token>.parseBreakIfContInstruction(
 private fun List<Token>.parseBreakTableContInstruction(
     fromIndex: Int
 ): ParseResult<out ControlInstruction>? {
-    this[fromIndex].asKeywordMatching("br_table") ?: return null
+    getOrNull(fromIndex)?.asKeywordMatching("br_table") ?: return null
 
     var nodesParsed = 1
     val parsedLabelIndexes = parseIndices<Identifier.Label>(fromIndex + nodesParsed, min = 1)
@@ -238,7 +238,7 @@ private fun List<Token>.parseBreakTableContInstruction(
 private fun List<Token>.parseCallContInstruction(
     fromIndex: Int
 ): ParseResult<out ControlInstruction>? {
-    this[fromIndex].asKeywordMatching("call") ?: return null
+    getOrNull(fromIndex)?.asKeywordMatching("call") ?: return null
 
     val index = parseIndex<Identifier.Function>(fromIndex + 1)
     return ParseResult(Call(index.astNode), 2)
@@ -247,7 +247,7 @@ private fun List<Token>.parseCallContInstruction(
 private fun List<Token>.parseCallIndirectContInstruction(
     fromIndex: Int
 ): ParseResult<out ControlInstruction>? {
-    this[fromIndex].asKeywordMatching("call_indirect") ?: return null
+    getOrNull(fromIndex)?.asKeywordMatching("call_indirect") ?: return null
 
     val typeUse = parseTypeUse(fromIndex + 1)
     return ParseResult(CallIndirect(typeUse.astNode), 1 + typeUse.parseLength)

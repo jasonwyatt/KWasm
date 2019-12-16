@@ -43,6 +43,15 @@ fun List<Token>.parseInstructions(
 
     while (instructionsParsed < max && fromIndex + tokensParsed < size) {
         try {
+            val foldedInstruction = parseFoldedInstruction(fromIndex + tokensParsed)
+            if (foldedInstruction != null) {
+                // If we found a folded instruction, unwrap its individual instructions into the
+                // result.
+                result.addAll(foldedInstruction.astNode)
+                tokensParsed += foldedInstruction.parseLength
+                instructionsParsed += foldedInstruction.astNode.size
+            }
+
             val instruction = parseInstruction(fromIndex + tokensParsed) ?: break
             result += instruction.astNode
             tokensParsed += instruction.parseLength

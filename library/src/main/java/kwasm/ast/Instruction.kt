@@ -15,7 +15,16 @@
 package kwasm.ast
 
 /** Base for all instruction [AstNode] implementations. */
-interface Instruction : AstNode
+interface Instruction : AstNode {
+    val isPlain: Boolean
+        get() = true
+}
+
+/** Base for all instruction [AstNode] implementations which are "block" instructions. */
+interface BlockInstruction : Instruction {
+    override val isPlain: Boolean
+        get() = false
+}
 
 /** Base for all [Instruction]s which return some value. */
 interface Operation : Instruction {

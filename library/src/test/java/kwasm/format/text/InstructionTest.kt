@@ -16,6 +16,8 @@ package kwasm.format.text
 
 import com.google.common.truth.Truth.assertThat
 import kwasm.ast.ControlInstruction
+import kwasm.ast.Identifier
+import kwasm.ast.Index
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -24,7 +26,7 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-class Instruction {
+class InstructionTest {
     private val tokenizer = Tokenizer()
     private val context = ParseContext("InstructionTest.wat", 1, 1)
 
@@ -83,5 +85,20 @@ class Instruction {
                 .parseInstructions(0, min = 2)
         }.isInstanceOf(ParseException::class.java)
             .hasMessageContaining("Expected at least 2 instructions, found 1")
+    }
+
+    @Test
+    fun parsePlural_parsesFoldedInstruction_intoList() {
+        val result = tokenizer.tokenize(
+            """(br_if $3 (br_if $1 (br_if $0)) (br_if $2))""",
+            context
+        ).parseInstructions(0)
+        assertThat(result.astNode).hasSize(4)
+        repeat(4) {
+            assertThat(
+                result.astNode[it]
+            ).isEqualTo(ControlInstruction.BreakIf(Index.ByIdentifier(Identifier.Label("\$$it"))))
+        }
+        assertThat(result.parseLength).isEqualTo(16)
     }
 }
