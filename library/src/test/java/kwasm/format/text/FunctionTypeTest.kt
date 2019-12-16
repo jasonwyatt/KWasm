@@ -15,7 +15,6 @@
 package kwasm.format.text
 
 import com.google.common.truth.Truth.assertThat
-import kwasm.ast.AstNodeList
 import kwasm.ast.FunctionType
 import kwasm.ast.Param
 import kwasm.ast.Result
@@ -24,7 +23,7 @@ import kwasm.ast.ValueTypeEnum
 import kwasm.ast.astNodeListOf
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
-import org.assertj.core.api.Assertions
+import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -83,9 +82,10 @@ class FunctionTypeTest {
 
     @Test
     fun parseInvalidFunctionType_FlippedParams() {
-        Assertions.assertThatThrownBy {
+        val exception = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(func (result i32) (param \$val1 i32))", context).parseFunctionType(0)
-        }.isInstanceOf(ParseException::class.java).hasMessageContaining("Invalid FunctionType: Expecting \")\"")
+        }
+        assertThat(exception).hasMessageThat().contains("Invalid FunctionType: Expecting \")\"")
     }
 
     @Test

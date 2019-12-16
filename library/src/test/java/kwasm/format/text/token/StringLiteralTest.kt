@@ -16,7 +16,6 @@ package kwasm.format.text.token
 
 import com.google.common.truth.Truth.assertThat
 import kwasm.format.ParseContext
-import kwasm.format.text.token.StringLiteral
 import org.assertj.core.api.Assertions.fail
 import org.junit.Test
 import org.junit.runner.RunWith

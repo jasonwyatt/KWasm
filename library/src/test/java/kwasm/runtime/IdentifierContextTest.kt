@@ -17,7 +17,7 @@ package kwasm.runtime
 import com.google.common.truth.Truth.assertThat
 import kwasm.KWasmRuntimeException
 import kwasm.ast.Identifier
-import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -85,8 +85,6 @@ class IdentifierContextTest {
 
     @Test
     fun getOfIdThrows_ifAskingFor_TypeDef() {
-        assertThatThrownBy {
-            context.get<Identifier.TypeDef>(10)
-        }.isInstanceOf(KWasmRuntimeException::class.java)
+        assertThrows(KWasmRuntimeException::class.java) { context.get<Identifier.TypeDef>(10) }
     }
 }

@@ -17,7 +17,7 @@ package kwasm.format.text
 import com.google.common.truth.Truth.assertThat
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
-import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -58,8 +58,8 @@ class LabelTest {
 
     @Test
     fun throws_whenInvalidLabelIsFound() {
-        assertThatThrownBy { tokenizer.tokenize("$", context).parseLabel(0) }
-            .isInstanceOf(ParseException::class.java)
-            .hasMessageContaining("Invalid identifier")
+        val exception =
+            assertThrows(ParseException::class.java) { tokenizer.tokenize("$", context).parseLabel(0) }
+        assertThat(exception).hasMessageThat().contains("Invalid identifier")
     }
 }

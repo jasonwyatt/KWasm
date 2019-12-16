@@ -14,13 +14,13 @@
 
 package kwasm.format.text
 
-import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import kwasm.ast.GlobalType
 import kwasm.ast.ValueType
 import kwasm.ast.ValueTypeEnum
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
-import org.assertj.core.api.Assertions
+import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -35,28 +35,29 @@ class GlobalTypeTest {
     fun parseValidGlobalType_NonMutable() {
         val expectedValuetype = ParseResult(GlobalType(ValueType(ValueTypeEnum.I32), false), 1)
         val actual = tokenizer.tokenize("i32", context).parseGlobalType(0)
-        Truth.assertThat(actual).isEqualTo(expectedValuetype)
+        assertThat(actual).isEqualTo(expectedValuetype)
     }
 
     @Test
     fun parseValidResultType_Mutable() {
         val expectedValuetype = ParseResult(GlobalType(ValueType(ValueTypeEnum.I32), true), 4)
         val actual = tokenizer.tokenize("(mut i32)", context).parseGlobalType(0)
-        Truth.assertThat(actual).isEqualTo(expectedValuetype)
+        assertThat(actual).isEqualTo(expectedValuetype)
     }
 
     @Test
     fun parseInvalidResultType_DifferentFunction() {
-        Assertions.assertThatThrownBy {
+        val exception = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(foo bar)", context).parseGlobalType(0)
-        }.isInstanceOf(ParseException::class.java).hasMessageContaining("Invalid GlobalType: Expecting \"mut\"")
+        }
+        assertThat(exception).hasMessageThat().contains("Invalid GlobalType: Expecting \"mut\"")
     }
 
     @Test
     fun parseInvalidResultType_BadValueType() {
-        Assertions.assertThatThrownBy {
+        val exception = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(mut blah)", context).parseGlobalType(0)
-        }.isInstanceOf(ParseException::class.java)
-            .hasMessageContaining("Invalid ValueType: Expecting i32, i64, f32, or f64")
+        }
+        assertThat(exception).hasMessageThat().contains("Invalid ValueType: Expecting i32, i64, f32, or f64")
     }
 }

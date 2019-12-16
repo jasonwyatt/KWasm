@@ -26,8 +26,8 @@ import kwasm.ast.ValueTypeEnum
 import kwasm.ast.astNodeListOf
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
-import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.assertj.core.api.Assertions.fail
+import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -127,7 +127,7 @@ class ControlInstructionTest {
 
     @Test
     fun parse_throws_whenBlock_hasNoEnd() {
-        assertThatThrownBy {
+        val exception = assertThrows(ParseException::class.java) {
             tokenizer.tokenize(
                 """
                     block
@@ -137,13 +137,13 @@ class ControlInstructionTest {
                 """.trimIndent(),
                 context
             ).parseControlInstruction(0)
-        }.isInstanceOf(ParseException::class.java)
-            .hasMessageContaining("Expected \"end\"")
+        }
+        assertThat(exception).hasMessageThat().contains("Expected \"end\"")
     }
 
     @Test
     fun parse_throws_whenBlock_endLabel_mismatchesOpenerLabel() {
-        assertThatThrownBy {
+        assertThrows(ParseException::class.java) {
             tokenizer.tokenize(
                 """
                     block
@@ -154,9 +154,9 @@ class ControlInstructionTest {
                 """.trimIndent(),
                 context
             ).parseControlInstruction(0)
-        }.isInstanceOf(ParseException::class.java)
+        }
 
-        assertThatThrownBy {
+        assertThrows(ParseException::class.java) {
             tokenizer.tokenize(
                 """
                     block ${'$'}myBlock 
@@ -167,7 +167,7 @@ class ControlInstructionTest {
                 """.trimIndent(),
                 context
             ).parseControlInstruction(0)
-        }.isInstanceOf(ParseException::class.java)
+        }
     }
 
     @Test
@@ -238,7 +238,7 @@ class ControlInstructionTest {
 
     @Test
     fun parse_throws_whenLoop_hasNoEnd() {
-        assertThatThrownBy {
+        val exception = assertThrows(ParseException::class.java) {
             tokenizer.tokenize(
                 """
                     loop
@@ -248,13 +248,13 @@ class ControlInstructionTest {
                 """.trimIndent(),
                 context
             ).parseControlInstruction(0)
-        }.isInstanceOf(ParseException::class.java)
-            .hasMessageContaining("Expected \"end\"")
+        }
+        assertThat(exception).hasMessageThat().contains("Expected \"end\"")
     }
 
     @Test
     fun parse_throws_whenLoop_endLabel_mismatchesOpenerLabel() {
-        assertThatThrownBy {
+        assertThrows(ParseException::class.java) {
             tokenizer.tokenize(
                 """
                     loop
@@ -265,9 +265,9 @@ class ControlInstructionTest {
                 """.trimIndent(),
                 context
             ).parseControlInstruction(0)
-        }.isInstanceOf(ParseException::class.java)
+        }
 
-        assertThatThrownBy {
+        assertThrows(ParseException::class.java) {
             tokenizer.tokenize(
                 """
                     loop ${'$'}myLoop
@@ -278,7 +278,7 @@ class ControlInstructionTest {
                 """.trimIndent(),
                 context
             ).parseControlInstruction(0)
-        }.isInstanceOf(ParseException::class.java)
+        }
     }
 
     @Test
@@ -332,7 +332,7 @@ class ControlInstructionTest {
 
     @Test
     fun throws_whenIfElse_isMalformed() {
-        assertThatThrownBy {
+        assertThrows(ParseException::class.java) {
             tokenizer.tokenize(
                 """
                 if
@@ -346,9 +346,9 @@ class ControlInstructionTest {
             """.trimIndent(),
                 context
             ).parseControlInstruction(0)
-        }.isInstanceOf(ParseException::class.java)
+        }
 
-        assertThatThrownBy {
+        assertThrows(ParseException::class.java) {
             tokenizer.tokenize(
                 """
                 if
@@ -359,9 +359,9 @@ class ControlInstructionTest {
             """.trimIndent(),
                 context
             ).parseControlInstruction(0)
-        }.isInstanceOf(ParseException::class.java)
+        }
 
-        assertThatThrownBy {
+        assertThrows(ParseException::class.java) {
             tokenizer.tokenize(
                 """
                 if
@@ -373,9 +373,9 @@ class ControlInstructionTest {
             """.trimIndent(),
                 context
             ).parseControlInstruction(0)
-        }.isInstanceOf(ParseException::class.java)
+        }
 
-        assertThatThrownBy {
+        assertThrows(ParseException::class.java) {
             tokenizer.tokenize(
                 """
                 if
@@ -386,9 +386,9 @@ class ControlInstructionTest {
             """.trimIndent(),
                 context
             ).parseControlInstruction(0)
-        }.isInstanceOf(ParseException::class.java)
+        }
 
-        assertThatThrownBy {
+        assertThrows(ParseException::class.java) {
             tokenizer.tokenize(
                 """
                 if
@@ -400,7 +400,7 @@ class ControlInstructionTest {
             """.trimIndent(),
                 context
             ).parseControlInstruction(0)
-        }.isInstanceOf(ParseException::class.java)
+        }
     }
 
     @Test
@@ -442,13 +442,15 @@ class ControlInstructionTest {
 
     @Test
     fun parse_throwsOn_break_withNoIndex() {
-        assertThatThrownBy {
+        val exception1 = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("br ;; \$id").parseControlInstruction(0)
-        }.isInstanceOf(ParseException::class.java).hasMessageContaining("Expected an index")
+        }
+        assertThat(exception1).hasMessageThat().contains("Expected an index")
 
-        assertThatThrownBy {
+        val exception2 = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("br oops-not-an-id").parseControlInstruction(0)
-        }.isInstanceOf(ParseException::class.java).hasMessageContaining("Expected an index")
+        }
+        assertThat(exception2).hasMessageThat().contains("Expected an index")
     }
 
     @Test
@@ -466,15 +468,15 @@ class ControlInstructionTest {
 
     @Test
     fun parse_throwsOn_breakIf_withNoIndex() {
-        assertThatThrownBy {
+        val exception1 = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("br_if;; \$id").parseControlInstruction(0)
-        }.isInstanceOf(ParseException::class.java)
-            .hasMessageContaining("Expected an index")
+        }
+        assertThat(exception1).hasMessageThat().contains("Expected an index")
 
-        assertThatThrownBy {
+        val exception2 = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("br_if oops-not-an-id").parseControlInstruction(0)
-        }.isInstanceOf(ParseException::class.java)
-            .hasMessageContaining("Expected an index")
+        }
+        assertThat(exception2).hasMessageThat().contains("Expected an index")
     }
 
     @Test
@@ -495,15 +497,15 @@ class ControlInstructionTest {
 
     @Test
     fun parse_throwsOn_breakTable_withNoIndex() {
-        assertThatThrownBy {
+        val exception1 = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("br_table ;; \$id").parseControlInstruction(0)
-        }.isInstanceOf(ParseException::class.java)
-            .hasMessageContaining("Expected at least 1 index")
+        }
+        assertThat(exception1).hasMessageThat().contains("Expected at least 1 index")
 
-        assertThatThrownBy {
+        val exception2 = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("br_table oops-not-an-id").parseControlInstruction(0)
-        }.isInstanceOf(ParseException::class.java)
-            .hasMessageContaining("Expected at least 1 index")
+        }
+        assertThat(exception2).hasMessageThat().contains("Expected at least 1 index")
     }
 
     @Test

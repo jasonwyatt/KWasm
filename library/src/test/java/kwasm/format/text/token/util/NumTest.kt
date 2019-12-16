@@ -16,7 +16,7 @@ package kwasm.format.text.token.util
 
 import com.google.common.truth.Truth.assertThat
 import kwasm.format.ParseException
-import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -114,15 +114,13 @@ class NumTest {
     @Test
     fun throwsOnEmptySequence() {
         val num = Num("")
-        assertThatThrownBy { num.value }
-            .isInstanceOf(ParseException::class.java)
+        assertThrows(ParseException::class.java) { num.value }
     }
 
     @Test
     fun throwsOnIllegalChar() {
         val sequence = "10z00"
         val num = Num(sequence)
-        assertThatThrownBy { num.value }
-            .isInstanceOf(ParseException::class.java)
+        assertThrows(ParseException::class.java) { num.value }
     }
 }

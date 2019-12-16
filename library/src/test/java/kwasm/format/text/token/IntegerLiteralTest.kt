@@ -18,7 +18,7 @@ import com.google.common.truth.Truth.assertThat
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import org.assertj.core.api.Assertions
-import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -37,9 +37,8 @@ class IntegerLiteralTest {
     @Test
     fun throwsOnUnsigned_whenBase10_containsHexChars() {
         val literal = IntegerLiteral.Unsigned("1234aa")
-        assertThatThrownBy { literal.value }
-            .isInstanceOf(ParseException::class.java)
-            .hasMessageContaining("Unexpected hex integer")
+        val exception = assertThrows(ParseException::class.java) { literal.value }
+        assertThat(exception).hasMessageThat().contains("Unexpected hex integer")
     }
 
     @Test
@@ -51,9 +50,9 @@ class IntegerLiteralTest {
 
     @Test
     fun throwsOnUnsigned_outsideMagnitude() {
-        assertThatThrownBy {
-            IntegerLiteral.Unsigned("256", 8).value
-        }.isInstanceOf(ParseException::class.java).hasMessageContaining("Illegal value")
+        val literal = IntegerLiteral.Unsigned("256", 8)
+        val exception = assertThrows(ParseException::class.java) { literal.value }
+        assertThat(exception).hasMessageThat().contains("Illegal value")
     }
 
     @Test
@@ -89,9 +88,8 @@ class IntegerLiteralTest {
     @Test
     fun throwsOnSigned_whenBase10_containsHexChars() {
         val literal = IntegerLiteral.Signed("-1234aa")
-        assertThatThrownBy { literal.value }
-            .isInstanceOf(ParseException::class.java)
-            .hasMessageContaining("Unexpected hex integer")
+        val exception = assertThrows(ParseException::class.java) { literal.value }
+        assertThat(exception).hasMessageThat().contains("Unexpected hex integer")
     }
 
     @Test
@@ -129,15 +127,13 @@ class IntegerLiteralTest {
 
     @Test
     fun throwsOnSigned_whenOutsideMagnitude() {
-        assertThatThrownBy {
-            IntegerLiteral.Signed("-9", 4).value
-        }.isInstanceOf(ParseException::class.java)
-            .hasMessageContaining("Illegal value")
+        val literal1 = IntegerLiteral.Signed("-9", 4)
+        val exception1 = assertThrows(ParseException::class.java) { literal1.value }
+        assertThat(exception1).hasMessageThat().contains("Illegal value")
 
-        assertThatThrownBy {
-            IntegerLiteral.Signed("8", 4).value
-        }.isInstanceOf(ParseException::class.java)
-            .hasMessageContaining("Illegal value")
+        val literal2 = IntegerLiteral.Signed("8", 4)
+        val exception2 = assertThrows(ParseException::class.java) { literal2.value }
+        assertThat(exception2).hasMessageThat().contains("Illegal value")
     }
 
     @Test
