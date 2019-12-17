@@ -29,6 +29,15 @@ class MemoryInstructionTest {
     private val context = ParseContext("MemoryInstructionTest.wat")
 
     @Test
+    fun instructionParsing_parsesMemoryInstructions() {
+        val result = tokenizer.tokenize("i32.load", context).parseInstruction(0)
+            ?: fail("expected an instruction")
+
+        assertThat(result.parseLength).isEqualTo(1)
+        assertThat(result.astNode).isEqualTo(MemoryInstruction.LoadInt.I32_LOAD)
+    }
+
+    @Test
     fun parses_i32Load_withoutMemarg() {
         val result = parseMemoryInstruction("i32.load")
 
