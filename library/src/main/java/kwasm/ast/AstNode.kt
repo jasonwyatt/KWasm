@@ -17,6 +17,15 @@ package kwasm.ast
 /** Base interface implemented by all members of the AST. */
 interface AstNode
 
+/** Represents an [AstNode] type for which there may be a canonical variant available. */
+interface DeDupeableAstNode<T : AstNode> : AstNode {
+    /**
+     * Returns a canonical variant of the [AstNode], if one exists - to avoid unnecessary
+     * objects on the heap.
+     */
+    fun deDupe(): T
+}
+
 /** A list of [AstNode]s. */
 data class AstNodeList<T : AstNode>(private val members: List<T>) : List<T> by members, AstNode
 

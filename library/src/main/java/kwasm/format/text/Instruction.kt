@@ -77,6 +77,5 @@ fun List<Token>.parseInstruction(fromIndex: Int): ParseResult<out Instruction>? 
     // TODO: Add to me by attempting to parse each type of instruction until all instruction types
     //       are covered.
     return parseControlInstruction(fromIndex)
-        // ?: parseOtherKindOfInstruction(fromIndex)
-        // ?: parseYetAnotherKindOfInstruction(fromIndex)
+        ?: parseMemoryInstruction(fromIndex)
 }
