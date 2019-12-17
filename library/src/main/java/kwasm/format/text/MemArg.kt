@@ -34,10 +34,10 @@ import kwasm.format.text.token.Token
  * ```
  */
 @UseExperimental(ExperimentalUnsignedTypes::class)
-fun List<Token>.parseMemarg(fromIndex: Int, expectedN: Int): ParseResult<MemArg> {
+fun List<Token>.parseMemarg(fromIndex: Int, expectedMaxBytes: Int): ParseResult<MemArg> {
     var currentIndex = fromIndex
     val firstKeyword = getOrNull(currentIndex) as? Keyword
-        ?: return ParseResult(MemArg(expectedN).deDupe(), 0)
+        ?: return ParseResult(MemArg(0, expectedMaxBytes * 8).deDupe(), 0)
 
     val memArg = when {
         firstKeyword.value.startsWith("offset=") -> {
@@ -57,7 +57,7 @@ fun List<Token>.parseMemarg(fromIndex: Int, expectedN: Int): ParseResult<MemArg>
                         contextAt(currentIndex)
                     ).value
                 }
-            MemArg(expectedN, offset.toInt(), alignment?.toInt())
+            MemArg(offset.toInt(), alignment?.toInt() ?: expectedMaxBytes * 8)
         }
         firstKeyword.value.startsWith("align=") -> {
             currentIndex++
@@ -66,13 +66,13 @@ fun List<Token>.parseMemarg(fromIndex: Int, expectedN: Int): ParseResult<MemArg>
                 32,
                 contextAt(currentIndex)
             ).value
-            MemArg(expectedN, align = alignment.toInt())
+            MemArg(0, alignment.toInt())
         }
-        else -> MemArg(expectedN)
+        else -> MemArg(0, expectedMaxBytes * 8)
     }
 
-    parseCheck(contextAt(fromIndex), memArg.isAlignmentValid(expectedN)) {
-        "Illegal MemArg value for N=$expectedN"
+    parseCheck(contextAt(fromIndex), memArg.isAlignmentValid(expectedMaxBytes)) {
+        "Illegal MemArg value for N=$expectedMaxBytes"
     }
 
     return ParseResult(memArg.deDupe(), currentIndex - fromIndex)

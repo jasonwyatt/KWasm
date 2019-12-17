@@ -61,11 +61,13 @@ interface ArgumentedInstruction : Instruction {
 /**
  * Base for all [Instruction] implementations which require a single [Argument].
  *
- * **Note** Don't extend this directly. Instead, use one of:
+ * **Note** You typically won't extend this directly. Instead, use one of:
  *
  * * [UnaryOperation]
  * * [TestInstruction]
  * * [Conversion]
+ *
+ * Exceptions include [MemoryInstruction] implementations.
  */
 interface UnaryInstruction<X : Argument> : ArgumentedInstruction {
     var arg: X

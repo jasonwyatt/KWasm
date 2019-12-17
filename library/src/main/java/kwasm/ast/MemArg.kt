@@ -14,6 +14,8 @@
 
 package kwasm.ast
 
+import kotlin.math.floor
+import kotlin.math.log
 import kotlin.math.pow
 
 /**
@@ -28,24 +30,28 @@ import kotlin.math.pow
 @Suppress("DataClassPrivateConstructor")
 @UseExperimental(ExperimentalUnsignedTypes::class)
 class MemArg(
-    private val n: Int,
     offset: Int? = null,
-    private val align: Int? = null
-) : Argument, AstNode {
+    private val alignment: Int
+) : Argument, DeDupeableAstNode<MemArg> {
     val offset: UInt = (offset ?: 0).toUInt()
-    val alignment: Int = n
     override val valueAstNode: AstNode
         get() = this
 
-    /** Returns whether or not the value of [alignment] is valid for this the given [n]. */
-    fun isAlignmentValid(forN: Int = n) = align == null || align.toDouble() == 2.0.pow(forN)
+    /**
+     * Returns whether or not the value of [alignment] is valid for the given [forByteWidth]
+     * upper-bound.
+     */
+    fun isAlignmentValid(forByteWidth: Int? = null) =
+        log(alignment.toFloat(), 2.0f)
+            // If it's a power of 2, and it's less than or equal to 2^forN, then it's valid.
+            .let { floor(it) == it && (forByteWidth == null || alignment <= forByteWidth * 8) }
 
     /** Returns a canonical instance of [MemArg] matching this one, if it exists. */
-    fun deDupe(): MemArg = when (this) {
-        one -> one
-        two -> two
-        four -> four
-        eight -> eight
+    override fun deDupe(): MemArg = when (this) {
+        ONE -> ONE
+        TWO -> TWO
+        FOUR -> FOUR
+        EIGHT -> EIGHT
         else -> this
     }
 
@@ -55,7 +61,6 @@ class MemArg(
 
         other as MemArg
 
-        if (n != other.n) return false
         if (offset != other.offset) return false
         if (alignment != other.alignment) return false
 
@@ -63,18 +68,17 @@ class MemArg(
     }
 
     override fun hashCode(): Int {
-        var result = n
-        result = 31 * result + offset.hashCode()
+        var result = offset.hashCode()
         result = 31 * result + alignment.hashCode()
         return result
     }
 
-    override fun toString(): String = "MemArg(n=$n, offset=$offset, alignment=$alignment)"
+    override fun toString(): String = "MemArg(offset=$offset, alignment=$alignment)"
 
     companion object {
-        private val one = MemArg(1)
-        private val two = MemArg(2)
-        private val four = MemArg(4)
-        private val eight = MemArg(8)
+        internal val ONE = MemArg(0, 8)
+        internal val TWO = MemArg(0, 16)
+        internal val FOUR = MemArg(0, 32)
+        internal val EIGHT = MemArg(0, 64)
     }
 }

@@ -32,57 +32,57 @@ class MemArgTest {
     fun parse_parsesDefault_whenEmpty() {
         val result = tokenizer.tokenize("", context).parseMemarg(0, 4)
         assertThat(result.parseLength).isEqualTo(0)
-        assertThat(result.astNode).isEqualTo(MemArg(4))
+        assertThat(result.astNode).isEqualTo(MemArg.FOUR)
     }
 
     @Test
     fun parse_parsesDefault_whenFromToken_isNotKeyword() {
         val result = tokenizer.tokenize("(", context).parseMemarg(0, 4)
         assertThat(result.parseLength).isEqualTo(0)
-        assertThat(result.astNode).isEqualTo(MemArg(4))
+        assertThat(result.astNode).isEqualTo(MemArg.FOUR)
     }
 
     @Test
     fun parse_parsesDefault_whenFromToken_doesNotStartWithAlignOffset() {
         val result = tokenizer.tokenize("call", context).parseMemarg(0, 4)
         assertThat(result.parseLength).isEqualTo(0)
-        assertThat(result.astNode).isEqualTo(MemArg(4))
+        assertThat(result.astNode).isEqualTo(MemArg.FOUR)
     }
 
     @Test
     fun parse_offsetOnly() {
         var result = tokenizer.tokenize("offset=50", context).parseMemarg(0, 4)
         assertThat(result.parseLength).isEqualTo(1)
-        assertThat(result.astNode).isEqualTo(MemArg(4, offset = 50))
+        assertThat(result.astNode).isEqualTo(MemArg(50, 32))
 
         result = tokenizer.tokenize("offset=50 call", context).parseMemarg(0, 4)
         assertThat(result.parseLength).isEqualTo(1)
-        assertThat(result.astNode).isEqualTo(MemArg(4, offset = 50))
+        assertThat(result.astNode).isEqualTo(MemArg(50, 32))
     }
 
     @Test
     fun parse_alignOnly() {
         val result = tokenizer.tokenize("align=16", context).parseMemarg(0, 4)
         assertThat(result.parseLength).isEqualTo(1)
-        assertThat(result.astNode).isEqualTo(MemArg(4, align = 16))
+        assertThat(result.astNode).isEqualTo(MemArg(0, 16))
     }
 
     @Test
     fun parse_offsetAndAlign() {
         val result = tokenizer.tokenize("offset=50 align=16", context).parseMemarg(0, 4)
         assertThat(result.parseLength).isEqualTo(2)
-        assertThat(result.astNode).isEqualTo(MemArg(4, offset = 50, align = 16))
+        assertThat(result.astNode).isEqualTo(MemArg(50, 16))
     }
 
     @Test
     fun throws_whenAlignIsIllegal() {
         var e = assertThrows(ParseException::class.java) {
-            tokenizer.tokenize("offset=50 align=1", context).parseMemarg(0, 4)
+            tokenizer.tokenize("offset=50 align=64", context).parseMemarg(0, 4)
         }
         assertThat(e).hasMessageThat().contains("Illegal MemArg value for N=4")
 
         e = assertThrows(ParseException::class.java) {
-            tokenizer.tokenize("align=1", context).parseMemarg(0, 4)
+            tokenizer.tokenize("align=64", context).parseMemarg(0, 4)
         }
         assertThat(e).hasMessageThat().contains("Illegal MemArg value for N=4")
     }

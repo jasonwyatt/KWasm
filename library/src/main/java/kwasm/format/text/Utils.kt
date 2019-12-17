@@ -32,6 +32,15 @@ fun Token.isKeyword(keywordValue: String): Boolean =
 fun Token.asKeywordMatching(value: String): Keyword? =
     (this as? Keyword)?.takeIf { it.value == value }
 
+/**
+ * Casts the [Token] into a [Keyword] and returns it, along with the match, if its [Keyword.value]
+ * matches [regexp].
+ *
+ * Returns `null` if neither condition is met.
+ */
+fun Token.asKeywordMatching(regex: Regex): Pair<Keyword, MatchResult>? =
+    (this as? Keyword)?.let { regex.matchEntire(it.value) }?.let { this to it }
+
 /** Asserts that the [Token] is a [Keyword] matching the provided [keywordValue]. */
 fun Token.assertIsKeyword(keywordValue: String) {
     if (!isKeyword(keywordValue)) throw ParseException("Expected \"$keywordValue\"", context)
