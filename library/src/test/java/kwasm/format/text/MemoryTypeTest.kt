@@ -123,13 +123,6 @@ class MemoryTypeTest {
     }
 
     @Test
-    fun parseTwoValuesWithNegativeMax_throwsParseExceptionWithNegativeNumberMessage() {
-        val tokens = tokenizer.tokenize("123456 -234567", context)
-        val exception = assertThrows(ParseException::class.java) { tokens.parseMemoryType(0) }
-        assertThat(exception).hasMessageThat().contains("Expected integer literal")
-    }
-
-    @Test
     fun parseTwoValuesWithMaxABitLargerThanMaxVal_throwsParseExceptionWithValueOverflowMessage() {
         val tokens = tokenizer.tokenize("1234567 4294967296", context)
         val exception = assertThrows(ParseException::class.java) { tokens.parseMemoryType(0) }
