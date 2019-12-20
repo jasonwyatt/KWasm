@@ -79,4 +79,5 @@ fun List<Token>.parseInstruction(fromIndex: Int): ParseResult<out Instruction>? 
     return parseControlInstruction(fromIndex)
         ?: parseMemoryInstruction(fromIndex)
         ?: parseNumericConstant(fromIndex)
+        ?: parseNumericInstruction(fromIndex)
 }
