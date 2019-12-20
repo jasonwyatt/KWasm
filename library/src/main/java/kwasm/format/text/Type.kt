@@ -14,7 +14,11 @@
 
 package kwasm.format.text
 
+import kwasm.ast.FunctionType
 import kwasm.format.ParseContext
+import kwasm.format.parseCheck
+import kwasm.format.text.token.Identifier
+import kwasm.format.text.token.Token
 
 /**
  * This sealed class encapsulates all Types defined in
@@ -49,4 +53,38 @@ sealed class Type<T>(
         }
     }
 
+}
+
+/**
+ * Parses a type as a [FunctionType] from the receiving [List] of [Token]s.
+ *
+ * From [the docs](https://webassembly.github.io/spec/core/text/modules.html#types):
+ *
+ * ```
+ *   type ::= ‘(’ ‘type’ id? ft:functype ‘)’ => ft
+ * ```
+ */
+fun List<Token>.parseType(fromIndex: Int): ParseResult<kwasm.ast.Type>? {
+    var currentIndex = fromIndex
+    if (!isOpenParen(currentIndex)) return null
+    currentIndex++
+
+    getOrNull(currentIndex)?.asKeywordMatching("type") ?: return null
+    currentIndex++
+
+    val identifier = getOrNull(currentIndex) as? Identifier
+    if (identifier != null) currentIndex++
+
+    val funcType = parseFunctionType(currentIndex)
+    currentIndex += funcType.parseLength
+
+    parseCheck(contextAt(currentIndex), isClosedParen(currentIndex), "Expected ')'")
+    currentIndex++
+
+    val astTypeIdentifier = identifier?.let { kwasm.ast.Identifier.Type(identifier.value) }
+
+    return ParseResult(
+        kwasm.ast.Type(astTypeIdentifier, funcType.astNode),
+        currentIndex - fromIndex
+    )
 }
