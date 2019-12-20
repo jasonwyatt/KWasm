@@ -24,62 +24,78 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 @UseExperimental(ExperimentalUnsignedTypes::class)
-class LimitsTest {
+class TableTypeTest {
 
     private val context = ParseContext("TokenizerTest.wasm", 1, 1)
     private val tokenizer = Tokenizer()
 
     @Test
+    fun parseSingleNumber_withoutFuncref_throwsParseException() {
+        val expectedMin = 123456.toUInt()
+        val tokens = tokenizer.tokenize("$expectedMin", context)
+        val exception = assertThrows(ParseException::class.java) { tokens.parseTableType(0) }
+        assertThat(exception).hasMessageThat().contains("Too few arguments")
+    }
+
+    @Test
+    fun parseSingleNumber_withoutNonFuncrefLiteral_throwsParseException() {
+        val expectedMin = 123456.toUInt()
+        val tokens = tokenizer.tokenize("$expectedMin notFuncref", context)
+        val exception = assertThrows(ParseException::class.java) { tokens.parseTableType(0) }
+        assertThat(exception).hasMessageThat().contains("Expected 'funcref'")
+    }
+
+    @Test
     fun parseSingleNumber_setMinToCorrectValue() {
         val expectedMin = 123456.toUInt()
         val expectedMax = UInt.MAX_VALUE
-        val tokens = tokenizer.tokenize("$expectedMin", context)
-        val parseResult = tokens.parseLimits(0)
-        assertThat(parseResult.astNode.min).isEqualTo(expectedMin)
-        assertThat(parseResult.astNode.max).isEqualTo(expectedMax)
-        assertThat(parseResult.parseLength).isEqualTo(1)
+        val tokens = tokenizer.tokenize("$expectedMin funcref", context)
+        val parseResult = tokens.parseTableType(0)
+        assertThat(parseResult.astNode.limits.min).isEqualTo(expectedMin)
+        assertThat(parseResult.astNode.limits.max).isEqualTo(expectedMax)
+        assertThat(parseResult.parseLength).isEqualTo(2)
     }
 
     @Test
     fun parseMaxVal_setMinToMaxVal() {
         val expectedMin = UInt.MAX_VALUE
         val expectedMax = UInt.MAX_VALUE
-        val tokens = tokenizer.tokenize("$expectedMin", context)
-        val parseResult = tokens.parseLimits(0)
-        assertThat(parseResult.astNode.min).isEqualTo(expectedMin)
-        assertThat(parseResult.astNode.max).isEqualTo(expectedMax)
-        assertThat(parseResult.parseLength).isEqualTo(1)
+        val tokens = tokenizer.tokenize("$expectedMin funcref", context)
+        val parseResult = tokens.parseTableType(0)
+        assertThat(parseResult.astNode.limits.min).isEqualTo(expectedMin)
+        assertThat(parseResult.astNode.limits.max).isEqualTo(expectedMax)
+        assertThat(parseResult.parseLength).isEqualTo(2)
     }
 
     @Test
     fun parseMinVal_setMinToMinVal() {
         val expectedMin = UInt.MIN_VALUE
         val expectedMax = UInt.MAX_VALUE
-        val tokens = tokenizer.tokenize("$expectedMin", context)
-        val parseResult = tokens.parseLimits(0)
-        assertThat(parseResult.astNode.min).isEqualTo(expectedMin)
-        assertThat(parseResult.astNode.max).isEqualTo(expectedMax)
-        assertThat(parseResult.parseLength).isEqualTo(1)
+        val tokens = tokenizer.tokenize("$expectedMin funcref", context)
+        val parseResult = tokens.parseTableType(0)
+        assertThat(parseResult.astNode.limits.min).isEqualTo(expectedMin)
+        assertThat(parseResult.astNode.limits.max).isEqualTo(expectedMax)
+        assertThat(parseResult.parseLength).isEqualTo(2)
     }
 
     @Test
     fun parseNegativeMin_throwsParseExceptionWithNegativeNumberMessage() {
         val tokens = tokenizer.tokenize("-123456", context)
-        val exception = assertThrows(ParseException::class.java) { tokens.parseLimits(0) }
+        val exception = assertThrows(ParseException::class.java) { tokens.parseTableType(0) }
         assertThat(exception).hasMessageThat().contains("Expected integer literal")
     }
 
     @Test
     fun parseABitLargerThanMaxVal_throwsParseExceptionWithValueOverflowMessage() {
         val tokens = tokenizer.tokenize("4294967296", context)
-        val exception = assertThrows(ParseException::class.java) { tokens.parseLimits(0) }
+        val exception = assertThrows(ParseException::class.java) { tokens.parseTableType(0) }
         assertThat(exception).hasMessageThat().contains("Illegal value")
     }
 
     @Test
     fun parseALotLargerThanMaxVal_throwsParseExceptionWithValueOverflowMessage() {
         val tokens = tokenizer.tokenize("100000000000", context)
-        val exception = assertThrows(ParseException::class.java) { tokens.parseLimits(0) }
+        val exception = assertThrows(ParseException::class.java) { tokens.parseTableType(0) }
         assertThat(exception).hasMessageThat().contains("Illegal value")
     }
 
@@ -87,59 +103,59 @@ class LimitsTest {
     fun parseTwoNumbers_setMinAndMaxToCorrectValue() {
         val expectedMin = 123456.toUInt()
         val expectedMax = 234567.toUInt()
-        val tokens = tokenizer.tokenize("$expectedMin $expectedMax", context)
-        val parseResult = tokens.parseLimits(0)
-        assertThat(parseResult.astNode.min).isEqualTo(expectedMin)
-        assertThat(parseResult.astNode.max).isEqualTo(expectedMax)
-        assertThat(parseResult.parseLength).isEqualTo(2)
+        val tokens = tokenizer.tokenize("$expectedMin $expectedMax funcref", context)
+        val parseResult = tokens.parseTableType(0)
+        assertThat(parseResult.astNode.limits.min).isEqualTo(expectedMin)
+        assertThat(parseResult.astNode.limits.max).isEqualTo(expectedMax)
+        assertThat(parseResult.parseLength).isEqualTo(3)
     }
 
     @Test
     fun parseTwoNumbers_withMinGreaterThanMax_throwsParseExceptionWithInvalidRangeMessage() {
         val tokens = tokenizer.tokenize("234567 123456", context)
-        val exception = assertThrows(ParseException::class.java) { tokens.parseLimits(0) }
+        val exception = assertThrows(ParseException::class.java) { tokens.parseTableType(0) }
         assertThat(exception).hasMessageThat().contains("Arguments out of order, min > max.")
     }
 
     @Test
     fun parseTwoValuesWithNegativeMin_throwsParseExceptionWithNegativeNumberMessage() {
         val tokens = tokenizer.tokenize("-123456 234567", context)
-        val exception = assertThrows(ParseException::class.java) { tokens.parseLimits(0) }
+        val exception = assertThrows(ParseException::class.java) { tokens.parseTableType(0) }
         assertThat(exception).hasMessageThat().contains("Expected integer literal")
     }
 
     @Test
     fun parseTwoValuesWithMinABitLargerThanMaxVal_throwsParseExceptionWithValueOverflowMessage() {
         val tokens = tokenizer.tokenize("4294967296 234567", context)
-        val exception = assertThrows(ParseException::class.java) { tokens.parseLimits(0) }
+        val exception = assertThrows(ParseException::class.java) { tokens.parseTableType(0) }
         assertThat(exception).hasMessageThat().contains("Illegal value")
     }
 
     @Test
     fun parseTwoValuesWithMinALotLargerThanMaxVal_throwsParseExceptionWithValueOverflowMessage() {
         val tokens = tokenizer.tokenize("100000000000 234567", context)
-        val exception = assertThrows(ParseException::class.java) { tokens.parseLimits(0) }
+        val exception = assertThrows(ParseException::class.java) { tokens.parseTableType(0) }
         assertThat(exception).hasMessageThat().contains("Illegal value")
     }
 
     @Test
     fun parseTwoValuesWithMaxABitLargerThanMaxVal_throwsParseExceptionWithValueOverflowMessage() {
         val tokens = tokenizer.tokenize("1234567 4294967296", context)
-        val exception = assertThrows(ParseException::class.java) { tokens.parseLimits(0) }
+        val exception = assertThrows(ParseException::class.java) { tokens.parseTableType(0) }
         assertThat(exception).hasMessageThat().contains("Illegal value")
     }
 
     @Test
     fun parseTwoValuesWithMaxALotLargerThanMaxVal_throwsParseExceptionWithValueOverflowMessage() {
         val tokens = tokenizer.tokenize("1234567 100000000000", context)
-        val exception = assertThrows(ParseException::class.java) { tokens.parseLimits(0) }
+        val exception = assertThrows(ParseException::class.java) { tokens.parseTableType(0) }
         assertThat(exception).hasMessageThat().contains("Illegal value")
     }
 
     @Test
     fun parseNoValues_throwsParseExceptionWithIncorrectNumberOfArgumentsException() {
-        val tokens = tokenizer.tokenize("", context)
-        val exception = assertThrows(ParseException::class.java) { tokens.parseLimits(0) }
+        val tokens = tokenizer.tokenize("memory", context)
+        val exception = assertThrows(ParseException::class.java) { tokens.parseTableType(0) }
         assertThat(exception).hasMessageThat().contains("Expected integer literal")
     }
 }

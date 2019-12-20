@@ -12,18 +12,7 @@
  * limitations under the License.
  */
 
-package kwasm.format.text
+package kwasm.ast
 
-import kwasm.ast.Memory
-import kwasm.format.text.token.Token
-
-/**
- * From [the spec](https://webassembly.github.io/spec/core/text/types.html#memory-types):
- * ```
- *   memtype ::= lim:limits => lim
- * ```
- */
-fun List<Token>.parseMemoryType(startingIndex: Int): ParseResult<Memory> {
-    val limits = this.parseLimits(startingIndex)
-    return ParseResult(Memory(limits.astNode), limits.parseLength)
-}
+/** This data class represents TableType */
+data class TableType(val limits: Limit) : AstNode

@@ -17,7 +17,6 @@ package kwasm.format.text
 import kwasm.ast.Limit
 import kwasm.format.ParseException
 import kwasm.format.text.token.IntegerLiteral
-import kwasm.format.text.token.Paren
 import kwasm.format.text.token.Token
 
 /**
@@ -37,12 +36,9 @@ fun List<Token>.parseLimits(startingIndex: Int): ParseResult<Limit> {
     )
     min.magnitude = 32
     val maxOrCloseParenIndex = startingIndex + 1
-    if (maxOrCloseParenIndex >= this.size || this[maxOrCloseParenIndex] is Paren.Closed)
+    if (maxOrCloseParenIndex >= this.size || this[maxOrCloseParenIndex] !is IntegerLiteral.Unsigned)
         return ParseResult(Limit(min.value.toUInt(), UInt.MAX_VALUE), 1)
-    val max = this[maxOrCloseParenIndex] as? IntegerLiteral.Unsigned ?: throw ParseException(
-        "Expected integer literal",
-        this[maxOrCloseParenIndex].context
-    )
+    val max = (this[maxOrCloseParenIndex] as IntegerLiteral.Unsigned)
     max.magnitude = 32
     if (min.value > max.value) throw ParseException("Arguments out of order, min > max. min: ${min.value}, max: ${max.value}")
     return ParseResult(Limit(min.value.toUInt(), max.value.toUInt()), 2)
