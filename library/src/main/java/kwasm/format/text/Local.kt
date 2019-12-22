@@ -17,6 +17,7 @@ package kwasm.format.text
 import kwasm.ast.AstNode
 import kwasm.ast.AstNodeList
 import kwasm.ast.Local
+import kwasm.ast.astNodeListOf
 import kwasm.format.parseCheck
 import kwasm.format.text.token.Identifier
 import kwasm.format.text.token.Token
@@ -43,7 +44,7 @@ fun List<Token>.parseLocal(fromIndex: Int): ParseResult<AstNodeList<Local>>? {
     }
 
     val valTypes = if (id == null) {
-        parseValueTypes(currentIndex, minRequired = 1)
+        parseValueTypes(currentIndex)
     }  else {
         parseValueTypes(currentIndex, minRequired = 1, maxAllowed = 1)
     }
@@ -52,7 +53,11 @@ fun List<Token>.parseLocal(fromIndex: Int): ParseResult<AstNodeList<Local>>? {
     currentIndex++
 
     return ParseResult(
-        AstNodeList(valTypes.astNode.map { Local(id, it) }),
+        if (valTypes.astNode.isEmpty() && id == null) {
+            astNodeListOf(Local(null, null))
+        } else {
+            AstNodeList(valTypes.astNode.map { Local(id, it) })
+        },
         currentIndex - fromIndex
     )
 }

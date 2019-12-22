@@ -65,6 +65,16 @@ class LocalTest {
     }
 
     @Test
+    fun parse_returnsLocalWithNoType_ifAnonymous() {
+        val result = tokenizer.tokenize("(local)", context).parseLocal(0)
+            ?: fail("Expected a result")
+        assertThat(result.parseLength).isEqualTo(3)
+        assertThat(result.astNode).containsExactly(
+            Local(null, null)
+        )
+    }
+
+    @Test
     fun parse_returnsMultipleLocals_ifAvailable() {
         val result = tokenizer.tokenize("(local i32 i64)", context).parseLocal(0)
             ?: fail("Expected a result")

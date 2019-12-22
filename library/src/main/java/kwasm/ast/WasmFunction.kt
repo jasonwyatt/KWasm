@@ -14,13 +14,10 @@
 
 package kwasm.ast
 
-/**
- * Represents a mutable local value for a [WasmFunction].
- *
- * From [the docs](https://webassembly.github.io/spec/core/syntax/modules.html#syntax-func):
- *
- * The `locals` declare a vector of mutable local variables and their types. These variables are
- * referenced through local indices in the function’s body. The index of the first local is the
- * smallest index not referencing a parameter.
- */
-data class Local(val id: Identifier.Local?, val valueType: ValueType?) : AstNode
+/** Encapsulates a function within a [Module]. */
+data class WasmFunction(
+    val id: Identifier.Function?,
+    val typeUse: TypeUse?,
+    val locals: List<Local>,
+    val instructions: List<Instruction>
+) : AstNode
