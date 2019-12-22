@@ -12,18 +12,12 @@
  * limitations under the License.
  */
 
-package kwasm.format.text
-
-import kwasm.ast.Memory
-import kwasm.format.text.token.Token
+package kwasm.ast
 
 /**
- * From [the spec](https://webassembly.github.io/spec/core/text/types.html#memory-types):
- * ```
- *   memtype ::= lim:limits => lim
- * ```
+ * Represents an element type. As of the current version of WebAssembly, only [FunctionReference]
+ * is supported.
  */
-fun List<Token>.parseMemoryType(startingIndex: Int): ParseResult<Memory> {
-    val limits = this.parseLimits(startingIndex)
-    return ParseResult(Memory(limits.astNode), limits.parseLength)
+enum class ElementType {
+    FunctionReference
 }

@@ -16,8 +16,7 @@ package kwasm.format.text
 
 import kwasm.ast.Limit
 import kwasm.format.ParseException
-import kwasm.format.text.token.IntegerLiteral
-import kwasm.format.text.token.Paren
+import kwasm.format.parseCheck
 import kwasm.format.text.token.Token
 
 /**
@@ -30,20 +29,20 @@ import kwasm.format.text.token.Token
  */
 @UseExperimental(ExperimentalUnsignedTypes::class)
 fun List<Token>.parseLimits(startingIndex: Int): ParseResult<Limit> {
-    if (startingIndex >= this.size) throw ParseException("Expected integer literal")
-    val min = this[startingIndex] as? IntegerLiteral.Unsigned ?: throw ParseException(
-        "Expected integer literal",
-        this[startingIndex].context
+    var currentIndex = startingIndex
+    val min = parseLiteral(currentIndex, UInt::class)
+    currentIndex += min.parseLength
+    val max = try {
+        parseLiteral(currentIndex, UInt::class)
+    } catch (e: ParseException) {
+        ParseResult(kwasm.ast.IntegerLiteral.U32(UInt.MAX_VALUE), 0)
+    }
+    currentIndex += max.parseLength
+
+    parseCheck(
+        contextAt(startingIndex),
+        max.astNode.value >= min.astNode.value,
+        "Arguments out of order, min > max, min: ${min.astNode.value}, max: ${max.astNode.value}"
     )
-    min.magnitude = 32
-    val maxOrCloseParenIndex = startingIndex + 1
-    if (maxOrCloseParenIndex >= this.size || this[maxOrCloseParenIndex] is Paren.Closed)
-        return ParseResult(Limit(min.value.toUInt(), UInt.MAX_VALUE), 1)
-    val max = this[maxOrCloseParenIndex] as? IntegerLiteral.Unsigned ?: throw ParseException(
-        "Expected integer literal",
-        this[maxOrCloseParenIndex].context
-    )
-    max.magnitude = 32
-    if (min.value > max.value) throw ParseException("Arguments out of order, min > max. min: ${min.value}, max: ${max.value}")
-    return ParseResult(Limit(min.value.toUInt(), max.value.toUInt()), 2)
+    return ParseResult(Limit(min.astNode.value, max.astNode.value), currentIndex - startingIndex)
 }

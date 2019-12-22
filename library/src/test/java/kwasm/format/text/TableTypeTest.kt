@@ -24,59 +24,75 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 @UseExperimental(ExperimentalUnsignedTypes::class)
-class MemoryTypeTest {
+class TableTypeTest {
 
     private val context = ParseContext("TokenizerTest.wasm", 1, 1)
     private val tokenizer = Tokenizer()
 
     @Test
+    fun parseSingleNumber_withoutFuncref_throwsParseException() {
+        val expectedMin = 123456.toUInt()
+        val tokens = tokenizer.tokenize("$expectedMin", context)
+        val exception = assertThrows(ParseException::class.java) { tokens.parseTableType(0) }
+        assertThat(exception).hasMessageThat().contains("Expected 'funcref'")
+    }
+
+    @Test
+    fun parseSingleNumber_withoutNonFuncrefLiteral_throwsParseException() {
+        val expectedMin = 123456.toUInt()
+        val tokens = tokenizer.tokenize("$expectedMin notFuncref", context)
+        val exception = assertThrows(ParseException::class.java) { tokens.parseTableType(0) }
+        assertThat(exception).hasMessageThat().contains("Expected 'funcref'")
+    }
+
+    @Test
     fun parseSingleNumber_setMinToCorrectValue() {
         val expectedMin = 123456.toUInt()
         val expectedMax = UInt.MAX_VALUE
-        val tokens = tokenizer.tokenize("$expectedMin", context)
-        val parseResult = tokens.parseMemoryType(0)
-        assertThat(parseResult.astNode.limits.min).isEqualTo(expectedMin)
-        assertThat(parseResult.astNode.limits.max).isEqualTo(expectedMax)
-        assertThat(parseResult.parseLength).isEqualTo(1)
-    }
-
-    @Test
-    fun parseMaxVal_setMinToMaxVal() {
-        val expectedMin = UInt.MAX_VALUE
-        val expectedMax = UInt.MAX_VALUE
-        val tokens = tokenizer.tokenize("$expectedMin", context)
-        val parseResult = tokens.parseMemoryType(0)
-        assertThat(parseResult.astNode.limits.min).isEqualTo(expectedMin)
-        assertThat(parseResult.astNode.limits.max).isEqualTo(expectedMax)
-        assertThat(parseResult.parseLength).isEqualTo(1)
-    }
-
-    @Test
-    fun parseMinVal_setMinToMinVal() {
-        val expectedMin = UInt.MIN_VALUE
-        val expectedMax = UInt.MAX_VALUE
-        val tokens = tokenizer.tokenize("$expectedMin", context)
-        val parseResult = tokens.parseMemoryType(0)
-        assertThat(parseResult.astNode.limits.min).isEqualTo(expectedMin)
-        assertThat(parseResult.astNode.limits.max).isEqualTo(expectedMax)
-        assertThat(parseResult.parseLength).isEqualTo(1)
-    }
-
-    @Test
-    fun parseTwoNumbers_setMinAndMaxToCorrectValue() {
-        val expectedMin = 123456.toUInt()
-        val expectedMax = 234567.toUInt()
-        val tokens = tokenizer.tokenize("$expectedMin $expectedMax", context)
-        val parseResult = tokens.parseMemoryType(0)
+        val tokens = tokenizer.tokenize("$expectedMin funcref", context)
+        val parseResult = tokens.parseTableType(0)
         assertThat(parseResult.astNode.limits.min).isEqualTo(expectedMin)
         assertThat(parseResult.astNode.limits.max).isEqualTo(expectedMax)
         assertThat(parseResult.parseLength).isEqualTo(2)
     }
 
     @Test
+    fun parseMaxVal_setMinToMaxVal() {
+        val expectedMin = UInt.MAX_VALUE
+        val expectedMax = UInt.MAX_VALUE
+        val tokens = tokenizer.tokenize("$expectedMin funcref", context)
+        val parseResult = tokens.parseTableType(0)
+        assertThat(parseResult.astNode.limits.min).isEqualTo(expectedMin)
+        assertThat(parseResult.astNode.limits.max).isEqualTo(expectedMax)
+        assertThat(parseResult.parseLength).isEqualTo(2)
+    }
+
+    @Test
+    fun parseMinVal_setMinToMinVal() {
+        val expectedMin = UInt.MIN_VALUE
+        val expectedMax = UInt.MAX_VALUE
+        val tokens = tokenizer.tokenize("$expectedMin funcref", context)
+        val parseResult = tokens.parseTableType(0)
+        assertThat(parseResult.astNode.limits.min).isEqualTo(expectedMin)
+        assertThat(parseResult.astNode.limits.max).isEqualTo(expectedMax)
+        assertThat(parseResult.parseLength).isEqualTo(2)
+    }
+
+    @Test
+    fun parseTwoNumbers_setMinAndMaxToCorrectValue() {
+        val expectedMin = 123456.toUInt()
+        val expectedMax = 234567.toUInt()
+        val tokens = tokenizer.tokenize("$expectedMin $expectedMax funcref", context)
+        val parseResult = tokens.parseTableType(0)
+        assertThat(parseResult.astNode.limits.min).isEqualTo(expectedMin)
+        assertThat(parseResult.astNode.limits.max).isEqualTo(expectedMax)
+        assertThat(parseResult.parseLength).isEqualTo(3)
+    }
+
+    @Test
     fun parseNoValues_throwsParseExceptionWithIncorrectNumberOfArgumentsException() {
         val tokens = tokenizer.tokenize("memory", context)
-        val exception = assertThrows(ParseException::class.java) { tokens.parseMemoryType(0) }
+        val exception = assertThrows(ParseException::class.java) { tokens.parseTableType(0) }
         assertThat(exception).hasMessageThat().contains("Expected i32")
     }
 }
