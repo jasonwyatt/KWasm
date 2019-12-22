@@ -47,6 +47,13 @@ fun Token.assertIsKeyword(keywordValue: String) {
 }
 
 /**
+ * Determines whether the [Token] at the given position is a [Keyword] matching the provided
+ * [keyword] value.
+ */
+fun List<Token>.isKeyword(atIndex: Int, keyword: String): Boolean =
+    getOrNull(atIndex)?.isKeyword(keyword) ?: false
+
+/**
  * Helper to check if a [Token] at a given position within the receiving [List] is a [Paren.Open].
  */
 fun List<Token>.isOpenParen(atIndex: Int): Boolean = getOrNull(atIndex) is Paren.Open
