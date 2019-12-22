@@ -63,27 +63,6 @@ class MemoryTypeTest {
     }
 
     @Test
-    fun parseNegativeMin_throwsParseExceptionWithNegativeNumberMessage() {
-        val tokens = tokenizer.tokenize("-123456", context)
-        val exception = assertThrows(ParseException::class.java) { tokens.parseMemoryType(0) }
-        assertThat(exception).hasMessageThat().contains("Expected integer literal")
-    }
-
-    @Test
-    fun parseABitLargerThanMaxVal_throwsParseExceptionWithValueOverflowMessage() {
-        val tokens = tokenizer.tokenize("4294967296", context)
-        val exception = assertThrows(ParseException::class.java) { tokens.parseMemoryType(0) }
-        assertThat(exception).hasMessageThat().contains("Illegal value")
-    }
-
-    @Test
-    fun parseALotLargerThanMaxVal_throwsParseExceptionWithValueOverflowMessage() {
-        val tokens = tokenizer.tokenize("100000000000", context)
-        val exception = assertThrows(ParseException::class.java) { tokens.parseMemoryType(0) }
-        assertThat(exception).hasMessageThat().contains("Illegal value")
-    }
-
-    @Test
     fun parseTwoNumbers_setMinAndMaxToCorrectValue() {
         val expectedMin = 123456.toUInt()
         val expectedMax = 234567.toUInt()
@@ -95,51 +74,9 @@ class MemoryTypeTest {
     }
 
     @Test
-    fun parseTwoNumbers_withMinGreaterThanMax_throwsParseExceptionWithInvalidRangeMessage() {
-        val tokens = tokenizer.tokenize("234567 123456", context)
-        val exception = assertThrows(ParseException::class.java) { tokens.parseMemoryType(0) }
-        assertThat(exception).hasMessageThat().contains("Arguments out of order, min > max.")
-    }
-
-    @Test
-    fun parseTwoValuesWithNegativeMin_throwsParseExceptionWithNegativeNumberMessage() {
-        val tokens = tokenizer.tokenize("-123456 234567", context)
-        val exception = assertThrows(ParseException::class.java) { tokens.parseMemoryType(0) }
-        assertThat(exception).hasMessageThat().contains("Expected integer literal")
-    }
-
-    @Test
-    fun parseTwoValuesWithMinABitLargerThanMaxVal_throwsParseExceptionWithValueOverflowMessage() {
-        val tokens = tokenizer.tokenize("4294967296 234567", context)
-        val exception = assertThrows(ParseException::class.java) { tokens.parseMemoryType(0) }
-        assertThat(exception).hasMessageThat().contains("Illegal value")
-    }
-
-    @Test
-    fun parseTwoValuesWithMinALotLargerThanMaxVal_throwsParseExceptionWithValueOverflowMessage() {
-        val tokens = tokenizer.tokenize("100000000000 234567", context)
-        val exception = assertThrows(ParseException::class.java) { tokens.parseMemoryType(0) }
-        assertThat(exception).hasMessageThat().contains("Illegal value")
-    }
-
-    @Test
-    fun parseTwoValuesWithMaxABitLargerThanMaxVal_throwsParseExceptionWithValueOverflowMessage() {
-        val tokens = tokenizer.tokenize("1234567 4294967296", context)
-        val exception = assertThrows(ParseException::class.java) { tokens.parseMemoryType(0) }
-        assertThat(exception).hasMessageThat().contains("Illegal value")
-    }
-
-    @Test
-    fun parseTwoValuesWithMaxALotLargerThanMaxVal_throwsParseExceptionWithValueOverflowMessage() {
-        val tokens = tokenizer.tokenize("1234567 100000000000", context)
-        val exception = assertThrows(ParseException::class.java) { tokens.parseMemoryType(0) }
-        assertThat(exception).hasMessageThat().contains("Illegal value")
-    }
-
-    @Test
     fun parseNoValues_throwsParseExceptionWithIncorrectNumberOfArgumentsException() {
         val tokens = tokenizer.tokenize("memory", context)
         val exception = assertThrows(ParseException::class.java) { tokens.parseMemoryType(0) }
-        assertThat(exception).hasMessageThat().contains("Expected integer literal")
+        assertThat(exception).hasMessageThat().contains("Expected i32")
     }
 }

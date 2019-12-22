@@ -14,8 +14,10 @@
 
 package kwasm.format.text
 
+import kwasm.ast.ElementType
 import kwasm.ast.TableType
 import kwasm.format.ParseException
+import kwasm.format.parseCheck
 import kwasm.format.text.token.Keyword
 import kwasm.format.text.token.Token
 
@@ -27,19 +29,13 @@ import kwasm.format.text.token.Token
  * ```
  */
 fun List<Token>.parseTableType(startingIndex: Int): ParseResult<TableType> {
-    val limits = this.parseLimits(startingIndex)
-    val funcrefIndex = startingIndex + limits.parseLength
-    if (funcrefIndex >= this.size) throw ParseException(
-        "Too few arguments",
-        this[startingIndex].context
+    var currentIndex = startingIndex
+    val limits = parseLimits(startingIndex)
+    currentIndex += limits.parseLength
+    parseCheck(contextAt(currentIndex), isKeyword(currentIndex, "funcref"), "Expected 'funcref'")
+    currentIndex++
+    return ParseResult(
+        TableType(limits.astNode, ElementType.FunctionReference),
+        currentIndex - startingIndex
     )
-    val funcrefToken = this[funcrefIndex] as? Keyword ?: throw ParseException(
-        "Expected keyword",
-        this[funcrefIndex].context
-    )
-    if (funcrefToken.value != "funcref") throw ParseException(
-        "Expected 'funcref' found '${funcrefToken.value}'",
-        funcrefToken.context
-    )
-    return ParseResult(TableType(limits.astNode), limits.parseLength + 1)
 }

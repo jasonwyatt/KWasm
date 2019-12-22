@@ -14,5 +14,10 @@
 
 package kwasm.ast
 
-/** This data class represents TableType */
-data class TableType(val limits: Limit, val elemType: ElementType) : AstNode
+/**
+ * Represents an element type. As of the current version of WebAssembly, only [FunctionReference]
+ * is supported.
+ */
+enum class ElementType {
+    FunctionReference
+}
