@@ -61,4 +61,61 @@ class ValueTypeTest {
             assertThrows(ParseException::class.java) { tokenizer.tokenize("\$abc", context).parseValueType(0) }
         assertThat(exception).hasMessageThat().contains("Invalid ValueType: Expecting keyword token")
     }
+
+    @Test
+    fun parseOptional_withValidValueType() {
+        var expected: ParseResult<ValueType> = ParseResult(ValueType.I32, 1)
+        var actual = tokenizer.tokenize("i32", context).parseOptionalValueType(0)
+        assertThat(actual).isEqualTo(expected)
+
+        expected = ParseResult(ValueType.I64, 1)
+        actual = tokenizer.tokenize("i64", context).parseOptionalValueType(0)
+        assertThat(actual).isEqualTo(expected)
+
+        expected = ParseResult(ValueType.F32, 1)
+        actual = tokenizer.tokenize("f32", context).parseOptionalValueType(0)
+        assertThat(actual).isEqualTo(expected)
+
+        expected = ParseResult(ValueType.F64, 1)
+        actual = tokenizer.tokenize("f64", context).parseOptionalValueType(0)
+        assertThat(actual).isEqualTo(expected)
+    }
+
+    @Test
+    fun parseOptional_withInvalidValueType_returnsNull() {
+        val result = tokenizer.tokenize("abc").parseOptionalValueType(0)
+        assertThat(result).isNull()
+    }
+
+    @Test
+    fun parsePlural_throwsWhenNotEnough() {
+        val e = assertThrows(ParseException::class.java) {
+            tokenizer.tokenize("i32").parseValueTypes(0, minRequired = 2)
+        }
+        assertThat(e).hasMessageThat().contains("Not enough ValueTypes")
+    }
+
+    @Test
+    fun parsePlural_throwsWhenTooMany() {
+        val e = assertThrows(ParseException::class.java) {
+            tokenizer.tokenize("i32 i64").parseValueTypes(0, maxAllowed = 1)
+        }
+        assertThat(e).hasMessageThat().contains("Too many ValueTypes")
+    }
+
+    @Test
+    fun parsePlural_withDefaults_returnsEmptyList_forEmptyString() {
+        val result = tokenizer.tokenize("").parseValueTypes(0)
+        assertThat(result.parseLength).isEqualTo(0)
+        assertThat(result.astNode).isEmpty()
+    }
+
+    @Test
+    fun parsePlural() {
+        val result = tokenizer.tokenize("i32 i64 f32 f64").parseValueTypes(0)
+        assertThat(result.parseLength).isEqualTo(4)
+        assertThat(result.astNode)
+            .containsExactly(ValueType.I32, ValueType.I64, ValueType.F32, ValueType.F64)
+            .inOrder()
+    }
 }
