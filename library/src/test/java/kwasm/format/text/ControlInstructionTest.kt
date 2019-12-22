@@ -22,7 +22,6 @@ import kwasm.ast.Param
 import kwasm.ast.Result
 import kwasm.ast.TypeUse
 import kwasm.ast.ValueType
-import kwasm.ast.ValueTypeEnum
 import kwasm.ast.astNodeListOf
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
@@ -74,7 +73,7 @@ class ControlInstructionTest {
         assertThat(parsed.parseLength).isEqualTo(9)
         val block = parsed.astNode as? ControlInstruction.Block ?: fail("Expected a block")
         assertThat(block.label.stringRepr).isNull()
-        assertThat(block.result.result).isEqualTo(Result(ValueType(ValueTypeEnum.I32)))
+        assertThat(block.result.result).isEqualTo(Result(ValueType.I32))
         assertThat(block.instructions).hasSize(3)
         assertThat(block.instructions[0]).isEqualTo(ControlInstruction.NoOp)
         assertThat(block.instructions[1]).isEqualTo(ControlInstruction.Return)
@@ -552,8 +551,8 @@ class ControlInstructionTest {
             .isEqualTo(
                 TypeUse(
                     Index.ByIdentifier(Identifier.Type("\$myType")),
-                    astNodeListOf(Param(null, ValueType(ValueTypeEnum.I32))),
-                    astNodeListOf(Result(ValueType(ValueTypeEnum.F32)))
+                    astNodeListOf(Param(null, ValueType.I32)),
+                    astNodeListOf(Result(ValueType.F32))
                 )
             )
     }

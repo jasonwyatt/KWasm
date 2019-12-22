@@ -15,7 +15,6 @@
 package kwasm.format.text
 
 import kwasm.ast.ValueType
-import kwasm.ast.ValueTypeEnum
 import kwasm.format.ParseException
 import kwasm.format.text.token.Keyword
 import kwasm.format.text.token.Token
@@ -38,11 +37,11 @@ fun List<Token>.parseValueType(currentIndex: Int): ParseResult<ValueType> {
     }
 
     val valueType = when (valueTypeToken.value) {
-        "i32" -> ValueTypeEnum.I32
-        "i64" -> ValueTypeEnum.I64
-        "f32" -> ValueTypeEnum.F32
-        "f64" -> ValueTypeEnum.F64
+        "i32" -> ValueType.I32
+        "i64" -> ValueType.I64
+        "f32" -> ValueType.F32
+        "f64" -> ValueType.F64
         else -> throw ParseException("Invalid ValueType: Expecting i32, i64, f32, or f64", valueTypeToken.context)
     }
-    return ParseResult(ValueType(valueType), 1)
+    return ParseResult(valueType, 1)
 }

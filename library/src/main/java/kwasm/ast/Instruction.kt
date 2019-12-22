@@ -28,7 +28,7 @@ interface BlockInstruction : Instruction {
 
 /** Base for all [Instruction]s which return some value. */
 interface Operation : Instruction {
-    val returnType: ValueTypeEnum
+    val returnType: ValueType
 }
 
 /** Base for all [Instruction]s which return a constant value. */

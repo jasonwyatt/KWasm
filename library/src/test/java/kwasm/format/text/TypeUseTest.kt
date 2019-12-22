@@ -20,7 +20,6 @@ import kwasm.ast.Index
 import kwasm.ast.Param
 import kwasm.ast.TypeUse
 import kwasm.ast.ValueType
-import kwasm.ast.ValueTypeEnum
 import kwasm.ast.astNodeListOf
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
@@ -70,8 +69,8 @@ class TypeUseTest {
         assertThat(result.astNode.params).hasSize(2)
         assertThat(result.astNode.params).isEqualTo(
             astNodeListOf(
-                Param(null, ValueType(ValueTypeEnum.I32)),
-                Param(null, ValueType(ValueTypeEnum.F32))
+                Param(null, ValueType.I32),
+                Param(null, ValueType.F32)
             )
         )
         assertThat(result.astNode.results).isEmpty()
@@ -85,8 +84,8 @@ class TypeUseTest {
         assertThat(result.astNode.results).hasSize(2)
         assertThat(result.astNode.results).isEqualTo(
             astNodeListOf(
-                kwasm.ast.Result(ValueType(ValueTypeEnum.I32)),
-                kwasm.ast.Result(ValueType(ValueTypeEnum.F32))
+                kwasm.ast.Result(ValueType.I32),
+                kwasm.ast.Result(ValueType.F32)
             )
         )
         assertThat(result.astNode.params).isEmpty()
@@ -101,15 +100,15 @@ class TypeUseTest {
         assertThat(result.astNode.params).hasSize(2)
         assertThat(result.astNode.params).isEqualTo(
             astNodeListOf(
-                Param(null, ValueType(ValueTypeEnum.I32)),
-                Param(null, ValueType(ValueTypeEnum.F64))
+                Param(null, ValueType.I32),
+                Param(null, ValueType.F64)
             )
         )
         assertThat(result.astNode.results).hasSize(2)
         assertThat(result.astNode.results).isEqualTo(
             astNodeListOf(
-                kwasm.ast.Result(ValueType(ValueTypeEnum.I32)),
-                kwasm.ast.Result(ValueType(ValueTypeEnum.F32))
+                kwasm.ast.Result(ValueType.I32),
+                kwasm.ast.Result(ValueType.F32)
             )
         )
     }
@@ -129,13 +128,13 @@ class TypeUseTest {
         assertThat(result.astNode.params).hasSize(1)
         assertThat(result.astNode.params).isEqualTo(
             astNodeListOf(
-                Param(null, ValueType(ValueTypeEnum.I32))
+                Param(null, ValueType.I32)
             )
         )
         assertThat(result.astNode.results).hasSize(1)
         assertThat(result.astNode.results).isEqualTo(
             astNodeListOf(
-                kwasm.ast.Result(ValueType(ValueTypeEnum.I64))
+                kwasm.ast.Result(ValueType.I64)
             )
         )
     }
@@ -174,12 +173,12 @@ class TypeUseTest {
             TypeUse(
                 Index.ByIdentifier(Identifier.Type("\$myId")),
                 astNodeListOf(
-                    Param(null, ValueType(ValueTypeEnum.I32)),
-                    Param(null, ValueType(ValueTypeEnum.I64))
+                    Param(null, ValueType.I32),
+                    Param(null, ValueType.I64)
                 ),
                 astNodeListOf(
-                    kwasm.ast.Result(ValueType(ValueTypeEnum.F32)),
-                    kwasm.ast.Result(ValueType(ValueTypeEnum.F64))
+                    kwasm.ast.Result(ValueType.F32),
+                    kwasm.ast.Result(ValueType.F64)
                 )
             )
         )

@@ -15,10 +15,9 @@
 package kwasm.format.text
 
 import com.google.common.truth.Truth.assertThat
-import kwasm.ast.ValueTypeEnum
+import kwasm.ast.ValueType
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
-import org.junit.Assert
 import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -32,19 +31,19 @@ class ValueTypeTest {
 
     @Test
     fun parseValidValueType() {
-        var expected = ParseResult(kwasm.ast.ValueType(ValueTypeEnum.I32), 1)
+        var expected: ParseResult<ValueType> = ParseResult(ValueType.I32, 1)
         var actual = tokenizer.tokenize("i32", context).parseValueType(0)
         assertThat(actual).isEqualTo(expected)
 
-        expected = ParseResult(kwasm.ast.ValueType(ValueTypeEnum.I64), 1)
+        expected = ParseResult(ValueType.I64, 1)
         actual = tokenizer.tokenize("i64", context).parseValueType(0)
         assertThat(actual).isEqualTo(expected)
 
-        expected = ParseResult(kwasm.ast.ValueType(ValueTypeEnum.F32), 1)
+        expected = ParseResult(ValueType.F32, 1)
         actual = tokenizer.tokenize("f32", context).parseValueType(0)
         assertThat(actual).isEqualTo(expected)
 
-        expected = ParseResult(kwasm.ast.ValueType(ValueTypeEnum.F64), 1)
+        expected = ParseResult(ValueType.F64, 1)
         actual = tokenizer.tokenize("f64", context).parseValueType(0)
         assertThat(actual).isEqualTo(expected)
     }
