@@ -18,7 +18,6 @@ import com.google.common.truth.Truth.assertThat
 import kwasm.ast.Identifier
 import kwasm.ast.Param
 import kwasm.ast.ValueType
-import kwasm.ast.ValueTypeEnum
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import org.junit.Assert.assertThrows
@@ -34,14 +33,14 @@ class ParamTest {
 
     @Test
     fun parseValidParam_withId() {
-        val expected = ParseResult(Param(Identifier.Local("\$val1"), ValueType(ValueTypeEnum.I32)), 5)
+        val expected = ParseResult(Param(Identifier.Local("\$val1"), ValueType.I32), 5)
         val actual = tokenizer.tokenize("(param \$val1 i32)", context).parseParam(0)
         assertThat(actual).isEqualTo(expected)
     }
 
     @Test
     fun parseValidParam_withoutId() {
-        val expected = ParseResult(Param(null, ValueType(ValueTypeEnum.I32)), 4)
+        val expected = ParseResult(Param(null, ValueType.I32), 4)
         val actual = tokenizer.tokenize("(param i32)", context).parseParam(0)
         assertThat(actual).isEqualTo(expected)
     }

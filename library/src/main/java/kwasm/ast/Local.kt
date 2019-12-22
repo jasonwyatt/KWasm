@@ -15,18 +15,12 @@
 package kwasm.ast
 
 /**
- * From [the docs](https://webassembly.github.io/spec/core/text/types.html#value-types):
+ * Represents a mutable local value for a [WasmFunction].
  *
- * ```
- *   valtype ::=  { 'i32' -> I32
- *                  'i64' -> I64
- *                  'f32' -> F32
- *                  'f64' -> F64 }
- * ```
+ * From [the docs](https://webassembly.github.io/spec/core/syntax/modules.html#syntax-func):
+ *
+ * The `locals` declare a vector of mutable local variables and their types. These variables are
+ * referenced through local indices in the function’s body. The index of the first local is the
+ * smallest index not referencing a parameter.
  */
-sealed class ValueType : AstNode {
-    object I32 : ValueType()
-    object I64 : ValueType()
-    object F32 : ValueType()
-    object F64 : ValueType()
-}
+data class Local(val id: Identifier.Local?, val valueType: ValueType?) : AstNode

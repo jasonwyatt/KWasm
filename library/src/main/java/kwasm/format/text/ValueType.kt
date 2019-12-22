@@ -14,9 +14,11 @@
 
 package kwasm.format.text
 
+import kwasm.ast.AstNodeList
 import kwasm.ast.ValueType
-import kwasm.ast.ValueTypeEnum
 import kwasm.format.ParseException
+import kwasm.format.parseCheck
+import kwasm.format.parseCheckNotNull
 import kwasm.format.text.token.Keyword
 import kwasm.format.text.token.Token
 
@@ -32,17 +34,59 @@ import kwasm.format.text.token.Token
  * ```
  */
 fun List<Token>.parseValueType(currentIndex: Int): ParseResult<ValueType> {
-    val valueTypeToken = this[currentIndex]
-    if (valueTypeToken !is Keyword) {
-        throw ParseException("Invalid ValueType: Expecting keyword token", valueTypeToken.context)
+    parseCheckNotNull(
+        contextAt(currentIndex),
+        getOrNull(currentIndex) as? Keyword,
+        "Invalid ValueType: Expecting keyword token"
+    )
+    return parseCheckNotNull(
+        contextAt(currentIndex),
+        parseOptionalValueType(currentIndex),
+        "Invalid ValueType: Expecting i32, i64, f32, or f64"
+    )
+}
+
+/** Similar to [parseValueType], but does not throw if a [ValueType] is `null`. */
+fun List<Token>.parseOptionalValueType(currentIndex: Int): ParseResult<ValueType>? {
+    val valueType = when {
+        isKeyword(currentIndex, "i32") -> ValueType.I32
+        isKeyword(currentIndex, "i64") -> ValueType.I64
+        isKeyword(currentIndex, "f32") -> ValueType.F32
+        isKeyword(currentIndex, "f64") -> ValueType.F64
+        else -> null
+    }
+    return valueType?.let { ParseResult(it, 1) }
+}
+
+/**
+ * Parses an [AstNodeList] of [ValueType]s from the receiving [List] of [Token]s.
+ *
+ * See [parseValueType].
+ */
+fun List<Token>.parseValueTypes(
+    fromIndex: Int,
+    minRequired: Int = 0,
+    maxAllowed: Int = Int.MAX_VALUE
+): ParseResult<AstNodeList<ValueType>> {
+    var currentIndex = fromIndex
+    val types = mutableListOf<ValueType>()
+
+    while (true) {
+        val type = parseOptionalValueType(currentIndex) ?: break
+        currentIndex += type.parseLength
+        types.add(type.astNode)
     }
 
-    val valueType = when (valueTypeToken.value) {
-        "i32" -> ValueTypeEnum.I32
-        "i64" -> ValueTypeEnum.I64
-        "f32" -> ValueTypeEnum.F32
-        "f64" -> ValueTypeEnum.F64
-        else -> throw ParseException("Invalid ValueType: Expecting i32, i64, f32, or f64", valueTypeToken.context)
-    }
-    return ParseResult(ValueType(valueType), 1)
+    parseCheck(
+        contextAt(currentIndex),
+        types.size >= minRequired,
+        "Not enough ValueTypes, min = $minRequired"
+    )
+    parseCheck(
+        contextAt(currentIndex),
+        types.size <= maxAllowed,
+        "Too many ValueTypes, max = $maxAllowed"
+    )
+
+    return ParseResult(AstNodeList(types), currentIndex - fromIndex)
 }

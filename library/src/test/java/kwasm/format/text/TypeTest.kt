@@ -19,7 +19,6 @@ import kwasm.ast.FunctionType
 import kwasm.ast.Identifier
 import kwasm.ast.Param
 import kwasm.ast.ValueType
-import kwasm.ast.ValueTypeEnum
 import kwasm.ast.astNodeListOf
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
@@ -44,7 +43,7 @@ class TypeTest {
         assertThat(result.astNode.functionType)
             .isEqualTo(
                 FunctionType(
-                    astNodeListOf(Param(Identifier.Local("$0"), ValueType(ValueTypeEnum.I32))),
+                    astNodeListOf(Param(Identifier.Local("$0"), ValueType.I32)),
                     astNodeListOf()
                 )
             )
@@ -60,7 +59,7 @@ class TypeTest {
         assertThat(result.astNode.functionType)
             .isEqualTo(
                 FunctionType(
-                    astNodeListOf(Param(Identifier.Local("$0"), ValueType(ValueTypeEnum.I32))),
+                    astNodeListOf(Param(Identifier.Local("$0"), ValueType.I32)),
                     astNodeListOf()
                 )
             )

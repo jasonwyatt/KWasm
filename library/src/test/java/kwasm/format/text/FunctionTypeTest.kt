@@ -19,7 +19,6 @@ import kwasm.ast.FunctionType
 import kwasm.ast.Param
 import kwasm.ast.Result
 import kwasm.ast.ValueType
-import kwasm.ast.ValueTypeEnum
 import kwasm.ast.astNodeListOf
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
@@ -36,8 +35,8 @@ class FunctionTypeTest {
 
     @Test
     fun parseValidFunctionType_OneParamOneReturn() {
-        val onlyParam = astNodeListOf(Param(kwasm.ast.Identifier.Local("\$val1"), ValueType(ValueTypeEnum.I32)))
-        val onlyReturnType = astNodeListOf(Result(ValueType(ValueTypeEnum.I32)))
+        val onlyParam = astNodeListOf(Param(kwasm.ast.Identifier.Local("\$val1"), ValueType.I32))
+        val onlyReturnType = astNodeListOf(Result(ValueType.I32))
         val expected = ParseResult(FunctionType(onlyParam, onlyReturnType), 12)
         val actual = tokenizer.tokenize("(func (param \$val1 i32) (result i32))", context).parseFunctionType(0)
         assertThat(actual).isEqualTo(expected)
@@ -46,10 +45,10 @@ class FunctionTypeTest {
     @Test
     fun parseValidFunctionType_MultiParamMultiReturn() {
         val params = astNodeListOf(
-            Param(kwasm.ast.Identifier.Local("\$val1"), ValueType(ValueTypeEnum.I32)),
-            Param(kwasm.ast.Identifier.Local("\$val2"), ValueType(ValueTypeEnum.I64))
+            Param(kwasm.ast.Identifier.Local("\$val1"), ValueType.I32),
+            Param(kwasm.ast.Identifier.Local("\$val2"), ValueType.I64)
         )
-        val returnTypes = astNodeListOf(Result(ValueType(ValueTypeEnum.I32)), Result(ValueType(ValueTypeEnum.I64)))
+        val returnTypes = astNodeListOf(Result(ValueType.I32), Result(ValueType.I64))
         val expected = ParseResult(FunctionType(params, returnTypes), 21)
         val actual =
             tokenizer.tokenize("(func (param \$val1 i32) (param \$val2 i64) (result i32) (result i64))", context)
@@ -59,7 +58,7 @@ class FunctionTypeTest {
 
     @Test
     fun parseValidFunctionType_SingleParamVoidReturn() {
-        val onlyParam = astNodeListOf(Param(kwasm.ast.Identifier.Local("\$val1"), ValueType(ValueTypeEnum.I32)))
+        val onlyParam = astNodeListOf(Param(kwasm.ast.Identifier.Local("\$val1"), ValueType.I32))
         val expected = ParseResult(FunctionType(onlyParam, astNodeListOf()), 8)
         val actual = tokenizer.tokenize("(func (param \$val1 i32))", context).parseFunctionType(0)
         assertThat(actual).isEqualTo(expected)
@@ -67,7 +66,7 @@ class FunctionTypeTest {
 
     @Test
     fun parseValidFunctionType_NoParamSingleReturn() {
-        val onlyReturnType = astNodeListOf(Result(ValueType(ValueTypeEnum.I32)))
+        val onlyReturnType = astNodeListOf(Result(ValueType.I32))
         val expected = ParseResult(FunctionType(astNodeListOf(), onlyReturnType), 7)
         val actual = tokenizer.tokenize("(func (result i32))", context).parseFunctionType(0)
         assertThat(actual).isEqualTo(expected)
@@ -90,7 +89,7 @@ class FunctionTypeTest {
 
     @Test
     fun parseValueParamList() {
-        val expected = astNodeListOf(Param(null, ValueType(ValueTypeEnum.I32)), Param(null, ValueType(ValueTypeEnum.I64)))
+        val expected = astNodeListOf(Param(null, ValueType.I32), Param(null, ValueType.I64))
         val actual = tokenizer.tokenize("(param i32) (param i64)", context).parseParamList(0)
         assertThat(actual.astNode).isEqualTo(expected)
         assertThat(actual.parseLength).isEqualTo(8)
@@ -98,7 +97,7 @@ class FunctionTypeTest {
 
     @Test
     fun parseValueParamList_OnlyOneParam() {
-        val expected = astNodeListOf(Param(null, ValueType(ValueTypeEnum.I32)))
+        val expected = astNodeListOf(Param(null, ValueType.I32))
         val actual = tokenizer.tokenize("(param i32) (result i64)", context).parseParamList(0)
         assertThat(actual.astNode).isEqualTo(expected)
         assertThat(actual.parseLength).isEqualTo(4)
@@ -106,7 +105,7 @@ class FunctionTypeTest {
 
     @Test
     fun parseValueResultList() {
-        val expected = astNodeListOf(Result(ValueType(ValueTypeEnum.I32)), Result(ValueType(ValueTypeEnum.I64)))
+        val expected = astNodeListOf(Result(ValueType.I32), Result(ValueType.I64))
         val actual = tokenizer.tokenize("(result i32) (result i64)", context).parseResultList(0)
         assertThat(actual.astNode).isEqualTo(expected)
         assertThat(actual.parseLength).isEqualTo(8)
@@ -114,7 +113,7 @@ class FunctionTypeTest {
 
     @Test
     fun parseValueResultList_OnlyOneResult() {
-        val expected = astNodeListOf(Result(ValueType(ValueTypeEnum.I32)))
+        val expected = astNodeListOf(Result(ValueType.I32))
         val actual = tokenizer.tokenize("(result i32) (param i64)", context).parseResultList(0)
         assertThat(actual.astNode).isEqualTo(expected)
         assertThat(actual.parseLength).isEqualTo(4)

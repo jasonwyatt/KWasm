@@ -21,7 +21,6 @@ import kwasm.ast.Index
 import kwasm.ast.Result
 import kwasm.ast.ResultType
 import kwasm.ast.ValueType
-import kwasm.ast.ValueTypeEnum
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import org.assertj.core.api.Assertions.fail
@@ -98,7 +97,7 @@ class FoldedInstructionTest {
         assertThat(result.astNode).hasSize(1)
         val block = result.astNode[0] as? ControlInstruction.Block ?: fail("Expected a block")
         assertThat(block.label).isEqualTo(Identifier.Label("$0"))
-        assertThat(block.result).isEqualTo(ResultType(Result(ValueType(ValueTypeEnum.I32))))
+        assertThat(block.result).isEqualTo(ResultType(Result(ValueType.I32)))
         assertThat(block.instructions).hasSize(1)
         assertThat(block.instructions[0]).isEqualTo(ControlInstruction.Return)
     }
@@ -117,7 +116,7 @@ class FoldedInstructionTest {
         assertThat(result.astNode).hasSize(1)
         val block = result.astNode[0] as? ControlInstruction.Loop ?: fail("Expected a loop")
         assertThat(block.label).isEqualTo(Identifier.Label("$0"))
-        assertThat(block.result).isEqualTo(ResultType(Result(ValueType(ValueTypeEnum.I32))))
+        assertThat(block.result).isEqualTo(ResultType(Result(ValueType.I32)))
         assertThat(block.instructions).hasSize(1)
         assertThat(block.instructions[0]).isEqualTo(ControlInstruction.Return)
     }
@@ -144,7 +143,7 @@ class FoldedInstructionTest {
 
         val block = result.astNode[1] as? ControlInstruction.If ?: fail("Expected an if")
         assertThat(block.label).isEqualTo(Identifier.Label("$0"))
-        assertThat(block.result).isEqualTo(ResultType(Result(ValueType(ValueTypeEnum.I32))))
+        assertThat(block.result).isEqualTo(ResultType(Result(ValueType.I32)))
         assertThat(block.positiveInstructions).hasSize(1)
         assertThat(block.positiveInstructions[0]).isEqualTo(ControlInstruction.Return)
         assertThat(block.negativeInstructions).hasSize(0)
@@ -171,7 +170,7 @@ class FoldedInstructionTest {
 
         val block = result.astNode[1] as? ControlInstruction.If ?: fail("Expected an if")
         assertThat(block.label).isEqualTo(Identifier.Label("$0"))
-        assertThat(block.result).isEqualTo(ResultType(Result(ValueType(ValueTypeEnum.I32))))
+        assertThat(block.result).isEqualTo(ResultType(Result(ValueType.I32)))
         assertThat(block.positiveInstructions).hasSize(1)
         assertThat(block.positiveInstructions[0]).isEqualTo(ControlInstruction.Return)
         assertThat(block.negativeInstructions).hasSize(1)

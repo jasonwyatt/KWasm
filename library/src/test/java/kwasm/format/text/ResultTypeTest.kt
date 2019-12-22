@@ -15,7 +15,6 @@
 package kwasm.format.text
 
 import com.google.common.truth.Truth.assertThat
-import kwasm.ast.ValueTypeEnum
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import org.junit.Assert.assertThrows
@@ -31,7 +30,7 @@ class ResultTypeTest {
 
     @Test
     fun parseValidResultType_Exists() {
-        val expected = ParseResult(kwasm.ast.ResultType(kwasm.ast.Result(kwasm.ast.ValueType(ValueTypeEnum.I32))), 4)
+        val expected = ParseResult(kwasm.ast.ResultType(kwasm.ast.Result(kwasm.ast.ValueType.I32)), 4)
         val actual = tokenizer.tokenize("(result i32)", context).parseResultType(0)
         assertThat(actual).isEqualTo(expected)
     }

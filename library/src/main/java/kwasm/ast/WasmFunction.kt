@@ -14,19 +14,10 @@
 
 package kwasm.ast
 
-/**
- * From [the docs](https://webassembly.github.io/spec/core/text/types.html#value-types):
- *
- * ```
- *   valtype ::=  { 'i32' -> I32
- *                  'i64' -> I64
- *                  'f32' -> F32
- *                  'f64' -> F64 }
- * ```
- */
-sealed class ValueType : AstNode {
-    object I32 : ValueType()
-    object I64 : ValueType()
-    object F32 : ValueType()
-    object F64 : ValueType()
-}
+/** Encapsulates a function within a [Module]. */
+data class WasmFunction(
+    val id: Identifier.Function?,
+    val typeUse: TypeUse?,
+    val locals: List<Local>,
+    val instructions: List<Instruction>
+) : AstNode
