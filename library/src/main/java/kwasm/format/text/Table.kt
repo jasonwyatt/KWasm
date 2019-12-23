@@ -88,11 +88,7 @@ internal fun List<Token>.parseTableAndElementSegment(fromIndex: Int): ParseResul
     val id = parseIdentifier<Identifier.Table>(currentIndex)
     currentIndex += id.parseLength
 
-    val keyword = parseCheckNotNull(
-        contextAt(currentIndex),
-        getOrNull(currentIndex) as? Keyword,
-        "Expected an ElementType"
-    )
+    val keyword = getOrNull(currentIndex) as? Keyword ?: return null
     val elemType = when (keyword.value) {
         "funcref" -> ElementType.FunctionReference
         else -> return null
