@@ -15,6 +15,7 @@
 package kwasm.format.text
 
 import kwasm.ast.ResultType
+import kwasm.format.parseCheck
 import kwasm.format.text.token.Keyword
 import kwasm.format.text.token.Token
 
@@ -31,6 +32,11 @@ fun List<Token>.parseResultType(currentIndex: Int): ParseResult<ResultType> {
     if (maybeResultKeyword !is Keyword || maybeResultKeyword.value != "result") {
         return ParseResult(ResultType(null), 0)
     }
-    val parsedResult = this.parseResult(currentIndex)
-    return ParseResult(ResultType(parsedResult.astNode), parsedResult.parseLength)
+    val parsedResult = parseResult(currentIndex)
+    parseCheck(
+        contextAt(currentIndex),
+        parsedResult.astNode.size == 1,
+        "At most one result type allowed"
+    )
+    return ParseResult(ResultType(parsedResult.astNode.first()), parsedResult.parseLength)
 }

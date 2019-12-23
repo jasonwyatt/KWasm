@@ -44,16 +44,23 @@ inline fun <reified T : kwasm.ast.Identifier> List<Token>.parseIndex(
             kwasm.ast.Identifier.Global::class -> kwasm.ast.Identifier.Global(token.value)
             kwasm.ast.Identifier.Local::class -> kwasm.ast.Identifier.Local(token.value)
             kwasm.ast.Identifier.Label::class -> kwasm.ast.Identifier.Label(token.value)
-            kwasm.ast.Identifier.TypeDef::class -> kwasm.ast.Identifier.TypeDef(token.value)
             else -> throw ParseException("Invalid identifier type expected", token.context)
         }
 
         ParseResult(Index.ByIdentifier(id as T), 1)
     }
-    else -> throw ParseException(
-        "Expected an index",
-        token?.context ?: getOrNull(fromIndex - 1)?.context
-    )
+    else -> {
+        try {
+            val functionType = parseFunctionType(fromIndex)
+            ParseResult(
+                Index.ByIdentifier(kwasm.ast.Identifier.TypeDef(functionType.astNode) as T),
+                functionType.parseLength
+            )
+        } catch (e: ParseException) {
+            if (T::class == kwasm.ast.Identifier.TypeDef::class) throw e
+            throw ParseException("Expected an index", contextAt(fromIndex))
+        }
+    }
 }
 
 /**

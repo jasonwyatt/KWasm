@@ -15,6 +15,7 @@
 package kwasm.runtime
 
 import kwasm.KWasmRuntimeException
+import kwasm.ast.FunctionType
 import kwasm.ast.Identifier
 
 /**
@@ -41,8 +42,7 @@ data class IdentifierContext(
     val globals: MutableMap<Int?, Identifier.Global> = mutableMapOf(),
     val locals: MutableMap<Int?, Identifier.Local> = mutableMapOf(),
     val labels: MutableMap<Int?, Identifier.Local> = mutableMapOf(),
-    // TODO: Change String to FuncType, when it exists
-    val typedefs: MutableMap<String, Identifier.TypeDef> = mutableMapOf()
+    val typedefs: MutableMap<FunctionType, Identifier.TypeDef> = mutableMapOf()
 ) {
     /** Gets an [Identifier] by its registered [id], or `null` if none is registered yet. */
     inline fun <reified T : Identifier> get(id: Int?): T? = when (T::class) {
@@ -59,8 +59,7 @@ data class IdentifierContext(
     }
 
     /** Gets an [Identifier.TypeDef] by its [funcType], or `null` if none is registered yet. */
-    // TODO: Change String to FuncType, when it exists
-    fun get(funcType: String): Identifier.TypeDef? = typedefs[funcType]
+    fun get(funcType: FunctionType): Identifier.TypeDef? = typedefs[funcType]
 
     /** Registers an [Identifier] with the [IdentifierContext]. */
     fun <T : Identifier> register(identifier: Identifier): T = compute(identifier)

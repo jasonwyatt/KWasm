@@ -15,8 +15,13 @@
 package kwasm.format.text
 
 import com.google.common.truth.Truth.assertThat
+import kwasm.ast.FunctionType
 import kwasm.ast.Identifier
 import kwasm.ast.Index
+import kwasm.ast.Param
+import kwasm.ast.Result
+import kwasm.ast.ValueType
+import kwasm.ast.astNodeListOf
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import org.junit.Assert.assertThrows
@@ -175,11 +180,21 @@ class IndexTest {
 
     @Test
     fun parseIndex_forTypeDef_withIdentifier_returns_index() {
-        val parsed = tokenizer.tokenize("\$myType", context)
+        val parsed = tokenizer.tokenize("(func (param i32 i64) (result i32))", context)
             .parseIndex<Identifier.TypeDef>(0)
         assertThat(parsed.astNode).isInstanceOf(Index.ByIdentifier::class.java)
         assertThat((parsed.astNode as Index.ByIdentifier<Identifier.TypeDef>).indexVal)
-            .isEqualTo(Identifier.TypeDef("\$myType"))
+            .isEqualTo(
+                Identifier.TypeDef(
+                    FunctionType(
+                        astNodeListOf(
+                            Param(Identifier.Local(null, null), ValueType.I32),
+                            Param(Identifier.Local(null, null), ValueType.I64)
+                        ),
+                        astNodeListOf(Result(ValueType.I32))
+                    )
+                )
+            )
     }
 
     @Test

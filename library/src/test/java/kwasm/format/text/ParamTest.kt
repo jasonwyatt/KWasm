@@ -18,6 +18,7 @@ import com.google.common.truth.Truth.assertThat
 import kwasm.ast.Identifier
 import kwasm.ast.Param
 import kwasm.ast.ValueType
+import kwasm.ast.astNodeListOf
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import org.junit.Assert.assertThrows
@@ -33,15 +34,34 @@ class ParamTest {
 
     @Test
     fun parseValidParam_withId() {
-        val expected = ParseResult(Param(Identifier.Local("\$val1"), ValueType.I32), 5)
+        val expected = ParseResult(
+            astNodeListOf(Param(Identifier.Local("\$val1"), ValueType.I32)),
+            5
+        )
         val actual = tokenizer.tokenize("(param \$val1 i32)", context).parseParam(0)
         assertThat(actual).isEqualTo(expected)
     }
 
     @Test
     fun parseValidParam_withoutId() {
-        val expected = ParseResult(Param(null, ValueType.I32), 4)
+        val expected = ParseResult(
+            astNodeListOf(Param(Identifier.Local(null, null), ValueType.I32)),
+            4
+        )
         val actual = tokenizer.tokenize("(param i32)", context).parseParam(0)
+        assertThat(actual).isEqualTo(expected)
+    }
+
+    @Test
+    fun parseValidParams_withoutId() {
+        val expected = ParseResult(
+            astNodeListOf(
+                Param(Identifier.Local(null, null), ValueType.I32),
+                Param(Identifier.Local(null, null), ValueType.I64)
+            ),
+            5
+        )
+        val actual = tokenizer.tokenize("(param i32 i64)", context).parseParam(0)
         assertThat(actual).isEqualTo(expected)
     }
 
@@ -58,6 +78,6 @@ class ParamTest {
         val exception = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(param \$val1)", context).parseParam(0)
         }
-        assertThat(exception).hasMessageThat().contains("Invalid ValueType: Expecting keyword token")
+        assertThat(exception).hasMessageThat().contains("Not enough ValueTypes, min = 1")
     }
 }
