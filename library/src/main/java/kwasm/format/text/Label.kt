@@ -50,30 +50,3 @@ fun List<Token>.parseLabel(startIndex: Int): ParseResult<Label> {
 
     return ParseResult(identifierAst, parseLength)
 }
-
-/**
- * Parses a non-empty [Label] from the tokens at the given [startIndex]. If there is no non-empty
- * [Label], returns `null`.
- *
- * See [parseLabel] for details of the grammar.
- */
-fun List<Token>.parseNonEmptyLabel(startIndex: Int): ParseResult<Label>? =
-    (this[startIndex] as? kwasm.format.text.token.Identifier)
-        ?.let { ParseResult(Label(it.value), 1) }
-
-/**
- * Parses a [List] of non-empty [Label]s from the tokens at the given [startIndex].  If there are
- * no non-empty [Label]s, an empty list is returned.
- */
-fun List<Token>.parseNonEmptyLabelList(startIndex: Int): ParseResult<AstNodeList<Label>> {
-    val result = mutableListOf<Label>()
-    var tokensRead = 0
-
-    while (true) {
-        val parsedLabel = parseNonEmptyLabel(startIndex + tokensRead) ?: break
-        result.add(parsedLabel.astNode)
-        tokensRead += parsedLabel.parseLength
-    }
-
-    return ParseResult(AstNodeList(result), tokensRead)
-}

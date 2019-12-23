@@ -15,45 +15,9 @@
 package kwasm.format.text
 
 import kwasm.ast.FunctionType
-import kwasm.format.ParseContext
 import kwasm.format.parseCheck
 import kwasm.format.text.token.Identifier
 import kwasm.format.text.token.Token
-
-/**
- * This sealed class encapsulates all Types defined in
- * [the docs](https://webassembly.github.io/spec/core/text/types.html)
- *
- * @param T the Object representing the value related to the type and value parsed
- */
-@UseExperimental(ExperimentalUnsignedTypes::class)
-sealed class Type<T>(
-    protected val sequence: CharSequence,
-    protected val context: ParseContext? = null
-) {
-    val value: T by lazy { parseValue() }
-
-    protected abstract fun parseValue(): T
-
-    class TableType(
-        sequence: CharSequence,
-        context: ParseContext? = null
-    ) : Type<Unit>(sequence, context) {
-        override fun parseValue() {
-            TODO("not implemented")
-        }
-    }
-
-    class ElementType(
-        sequence: CharSequence,
-        context: ParseContext? = null
-    ) : Type<Unit>(sequence, context) {
-        override fun parseValue() {
-            TODO("not implemented")
-        }
-    }
-
-}
 
 /**
  * Parses a type as a [FunctionType] from the receiving [List] of [Token]s.
