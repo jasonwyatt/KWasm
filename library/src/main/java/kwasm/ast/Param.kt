@@ -22,4 +22,4 @@ package kwasm.ast
  *   param    ::=  ‘(’ ‘param’  id?  t:valtype ‘)’  => t
  * ```
  */
-data class Param(val id: Identifier.Local?, val valType: ValueType) : AstNode
+data class Param(val id: Identifier.Local, val valType: ValueType) : AstNode

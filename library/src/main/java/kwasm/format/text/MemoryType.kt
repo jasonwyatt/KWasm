@@ -14,7 +14,7 @@
 
 package kwasm.format.text
 
-import kwasm.ast.Memory
+import kwasm.ast.MemoryType
 import kwasm.format.text.token.Token
 
 /**
@@ -23,7 +23,7 @@ import kwasm.format.text.token.Token
  *   memtype ::= lim:limits => lim
  * ```
  */
-fun List<Token>.parseMemoryType(startingIndex: Int): ParseResult<Memory> {
+fun List<Token>.parseMemoryType(startingIndex: Int): ParseResult<MemoryType> {
     val limits = this.parseLimits(startingIndex)
-    return ParseResult(Memory(limits.astNode), limits.parseLength)
+    return ParseResult(MemoryType(limits.astNode), limits.parseLength)
 }

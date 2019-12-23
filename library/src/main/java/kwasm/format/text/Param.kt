@@ -14,9 +14,11 @@
 
 package kwasm.format.text
 
+import kwasm.ast.AstNodeList
 import kwasm.ast.Identifier
 import kwasm.ast.Param
 import kwasm.format.ParseException
+import kwasm.format.parseCheck
 import kwasm.format.text.token.Keyword
 import kwasm.format.text.token.Paren
 import kwasm.format.text.token.Token
@@ -29,35 +31,20 @@ import kwasm.format.text.token.Token
  *   param    ::=  ‘(’ ‘param’  id?  t:valtype ‘)’  => t
  * ```
  */
-fun List<Token>.parseParam(currentIndex: Int): ParseResult<Param> {
-    var parsedTokens = 0
-    val openParen = this[currentIndex]
-    if (openParen !is Paren.Open) {
-        throw ParseException("Invalid Param: Expecting \"(\"", openParen.context)
-    }
-    parsedTokens++
-    val keyword = this[currentIndex + 1]
-    if (keyword !is Keyword || keyword.value != "param") {
-        throw ParseException("Invalid Param: Expecting \"param\"", keyword.context)
-    }
-    parsedTokens++
-    val valueTypeIndex: Int
-    val id: Identifier.Local?
-    val idOrValueType = this[currentIndex + 2]
-    if (idOrValueType is kwasm.format.text.token.Identifier) {
-        valueTypeIndex = currentIndex + 3
-        id = Identifier.Local(idOrValueType.value)
-        parsedTokens++
-    } else {
-        valueTypeIndex = currentIndex + 2
-        id = null
-    }
-    val valueTypeParseResult = this.parseValueType(valueTypeIndex)
-    parsedTokens += valueTypeParseResult.parseLength
-    val closeParen = this[valueTypeIndex + 1]
-    if (closeParen !is Paren.Closed) {
-        throw ParseException("Invalid Param: Expecting ) token", closeParen.context)
-    }
-    parsedTokens++
-    return ParseResult(Param(id, valueTypeParseResult.astNode), parsedTokens)
+fun List<Token>.parseParam(fromIndex: Int): ParseResult<AstNodeList<Param>> {
+    var currentIndex = fromIndex
+    parseCheck(contextAt(currentIndex), isOpenParen(currentIndex), "Invalid Param: Expecting \"(\"")
+    currentIndex++
+    parseCheck(contextAt(currentIndex), isKeyword(currentIndex, "param"), "Invalid Param: Expecting \"param\"")
+    currentIndex++
+    val id = parseIdentifier<Identifier.Local>(currentIndex)
+    currentIndex += id.parseLength
+    val valueTypes = parseValueTypes(currentIndex, minRequired = 1)
+    currentIndex += valueTypes.parseLength
+    parseCheck(contextAt(currentIndex), isClosedParen(currentIndex), "Invalid Param: Expecting ) token")
+    currentIndex++
+    return ParseResult(
+        AstNodeList(valueTypes.astNode.map { Param(id.astNode, it) }),
+        currentIndex - fromIndex
+    )
 }

@@ -16,6 +16,7 @@ package kwasm.format.text
 
 import com.google.common.truth.Truth.assertThat
 import kwasm.ast.FunctionType
+import kwasm.ast.Identifier
 import kwasm.ast.Param
 import kwasm.ast.Result
 import kwasm.ast.ValueType
@@ -84,12 +85,15 @@ class FunctionTypeTest {
         val exception = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(func (result i32) (param \$val1 i32))", context).parseFunctionType(0)
         }
-        assertThat(exception).hasMessageThat().contains("Invalid FunctionType: Expecting \")\"")
+        assertThat(exception).hasMessageThat().contains("Expected ')'")
     }
 
     @Test
     fun parseValueParamList() {
-        val expected = astNodeListOf(Param(null, ValueType.I32), Param(null, ValueType.I64))
+        val expected = astNodeListOf(
+            Param(Identifier.Local(null, null), ValueType.I32),
+            Param(Identifier.Local(null, null), ValueType.I64)
+        )
         val actual = tokenizer.tokenize("(param i32) (param i64)", context).parseParamList(0)
         assertThat(actual.astNode).isEqualTo(expected)
         assertThat(actual.parseLength).isEqualTo(8)
@@ -97,7 +101,7 @@ class FunctionTypeTest {
 
     @Test
     fun parseValueParamList_OnlyOneParam() {
-        val expected = astNodeListOf(Param(null, ValueType.I32))
+        val expected = astNodeListOf(Param(Identifier.Local(null, null), ValueType.I32))
         val actual = tokenizer.tokenize("(param i32) (result i64)", context).parseParamList(0)
         assertThat(actual.astNode).isEqualTo(expected)
         assertThat(actual.parseLength).isEqualTo(4)

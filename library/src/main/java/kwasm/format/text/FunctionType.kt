@@ -18,6 +18,7 @@ import kwasm.ast.AstNodeList
 import kwasm.ast.FunctionType
 import kwasm.ast.Param
 import kwasm.format.ParseException
+import kwasm.format.parseCheck
 import kwasm.format.text.token.Keyword
 import kwasm.format.text.token.Paren
 import kwasm.format.text.token.Token
@@ -32,33 +33,25 @@ import kwasm.format.text.token.Token
  *   result   ::=  ‘(’ ‘result’  t:valtype ‘)’                     => t
  * ```
  */
-fun List<Token>.parseFunctionType(currentIndex: Int): ParseResult<FunctionType> {
-    var parsedTokens = 0
-    val openParen = this[currentIndex]
-    if (openParen !is Paren.Open) {
-        throw ParseException("Invalid FunctionType: Expecting \"(\"", openParen.context)
-    }
-    parsedTokens++
-    val keyword = this[currentIndex + 1]
-    if (keyword !is Keyword || keyword.value != "func") {
-        throw ParseException("Invalid FunctionType: Expecting \"func\"", keyword.context)
-    }
-    parsedTokens++
-    val nextParamIndex = currentIndex + 2
-    val parsedParamList = this.parseParamList(nextParamIndex)
-    parsedTokens += parsedParamList.parseLength
+fun List<Token>.parseFunctionType(fromIndex: Int): ParseResult<FunctionType> {
+    var currentIndex = fromIndex
+    parseCheck(contextAt(currentIndex), isOpenParen(currentIndex), "Expected '('")
+    currentIndex++
+    parseCheck(
+        contextAt(currentIndex),
+        getOrNull(currentIndex) !is Keyword || isKeyword(currentIndex, "func"),
+        "Invalid FunctionType: Expecting \"func\""
+    )
+    currentIndex++
+    val parsedParamList = parseParamList(currentIndex)
+    currentIndex += parsedParamList.parseLength
 
-    val nextResultIndex = nextParamIndex + parsedParamList.parseLength
-    val parsedResultList = this.parseResultList(nextResultIndex)
-    parsedTokens += parsedResultList.parseLength
+    val parsedResultList = parseResultList(currentIndex)
+    currentIndex += parsedResultList.parseLength
 
-    val closingParenIndex = nextResultIndex + parsedResultList.parseLength
-    val closeParen = this[closingParenIndex]
-    if (closeParen !is Paren.Closed) {
-        throw ParseException("Invalid FunctionType: Expecting \")\"", closeParen.context)
-    }
-    parsedTokens++
-    return ParseResult(FunctionType(parsedParamList.astNode, parsedResultList.astNode), parsedTokens)
+    parseCheck(contextAt(currentIndex), isClosedParen(currentIndex), "Expected ')'")
+    currentIndex++
+    return ParseResult(FunctionType(parsedParamList.astNode, parsedResultList.astNode), currentIndex - fromIndex)
 }
 
 /**
@@ -73,12 +66,10 @@ fun List<Token>.parseParamList(currentIndex: Int): ParseResult<AstNodeList<Param
         val paramKeyword = this[nextParamIndex + 1]
         if (paramKeyword is Keyword && paramKeyword.value == "param") {
             val parsedParamResult = this.parseParam(nextParamIndex)
-            paramList.add(parsedParamResult.astNode)
+            paramList.addAll(parsedParamResult.astNode)
             nextParamIndex += parsedParamResult.parseLength
             parsedTokens += parsedParamResult.parseLength
-        } else {
-            break
-        }
+        } else break
     }
     return ParseResult(AstNodeList(paramList), parsedTokens)
 }
@@ -94,13 +85,11 @@ fun List<Token>.parseResultList(currentIndex: Int): ParseResult<AstNodeList<kwas
     while (this.size > nextResultIndex && this[nextResultIndex] is Paren.Open) {
         val resultKeyword = this[nextResultIndex + 1]
         if (resultKeyword is Keyword && resultKeyword.value == "result") {
-            val parsedResultResult = this.parseResult(nextResultIndex)
-            resultList.add(parsedResultResult.astNode)
+            val parsedResultResult = parseResult(nextResultIndex)
+            resultList.addAll(parsedResultResult.astNode)
             nextResultIndex += parsedResultResult.parseLength
             parsedTokens += parsedResultResult.parseLength
-        } else {
-            break
-        }
+        } else break
     }
     return ParseResult(AstNodeList(resultList), parsedTokens)
 }

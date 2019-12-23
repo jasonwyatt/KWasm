@@ -69,8 +69,8 @@ class TypeUseTest {
         assertThat(result.astNode.params).hasSize(2)
         assertThat(result.astNode.params).isEqualTo(
             astNodeListOf(
-                Param(null, ValueType.I32),
-                Param(null, ValueType.F32)
+                Param(Identifier.Local(null, null), ValueType.I32),
+                Param(Identifier.Local(null, null), ValueType.F32)
             )
         )
         assertThat(result.astNode.results).isEmpty()
@@ -100,8 +100,8 @@ class TypeUseTest {
         assertThat(result.astNode.params).hasSize(2)
         assertThat(result.astNode.params).isEqualTo(
             astNodeListOf(
-                Param(null, ValueType.I32),
-                Param(null, ValueType.F64)
+                Param(Identifier.Local(null, null), ValueType.I32),
+                Param(Identifier.Local(null, null), ValueType.F64)
             )
         )
         assertThat(result.astNode.results).hasSize(2)
@@ -128,7 +128,7 @@ class TypeUseTest {
         assertThat(result.astNode.params).hasSize(1)
         assertThat(result.astNode.params).isEqualTo(
             astNodeListOf(
-                Param(null, ValueType.I32)
+                Param(Identifier.Local(null, null), ValueType.I32)
             )
         )
         assertThat(result.astNode.results).hasSize(1)
@@ -173,8 +173,8 @@ class TypeUseTest {
             TypeUse(
                 Index.ByIdentifier(Identifier.Type("\$myId")),
                 astNodeListOf(
-                    Param(null, ValueType.I32),
-                    Param(null, ValueType.I64)
+                    Param(Identifier.Local(null, null), ValueType.I32),
+                    Param(Identifier.Local(null, null), ValueType.I64)
                 ),
                 astNodeListOf(
                     kwasm.ast.Result(ValueType.F32),

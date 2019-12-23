@@ -15,8 +15,10 @@
 package kwasm.format.text
 
 
+import kwasm.ast.AstNodeList
 import kwasm.ast.Result
 import kwasm.format.ParseException
+import kwasm.format.parseCheck
 import kwasm.format.text.token.Keyword
 import kwasm.format.text.token.Paren
 import kwasm.format.text.token.Token
@@ -29,19 +31,18 @@ import kwasm.format.text.token.Token
  *   result   ::=  ‘(’ ‘result’  t:valtype ‘)’  => t
  * ```
  */
-fun List<Token>.parseResult(currentIndex: Int): ParseResult<Result> {
-    val openParen = this[currentIndex]
-    if (openParen !is Paren.Open) {
-        throw ParseException("Invalid Result: Expecting \"(\"", openParen.context)
-    }
-    val keyword = this[currentIndex + 1]
-    if (keyword !is Keyword || keyword.value != "result") {
-        throw ParseException("Invalid Result: Expecting \"result\"", keyword.context)
-    }
-    val valueTypeParseResult = this.parseValueType(currentIndex + 2)
-    val closeParen = this[currentIndex + valueTypeParseResult.parseLength + 2]
-    if (closeParen !is Paren.Closed) {
-        throw ParseException("Invalid Result: Expecting \")\"", closeParen.context)
-    }
-    return ParseResult(Result(valueTypeParseResult.astNode), valueTypeParseResult.parseLength + 3)
+fun List<Token>.parseResult(fromIndex: Int): ParseResult<AstNodeList<Result>> {
+    var currentIndex = fromIndex
+    parseCheck(contextAt(currentIndex), isOpenParen(currentIndex), "Invalid Result: Expecting \"(\"")
+    currentIndex++
+    parseCheck(contextAt(currentIndex), isKeyword(currentIndex, "result"), "Invalid Result: Expecting \"result\"")
+    currentIndex++
+    val valueTypes = parseValueTypes(currentIndex, minRequired = 1)
+    currentIndex += valueTypes.parseLength
+    parseCheck(contextAt(currentIndex), isClosedParen(currentIndex), "Invalid Result: Expecting \")\"")
+    currentIndex++
+    return ParseResult(
+        AstNodeList(valueTypes.astNode.map { Result(it) }),
+        currentIndex - fromIndex
+    )
 }

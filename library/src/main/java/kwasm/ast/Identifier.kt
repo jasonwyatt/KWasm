@@ -69,9 +69,8 @@ sealed class Identifier(
         override val unique: Int? = "$stringRepr".hashCode()
     ) : Identifier(unique, stringRepr)
 
-    // TODO: use FuncType when it exists.
     data class TypeDef(
-        val funcType: String,
+        val funcType: FunctionType,
         override val stringRepr: String? = null
     ) : Identifier(null, stringRepr)
 }

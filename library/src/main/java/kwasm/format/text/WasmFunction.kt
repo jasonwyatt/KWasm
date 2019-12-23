@@ -15,9 +15,7 @@
 package kwasm.format.text
 
 import kwasm.ast.Identifier
-import kwasm.ast.TypeUse
 import kwasm.ast.WasmFunction
-import kwasm.format.ParseException
 import kwasm.format.parseCheck
 import kwasm.format.parseCheckNotNull
 import kwasm.format.text.token.IntegerLiteral
@@ -40,22 +38,8 @@ fun List<Token>.parseWasmFunction(fromIndex: Int): ParseResult<WasmFunction>? {
     if (!isKeyword(currentIndex, "func")) return null
     currentIndex++
 
-    // TODO: create a parseIdentifier function.
-    val maybeId = getOrNull(currentIndex) as? kwasm.format.text.token.Identifier
-    val maybeInt = getOrNull(currentIndex) as? IntegerLiteral<*>
-    val id = if (maybeId != null) {
-        currentIndex++
-        Identifier.Function(maybeId.value)
-    } else if (maybeInt != null) {
-        currentIndex++
-        parseCheckNotNull(
-            contextAt(currentIndex - 1),
-            Identifier.Function(unique = maybeInt.toSigned().value.toInt())
-                .takeIf { it.unique != null && it.unique > 0 },
-            "Identifier must not be negative"
-        )
-    } else null
-
+    val id = parseIdentifier<Identifier.Function>(currentIndex)
+    currentIndex += id.parseLength
     val typeUse = parseTypeUse(currentIndex)
     currentIndex += typeUse.parseLength
     val locals = parseLocals(currentIndex)
@@ -66,7 +50,7 @@ fun List<Token>.parseWasmFunction(fromIndex: Int): ParseResult<WasmFunction>? {
     currentIndex++
 
     return ParseResult(
-        WasmFunction(id, typeUse.astNode, locals.astNode, instructions.astNode),
+        WasmFunction(id.astNode, typeUse.astNode, locals.astNode, instructions.astNode),
         currentIndex - fromIndex
     )
 }

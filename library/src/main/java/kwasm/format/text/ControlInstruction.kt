@@ -205,8 +205,7 @@ private fun List<Token>.parseReturnContInstruction(
 private fun List<Token>.parseBreakContInstruction(
     fromIndex: Int
 ): ParseResult<out ControlInstruction>? {
-    getOrNull(fromIndex)?.asKeywordMatching("br") ?: return null
-
+    if (!isKeyword(fromIndex, "br")) return null
     val labelIndex = parseIndex<Identifier.Label>(fromIndex + 1)
     return ParseResult(Break(labelIndex.astNode), 2)
 }

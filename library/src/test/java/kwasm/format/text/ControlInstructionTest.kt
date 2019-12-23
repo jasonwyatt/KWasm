@@ -551,7 +551,7 @@ class ControlInstructionTest {
             .isEqualTo(
                 TypeUse(
                     Index.ByIdentifier(Identifier.Type("\$myType")),
-                    astNodeListOf(Param(null, ValueType.I32)),
+                    astNodeListOf(Param(Identifier.Local(null, null), ValueType.I32)),
                     astNodeListOf(Result(ValueType.F32))
                 )
             )
