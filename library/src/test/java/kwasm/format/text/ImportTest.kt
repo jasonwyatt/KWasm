@@ -37,7 +37,7 @@ import org.junit.runners.JUnit4
 
 @Suppress("EXPERIMENTAL_UNSIGNED_LITERALS")
 @RunWith(JUnit4::class)
-class Import {
+class ImportTest {
     private val tokenizer = Tokenizer()
     private val context = ParseContext("Import.wast")
 
