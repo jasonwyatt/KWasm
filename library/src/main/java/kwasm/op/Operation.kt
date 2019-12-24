@@ -14,5 +14,4 @@
 
 package kwasm.op
 
-interface Operation {
-}
+interface Operation

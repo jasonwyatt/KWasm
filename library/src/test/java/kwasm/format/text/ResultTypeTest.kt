@@ -18,7 +18,6 @@ import com.google.common.truth.Truth.assertThat
 import kwasm.ast.Result
 import kwasm.ast.ResultType
 import kwasm.ast.ValueType
-import kwasm.ast.astNodeListOf
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import org.junit.Assert.assertThrows

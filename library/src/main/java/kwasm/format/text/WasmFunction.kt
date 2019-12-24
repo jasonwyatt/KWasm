@@ -17,8 +17,6 @@ package kwasm.format.text
 import kwasm.ast.Identifier
 import kwasm.ast.WasmFunction
 import kwasm.format.parseCheck
-import kwasm.format.parseCheckNotNull
-import kwasm.format.text.token.IntegerLiteral
 import kwasm.format.text.token.Token
 
 /**

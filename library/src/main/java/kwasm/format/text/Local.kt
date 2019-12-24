@@ -14,7 +14,6 @@
 
 package kwasm.format.text
 
-import kwasm.ast.AstNode
 import kwasm.ast.AstNodeList
 import kwasm.ast.Local
 import kwasm.ast.astNodeListOf

@@ -19,9 +19,9 @@ import kwasm.format.ParseException
 import kwasm.format.shiftColumnBy
 import kwasm.format.text.token.util.CanonincalNaN
 import kwasm.format.text.token.util.Frac
-import kwasm.format.text.token.util.TokenMatchResult
 import kwasm.format.text.token.util.Num
 import kwasm.format.text.token.util.NumberConstants
+import kwasm.format.text.token.util.TokenMatchResult
 import kwasm.format.text.token.util.parseLongSign
 import kwasm.format.text.token.util.significand
 import kotlin.math.pow

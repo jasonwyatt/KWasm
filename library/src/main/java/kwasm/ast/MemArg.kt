@@ -16,7 +16,6 @@ package kwasm.ast
 
 import kotlin.math.floor
 import kotlin.math.log
-import kotlin.math.pow
 
 /**
  * Represents an [Argument] to a memory [Instruction].

@@ -14,7 +14,6 @@
 
 package kwasm.format.text
 
-import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import kwasm.ast.Expression
 import kwasm.ast.Identifier
