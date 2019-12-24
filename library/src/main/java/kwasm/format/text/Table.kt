@@ -29,7 +29,6 @@ import kwasm.ast.TableType
 import kwasm.ast.astNodeListOf
 import kwasm.format.ParseException
 import kwasm.format.parseCheck
-import kwasm.format.parseCheckNotNull
 import kwasm.format.text.token.Keyword
 import kwasm.format.text.token.Token
 
