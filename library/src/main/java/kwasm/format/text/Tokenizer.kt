@@ -96,9 +96,9 @@ class Tokenizer {
         else -> {
             val maxLengthTokenFind = listOf(
                 token.findKeyword(),
+                token.findStringLiteral(),
                 token.findIntegerLiteral(),
                 token.findFloatLiteral(),
-                token.findStringLiteral(),
                 token.findIdentifier(),
                 token.findParen(),
                 token.findReserved()
