@@ -16,8 +16,6 @@ package kwasm.format.text
 
 import com.google.common.truth.Truth.assertThat
 import kwasm.ast.DataSegment
-import kwasm.ast.ElementSegment
-import kwasm.ast.ElementType
 import kwasm.ast.Expression
 import kwasm.ast.Identifier
 import kwasm.ast.Index
@@ -27,8 +25,6 @@ import kwasm.ast.Memory
 import kwasm.ast.MemoryType
 import kwasm.ast.NumericConstantInstruction
 import kwasm.ast.Offset
-import kwasm.ast.Table
-import kwasm.ast.TableType
 import kwasm.ast.astNodeListOf
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
@@ -37,8 +33,6 @@ import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import java.util.Base64
-import kotlin.random.Random
 
 @RunWith(JUnit4::class)
 @Suppress("EXPERIMENTAL_UNSIGNED_LITERALS", "EXPERIMENTAL_API_USAGE")

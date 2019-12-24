@@ -16,7 +16,6 @@ package kwasm.format.text
 
 import kwasm.ast.AstNodeList
 import kwasm.ast.ValueType
-import kwasm.format.ParseException
 import kwasm.format.parseCheck
 import kwasm.format.parseCheckNotNull
 import kwasm.format.text.token.Keyword

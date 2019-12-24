@@ -14,7 +14,6 @@
 
 package kwasm.format.text
 
-import kwasm.ast.AstNodeList
 import kwasm.ast.Identifier
 import kwasm.ast.Identifier.Label
 import kwasm.format.ParseException

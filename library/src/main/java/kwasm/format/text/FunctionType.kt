@@ -17,7 +17,6 @@ package kwasm.format.text
 import kwasm.ast.AstNodeList
 import kwasm.ast.FunctionType
 import kwasm.ast.Param
-import kwasm.format.ParseException
 import kwasm.format.parseCheck
 import kwasm.format.text.token.Keyword
 import kwasm.format.text.token.Paren

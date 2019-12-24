@@ -14,8 +14,6 @@
 
 package kwasm
 
-import java.lang.Exception
-
 /** An error encountered while running a wasm program. */
 data class KWasmRuntimeException(
     override val message: String,

@@ -16,9 +16,7 @@ package kwasm.format.text
 
 import kwasm.ast.ElementType
 import kwasm.ast.TableType
-import kwasm.format.ParseException
 import kwasm.format.parseCheck
-import kwasm.format.text.token.Keyword
 import kwasm.format.text.token.Token
 
 /**
