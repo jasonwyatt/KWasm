@@ -15,7 +15,7 @@
 package kwasm.ast
 
 /**
- * Identifies the entry point for a [Module].
+ * Identifies the entry point for a [WasmModule].
  *
  * **Note:** At most one start function may occur in a module
  */

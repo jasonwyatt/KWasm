@@ -46,7 +46,7 @@ import kotlin.math.pow
  *                  '∖u{' n:hexnum '}'      => U+(n) (if n < 0xD800 ∨ 0xE000 ≤ n < 0x110000)
  * ```
  */
-const val STRINGCHAR_PATTERN = "([^$DELETE\"\\\\]|(\\\\(t|n|r|\"|\'|'|u\\{([0-9a-fA-F]+)\\})))"
+const val STRINGCHAR_PATTERN = "([^\\u007F\"\\\\]|(\\\\(t|n|r|\"|\'|'|u\\{([0-9a-fA-F]+)\\})))"
 
 /**
  * From [the docs](https://webassembly.github.io/spec/core/text/values.html#text-string):

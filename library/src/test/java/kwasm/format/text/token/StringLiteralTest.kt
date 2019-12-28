@@ -30,6 +30,12 @@ class StringLiteralTest {
     }
 
     @Test
+    fun parsesStringWithNumber() {
+        val actual = StringLiteral("\"test1\"")
+        assertThat(actual.value).isEqualTo("test1")
+    }
+
+    @Test
     fun parsesSimpleString() {
         val actual =
             StringLiteral("\"This is a test of it's capabilities!\"")

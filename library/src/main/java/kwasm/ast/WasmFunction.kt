@@ -14,7 +14,7 @@
 
 package kwasm.ast
 
-/** Encapsulates a function within a [Module]. */
+/** Encapsulates a function within a [WasmModule]. */
 data class WasmFunction(
     val id: Identifier.Function?,
     val typeUse: TypeUse?,

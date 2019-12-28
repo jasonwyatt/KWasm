@@ -15,7 +15,7 @@
 package kwasm.ast
 
 /**
- * Represents a table in a [Module].
+ * Represents a table in a [WasmModule].
  *
  * From [the docs](https://webassembly.github.io/spec/core/syntax/modules.html#tables):
  *
