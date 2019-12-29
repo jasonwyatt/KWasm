@@ -15,7 +15,7 @@
 package kwasm.ast
 
 /**
- * Represents a memory instance in a [Module].
+ * Represents a memory instance in a [WasmModule].
  *
  * From [the docs](https://webassembly.github.io/spec/core/syntax/modules.html#memories):
  *

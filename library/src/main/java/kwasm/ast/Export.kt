@@ -15,7 +15,7 @@
 package kwasm.ast
 
 /**
- * Defines an export for a [Module].
+ * Defines an export for a [WasmModule].
  *
  * From [the docs](https://webassembly.github.io/spec/core/syntax/modules.html#exports):
  *

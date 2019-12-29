@@ -15,7 +15,7 @@
 package kwasm.ast
 
 /**
- * Represents a global in a [Module].
+ * Represents a global in a [WasmModule].
  *
  * From [the docs](https://webassembly.github.io/spec/core/syntax/modules.html#globals):
  *

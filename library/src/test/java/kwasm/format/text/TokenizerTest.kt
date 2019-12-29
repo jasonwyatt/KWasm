@@ -39,6 +39,12 @@ class TokenizerTest {
     }
 
     @Test
+    fun tokenize_ofStringLiteralWithNumber_givesResult() {
+        val result = tokenizer.tokenize("\"test1\"", context)
+        assertThat((result[0] as StringLiteral).value).isEqualTo("test1")
+    }
+
+    @Test
     fun tokenize_bunchOfKeywords_givesBunchOfKeywords() {
         val actual = tokenizer.tokenize(
             """
