@@ -16,14 +16,31 @@ package kwasm.format.text
 
 import com.google.common.truth.Truth.assertThat
 import kwasm.ast.ControlInstruction
+import kwasm.ast.DataSegment
+import kwasm.ast.ElementSegment
+import kwasm.ast.ElementType
+import kwasm.ast.Export
+import kwasm.ast.ExportDescriptor
+import kwasm.ast.Expression
 import kwasm.ast.FunctionType
+import kwasm.ast.Global
+import kwasm.ast.GlobalType
 import kwasm.ast.Identifier
 import kwasm.ast.Import
 import kwasm.ast.ImportDescriptor
+import kwasm.ast.Index
+import kwasm.ast.IntegerLiteral
+import kwasm.ast.Limit
 import kwasm.ast.Local
+import kwasm.ast.Memory
+import kwasm.ast.MemoryType
+import kwasm.ast.NumericConstantInstruction
+import kwasm.ast.Offset
 import kwasm.ast.Param
 import kwasm.ast.Result
-import kwasm.ast.ResultType
+import kwasm.ast.StartFunction
+import kwasm.ast.Table
+import kwasm.ast.TableType
 import kwasm.ast.Type
 import kwasm.ast.TypeUse
 import kwasm.ast.ValueType
@@ -37,6 +54,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+@Suppress("EXPERIMENTAL_UNSIGNED_LITERALS")
 @RunWith(JUnit4::class)
 class WasmModuleTest {
     private val tokenizer = Tokenizer()
@@ -146,6 +164,78 @@ class WasmModuleTest {
                         Local(null, ValueType.I32)
                     ),
                     astNodeListOf(ControlInstruction.Return)
+                )
+            ).inOrder()
+        assertThat(module.tables)
+            .containsExactly(
+                Table(
+                    Identifier.Table("$3"),
+                    TableType(
+                        Limit(0u, 1u),
+                        ElementType.FunctionReference
+                    )
+                )
+            ).inOrder()
+        assertThat(module.memories)
+            .containsExactly(
+                Memory(
+                    Identifier.Memory("$4"),
+                    MemoryType(Limit(0u, 1u))
+                )
+            ).inOrder()
+        assertThat(module.globals)
+            .containsExactly(
+                Global(
+                    Identifier.Global("$5"),
+                    GlobalType(ValueType.I32, true),
+                    Expression(
+                        astNodeListOf(
+                            NumericConstantInstruction.I32(IntegerLiteral.S32(1))
+                        )
+                    )
+                )
+            ).inOrder()
+        assertThat(module.exports)
+            .containsExactly(
+                Export(
+                    "num2",
+                    ExportDescriptor.Function(
+                        Index.ByIdentifier(Identifier.Function("$2"))
+                    )
+                )
+            ).inOrder()
+        assertThat(module.start)
+            .isEqualTo(
+                StartFunction(Index.ByIdentifier(Identifier.Function("$2")))
+            )
+        assertThat(module.elements)
+            .containsExactly(
+                ElementSegment(
+                    Index.ByIdentifier(Identifier.Table("$3")),
+                    Offset(
+                        Expression(
+                            astNodeListOf(
+                                NumericConstantInstruction.I32(IntegerLiteral.S32(0))
+                            )
+                        )
+                    ),
+                    astNodeListOf(
+                        Index.ByIdentifier(Identifier.Function("$0"))
+                    )
+                )
+            ).inOrder()
+        assertThat(module.data)
+            .containsExactly(
+                DataSegment(
+                    Index.ByIdentifier(Identifier.Memory("$4")),
+                    Offset(
+                        Expression(
+                            astNodeListOf(
+                                NumericConstantInstruction.I32(IntegerLiteral.S32(0))
+                            )
+                        )
+                    ),
+                    "test".toByteArray(Charsets.UTF_8)
                 )
             ).inOrder()
     }
