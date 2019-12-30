@@ -84,3 +84,42 @@ inline fun <reified T : Token> List<Token>.getOrThrow(
     index: Int,
     message: String? = null
 ): T = getOrThrow(index) { message ?: "Expected ${T::class.java.simpleName}" }
+
+/**
+ * Finds and returns all tokens between the [fromIndex] and when the [expectedClosures]-number of
+ * [Paren.Closed] tokens are found (inclusive).
+ *
+ * For example:
+ *
+ * ```
+ *   (blah (foo (bar) (baz)))
+ * ```
+ *
+ * ```kotlin
+ *   myList.tokensUntilParenClosure(1, 1)
+ * ```
+ *
+ * Would return a list of tokens equivalent to `blah (foo (bar) (baz)))`
+ */
+fun List<Token>.tokensUntilParenClosure(fromIndex: Int, expectedClosures: Int): List<Token> {
+    var remainingClosures = expectedClosures
+    var currentIndex = fromIndex
+    val result = mutableListOf<Token>()
+
+    while (remainingClosures > 0) {
+        getOrNull(currentIndex)?.let {
+            result.add(it)
+            if (it is Paren.Open) {
+                remainingClosures++
+            } else if (it is Paren.Closed) {
+                remainingClosures--
+            }
+            currentIndex++
+        } ?: throw ParseException(
+            "Could not find completion of paren closure",
+            contextAt(currentIndex)
+        )
+    }
+
+    return result
+}
