@@ -54,7 +54,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
-@Suppress("EXPERIMENTAL_UNSIGNED_LITERALS")
+@Suppress("EXPERIMENTAL_UNSIGNED_LITERALS", "EXPERIMENTAL_API_USAGE")
 @RunWith(JUnit4::class)
 class WasmModuleTest {
     private val tokenizer = Tokenizer()
@@ -122,12 +122,17 @@ class WasmModuleTest {
                     (start $2)
                     (elem $3 (offset (i32.const 0)) $0)
                     (data $4 (offset (i32.const 0)) "test")
+                    ;; inline abbreviations
+                    (func $6 (import "a" "b")) ;; 9
+                    (func $7 (export "a") return) ;; 9
+                    (table $8 (import "a" "b") 1 funcref) ;; 9
+                    (table $9 (export "a") 1 funcref) ;; 10
                 )
             """.trimIndent(),
             context
         ).parseModule(0) ?: fail("Expected a result")
 
-        assertThat(result.parseLength).isEqualTo(98)
+        assertThat(result.parseLength).isEqualTo(137)
         val module = result.astNode
         assertThat(module.identifier).isEqualTo(Identifier.Label("$10"))
         assertThat(module.imports)
@@ -138,6 +143,25 @@ class WasmModuleTest {
                     ImportDescriptor.Function(
                         Identifier.Function("$0"),
                         TypeUse(null, astNodeListOf(), astNodeListOf())
+                    )
+                ),
+                Import(
+                    "a",
+                    "b",
+                    ImportDescriptor.Function(
+                        Identifier.Function("$6"),
+                        TypeUse(null, astNodeListOf(), astNodeListOf())
+                    )
+                ),
+                Import(
+                    "a",
+                    "b",
+                    ImportDescriptor.Table(
+                        Identifier.Table("$8"),
+                        TableType(
+                            Limit(1u, UInt.MAX_VALUE),
+                            ElementType.FunctionReference
+                        )
                     )
                 )
             ).inOrder()
@@ -164,6 +188,12 @@ class WasmModuleTest {
                         Local(null, ValueType.I32)
                     ),
                     astNodeListOf(ControlInstruction.Return)
+                ),
+                WasmFunction(
+                    Identifier.Function("$7"),
+                    TypeUse(null, astNodeListOf(), astNodeListOf()),
+                    astNodeListOf(),
+                    astNodeListOf(ControlInstruction.Return)
                 )
             ).inOrder()
         assertThat(module.tables)
@@ -172,6 +202,13 @@ class WasmModuleTest {
                     Identifier.Table("$3"),
                     TableType(
                         Limit(0u, 1u),
+                        ElementType.FunctionReference
+                    )
+                ),
+                Table(
+                    Identifier.Table("$9"),
+                    TableType(
+                        Limit(1u, UInt.MAX_VALUE),
                         ElementType.FunctionReference
                     )
                 )
@@ -201,6 +238,18 @@ class WasmModuleTest {
                     "num2",
                     ExportDescriptor.Function(
                         Index.ByIdentifier(Identifier.Function("$2"))
+                    )
+                ),
+                Export(
+                    "a",
+                    ExportDescriptor.Function(
+                        Index.ByIdentifier(Identifier.Function("$7"))
+                    )
+                ),
+                Export(
+                    "a",
+                    ExportDescriptor.Table(
+                        Index.ByIdentifier(Identifier.Table("$9"))
                     )
                 )
             ).inOrder()

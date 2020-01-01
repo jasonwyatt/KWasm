@@ -70,7 +70,11 @@ fun List<Token>.parseModule(fromIndex: Int): ParseResult<WasmModule>? {
     while (true) {
         val parseResult = parseType(currentIndex)
             ?: parseImport(currentIndex)
+            ?: parseInlineWasmFunctionImport(currentIndex)
+            ?: parseInlineWasmFunctionExport(currentIndex)
             ?: parseWasmFunction(currentIndex)
+            ?: parseInlineTableImport(currentIndex)
+            ?: parseInlineTableExport(currentIndex)
             ?: parseTable(currentIndex)
             ?: parseMemory(currentIndex)
             ?: parseGlobal(currentIndex)

@@ -14,11 +14,16 @@
 
 package kwasm.format.text
 
+import kwasm.ast.AstNode
 import kwasm.ast.AstNodeList
 import kwasm.ast.ElementSegment
 import kwasm.ast.ElementType
+import kwasm.ast.Export
+import kwasm.ast.ExportDescriptor
 import kwasm.ast.Expression
 import kwasm.ast.Identifier
+import kwasm.ast.Import
+import kwasm.ast.ImportDescriptor
 import kwasm.ast.Index
 import kwasm.ast.IntegerLiteral
 import kwasm.ast.Limit
@@ -29,6 +34,7 @@ import kwasm.ast.TableType
 import kwasm.ast.astNodeListOf
 import kwasm.format.ParseException
 import kwasm.format.parseCheck
+import kwasm.format.parseCheckNotNull
 import kwasm.format.text.token.Keyword
 import kwasm.format.text.token.Token
 
@@ -137,4 +143,135 @@ internal fun List<Token>.parseTableAndElementSegment(fromIndex: Int): ParseResul
         ),
         currentIndex - fromIndex
     )
+}
+
+/**
+ * Parses an inline [Table]-[Import] from the receiving [List] of [Token]s.
+ *
+ * From [the docs](https://webassembly.github.io/spec/core/text/modules.html#text-table-abbrev):
+ *
+ * ```
+ *   ‘(’ ‘table’ id? ‘(’ ‘import’ name^1 name^2 ‘)’ tabletype ‘)’
+ *      == ‘(’ ‘import’ name^1 name^2 ‘(’ ‘table’ id? tabletype ‘)’ ‘)’
+ * ```
+ */
+fun List<Token>.parseInlineTableImport(fromIndex: Int): ParseResult<Import>? {
+    var currentIndex = fromIndex
+    if (!isOpenParen(currentIndex)) return null
+    currentIndex++
+    if (!isKeyword(currentIndex, "table")) return null
+    currentIndex++
+
+    val identifier = parseIdentifier<Identifier.Table>(currentIndex)
+    currentIndex += identifier.parseLength
+
+    if (!isOpenParen(currentIndex)) return null
+    currentIndex++
+    if (!isKeyword(currentIndex, "import")) return null
+    currentIndex++
+
+    val moduleName = parseLiteral(currentIndex, String::class)
+    currentIndex += moduleName.parseLength
+    val tableName = parseLiteral(currentIndex, String::class)
+    currentIndex += tableName.parseLength
+
+    parseCheck(contextAt(currentIndex), isClosedParen(currentIndex), "Expected ')'")
+    currentIndex++
+
+    val tableType = parseTableType(currentIndex)
+    currentIndex += tableType.parseLength
+
+    parseCheck(contextAt(currentIndex), isClosedParen(currentIndex), "Expected ')'")
+    currentIndex++
+
+    return ParseResult(
+        Import(
+            moduleName.astNode.value,
+            tableName.astNode.value,
+            ImportDescriptor.Table(identifier.astNode, tableType.astNode)
+        ),
+        currentIndex - fromIndex
+    )
+}
+
+/**
+ * Parses an inline [Table]-[Export] from the receiving [List] of [Token]s.
+ *
+ * From [the docs](https://webassembly.github.io/spec/core/text/modules.html#text-table-abbrev):
+ *
+ * ```
+ *   ‘(’ ‘table’ id? ‘(’ ‘export’ name ‘)’ ... ‘)’
+ *      == ‘(’ ‘export’ name ‘(’ ‘table’ id′ ‘)’ ‘)’ ‘(’ ‘table’ id′ ... ‘)’
+ *          (if id′ = id? != ϵ ∨ id′ fresh)
+ * ```
+ *
+ * Where “...” can contain another import or export or an inline elements segment.
+ */
+fun List<Token>.parseInlineTableExport(fromIndex: Int): ParseResult<AstNodeList<*>>? {
+    var currentIndex = fromIndex
+    if (!isOpenParen(currentIndex)) return null
+    currentIndex++
+    if (!isKeyword(currentIndex, "table")) return null
+    currentIndex++
+
+    val identifier = parseIdentifier<Identifier.Table>(currentIndex)
+    currentIndex += identifier.parseLength
+
+    if (!isOpenParen(currentIndex)) return null
+    currentIndex++
+    if (!isKeyword(currentIndex, "export")) return null
+    currentIndex++
+
+    val exportName = parseLiteral(currentIndex, String::class)
+    currentIndex += exportName.parseLength
+
+    parseCheck(contextAt(currentIndex), isClosedParen(currentIndex), "Expected ')'")
+    currentIndex++
+
+    val result = mutableListOf<AstNode>(
+        Export(
+            exportName.astNode.value,
+            ExportDescriptor.Table(Index.ByIdentifier(identifier.astNode))
+        )
+    )
+
+    if (isClosedParen(currentIndex)) {
+        // No `...` case, so we can return here.
+        currentIndex++
+        return ParseResult(AstNodeList(result), currentIndex - fromIndex)
+    }
+
+    // Looks like there might be more to handle, so construct a new list of tokens to recurse with.
+    // Add the opening paren and 'table' keyword.
+    val withoutFirstExport = mutableListOf(
+        this[fromIndex],
+        this[fromIndex + 1]
+    )
+
+    // Add the id.
+    (0 until identifier.parseLength).forEach {
+        withoutFirstExport.add(this[fromIndex + 2 + it])
+    }
+
+    val lengthOfPrefix = withoutFirstExport.size
+
+    // Add all of the tokens until the closing paren for the table block.
+    withoutFirstExport.addAll(tokensUntilParenClosure(currentIndex, expectedClosures = 1))
+
+    // Recurse.
+    val additionalItems = parseCheckNotNull(
+        contextAt(currentIndex),
+        withoutFirstExport.parseInlineTableExport(0)
+            ?: withoutFirstExport.parseInlineTableImport(0)
+            ?: withoutFirstExport.parseTable(0),
+        "Expected additional details for table"
+    )
+    currentIndex += (additionalItems.parseLength - lengthOfPrefix)
+
+    when (val node = additionalItems.astNode) {
+        is AstNodeList<*> -> result.addAll(node)
+        else -> result.add(node)
+    }
+
+    return ParseResult(AstNodeList(result), currentIndex - fromIndex)
 }
