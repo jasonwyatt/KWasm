@@ -129,12 +129,14 @@ class WasmModuleTest {
                     (table $9 (export "a") 1 funcref) ;; 10 tokens
                     (memory $10 (import "a" "b") 1) ;; 10 tokens
                     (memory $11 (export "a") 1) ;; 9 tokens
+                    (global $12 (import "a" "b") i32) ;; 10 tokens
+                    (global $13 (export "a") i32 (i32.const 0)) ;; 13 tokens
                 )
             """.trimIndent(),
             context
         ).parseModule(0) ?: fail("Expected a result")
 
-        assertThat(result.parseLength).isEqualTo(156)
+        assertThat(result.parseLength).isEqualTo(179)
         val module = result.astNode
         assertThat(module.identifier).isEqualTo(Identifier.Label("$10"))
         assertThat(module.imports)
@@ -172,6 +174,14 @@ class WasmModuleTest {
                     ImportDescriptor.Memory(
                         Identifier.Memory("$10"),
                         MemoryType(Limit(1u, UInt.MAX_VALUE))
+                    )
+                ),
+                Import(
+                    "a",
+                    "b",
+                    ImportDescriptor.Global(
+                        Identifier.Global("$12"),
+                        GlobalType(ValueType.I32, false)
                     )
                 )
             ).inOrder()
@@ -244,6 +254,15 @@ class WasmModuleTest {
                             NumericConstantInstruction.I32(IntegerLiteral.S32(1))
                         )
                     )
+                ),
+                Global(
+                    Identifier.Global("$13"),
+                    GlobalType(ValueType.I32, false),
+                    Expression(
+                        astNodeListOf(
+                            NumericConstantInstruction.I32(IntegerLiteral.S32(0))
+                        )
+                    )
                 )
             ).inOrder()
         assertThat(module.exports)
@@ -270,6 +289,12 @@ class WasmModuleTest {
                     "a",
                     ExportDescriptor.Memory(
                         Index.ByIdentifier(Identifier.Memory("$11"))
+                    )
+                ),
+                Export(
+                    "a",
+                    ExportDescriptor.Global(
+                        Index.ByIdentifier(Identifier.Global("$13"))
                     )
                 )
             ).inOrder()
