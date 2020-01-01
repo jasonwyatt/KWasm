@@ -123,16 +123,18 @@ class WasmModuleTest {
                     (elem $3 (offset (i32.const 0)) $0)
                     (data $4 (offset (i32.const 0)) "test")
                     ;; inline abbreviations
-                    (func $6 (import "a" "b")) ;; 9
-                    (func $7 (export "a") return) ;; 9
-                    (table $8 (import "a" "b") 1 funcref) ;; 9
-                    (table $9 (export "a") 1 funcref) ;; 10
+                    (func $6 (import "a" "b")) ;; 9 tokens
+                    (func $7 (export "a") return) ;; 9 tokens
+                    (table $8 (import "a" "b") 1 funcref) ;; 9 tokens
+                    (table $9 (export "a") 1 funcref) ;; 10 tokens
+                    (memory $10 (import "a" "b") 1) ;; 10 tokens
+                    (memory $11 (export "a") 1) ;; 9 tokens
                 )
             """.trimIndent(),
             context
         ).parseModule(0) ?: fail("Expected a result")
 
-        assertThat(result.parseLength).isEqualTo(137)
+        assertThat(result.parseLength).isEqualTo(156)
         val module = result.astNode
         assertThat(module.identifier).isEqualTo(Identifier.Label("$10"))
         assertThat(module.imports)
@@ -162,6 +164,14 @@ class WasmModuleTest {
                             Limit(1u, UInt.MAX_VALUE),
                             ElementType.FunctionReference
                         )
+                    )
+                ),
+                Import(
+                    "a",
+                    "b",
+                    ImportDescriptor.Memory(
+                        Identifier.Memory("$10"),
+                        MemoryType(Limit(1u, UInt.MAX_VALUE))
                     )
                 )
             ).inOrder()
@@ -218,6 +228,10 @@ class WasmModuleTest {
                 Memory(
                     Identifier.Memory("$4"),
                     MemoryType(Limit(0u, 1u))
+                ),
+                Memory(
+                    Identifier.Memory("$11"),
+                    MemoryType(Limit(1u, UInt.MAX_VALUE))
                 )
             ).inOrder()
         assertThat(module.globals)
@@ -250,6 +264,12 @@ class WasmModuleTest {
                     "a",
                     ExportDescriptor.Table(
                         Index.ByIdentifier(Identifier.Table("$9"))
+                    )
+                ),
+                Export(
+                    "a",
+                    ExportDescriptor.Memory(
+                        Index.ByIdentifier(Identifier.Memory("$11"))
                     )
                 )
             ).inOrder()

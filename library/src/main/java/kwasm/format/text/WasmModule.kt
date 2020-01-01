@@ -76,6 +76,8 @@ fun List<Token>.parseModule(fromIndex: Int): ParseResult<WasmModule>? {
             ?: parseInlineTableImport(currentIndex)
             ?: parseInlineTableExport(currentIndex)
             ?: parseTable(currentIndex)
+            ?: parseInlineMemoryImport(currentIndex)
+            ?: parseInlineMemoryExport(currentIndex)
             ?: parseMemory(currentIndex)
             ?: parseGlobal(currentIndex)
             ?: parseExport(currentIndex)
