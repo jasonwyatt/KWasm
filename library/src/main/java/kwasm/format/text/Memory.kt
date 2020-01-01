@@ -14,10 +14,15 @@
 
 package kwasm.format.text
 
+import kwasm.ast.AstNode
 import kwasm.ast.AstNodeList
 import kwasm.ast.DataSegment
+import kwasm.ast.Export
+import kwasm.ast.ExportDescriptor
 import kwasm.ast.Expression
 import kwasm.ast.Identifier
+import kwasm.ast.Import
+import kwasm.ast.ImportDescriptor
 import kwasm.ast.Index
 import kwasm.ast.IntegerLiteral
 import kwasm.ast.Limit
@@ -28,6 +33,7 @@ import kwasm.ast.Offset
 import kwasm.ast.astNodeListOf
 import kwasm.format.ParseException
 import kwasm.format.parseCheck
+import kwasm.format.parseCheckNotNull
 import kwasm.format.text.token.Token
 import kotlin.math.ceil
 
@@ -139,4 +145,135 @@ internal fun List<Token>.parseMemoryAndDataSegment(fromIndex: Int): ParseResult<
         ),
         currentIndex - fromIndex
     )
+}
+
+/**
+ * Parses an inline [Memory]-[Import] from the receiving [List] of [Token]s.
+ *
+ * From [the docs](https://webassembly.github.io/spec/core/text/modules.html#text-mem-abbrev):
+ *
+ * ```
+ *   ‘(’ ‘memory’ id? ‘(’ ‘import’ name^1 name^2 ‘)’ memtype ‘)’
+ *      == ‘(’ ‘import’ name^1 name^2 ‘(’ ‘memory’ id? memtype ‘)’ ‘)’
+ * ```
+ */
+fun List<Token>.parseInlineMemoryImport(fromIndex: Int): ParseResult<Import>? {
+    var currentIndex = fromIndex
+    if (!isOpenParen(currentIndex)) return null
+    currentIndex++
+    if (!isKeyword(currentIndex, "memory")) return null
+    currentIndex++
+
+    val identifier = parseIdentifier<Identifier.Memory>(currentIndex)
+    currentIndex += identifier.parseLength
+
+    if (!isOpenParen(currentIndex)) return null
+    currentIndex++
+    if (!isKeyword(currentIndex, "import")) return null
+    currentIndex++
+
+    val moduleName = parseLiteral(currentIndex, String::class)
+    currentIndex += moduleName.parseLength
+    val tableName = parseLiteral(currentIndex, String::class)
+    currentIndex += tableName.parseLength
+
+    parseCheck(contextAt(currentIndex), isClosedParen(currentIndex), "Expected ')'")
+    currentIndex++
+
+    val memType = parseMemoryType(currentIndex)
+    currentIndex += memType.parseLength
+
+    parseCheck(contextAt(currentIndex), isClosedParen(currentIndex), "Expected ')'")
+    currentIndex++
+
+    return ParseResult(
+        Import(
+            moduleName.astNode.value,
+            tableName.astNode.value,
+            ImportDescriptor.Memory(identifier.astNode, memType.astNode)
+        ),
+        currentIndex - fromIndex
+    )
+}
+
+/**
+ * Parses an inline [Memory]-[Export] from the receiving [List] of [Token]s.
+ *
+ * From [the docs](https://webassembly.github.io/spec/core/text/modules.html#text-mem-abbrev):
+ *
+ * ```
+ *   ‘(’ ‘memory’ id? ‘(’ ‘export’ name ‘)’ ... ‘)’
+ *      == ‘(’ ‘export’ name ‘(’ ‘memory’ id′ ‘)’ ‘)’ ‘(’ ‘memory’ id′ ... ‘)’
+ *          (if id′ = id? != ϵ ∨ id′ fresh)
+ * ```
+ *
+ * Where “...” can contain another import or export or an inline data segment.
+ */
+fun List<Token>.parseInlineMemoryExport(fromIndex: Int): ParseResult<AstNodeList<*>>? {
+    var currentIndex = fromIndex
+    if (!isOpenParen(currentIndex)) return null
+    currentIndex++
+    if (!isKeyword(currentIndex, "memory")) return null
+    currentIndex++
+
+    val identifier = parseIdentifier<Identifier.Memory>(currentIndex)
+    currentIndex += identifier.parseLength
+
+    if (!isOpenParen(currentIndex)) return null
+    currentIndex++
+    if (!isKeyword(currentIndex, "export")) return null
+    currentIndex++
+
+    val exportName = parseLiteral(currentIndex, String::class)
+    currentIndex += exportName.parseLength
+
+    parseCheck(contextAt(currentIndex), isClosedParen(currentIndex), "Expected ')'")
+    currentIndex++
+
+    val result = mutableListOf<AstNode>(
+        Export(
+            exportName.astNode.value,
+            ExportDescriptor.Memory(Index.ByIdentifier(identifier.astNode))
+        )
+    )
+
+    if (isClosedParen(currentIndex)) {
+        // No `...` case, so we can return here.
+        currentIndex++
+        return ParseResult(AstNodeList(result), currentIndex - fromIndex)
+    }
+
+    // Looks like there might be more to handle, so construct a new list of tokens to recurse with.
+    // Add the opening paren and 'memory' keyword.
+    val withoutFirstExport = mutableListOf(
+        this[fromIndex],
+        this[fromIndex + 1]
+    )
+
+    // Add the id.
+    (0 until identifier.parseLength).forEach {
+        withoutFirstExport.add(this[fromIndex + 2 + it])
+    }
+
+    val lengthOfPrefix = withoutFirstExport.size
+
+    // Add all of the tokens until the closing paren for the memory block.
+    withoutFirstExport.addAll(tokensUntilParenClosure(currentIndex, expectedClosures = 1))
+
+    // Recurse.
+    val additionalItems = parseCheckNotNull(
+        contextAt(currentIndex),
+        withoutFirstExport.parseInlineMemoryExport(0)
+            ?: withoutFirstExport.parseInlineMemoryImport(0)
+            ?: withoutFirstExport.parseMemory(0),
+        "Expected additional details for memory"
+    )
+    currentIndex += (additionalItems.parseLength - lengthOfPrefix)
+
+    when (val node = additionalItems.astNode) {
+        is AstNodeList<*> -> result.addAll(node)
+        else -> result.add(node)
+    }
+
+    return ParseResult(AstNodeList(result), currentIndex - fromIndex)
 }
