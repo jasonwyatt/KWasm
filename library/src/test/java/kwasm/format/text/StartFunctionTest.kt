@@ -77,6 +77,6 @@ class StartFunctionTest {
 
         assertThat(result.parseLength).isEqualTo(4)
         assertThat(result.astNode)
-            .isEqualTo(StartFunction(Index.ByInt(123u) as Index<Identifier.Function>))
+            .isEqualTo(StartFunction(Index.ByInt(123) as Index<Identifier.Function>))
     }
 }

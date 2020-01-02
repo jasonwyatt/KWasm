@@ -42,7 +42,7 @@ fun List<Token>.parseElementSegment(fromIndex: Int): ParseResult<ElementSegment>
         parseIndex<Identifier.Table>(currentIndex)
     } else {
         // Empty is okay, we just need to set it to zero.
-        ParseResult(Index.ByInt(0u) as Index<Identifier.Table>, 0)
+        ParseResult(Index.ByInt(0) as Index<Identifier.Table>, 0)
     }
     currentIndex += tableIndex.parseLength
 

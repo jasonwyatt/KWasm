@@ -28,7 +28,7 @@ import kwasm.format.text.token.Token
  * **Note:** Does not support [Identifier.TypeDef].
  */
 @Suppress("RemoveExplicitTypeArguments")
-inline fun <reified T : Identifier> List<Token>.parseIdentifier(fromIndex: Int): ParseResult<T> {
+inline fun <reified T : Identifier> List<Token>.parseIdentifier(fromIndex: Int, intAllowed: Boolean = false): ParseResult<T> {
     var currentIndex = fromIndex
     val maybeId = getOrNull(currentIndex) as? kwasm.format.text.token.Identifier
     val maybeInt = getOrNull(currentIndex) as? IntegerLiteral<*>
@@ -36,12 +36,12 @@ inline fun <reified T : Identifier> List<Token>.parseIdentifier(fromIndex: Int):
     val id = if (maybeId != null) {
         currentIndex++
         createIdentifier<T>(maybeId.value)
-    } else if (maybeInt != null) {
+    } else if (maybeInt != null && intAllowed) {
         currentIndex++
         parseCheckNotNull(
             contextAt(currentIndex - 1),
             createIdentifier<T>(intValue = maybeInt.toSigned().value.toInt())
-                ?.takeIf { it.unique != null && (it.unique as Int) > 0 },
+                ?.takeIf { it.unique != null && (it.unique as Int) >= 0 },
             "Identifier must not be negative"
         )
     } else createIdentifier<T>(null, null)

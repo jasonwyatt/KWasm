@@ -93,7 +93,7 @@ class ElementSegmentTest {
                 Index.ByIdentifier(Identifier.Function("$1"))
             )
         )
-        assertThat(result.astNode.tableIndex).isEqualTo(Index.ByInt(0u))
+        assertThat(result.astNode.tableIndex).isEqualTo(Index.ByInt(0))
         assertThat(result.astNode.offset).isEqualTo(
             Offset(
                 Expression(
@@ -148,7 +148,7 @@ class ElementSegmentTest {
         assertThat(result.parseLength).isEqualTo(7)
         assertThat(result.astNode.init).isEmpty()
         assertThat(result.astNode.tableIndex)
-            .isEqualTo(Index.ByInt(0u))
+            .isEqualTo(Index.ByInt(0))
         assertThat(result.astNode.offset).isEqualTo(
             Offset(
                 Expression(
@@ -171,7 +171,7 @@ class ElementSegmentTest {
             )
         )
         assertThat(result.astNode.tableIndex)
-            .isEqualTo(Index.ByInt(0u))
+            .isEqualTo(Index.ByInt(0))
         assertThat(result.astNode.offset).isEqualTo(
             Offset(
                 Expression(

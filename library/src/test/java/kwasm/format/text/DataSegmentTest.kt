@@ -89,7 +89,7 @@ class DataSegmentTest {
             .parseDataSegment(0) ?: fail("Expected data segment")
         assertThat(result.parseLength).isEqualTo(9)
         assertThat(result.astNode.init).isEqualTo("test".toByteArray(Charsets.UTF_8))
-        assertThat(result.astNode.memoryIndex).isEqualTo(Index.ByInt(0u))
+        assertThat(result.astNode.memoryIndex).isEqualTo(Index.ByInt(0))
         assertThat(result.astNode.offset).isEqualTo(
             Offset(
                 Expression(
@@ -140,7 +140,7 @@ class DataSegmentTest {
         assertThat(result.parseLength).isEqualTo(7)
         assertThat(result.astNode.init).isEqualTo(ByteArray(0))
         assertThat(result.astNode.memoryIndex)
-            .isEqualTo(Index.ByInt(0u))
+            .isEqualTo(Index.ByInt(0))
         assertThat(result.astNode.offset).isEqualTo(
             Offset(
                 Expression(
@@ -157,7 +157,7 @@ class DataSegmentTest {
         assertThat(result.parseLength).isEqualTo(10)
         assertThat(result.astNode.init).isEqualTo("abc".toByteArray(Charsets.UTF_8))
         assertThat(result.astNode.memoryIndex)
-            .isEqualTo(Index.ByInt(0u))
+            .isEqualTo(Index.ByInt(0))
         assertThat(result.astNode.offset).isEqualTo(
             Offset(
                 Expression(

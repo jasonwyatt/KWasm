@@ -37,6 +37,10 @@ package kwasm.ast
  * ```
  */
 sealed class Index<T : Identifier> : AstNode {
-    data class ByInt(val indexVal: UInt) : Index<Identifier>()
-    data class ByIdentifier<T : Identifier>(val indexVal: T) : Index<T>()
+    data class ByInt(val indexVal: Int) : Index<Identifier>() {
+        override fun toString(): String = indexVal.toString()
+    }
+    data class ByIdentifier<T : Identifier>(val indexVal: T) : Index<T>() {
+        override fun toString(): String = indexVal.stringRepr ?: indexVal.unique.toString()
+    }
 }

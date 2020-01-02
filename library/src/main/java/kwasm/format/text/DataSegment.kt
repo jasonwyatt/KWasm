@@ -48,7 +48,7 @@ fun List<Token>.parseDataSegment(fromIndex: Int): ParseResult<DataSegment>? {
         parseIndex<Identifier.Memory>(currentIndex)
     } else {
         // Empty is okay, we just need to set it to zero.
-        ParseResult(Index.ByInt(0u) as Index<Identifier.Memory>, 0)
+        ParseResult(Index.ByInt(0) as Index<Identifier.Memory>, 0)
     }
     currentIndex += memIndex.parseLength
 

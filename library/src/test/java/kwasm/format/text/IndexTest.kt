@@ -48,7 +48,7 @@ class IndexTest {
         val parsed = tokenizer.tokenize("1234", context)
             .parseIndex<Identifier.Type>(0)
         assertThat(parsed.astNode).isInstanceOf(Index.ByInt::class.java)
-        assertThat((parsed.astNode as Index.ByInt).indexVal).isEqualTo(1234u)
+        assertThat((parsed.astNode as Index.ByInt).indexVal).isEqualTo(1234)
         assertThat(parsed.parseLength).isEqualTo(1)
     }
 
@@ -66,7 +66,7 @@ class IndexTest {
         val parsed = tokenizer.tokenize("1234", context)
             .parseIndex<Identifier.Function>(0)
         assertThat(parsed.astNode).isInstanceOf(Index.ByInt::class.java)
-        assertThat((parsed.astNode as Index.ByInt).indexVal).isEqualTo(1234u)
+        assertThat((parsed.astNode as Index.ByInt).indexVal).isEqualTo(1234)
         assertThat(parsed.parseLength).isEqualTo(1)
     }
 
@@ -84,7 +84,7 @@ class IndexTest {
         val parsed = tokenizer.tokenize("1234", context)
             .parseIndex<Identifier.Table>(0)
         assertThat(parsed.astNode).isInstanceOf(Index.ByInt::class.java)
-        assertThat((parsed.astNode as Index.ByInt).indexVal).isEqualTo(1234u)
+        assertThat((parsed.astNode as Index.ByInt).indexVal).isEqualTo(1234)
         assertThat(parsed.parseLength).isEqualTo(1)
     }
 
@@ -102,7 +102,7 @@ class IndexTest {
         val parsed = tokenizer.tokenize("1234", context)
             .parseIndex<Identifier.Memory>(0)
         assertThat(parsed.astNode).isInstanceOf(Index.ByInt::class.java)
-        assertThat((parsed.astNode as Index.ByInt).indexVal).isEqualTo(1234u)
+        assertThat((parsed.astNode as Index.ByInt).indexVal).isEqualTo(1234)
         assertThat(parsed.parseLength).isEqualTo(1)
     }
 
@@ -120,7 +120,7 @@ class IndexTest {
         val parsed = tokenizer.tokenize("1234", context)
             .parseIndex<Identifier.Global>(0)
         assertThat(parsed.astNode).isInstanceOf(Index.ByInt::class.java)
-        assertThat((parsed.astNode as Index.ByInt).indexVal).isEqualTo(1234u)
+        assertThat((parsed.astNode as Index.ByInt).indexVal).isEqualTo(1234)
         assertThat(parsed.parseLength).isEqualTo(1)
     }
 
@@ -138,7 +138,7 @@ class IndexTest {
         val parsed = tokenizer.tokenize("1234", context)
             .parseIndex<Identifier.Local>(0)
         assertThat(parsed.astNode).isInstanceOf(Index.ByInt::class.java)
-        assertThat((parsed.astNode as Index.ByInt).indexVal).isEqualTo(1234u)
+        assertThat((parsed.astNode as Index.ByInt).indexVal).isEqualTo(1234)
         assertThat(parsed.parseLength).isEqualTo(1)
     }
 
@@ -156,7 +156,7 @@ class IndexTest {
         val parsed = tokenizer.tokenize("1234", context)
             .parseIndex<Identifier.Label>(0)
         assertThat(parsed.astNode).isInstanceOf(Index.ByInt::class.java)
-        assertThat((parsed.astNode as Index.ByInt).indexVal).isEqualTo(1234u)
+        assertThat((parsed.astNode as Index.ByInt).indexVal).isEqualTo(1234)
         assertThat(parsed.parseLength).isEqualTo(1)
     }
 
@@ -174,7 +174,7 @@ class IndexTest {
         val parsed = tokenizer.tokenize("1234", context)
             .parseIndex<Identifier.TypeDef>(0)
         assertThat(parsed.astNode).isInstanceOf(Index.ByInt::class.java)
-        assertThat((parsed.astNode as Index.ByInt).indexVal).isEqualTo(1234u)
+        assertThat((parsed.astNode as Index.ByInt).indexVal).isEqualTo(1234)
         assertThat(parsed.parseLength).isEqualTo(1)
     }
 
