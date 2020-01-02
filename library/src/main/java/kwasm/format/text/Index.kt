@@ -33,7 +33,7 @@ inline fun <reified T : kwasm.ast.Identifier> List<Token>.parseIndex(
     is IntegerLiteral.Unsigned -> {
         token.magnitude = 32
         @Suppress("UNCHECKED_CAST")
-        ParseResult(Index.ByInt(token.value.toUInt()) as Index<T>, 1)
+        ParseResult(Index.ByInt(token.value.toInt()) as Index<T>, 1)
     }
     is Identifier -> {
         val id = when (T::class) {

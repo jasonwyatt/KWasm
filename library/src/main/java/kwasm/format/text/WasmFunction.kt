@@ -45,7 +45,7 @@ fun List<Token>.parseWasmFunction(fromIndex: Int): ParseResult<WasmFunction>? {
     if (!isKeyword(currentIndex, "func")) return null
     currentIndex++
 
-    val id = parseIdentifier<Identifier.Function>(currentIndex)
+    val id = parseIdentifier<Identifier.Function>(currentIndex, true)
     currentIndex += id.parseLength
     val typeUse = parseTypeUse(currentIndex)
     currentIndex += typeUse.parseLength
