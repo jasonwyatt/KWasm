@@ -14,27 +14,27 @@
 
 package kwasm.validation.type
 
-import kwasm.ast.TableType
+import kwasm.ast.MemoryType
 import kwasm.validation.ValidationContext
 import kwasm.validation.ValidationVisitor
+import kotlin.math.pow
 
-/** Validates a [TableType] node. */
-fun TableType.validate(context: ValidationContext) = TableTypeValidator.visit(this, context)
+/** Validates a [MemoryType] node. */
+fun MemoryType.validate(context: ValidationContext) = MemoryTypeValidator.visit(this, context)
 
 /**
- * Validator for [TableType] nodes.
+ * Validator of [MemoryType] nodes.
  *
- * From [the docs](https://webassembly.github.io/spec/core/valid/types.html#table-types):
+ * From [the docs](https://webassembly.github.io/spec/core/valid/types.html#memory-types):
  *
- * * The limits `limits` must be valid within range `2^32`.
- * * Then the table type is valid.
+ * * The limits `limits` must be valid within range `2^16`.
+ * * Then the memory type is valid.
  */
-@Suppress("EXPERIMENTAL_API_USAGE")
-object TableTypeValidator : ValidationVisitor<TableType, ValidationContext> {
-    override fun visit(node: TableType, context: ValidationContext): ValidationContext {
+object MemoryTypeValidator : ValidationVisitor<MemoryType, ValidationContext> {
+    override fun visit(node: MemoryType, context: ValidationContext): ValidationContext {
         node.limits.validate(LIMITS_RANGE, context)
         return context
     }
 
-    internal val LIMITS_RANGE = UInt.MAX_VALUE.toLong()
+    internal val LIMITS_RANGE = 2.0.pow(16).toLong()
 }

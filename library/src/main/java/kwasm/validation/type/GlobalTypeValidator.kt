@@ -14,27 +14,23 @@
 
 package kwasm.validation.type
 
-import kwasm.ast.TableType
+import kwasm.ast.GlobalType
 import kwasm.validation.ValidationContext
 import kwasm.validation.ValidationVisitor
 
-/** Validates a [TableType] node. */
-fun TableType.validate(context: ValidationContext) = TableTypeValidator.visit(this, context)
+/** Validates a [GlobalType] node. */
+fun GlobalType.validate(context: ValidationContext) = GlobalTypeValidator.visit(this, context)
 
 /**
- * Validator for [TableType] nodes.
+ * Validator of [GlobalType] nodes.
  *
- * From [the docs](https://webassembly.github.io/spec/core/valid/types.html#table-types):
+ * From [the docs](https://webassembly.github.io/spec/core/valid/types.html#global-types):
  *
- * * The limits `limits` must be valid within range `2^32`.
- * * Then the table type is valid.
+ * * The global type is valid.
  */
-@Suppress("EXPERIMENTAL_API_USAGE")
-object TableTypeValidator : ValidationVisitor<TableType, ValidationContext> {
-    override fun visit(node: TableType, context: ValidationContext): ValidationContext {
-        node.limits.validate(LIMITS_RANGE, context)
+object GlobalTypeValidator : ValidationVisitor<GlobalType, ValidationContext> {
+    override fun visit(node: GlobalType, context: ValidationContext): ValidationContext {
+        // No-op
         return context
     }
-
-    internal val LIMITS_RANGE = UInt.MAX_VALUE.toLong()
 }
