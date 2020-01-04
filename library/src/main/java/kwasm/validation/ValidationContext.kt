@@ -89,6 +89,17 @@ sealed class ValidationContext(
         val labels: AstNodeIndex<ResultType>,
         val returnType: ValueType?
     ) : ValidationContext(types, functions, tables, memories, globals)
+
+    companion object {
+        /** An empty [ValidationContext.Module] instance. */
+        val EMPTY_MODULE = ValidationContext.Module(
+            types = AstNodeIndex(),
+            functions = AstNodeIndex(),
+            tables = AstNodeIndex(),
+            memories = AstNodeIndex(),
+            globals = AstNodeIndex()
+        )
+    }
 }
 
 /** Given a [WasmModule], creates a new [ValidationContext]. */
