@@ -21,7 +21,7 @@ import kwasm.ast.FunctionType
 import kwasm.ast.GlobalType
 import kwasm.ast.Identifier
 import kwasm.ast.Index
-import kwasm.ast.Limit
+import kwasm.ast.Limits
 import kwasm.ast.MemoryType
 import kwasm.ast.Param
 import kwasm.ast.Result
@@ -161,14 +161,14 @@ class ValidationContextTest {
         assertThat(context.tables.size).isEqualTo(1)
         assertThat(context.tables[0]).isEqualTo(
             TableType(
-                Limit(0u, 1u),
+                Limits(0, 1),
                 ElementType.FunctionReference
             )
         )
         assertThat(context.memories.size).isEqualTo(1)
         assertThat(context.memories[0]).isEqualTo(
             MemoryType(
-                Limit(0u, 1u)
+                Limits(0, 1)
             )
         )
         assertThat(context.globals.size).isEqualTo(2)

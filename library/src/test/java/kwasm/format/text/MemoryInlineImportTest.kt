@@ -18,7 +18,7 @@ import com.google.common.truth.Truth.assertThat
 import kwasm.ast.Identifier
 import kwasm.ast.Import
 import kwasm.ast.ImportDescriptor
-import kwasm.ast.Limit
+import kwasm.ast.Limits
 import kwasm.ast.MemoryType
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
@@ -110,7 +110,7 @@ class MemoryInlineImportTest {
                 ImportDescriptor.Memory(
                     Identifier.Memory(null, null),
                     MemoryType(
-                        Limit(1u, UInt.MAX_VALUE)
+                        Limits(1)
                     )
                 )
             )
@@ -132,7 +132,7 @@ class MemoryInlineImportTest {
                 ImportDescriptor.Memory(
                     Identifier.Memory("$0"),
                     MemoryType(
-                        Limit(0u, 1u)
+                        Limits(0, 1)
                     )
                 )
             )

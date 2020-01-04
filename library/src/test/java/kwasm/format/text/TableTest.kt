@@ -21,7 +21,7 @@ import kwasm.ast.Expression
 import kwasm.ast.Identifier
 import kwasm.ast.Index
 import kwasm.ast.IntegerLiteral
-import kwasm.ast.Limit
+import kwasm.ast.Limits
 import kwasm.ast.NumericConstantInstruction
 import kwasm.ast.Offset
 import kwasm.ast.Table
@@ -85,7 +85,7 @@ class TableTest {
         assertThat(result.astNode.id).isEqualTo(Identifier.Table("$0"))
         assertThat(result.astNode.tableType).isEqualTo(
             TableType(
-                Limit(0u, 1u),
+                Limits(0, 1),
                 ElementType.FunctionReference
             )
         )
@@ -157,7 +157,7 @@ class TableTest {
             Table(
                 Identifier.Table(null, null),
                 TableType(
-                    Limit(0u, 0u),
+                    Limits(0, 0),
                     ElementType.FunctionReference
                 )
             ),
@@ -182,7 +182,7 @@ class TableTest {
             Table(
                 Identifier.Table("$0"),
                 TableType(
-                    Limit(2u, 2u),
+                    Limits(2, 2),
                     ElementType.FunctionReference
                 )
             ),
@@ -210,7 +210,7 @@ class TableTest {
         assertThat((result.astNode.first() as Table).id).isEqualTo(Identifier.Table("$0"))
         assertThat((result.astNode.first() as Table).tableType).isEqualTo(
             TableType(
-                Limit(0u, 1u),
+                Limits(0, 1),
                 ElementType.FunctionReference
             )
         )
@@ -225,7 +225,7 @@ class TableTest {
             Table(
                 Identifier.Table("$0"),
                 TableType(
-                    Limit(2u, 2u),
+                    Limits(2, 2),
                     ElementType.FunctionReference
                 )
             ),

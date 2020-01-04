@@ -21,8 +21,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+@Suppress("EXPERIMENTAL_API_USAGE")
 @RunWith(JUnit4::class)
-@UseExperimental(ExperimentalUnsignedTypes::class)
 class NumTest {
     @Test
     fun parsesSingleDigits_base10() {

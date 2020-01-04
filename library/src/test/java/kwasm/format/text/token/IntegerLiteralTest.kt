@@ -24,8 +24,8 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import kotlin.math.absoluteValue
 
+@Suppress("EXPERIMENTAL_API_USAGE")
 @RunWith(JUnit4::class)
-@UseExperimental(ExperimentalUnsignedTypes::class)
 class IntegerLiteralTest {
     @Test
     fun parsesUnsigned_base10() {

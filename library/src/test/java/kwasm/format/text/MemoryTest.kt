@@ -20,7 +20,7 @@ import kwasm.ast.Expression
 import kwasm.ast.Identifier
 import kwasm.ast.Index
 import kwasm.ast.IntegerLiteral
-import kwasm.ast.Limit
+import kwasm.ast.Limits
 import kwasm.ast.Memory
 import kwasm.ast.MemoryType
 import kwasm.ast.NumericConstantInstruction
@@ -77,7 +77,7 @@ class MemoryTest {
         assertThat(result.astNode.id).isEqualTo(Identifier.Memory("$0"))
         assertThat(result.astNode.memoryType).isEqualTo(
             MemoryType(
-                Limit(0u, 1u)
+                Limits(0, 1)
             )
         )
     }
@@ -141,7 +141,7 @@ class MemoryTest {
             Memory(
                 Identifier.Memory(null, null),
                 MemoryType(
-                    Limit(0u, 0u)
+                    Limits(0, 0)
                 )
             ),
             DataSegment(
@@ -165,7 +165,7 @@ class MemoryTest {
             Memory(
                 Identifier.Memory("$0"),
                 MemoryType(
-                    Limit(1u, 1u)
+                    Limits(1, 1)
                 )
             ),
             DataSegment(
@@ -189,7 +189,7 @@ class MemoryTest {
         assertThat((result.astNode.first() as Memory).id).isEqualTo(Identifier.Memory("$0"))
         assertThat((result.astNode.first() as Memory).memoryType).isEqualTo(
             MemoryType(
-                Limit(0u, 1u)
+                Limits(0, 1)
             )
         )
     }
@@ -203,7 +203,7 @@ class MemoryTest {
             Memory(
                 Identifier.Memory("$0"),
                 MemoryType(
-                    Limit(1u, 1u)
+                    Limits(1, 1)
                 )
             ),
             DataSegment(

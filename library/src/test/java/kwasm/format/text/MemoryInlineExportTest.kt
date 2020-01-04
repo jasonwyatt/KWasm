@@ -24,7 +24,7 @@ import kwasm.ast.Import
 import kwasm.ast.ImportDescriptor
 import kwasm.ast.Index
 import kwasm.ast.IntegerLiteral
-import kwasm.ast.Limit
+import kwasm.ast.Limits
 import kwasm.ast.NumericConstantInstruction
 import kwasm.ast.Offset
 import kwasm.ast.Memory
@@ -169,9 +169,7 @@ class MemoryInlineExportTest {
                 "c",
                 ImportDescriptor.Memory(
                     Identifier.Memory("$0"),
-                    MemoryType(
-                        Limit(1u, UInt.MAX_VALUE)
-                    )
+                    MemoryType(Limits(1))
                 )
             )
         ).inOrder()
@@ -194,7 +192,7 @@ class MemoryInlineExportTest {
             Memory(
                 Identifier.Memory("$0"),
                 MemoryType(
-                    Limit(1u, 1u)
+                    Limits(1, 1)
                 )
             ),
             DataSegment(
@@ -232,7 +230,7 @@ class MemoryInlineExportTest {
             Memory(
                 Identifier.Memory("$0"),
                 MemoryType(
-                    Limit(1u, 1u)
+                    Limits(1, 1)
                 )
             ),
             DataSegment(

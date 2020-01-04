@@ -26,7 +26,7 @@ import kwasm.ast.Import
 import kwasm.ast.ImportDescriptor
 import kwasm.ast.Index
 import kwasm.ast.IntegerLiteral
-import kwasm.ast.Limit
+import kwasm.ast.Limits
 import kwasm.ast.NumericConstantInstruction
 import kwasm.ast.Offset
 import kwasm.ast.Table
@@ -83,7 +83,6 @@ internal fun List<Token>.parseTableBasic(fromIndex: Int): ParseResult<Table>? {
 }
 
 /** See [parseTable]. */
-@UseExperimental(ExperimentalUnsignedTypes::class)
 internal fun List<Token>.parseTableAndElementSegment(fromIndex: Int): ParseResult<AstNodeList<*>>? {
     var currentIndex = fromIndex
     if (!isOpenParen(currentIndex)) return null
@@ -127,7 +126,7 @@ internal fun List<Token>.parseTableAndElementSegment(fromIndex: Int): ParseResul
             Table(
                 id.astNode,
                 TableType(
-                    Limit(funcIndices.astNode.size.toUInt(), funcIndices.astNode.size.toUInt()),
+                    Limits(funcIndices.astNode.size.toLong(), funcIndices.astNode.size.toLong()),
                     elemType
                 )
             ),

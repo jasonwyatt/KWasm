@@ -30,7 +30,7 @@ import kwasm.ast.Import
 import kwasm.ast.ImportDescriptor
 import kwasm.ast.Index
 import kwasm.ast.IntegerLiteral
-import kwasm.ast.Limit
+import kwasm.ast.Limits
 import kwasm.ast.Local
 import kwasm.ast.Memory
 import kwasm.ast.MemoryType
@@ -163,7 +163,7 @@ class WasmModuleTest {
                     ImportDescriptor.Table(
                         Identifier.Table("$8"),
                         TableType(
-                            Limit(1u, UInt.MAX_VALUE),
+                            Limits(1),
                             ElementType.FunctionReference
                         )
                     )
@@ -173,7 +173,7 @@ class WasmModuleTest {
                     "b",
                     ImportDescriptor.Memory(
                         Identifier.Memory("$10"),
-                        MemoryType(Limit(1u, UInt.MAX_VALUE))
+                        MemoryType(Limits(1))
                     )
                 ),
                 Import(
@@ -221,14 +221,14 @@ class WasmModuleTest {
                 Table(
                     Identifier.Table("$3"),
                     TableType(
-                        Limit(0u, 1u),
+                        Limits(0, 1),
                         ElementType.FunctionReference
                     )
                 ),
                 Table(
                     Identifier.Table("$9"),
                     TableType(
-                        Limit(1u, UInt.MAX_VALUE),
+                        Limits(1),
                         ElementType.FunctionReference
                     )
                 )
@@ -237,11 +237,11 @@ class WasmModuleTest {
             .containsExactly(
                 Memory(
                     Identifier.Memory("$4"),
-                    MemoryType(Limit(0u, 1u))
+                    MemoryType(Limits(0, 1))
                 ),
                 Memory(
                     Identifier.Memory("$11"),
-                    MemoryType(Limit(1u, UInt.MAX_VALUE))
+                    MemoryType(Limits(1))
                 )
             ).inOrder()
         assertThat(module.globals)

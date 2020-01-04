@@ -22,8 +22,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+@Suppress("EXPERIMENTAL_API_USAGE")
 @RunWith(JUnit4::class)
-@UseExperimental(ExperimentalUnsignedTypes::class)
 class TableTypeTest {
 
     private val context = ParseContext("TokenizerTest.wasm", 1, 1)
@@ -31,7 +31,7 @@ class TableTypeTest {
 
     @Test
     fun parseSingleNumber_withoutFuncref_throwsParseException() {
-        val expectedMin = 123456.toUInt()
+        val expectedMin = 123456
         val tokens = tokenizer.tokenize("$expectedMin", context)
         val exception = assertThrows(ParseException::class.java) { tokens.parseTableType(0) }
         assertThat(exception).hasMessageThat().contains("Expected 'funcref'")
@@ -39,7 +39,7 @@ class TableTypeTest {
 
     @Test
     fun parseSingleNumber_withoutNonFuncrefLiteral_throwsParseException() {
-        val expectedMin = 123456.toUInt()
+        val expectedMin = 123456
         val tokens = tokenizer.tokenize("$expectedMin notFuncref", context)
         val exception = assertThrows(ParseException::class.java) { tokens.parseTableType(0) }
         assertThat(exception).hasMessageThat().contains("Expected 'funcref'")
@@ -47,8 +47,8 @@ class TableTypeTest {
 
     @Test
     fun parseSingleNumber_setMinToCorrectValue() {
-        val expectedMin = 123456.toUInt()
-        val expectedMax = UInt.MAX_VALUE
+        val expectedMin = 123456
+        val expectedMax = null
         val tokens = tokenizer.tokenize("$expectedMin funcref", context)
         val parseResult = tokens.parseTableType(0)
         assertThat(parseResult.astNode.limits.min).isEqualTo(expectedMin)
@@ -58,8 +58,8 @@ class TableTypeTest {
 
     @Test
     fun parseMaxVal_setMinToMaxVal() {
-        val expectedMin = UInt.MAX_VALUE
-        val expectedMax = UInt.MAX_VALUE
+        val expectedMin = UInt.MAX_VALUE.toLong()
+        val expectedMax = null
         val tokens = tokenizer.tokenize("$expectedMin funcref", context)
         val parseResult = tokens.parseTableType(0)
         assertThat(parseResult.astNode.limits.min).isEqualTo(expectedMin)
@@ -69,8 +69,8 @@ class TableTypeTest {
 
     @Test
     fun parseMinVal_setMinToMinVal() {
-        val expectedMin = UInt.MIN_VALUE
-        val expectedMax = UInt.MAX_VALUE
+        val expectedMin = UInt.MIN_VALUE.toLong()
+        val expectedMax = null
         val tokens = tokenizer.tokenize("$expectedMin funcref", context)
         val parseResult = tokens.parseTableType(0)
         assertThat(parseResult.astNode.limits.min).isEqualTo(expectedMin)
@@ -80,8 +80,8 @@ class TableTypeTest {
 
     @Test
     fun parseTwoNumbers_setMinAndMaxToCorrectValue() {
-        val expectedMin = 123456.toUInt()
-        val expectedMax = 234567.toUInt()
+        val expectedMin = 123456
+        val expectedMax = 234567
         val tokens = tokenizer.tokenize("$expectedMin $expectedMax funcref", context)
         val parseResult = tokens.parseTableType(0)
         assertThat(parseResult.astNode.limits.min).isEqualTo(expectedMin)

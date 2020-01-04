@@ -22,8 +22,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+@Suppress("EXPERIMENTAL_API_USAGE")
 @RunWith(JUnit4::class)
-@UseExperimental(ExperimentalUnsignedTypes::class)
 class MemoryTypeTest {
 
     private val context = ParseContext("TokenizerTest.wasm", 1, 1)
@@ -31,8 +31,8 @@ class MemoryTypeTest {
 
     @Test
     fun parseSingleNumber_setMinToCorrectValue() {
-        val expectedMin = 123456.toUInt()
-        val expectedMax = UInt.MAX_VALUE
+        val expectedMin = 123456
+        val expectedMax = null
         val tokens = tokenizer.tokenize("$expectedMin", context)
         val parseResult = tokens.parseMemoryType(0)
         assertThat(parseResult.astNode.limits.min).isEqualTo(expectedMin)
@@ -42,8 +42,8 @@ class MemoryTypeTest {
 
     @Test
     fun parseMaxVal_setMinToMaxVal() {
-        val expectedMin = UInt.MAX_VALUE
-        val expectedMax = UInt.MAX_VALUE
+        val expectedMin = UInt.MAX_VALUE.toLong()
+        val expectedMax = null
         val tokens = tokenizer.tokenize("$expectedMin", context)
         val parseResult = tokens.parseMemoryType(0)
         assertThat(parseResult.astNode.limits.min).isEqualTo(expectedMin)
@@ -53,8 +53,8 @@ class MemoryTypeTest {
 
     @Test
     fun parseMinVal_setMinToMinVal() {
-        val expectedMin = UInt.MIN_VALUE
-        val expectedMax = UInt.MAX_VALUE
+        val expectedMin = UInt.MIN_VALUE.toLong()
+        val expectedMax = null
         val tokens = tokenizer.tokenize("$expectedMin", context)
         val parseResult = tokens.parseMemoryType(0)
         assertThat(parseResult.astNode.limits.min).isEqualTo(expectedMin)
@@ -64,8 +64,8 @@ class MemoryTypeTest {
 
     @Test
     fun parseTwoNumbers_setMinAndMaxToCorrectValue() {
-        val expectedMin = 123456.toUInt()
-        val expectedMax = 234567.toUInt()
+        val expectedMin = 123456
+        val expectedMax = 234567
         val tokens = tokenizer.tokenize("$expectedMin $expectedMax", context)
         val parseResult = tokens.parseMemoryType(0)
         assertThat(parseResult.astNode.limits.min).isEqualTo(expectedMin)

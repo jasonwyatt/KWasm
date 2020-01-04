@@ -22,8 +22,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+@Suppress("EXPERIMENTAL_API_USAGE")
 @RunWith(JUnit4::class)
-@UseExperimental(ExperimentalUnsignedTypes::class)
 class LimitsTest {
 
     private val context = ParseContext("TokenizerTest.wasm", 1, 1)
@@ -31,8 +31,8 @@ class LimitsTest {
 
     @Test
     fun parseSingleNumber_setMinToCorrectValue() {
-        val expectedMin = 123456.toUInt()
-        val expectedMax = UInt.MAX_VALUE
+        val expectedMin = 123456
+        val expectedMax = null
         val tokens = tokenizer.tokenize("$expectedMin", context)
         val parseResult = tokens.parseLimits(0)
         assertThat(parseResult.astNode.min).isEqualTo(expectedMin)
@@ -42,8 +42,8 @@ class LimitsTest {
 
     @Test
     fun parseMaxVal_setMinToMaxVal() {
-        val expectedMin = UInt.MAX_VALUE
-        val expectedMax = UInt.MAX_VALUE
+        val expectedMin = UInt.MAX_VALUE.toLong()
+        val expectedMax = null
         val tokens = tokenizer.tokenize("$expectedMin", context)
         val parseResult = tokens.parseLimits(0)
         assertThat(parseResult.astNode.min).isEqualTo(expectedMin)
@@ -53,8 +53,8 @@ class LimitsTest {
 
     @Test
     fun parseMinVal_setMinToMinVal() {
-        val expectedMin = UInt.MIN_VALUE
-        val expectedMax = UInt.MAX_VALUE
+        val expectedMin = 0
+        val expectedMax = null
         val tokens = tokenizer.tokenize("$expectedMin", context)
         val parseResult = tokens.parseLimits(0)
         assertThat(parseResult.astNode.min).isEqualTo(expectedMin)
@@ -84,20 +84,13 @@ class LimitsTest {
 
     @Test
     fun parseTwoNumbers_setMinAndMaxToCorrectValue() {
-        val expectedMin = 123456.toUInt()
-        val expectedMax = 234567.toUInt()
+        val expectedMin = 123456
+        val expectedMax = 234567
         val tokens = tokenizer.tokenize("$expectedMin $expectedMax", context)
         val parseResult = tokens.parseLimits(0)
         assertThat(parseResult.astNode.min).isEqualTo(expectedMin)
         assertThat(parseResult.astNode.max).isEqualTo(expectedMax)
         assertThat(parseResult.parseLength).isEqualTo(2)
-    }
-
-    @Test
-    fun parseTwoNumbers_withMinGreaterThanMax_throwsParseExceptionWithInvalidRangeMessage() {
-        val tokens = tokenizer.tokenize("234567 123456", context)
-        val exception = assertThrows(ParseException::class.java) { tokens.parseLimits(0) }
-        assertThat(exception).hasMessageThat().contains("Arguments out of order, min > max")
     }
 
     @Test
@@ -124,8 +117,8 @@ class LimitsTest {
     fun parseTwoValuesWithMaxALotLargerThanMaxVal_returnsLimitsWithOnlyMin() {
         val tokens = tokenizer.tokenize("1234567 100000000000", context)
         val limits = tokens.parseLimits(0)
-        assertThat(limits.astNode.min).isEqualTo(1234567u)
-        assertThat(limits.astNode.max).isEqualTo(UInt.MAX_VALUE)
+        assertThat(limits.astNode.min).isEqualTo(1234567)
+        assertThat(limits.astNode.max).isEqualTo(null)
     }
 
     @Test

@@ -25,7 +25,7 @@ import kwasm.ast.Import
 import kwasm.ast.ImportDescriptor
 import kwasm.ast.Index
 import kwasm.ast.IntegerLiteral
-import kwasm.ast.Limit
+import kwasm.ast.Limits
 import kwasm.ast.Memory
 import kwasm.ast.MemoryType
 import kwasm.ast.NumericConstantInstruction
@@ -82,7 +82,6 @@ internal fun List<Token>.parseMemoryBasic(fromIndex: Int): ParseResult<Memory>? 
 }
 
 /** See [parseMemory]. */
-@Suppress("EXPERIMENTAL_API_USAGE")
 internal fun List<Token>.parseMemoryAndDataSegment(fromIndex: Int): ParseResult<AstNodeList<*>>? {
     var currentIndex = fromIndex
     if (!isOpenParen(currentIndex)) return null
@@ -123,14 +122,14 @@ internal fun List<Token>.parseMemoryAndDataSegment(fromIndex: Int): ParseResult<
     currentIndex++
 
     val dataBytes = dataStringBuilder.toString().toByteArray(Charsets.UTF_8)
-    val pageSize = ceil(dataBytes.size.toDouble() / 65536.0).toUInt() // (64Ki)
+    val pageSize = ceil(dataBytes.size.toDouble() / 65536.0).toLong() // (64Ki)
 
     return ParseResult(
         astNodeListOf(
             Memory(
                 id.astNode,
                 MemoryType(
-                    Limit(pageSize, pageSize)
+                    Limits(pageSize, pageSize)
                 )
             ),
             DataSegment(
