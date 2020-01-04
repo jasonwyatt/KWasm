@@ -15,4 +15,4 @@
 package kwasm.ast
 
 /** This data class represents TableType */
-data class TableType(val limits: Limit, val elemType: ElementType) : AstNode
+data class TableType(val limits: Limits, val elemType: ElementType) : AstNode

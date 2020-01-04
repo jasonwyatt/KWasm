@@ -22,8 +22,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+@Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
 @RunWith(JUnit4::class)
-@UseExperimental(ExperimentalUnsignedTypes::class)
 class LiteralTest {
     private val tokenizer = Tokenizer()
 

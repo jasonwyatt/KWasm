@@ -19,7 +19,7 @@ import kwasm.ast.ElementType
 import kwasm.ast.GlobalType
 import kwasm.ast.Identifier
 import kwasm.ast.ImportDescriptor
-import kwasm.ast.Limit
+import kwasm.ast.Limits
 import kwasm.ast.MemoryType
 import kwasm.ast.Param
 import kwasm.ast.Result
@@ -94,7 +94,7 @@ class ImportTest {
         val descriptor = result.astNode as ImportDescriptor.Table
         assertThat(descriptor.tableType).isEqualTo(
             TableType(
-                Limit(0u, 10u),
+                Limits(0, 10),
                 ElementType.FunctionReference
             )
         )
@@ -132,7 +132,7 @@ class ImportTest {
         val descriptor = result.astNode as ImportDescriptor.Memory
         assertThat(descriptor.memoryType).isEqualTo(
             MemoryType(
-                Limit(0u, 10u)
+                Limits(0, 10)
             )
         )
     }

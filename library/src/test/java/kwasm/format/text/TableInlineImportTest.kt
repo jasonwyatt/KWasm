@@ -19,7 +19,7 @@ import kwasm.ast.ElementType
 import kwasm.ast.Identifier
 import kwasm.ast.Import
 import kwasm.ast.ImportDescriptor
-import kwasm.ast.Limit
+import kwasm.ast.Limits
 import kwasm.ast.TableType
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
@@ -111,7 +111,7 @@ class TableInlineImportTest {
                 ImportDescriptor.Table(
                     Identifier.Table(null, null),
                     TableType(
-                        Limit(1u, UInt.MAX_VALUE),
+                        Limits(1),
                         ElementType.FunctionReference
                     )
                 )
@@ -134,7 +134,7 @@ class TableInlineImportTest {
                 ImportDescriptor.Table(
                     Identifier.Table("$0"),
                     TableType(
-                        Limit(0u, 1u),
+                        Limits(0, 1),
                         ElementType.FunctionReference
                     )
                 )

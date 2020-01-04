@@ -14,7 +14,7 @@
 
 package kwasm.format.text
 
-import kwasm.ast.Limit
+import kwasm.ast.Limits
 import kwasm.format.ParseException
 import kwasm.format.parseCheck
 import kwasm.format.text.token.Token
@@ -28,21 +28,19 @@ import kwasm.format.text.token.Token
  * ```
  */
 @UseExperimental(ExperimentalUnsignedTypes::class)
-fun List<Token>.parseLimits(startingIndex: Int): ParseResult<Limit> {
+fun List<Token>.parseLimits(startingIndex: Int): ParseResult<Limits> {
     var currentIndex = startingIndex
     val min = parseLiteral(currentIndex, UInt::class)
     currentIndex += min.parseLength
     val max = try {
         parseLiteral(currentIndex, UInt::class)
     } catch (e: ParseException) {
-        ParseResult(kwasm.ast.IntegerLiteral.U32(UInt.MAX_VALUE), 0)
+        null
     }
-    currentIndex += max.parseLength
+    currentIndex += max?.parseLength ?: 0
 
-    parseCheck(
-        contextAt(startingIndex),
-        max.astNode.value >= min.astNode.value,
-        "Arguments out of order, min > max, min: ${min.astNode.value}, max: ${max.astNode.value}"
+    return ParseResult(
+        Limits(min.astNode.value.toLong(), max?.astNode?.value?.toLong()),
+        currentIndex - startingIndex
     )
-    return ParseResult(Limit(min.astNode.value, max.astNode.value), currentIndex - startingIndex)
 }

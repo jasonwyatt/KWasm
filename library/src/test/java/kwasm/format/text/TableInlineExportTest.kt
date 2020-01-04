@@ -25,7 +25,7 @@ import kwasm.ast.Import
 import kwasm.ast.ImportDescriptor
 import kwasm.ast.Index
 import kwasm.ast.IntegerLiteral
-import kwasm.ast.Limit
+import kwasm.ast.Limits
 import kwasm.ast.NumericConstantInstruction
 import kwasm.ast.Offset
 import kwasm.ast.Table
@@ -171,7 +171,7 @@ class TableInlineExportTest {
                 ImportDescriptor.Table(
                     Identifier.Table("$0"),
                     TableType(
-                        Limit(1u, UInt.MAX_VALUE),
+                        Limits(1),
                         ElementType.FunctionReference
                     )
                 )
@@ -196,7 +196,7 @@ class TableInlineExportTest {
             Table(
                 Identifier.Table("$0"),
                 TableType(
-                    Limit(2u, 2u),
+                    Limits(2, 2),
                     ElementType.FunctionReference
                 )
             ),
@@ -238,7 +238,7 @@ class TableInlineExportTest {
             Table(
                 Identifier.Table("$0"),
                 TableType(
-                    Limit(2u, 2u),
+                    Limits(2, 2),
                     ElementType.FunctionReference
                 )
             ),
