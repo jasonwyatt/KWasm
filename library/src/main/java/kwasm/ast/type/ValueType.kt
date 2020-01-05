@@ -14,9 +14,7 @@
 
 package kwasm.ast.type
 
-import kotlin.reflect.KClass
 import kwasm.ast.AstNode
-import kwasm.util.Impossible
 
 /**
  * From [the docs](https://webassembly.github.io/spec/core/text/types.html#value-types):
@@ -29,18 +27,16 @@ import kwasm.util.Impossible
  * ```
  */
 sealed class ValueType : AstNode {
-    object I32 : ValueType()
-    object I64 : ValueType()
-    object F32 : ValueType()
-    object F64 : ValueType()
-
-    companion object {
-        fun forClass(klass: KClass<out ValueType>): ValueType = when (klass) {
-            I32::class -> I32
-            I64::class -> I64
-            F32::class -> F32
-            F64::class -> F64
-            else -> Impossible("class: $klass not supported?")
-        }
+    object I32 : ValueType() {
+        override fun toString(): String = "i32"
+    }
+    object I64 : ValueType() {
+        override fun toString(): String = "i64"
+    }
+    object F32 : ValueType() {
+        override fun toString(): String = "f32"
+    }
+    object F64 : ValueType() {
+        override fun toString(): String = "f64"
     }
 }
