@@ -36,7 +36,7 @@ object ParametricInstructionValidator : FunctionBodyValidationVisitor<Parametric
     override fun visit(
         node: ParametricInstruction,
         context: ValidationContext.FunctionBody
-    ): ValidationContext.FunctionBody = when(node) {
+    ): ValidationContext.FunctionBody = when (node) {
         is ParametricInstruction.Drop -> validateDrop(context)
         is ParametricInstruction.Select -> validateSelect(context)
     }

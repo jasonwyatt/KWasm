@@ -14,9 +14,7 @@
 
 package kwasm.ast.type
 
-import kotlin.reflect.KClass
 import kwasm.ast.AstNode
-import kwasm.util.Impossible
 
 /**
  * From [the docs](https://webassembly.github.io/spec/core/text/types.html#value-types):

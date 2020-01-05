@@ -16,12 +16,10 @@ package kwasm.validation.instruction
 
 import com.google.common.truth.Truth.assertThat
 import kwasm.ParseRule
-import kwasm.ast.type.ValueType
 import kwasm.ast.type.ValueType.F32
 import kwasm.ast.type.ValueType.F64
 import kwasm.ast.type.ValueType.I32
 import kwasm.ast.type.ValueType.I64
-import kwasm.validation.ValidationContext
 import kwasm.validation.ValidationContext.Companion.EMPTY_FUNCTION_BODY
 import kwasm.validation.ValidationException
 import org.junit.Assert.assertThrows
