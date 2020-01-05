@@ -50,7 +50,8 @@ import kwasm.ast.DeDupeableAstNode
  *              memory.grow
  * ```
  */
-sealed class MemoryInstruction : Instruction,
+sealed class MemoryInstruction :
+    Instruction,
     DeDupeableAstNode<MemoryInstruction> {
     data class LoadInt(
         val bitWidth: Int,

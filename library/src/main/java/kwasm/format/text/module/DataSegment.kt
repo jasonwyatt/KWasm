@@ -14,8 +14,8 @@
 
 package kwasm.format.text.module
 
-import kwasm.ast.module.DataSegment
 import kwasm.ast.Identifier
+import kwasm.ast.module.DataSegment
 import kwasm.ast.module.Index
 import kwasm.format.parseCheck
 import kwasm.format.text.ParseResult

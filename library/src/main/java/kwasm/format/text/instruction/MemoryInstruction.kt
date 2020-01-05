@@ -58,7 +58,7 @@ fun List<Token>.parseMemoryInstruction(fromIndex: Int): ParseResult<out MemoryIn
     val keyword = getOrNull(currentIndex) as? Keyword ?: return null
     currentIndex++
 
-    val (instruction, offset) = when(keyword.value) {
+    val (instruction, offset) = when (keyword.value) {
         "i32.load" -> {
             val arg = parseMemarg(currentIndex, 4)
             MemoryInstruction.LoadInt(32, 32, false, arg.astNode) to arg.parseLength

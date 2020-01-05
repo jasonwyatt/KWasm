@@ -106,5 +106,4 @@ class NumericConstantInstructionTest {
                 .parseNumericConstant(0)
         }
     }
-
 }

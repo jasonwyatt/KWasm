@@ -89,7 +89,7 @@ class MemoryInstructionTest {
 
         assertThat(result.parseLength).isEqualTo(1)
         assertThat(result.astNode).isEqualTo(
-            MemoryInstruction.LoadFloat(32,  MemArg.FOUR)
+            MemoryInstruction.LoadFloat(32, MemArg.FOUR)
         )
         assertThat(result.astNode === MemoryInstruction.LoadFloat.F32_LOAD)
     }
@@ -111,7 +111,7 @@ class MemoryInstructionTest {
 
         assertThat(result.parseLength).isEqualTo(1)
         assertThat(result.astNode).isEqualTo(
-            MemoryInstruction.LoadFloat(64,  MemArg.EIGHT)
+            MemoryInstruction.LoadFloat(64, MemArg.EIGHT)
         )
         assertThat(result.astNode === MemoryInstruction.LoadFloat.F64_LOAD)
     }
@@ -485,7 +485,7 @@ class MemoryInstructionTest {
 
         assertThat(result.parseLength).isEqualTo(1)
         assertThat(result.astNode).isEqualTo(
-            MemoryInstruction.StoreFloat(32,  MemArg.FOUR)
+            MemoryInstruction.StoreFloat(32, MemArg.FOUR)
         )
         assertThat(result.astNode === MemoryInstruction.StoreFloat.F32_STORE)
     }
@@ -507,7 +507,7 @@ class MemoryInstructionTest {
 
         assertThat(result.parseLength).isEqualTo(1)
         assertThat(result.astNode).isEqualTo(
-            MemoryInstruction.StoreFloat(64,  MemArg.EIGHT)
+            MemoryInstruction.StoreFloat(64, MemArg.EIGHT)
         )
         assertThat(result.astNode === MemoryInstruction.StoreFloat.F64_STORE)
     }

@@ -15,8 +15,8 @@
 package kwasm.format.text.module
 
 import kwasm.ast.AstNodeList
-import kwasm.ast.module.Local
 import kwasm.ast.astNodeListOf
+import kwasm.ast.module.Local
 import kwasm.format.parseCheck
 import kwasm.format.text.ParseResult
 import kwasm.format.text.contextAt
@@ -50,7 +50,7 @@ fun List<Token>.parseLocal(fromIndex: Int): ParseResult<AstNodeList<Local>>? {
 
     val valTypes = if (id == null) {
         parseValueTypes(currentIndex)
-    }  else {
+    } else {
         parseValueTypes(currentIndex, minRequired = 1, maxAllowed = 1)
     }
     currentIndex += valTypes.parseLength

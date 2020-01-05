@@ -14,17 +14,17 @@
 
 package kwasm.validation
 
-import kwasm.ast.type.GlobalType
+import kwasm.ast.astNodeListOf
 import kwasm.ast.module.ImportDescriptor
+import kwasm.ast.module.Type
+import kwasm.ast.module.TypeUse
+import kwasm.ast.module.WasmFunction
+import kwasm.ast.module.WasmModule
+import kwasm.ast.type.GlobalType
 import kwasm.ast.type.MemoryType
 import kwasm.ast.type.ResultType
 import kwasm.ast.type.TableType
-import kwasm.ast.module.Type
-import kwasm.ast.module.TypeUse
 import kwasm.ast.type.ValueType
-import kwasm.ast.module.WasmFunction
-import kwasm.ast.module.WasmModule
-import kwasm.ast.astNodeListOf
 import kwasm.ast.util.AstNodeIndex
 import kwasm.ast.util.MutableAstNodeIndex
 
@@ -153,9 +153,9 @@ fun ValidationContext(module: WasmModule): ValidationContext.Module {
             }
             is ImportDescriptor.Table -> {
                 validate(
-                    descriptor.id.stringRepr != null
-                        || descriptor.id.unique != null
-                        || tables[0] == null
+                    descriptor.id.stringRepr != null ||
+                        descriptor.id.unique != null ||
+                        tables[0] == null
                 ) {
                     "Cannot import a table when one is already defined by the module"
                 }
@@ -163,9 +163,9 @@ fun ValidationContext(module: WasmModule): ValidationContext.Module {
             }
             is ImportDescriptor.Memory -> {
                 validate(
-                    descriptor.id.stringRepr != null
-                        || descriptor.id.unique != null
-                        || memories[0] == null
+                    descriptor.id.stringRepr != null ||
+                        descriptor.id.unique != null ||
+                        memories[0] == null
                 ) {
                     "Cannot import a memory when one is already defined by the module"
                 }

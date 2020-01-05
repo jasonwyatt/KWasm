@@ -14,10 +14,10 @@
 
 package kwasm.validation.type
 
+import kotlin.math.pow
 import kwasm.ast.type.MemoryType
 import kwasm.validation.ValidationContext
 import kwasm.validation.ValidationVisitor
-import kotlin.math.pow
 
 /** Validates a [MemoryType] node. */
 fun MemoryType.validate(context: ValidationContext) = MemoryTypeValidator.visit(this, context)

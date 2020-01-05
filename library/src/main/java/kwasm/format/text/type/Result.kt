@@ -14,7 +14,6 @@
 
 package kwasm.format.text.type
 
-
 import kwasm.ast.AstNodeList
 import kwasm.ast.type.Result
 import kwasm.format.parseCheck

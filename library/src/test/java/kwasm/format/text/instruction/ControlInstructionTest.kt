@@ -15,14 +15,14 @@
 package kwasm.format.text.instruction
 
 import com.google.common.truth.Truth.assertThat
-import kwasm.ast.instruction.ControlInstruction
 import kwasm.ast.Identifier
+import kwasm.ast.astNodeListOf
+import kwasm.ast.instruction.ControlInstruction
 import kwasm.ast.module.Index
+import kwasm.ast.module.TypeUse
 import kwasm.ast.type.Param
 import kwasm.ast.type.Result
-import kwasm.ast.module.TypeUse
 import kwasm.ast.type.ValueType
-import kwasm.ast.astNodeListOf
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import kwasm.format.text.Tokenizer
@@ -41,11 +41,11 @@ class ControlInstructionTest {
     fun parse_parsesBlock() {
         val parsed = tokenizer.tokenize(
             """
-                block
-                    nop
-                    return
-                    unreachable
-                end
+            block
+                nop
+                return
+                unreachable
+            end
             """.trimIndent(),
             context
         ).parseControlInstruction(0) ?: fail("Expected an instruction")
@@ -63,11 +63,11 @@ class ControlInstructionTest {
     fun parse_parsesBlock_withReturnType() {
         val parsed = tokenizer.tokenize(
             """
-                block (result i32)
-                    nop
-                    return
-                    unreachable
-                end
+            block (result i32)
+                nop
+                return
+                unreachable
+            end
             """.trimIndent(),
             context
         ).parseControlInstruction(0) ?: fail("Expected an instruction")
@@ -85,11 +85,11 @@ class ControlInstructionTest {
     fun parse_parsesBlock_withLabel() {
         val parsed = tokenizer.tokenize(
             """
-                block ${'$'}myBlock
-                    nop
-                    return
-                    unreachable
-                end
+            block ${'$'}myBlock
+                nop
+                return
+                unreachable
+            end
             """.trimIndent(),
             context
         ).parseControlInstruction(0) ?: fail("Expected an instruction")
@@ -107,11 +107,11 @@ class ControlInstructionTest {
     fun parse_parsesBlock_withLabel_andEndLabel() {
         val parsed = tokenizer.tokenize(
             """
-                block ${'$'}myBlock
-                    nop
-                    return
-                    unreachable
-                end ${'$'}myBlock
+            block ${'$'}myBlock
+                nop
+                return
+                unreachable
+            end ${'$'}myBlock
             """.trimIndent(),
             context
         ).parseControlInstruction(0) ?: fail("Expected an instruction")
@@ -130,10 +130,10 @@ class ControlInstructionTest {
         val exception = assertThrows(ParseException::class.java) {
             tokenizer.tokenize(
                 """
-                    block
-                        nop
-                        return
-                        unreachable
+                block
+                    nop
+                    return
+                    unreachable
                 """.trimIndent(),
                 context
             ).parseControlInstruction(0)
@@ -146,11 +146,11 @@ class ControlInstructionTest {
         assertThrows(ParseException::class.java) {
             tokenizer.tokenize(
                 """
-                    block
-                        nop
-                        return
-                        unreachable
-                    end ${'$'}myBlock
+                block
+                    nop
+                    return
+                    unreachable
+                end ${'$'}myBlock
                 """.trimIndent(),
                 context
             ).parseControlInstruction(0)
@@ -159,11 +159,11 @@ class ControlInstructionTest {
         assertThrows(ParseException::class.java) {
             tokenizer.tokenize(
                 """
-                    block ${'$'}myBlock 
-                        nop
-                        return
-                        unreachable
-                    end ${'$'}oops
+                block ${'$'}myBlock 
+                    nop
+                    return
+                    unreachable
+                end ${'$'}oops
                 """.trimIndent(),
                 context
             ).parseControlInstruction(0)
@@ -174,11 +174,11 @@ class ControlInstructionTest {
     fun parse_parsesLoop() {
         val parsed = tokenizer.tokenize(
             """
-                loop
-                    nop
-                    return
-                    unreachable
-                end
+            loop
+                nop
+                return
+                unreachable
+            end
             """.trimIndent(),
             context
         ).parseControlInstruction(0) ?: fail("Expected an instruction")
@@ -196,11 +196,11 @@ class ControlInstructionTest {
     fun parse_parsesLoop_withLabel() {
         val parsed = tokenizer.tokenize(
             """
-                loop ${'$'}myLoop
-                    nop
-                    return
-                    unreachable
-                end
+            loop ${'$'}myLoop
+                nop
+                return
+                unreachable
+            end
             """.trimIndent(),
             context
         ).parseControlInstruction(0) ?: fail("Expected an instruction")
@@ -218,11 +218,11 @@ class ControlInstructionTest {
     fun parse_parsesLoop_withLabel_andEndLabel() {
         val parsed = tokenizer.tokenize(
             """
-                loop ${'$'}myLoop
-                    nop
-                    return
-                    unreachable
-                end ${'$'}myLoop
+            loop ${'$'}myLoop
+                nop
+                return
+                unreachable
+            end ${'$'}myLoop
             """.trimIndent(),
             context
         ).parseControlInstruction(0) ?: fail("Expected an instruction")
@@ -241,10 +241,10 @@ class ControlInstructionTest {
         val exception = assertThrows(ParseException::class.java) {
             tokenizer.tokenize(
                 """
-                    loop
-                        nop
-                        return
-                        unreachable
+                loop
+                    nop
+                    return
+                    unreachable
                 """.trimIndent(),
                 context
             ).parseControlInstruction(0)
@@ -257,11 +257,11 @@ class ControlInstructionTest {
         assertThrows(ParseException::class.java) {
             tokenizer.tokenize(
                 """
-                    loop
-                        nop
-                        return
-                        unreachable
-                    end ${'$'}myBlock
+                loop
+                    nop
+                    return
+                    unreachable
+                end ${'$'}myBlock
                 """.trimIndent(),
                 context
             ).parseControlInstruction(0)
@@ -270,11 +270,11 @@ class ControlInstructionTest {
         assertThrows(ParseException::class.java) {
             tokenizer.tokenize(
                 """
-                    loop ${'$'}myLoop
-                        nop
-                        return
-                        unreachable
-                    end ${'$'}oops
+                loop ${'$'}myLoop
+                    nop
+                    return
+                    unreachable
+                end ${'$'}oops
                 """.trimIndent(),
                 context
             ).parseControlInstruction(0)
@@ -285,11 +285,11 @@ class ControlInstructionTest {
     fun parse_parsesIf() {
         val parsed = tokenizer.tokenize(
             """
-                if
-                    nop
-                    return
-                    unreachable
-                end
+            if
+                nop
+                return
+                unreachable
+            end
             """.trimIndent(),
             context
         ).parseControlInstruction(0) ?: fail("Expected an instruction")
@@ -308,13 +308,13 @@ class ControlInstructionTest {
     fun parse_parsesIfElse() {
         val parsed = tokenizer.tokenize(
             """
-                if
-                    nop
-                    return
-                    unreachable
-                else
-                    nop
-                end
+            if
+                nop
+                return
+                unreachable
+            else
+                nop
+            end
             """.trimIndent(),
             context
         ).parseControlInstruction(0) ?: fail("Expected an instruction")
@@ -343,7 +343,7 @@ class ControlInstructionTest {
                 else ;; hmm, extra else here
                     nop
                 end
-            """.trimIndent(),
+                """.trimIndent(),
                 context
             ).parseControlInstruction(0)
         }
@@ -356,7 +356,7 @@ class ControlInstructionTest {
                     return
                     nop
                 ;; missing 'end'
-            """.trimIndent(),
+                """.trimIndent(),
                 context
             ).parseControlInstruction(0)
         }
@@ -370,7 +370,7 @@ class ControlInstructionTest {
                 else
                     nop
                 ;; missing 'end'
-            """.trimIndent(),
+                """.trimIndent(),
                 context
             ).parseControlInstruction(0)
         }
@@ -383,7 +383,7 @@ class ControlInstructionTest {
                     return
                     nop
                 end ${'$'}badId
-            """.trimIndent(),
+                """.trimIndent(),
                 context
             ).parseControlInstruction(0)
         }
@@ -397,7 +397,7 @@ class ControlInstructionTest {
                 else ${'$'}badId
                     nop
                 end
-            """.trimIndent(),
+                """.trimIndent(),
                 context
             ).parseControlInstruction(0)
         }
@@ -557,7 +557,8 @@ class ControlInstructionTest {
                             Identifier.Local(
                                 null,
                                 null
-                            ), ValueType.I32
+                            ),
+                            ValueType.I32
                         )
                     ),
                     astNodeListOf(Result(ValueType.F32))

@@ -15,6 +15,7 @@
 package kwasm.format.text.token
 
 import com.google.common.truth.Truth.assertThat
+import kotlin.math.pow
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import org.assertj.core.api.Assertions.fail
@@ -22,7 +23,6 @@ import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import kotlin.math.pow
 
 @RunWith(JUnit4::class)
 class FloatLiteralTest {

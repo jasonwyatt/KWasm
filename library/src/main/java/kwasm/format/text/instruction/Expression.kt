@@ -24,6 +24,7 @@ fun List<Token>.parseExpression(fromIndex: Int): ParseResult<Expression> =
         ParseResult(
             Expression(
                 it.astNode
-            ), it.parseLength
+            ),
+            it.parseLength
         )
     }

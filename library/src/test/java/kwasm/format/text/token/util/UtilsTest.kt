@@ -25,7 +25,7 @@ class UtilsTest {
     fun parseStringChar_parsesPlainChars() {
         val sequence =
             "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'_+-*{}/!@#$%^&*()=[]?" +
-                    "<>,.`~|"
+                "<>,.`~|"
         for (i in sequence.indices) {
             assertThat(sequence.parseStringChar(i).toString()).isEqualTo("${sequence[i]}")
         }
@@ -107,7 +107,7 @@ class UtilsTest {
     fun parseStringElem_parsesPlainChars() {
         val sequence =
             "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'_+-*{}/!@#$%^&*()=[]?" +
-                    "<>,.`~|"
+                "<>,.`~|"
         for (i in sequence.indices) {
             assertThat(sequence.parseStringElem(i).toString()).isEqualTo("${sequence[i]}")
         }

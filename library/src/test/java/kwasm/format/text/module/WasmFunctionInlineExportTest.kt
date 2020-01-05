@@ -15,19 +15,19 @@
 package kwasm.format.text.module
 
 import com.google.common.truth.Truth.assertThat
+import kwasm.ast.Identifier
+import kwasm.ast.astNodeListOf
+import kwasm.ast.instruction.NumericInstruction
 import kwasm.ast.module.Export
 import kwasm.ast.module.ExportDescriptor
-import kwasm.ast.Identifier
 import kwasm.ast.module.Import
 import kwasm.ast.module.ImportDescriptor
 import kwasm.ast.module.Index
 import kwasm.ast.module.Local
-import kwasm.ast.instruction.NumericInstruction
-import kwasm.ast.type.Param
 import kwasm.ast.module.TypeUse
-import kwasm.ast.type.ValueType
 import kwasm.ast.module.WasmFunction
-import kwasm.ast.astNodeListOf
+import kwasm.ast.type.Param
+import kwasm.ast.type.ValueType
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import kwasm.format.text.Tokenizer

@@ -47,12 +47,14 @@ fun List<Token>.parseParam(fromIndex: Int): ParseResult<AstNodeList<Param>> {
     parseCheck(contextAt(currentIndex), isClosedParen(currentIndex), "Invalid Param: Expecting ) token")
     currentIndex++
     return ParseResult(
-        AstNodeList(valueTypes.astNode.map {
-            Param(
-                id.astNode,
-                it
-            )
-        }),
+        AstNodeList(
+            valueTypes.astNode.map {
+                Param(
+                    id.astNode,
+                    it
+                )
+            }
+        ),
         currentIndex - fromIndex
     )
 }

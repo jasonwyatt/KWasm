@@ -68,4 +68,3 @@ class ParseRule : TestRule {
     fun String.parseModule(): WasmModule =
         requireNotNull(tokenize().parseModule(0)?.astNode) { "No module found in source:\n$this" }
 }
-

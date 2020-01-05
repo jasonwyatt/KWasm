@@ -16,8 +16,8 @@ package kwasm.ast.instruction
 
 import kwasm.ast.Identifier
 import kwasm.ast.module.Index
-import kwasm.ast.type.ResultType
 import kwasm.ast.module.TypeUse
+import kwasm.ast.type.ResultType
 
 /**
  * Base class for all control [Instruction] implementations.
@@ -99,6 +99,3 @@ sealed class ControlInstruction : Instruction {
 
     data class CallIndirect(val typeUse: TypeUse) : ControlInstruction()
 }
-
-
-

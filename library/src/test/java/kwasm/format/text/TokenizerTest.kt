@@ -48,16 +48,16 @@ class TokenizerTest {
     fun tokenize_bunchOfKeywords_givesBunchOfKeywords() {
         val actual = tokenizer.tokenize(
             """
-                here's-a-keyword
-                
-                (; block comment ;)
-                
-                and_another
-                
-                two more
-                
-                ;; comments shouldn't register
-                
+            here's-a-keyword
+            
+            (; block comment ;)
+            
+            and_another
+            
+            two more
+            
+            ;; comments shouldn't register
+            
             """.trimIndent(),
             context
         )
@@ -81,10 +81,10 @@ class TokenizerTest {
     fun tokenize_bunchOfIntegers_givesBunchOfIntegerLiterals() {
         val actual = tokenizer.tokenize(
             """
-                0
-                0x54ab
-                1_000_000
-                -3
+            0
+            0x54ab
+            1_000_000
+            -3
             """.trimIndent(),
             context
         )
@@ -106,15 +106,15 @@ class TokenizerTest {
     fun tokenize_bunchOfFloats_givesBunchOfFloatLiterals() {
         val actual = tokenizer.tokenize(
             """
-                (;
-                    Hidden float, in a comment: 0.0
-                ;)
-                1.5e10
-                
-                ;; another float in a comment: 10.1
-                
-                -1.0 0.0000001
-                +0x54aP-15
+            (;
+                Hidden float, in a comment: 0.0
+            ;)
+            1.5e10
+            
+            ;; another float in a comment: 10.1
+            
+            -1.0 0.0000001
+            +0x54aP-15
             """.trimIndent(),
             context
         )
@@ -138,11 +138,11 @@ class TokenizerTest {
     fun tokenize_bunchOfStrings_givesBunchOfStringLiterals() {
         val actual = tokenizer.tokenize(
             """
-                "this is a string"
-                
-                "so is this" "and this"
-                
-                ""
+            "this is a string"
+            
+            "so is this" "and this"
+            
+            ""
             """.trimIndent(),
             context
         )
@@ -166,11 +166,11 @@ class TokenizerTest {
     fun tokenize_bunchOfIdentifiers_givesBunchOfIdentifiers() {
         val actual = tokenizer.tokenize(
             """
-                ${'$'}here
-                
-                   ${'$'}are ${'$'}some_identifiers 
-                ;; word
-                ${'$'}${'$'}forya
+            ${'$'}here
+            
+               ${'$'}are ${'$'}some_identifiers 
+            ;; word
+            ${'$'}${'$'}forya
             """.trimIndent(),
             context
         )
@@ -194,10 +194,10 @@ class TokenizerTest {
     fun tokenize_bunchOfParens_givesBunchOfParens() {
         val actual = tokenizer.tokenize(
             """
-                ((((
-                ((((
-                ))))
-                ))))
+            ((((
+            ((((
+            ))))
+            ))))
             """.trimIndent(),
             context
         )
@@ -215,11 +215,11 @@ class TokenizerTest {
     fun tokenize_bunchOfReserved_givesBunchOfReserved() {
         val actual = tokenizer.tokenize(
             """
-                HereIs_aReserved
-                
-                AlsoHereToo  AmIReserved?
-                
-                Yes
+            HereIs_aReserved
+            
+            AlsoHereToo  AmIReserved?
+            
+            Yes
             """.trimIndent(),
             context
         )

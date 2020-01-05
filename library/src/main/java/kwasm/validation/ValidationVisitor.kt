@@ -38,12 +38,12 @@ interface ValidationVisitor<in T, Context> where T : AstNode, Context : Validati
  * Describes a [ValidationVisitor] intended for validating module-level [AstNode]s.
  * (e.g. [kwasm.ast.Table], [kwasm.ast.Memory], or [kwasm.ast.WasmFunction]).
  */
-interface ModuleValidationVisitor<in T : AstNode>
-    : ValidationVisitor<T, ValidationContext.Module>
+interface ModuleValidationVisitor<in T : AstNode> :
+    ValidationVisitor<T, ValidationContext.Module>
 
 /**
  * Describes a [ValidationVisitor] intended for validating parts of the body of a
  * [kwasm.ast.WasmFunction] or an [kwasm.ast.Expression].
  */
-interface FunctionBodyValidationVisitor<in T : Instruction>
-    : ValidationVisitor<T, ValidationContext.FunctionBody>
+interface FunctionBodyValidationVisitor<in T : Instruction> :
+    ValidationVisitor<T, ValidationContext.FunctionBody>

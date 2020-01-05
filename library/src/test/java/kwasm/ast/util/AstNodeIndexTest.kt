@@ -15,9 +15,9 @@
 package kwasm.ast.util
 
 import com.google.common.truth.Truth.assertThat
-import kwasm.ast.type.GlobalType
 import kwasm.ast.Identifier
 import kwasm.ast.module.Index
+import kwasm.ast.type.GlobalType
 import kwasm.ast.type.ValueType
 import org.junit.Assert.assertThrows
 import org.junit.Test

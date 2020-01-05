@@ -21,4 +21,3 @@ import kwasm.ast.AstNode
  */
 @UseExperimental(ExperimentalUnsignedTypes::class)
 data class Limits(val min: Long, val max: Long? = null) : AstNode
-

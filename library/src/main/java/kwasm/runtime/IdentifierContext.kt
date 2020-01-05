@@ -15,8 +15,8 @@
 package kwasm.runtime
 
 import kwasm.KWasmRuntimeException
-import kwasm.ast.type.FunctionType
 import kwasm.ast.Identifier
+import kwasm.ast.type.FunctionType
 
 /**
  * From [the docs](https://webassembly.github.io/spec/core/text/conventions.html#contexts):

@@ -16,13 +16,13 @@ package kwasm.format.text.module
 
 import com.google.common.truth.Truth.assertThat
 import kwasm.ast.Identifier
+import kwasm.ast.astNodeListOf
 import kwasm.ast.module.Import
 import kwasm.ast.module.ImportDescriptor
+import kwasm.ast.module.TypeUse
 import kwasm.ast.type.Param
 import kwasm.ast.type.Result
-import kwasm.ast.module.TypeUse
 import kwasm.ast.type.ValueType
-import kwasm.ast.astNodeListOf
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import kwasm.format.text.Tokenizer
@@ -144,7 +144,8 @@ class WasmFunctionInlineImportTest {
                                 Identifier.Local(
                                     null,
                                     null
-                                ), ValueType.I32
+                                ),
+                                ValueType.I32
                             )
                         ),
                         astNodeListOf(Result(ValueType.I32))

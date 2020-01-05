@@ -14,9 +14,9 @@
 
 package kwasm.format.text.module
 
+import kwasm.ast.Identifier
 import kwasm.ast.module.Export
 import kwasm.ast.module.ExportDescriptor
-import kwasm.ast.Identifier
 import kwasm.format.ParseException
 import kwasm.format.parseCheck
 import kwasm.format.parseCheckNotNull
@@ -54,7 +54,8 @@ fun List<Token>.parseExport(fromIndex: Int): ParseResult<Export>? {
         Export(
             name.astNode.value,
             descriptor.astNode
-        ), currentIndex - fromIndex
+        ),
+        currentIndex - fromIndex
     )
 }
 

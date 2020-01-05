@@ -14,6 +14,7 @@
 
 package kwasm.format.text.token.util
 
+import kotlin.math.pow
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import kwasm.format.shiftColumnBy
@@ -29,7 +30,6 @@ import kwasm.format.text.token.util.StringConstants.SPACE
 import kwasm.format.text.token.util.StringConstants.T
 import kwasm.format.text.token.util.StringConstants.TAB
 import kwasm.format.text.token.util.StringConstants.UNICODE_PATTERN
-import kotlin.math.pow
 
 /**
  * Pattern to check for valid StringChar elements.
@@ -62,7 +62,7 @@ const val STRINGELEM_PATTERN = "(($STRINGCHAR_PATTERN)|(\\\\[0-9a-fA-F]{2}))"
  * Parses a sign (`+` or `-`) from the beginning of the receiving [CharSequence], and returns the
  * sign value and intended offset for parsing the remainder of the value.
  */
-fun CharSequence.parseLongSign(): Pair<Int, Long> = when(this[0]) {
+fun CharSequence.parseLongSign(): Pair<Int, Long> = when (this[0]) {
     '-' -> NumberConstants.negativeLongWithOffset
     '+' -> NumberConstants.positiveLongWithOffset
     else -> NumberConstants.positiveLong
@@ -150,7 +150,7 @@ fun IntArray.parseStringChar(
     index: Int,
     inoutVal: StringChar = StringChar(),
     context: ParseContext? = null
-) : StringChar {
+): StringChar {
     val c = this[index]
     when {
         c == BACKSLASH -> {

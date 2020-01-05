@@ -42,8 +42,8 @@ fun List<Token>.parseTypeUse(fromIndex: Int): ParseResult<TypeUse> {
     var tokensParsed = 0
 
     val typeIndex = if (
-        getOrNull(fromIndex) is Paren.Open
-        && getOrNull(fromIndex + 1)?.isKeyword("type") == true
+        getOrNull(fromIndex) is Paren.Open &&
+        getOrNull(fromIndex + 1)?.isKeyword("type") == true
     ) {
         tokensParsed += 2
         val typeIndex = parseIndex<Identifier.Type>(fromIndex + 2)
@@ -69,6 +69,7 @@ fun List<Token>.parseTypeUse(fromIndex: Int): ParseResult<TypeUse> {
             typeIndex,
             params.astNode,
             results.astNode
-        ), tokensParsed
+        ),
+        tokensParsed
     )
 }

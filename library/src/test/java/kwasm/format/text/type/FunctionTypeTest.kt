@@ -15,12 +15,12 @@
 package kwasm.format.text.type
 
 import com.google.common.truth.Truth.assertThat
-import kwasm.ast.type.FunctionType
 import kwasm.ast.Identifier
+import kwasm.ast.astNodeListOf
+import kwasm.ast.type.FunctionType
 import kwasm.ast.type.Param
 import kwasm.ast.type.Result
 import kwasm.ast.type.ValueType
-import kwasm.ast.astNodeListOf
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import kwasm.format.text.ParseResult
@@ -42,7 +42,8 @@ class FunctionTypeTest {
             Param(
                 Identifier.Local(
                     "\$val1"
-                ), ValueType.I32
+                ),
+                ValueType.I32
             )
         )
         val onlyReturnType = astNodeListOf(Result(ValueType.I32))
@@ -50,7 +51,8 @@ class FunctionTypeTest {
             FunctionType(
                 onlyParam,
                 onlyReturnType
-            ), 12
+            ),
+            12
         )
         val actual = tokenizer.tokenize("(func (param \$val1 i32) (result i32))", context).parseFunctionType(0)
         assertThat(actual).isEqualTo(expected)
@@ -76,7 +78,8 @@ class FunctionTypeTest {
             FunctionType(
                 params,
                 returnTypes
-            ), 21
+            ),
+            21
         )
         val actual =
             tokenizer.tokenize("(func (param \$val1 i32) (param \$val2 i64) (result i32) (result i64))", context)
@@ -90,14 +93,16 @@ class FunctionTypeTest {
             Param(
                 Identifier.Local(
                     "\$val1"
-                ), ValueType.I32
+                ),
+                ValueType.I32
             )
         )
         val expected = ParseResult(
             FunctionType(
                 onlyParam,
                 astNodeListOf()
-            ), 8
+            ),
+            8
         )
         val actual = tokenizer.tokenize("(func (param \$val1 i32))", context).parseFunctionType(0)
         assertThat(actual).isEqualTo(expected)
@@ -110,7 +115,8 @@ class FunctionTypeTest {
             FunctionType(
                 astNodeListOf(),
                 onlyReturnType
-            ), 7
+            ),
+            7
         )
         val actual = tokenizer.tokenize("(func (result i32))", context).parseFunctionType(0)
         assertThat(actual).isEqualTo(expected)
@@ -122,7 +128,8 @@ class FunctionTypeTest {
             FunctionType(
                 astNodeListOf(),
                 astNodeListOf()
-            ), 3
+            ),
+            3
         )
         val actual = tokenizer.tokenize("(func)", context).parseFunctionType(0)
         assertThat(actual).isEqualTo(expected)
@@ -154,7 +161,8 @@ class FunctionTypeTest {
                 Identifier.Local(
                     null,
                     null
-                ), ValueType.I32
+                ),
+                ValueType.I32
             )
         )
         val actual = tokenizer.tokenize("(param i32) (result i64)", context).parseParamList(0)
