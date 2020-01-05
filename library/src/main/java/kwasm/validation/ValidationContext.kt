@@ -14,16 +14,16 @@
 
 package kwasm.validation
 
-import kwasm.ast.GlobalType
-import kwasm.ast.ImportDescriptor
-import kwasm.ast.MemoryType
-import kwasm.ast.ResultType
-import kwasm.ast.TableType
-import kwasm.ast.Type
-import kwasm.ast.TypeUse
-import kwasm.ast.ValueType
-import kwasm.ast.WasmFunction
-import kwasm.ast.WasmModule
+import kwasm.ast.type.GlobalType
+import kwasm.ast.module.ImportDescriptor
+import kwasm.ast.type.MemoryType
+import kwasm.ast.type.ResultType
+import kwasm.ast.type.TableType
+import kwasm.ast.module.Type
+import kwasm.ast.module.TypeUse
+import kwasm.ast.type.ValueType
+import kwasm.ast.module.WasmFunction
+import kwasm.ast.module.WasmModule
 import kwasm.ast.astNodeListOf
 import kwasm.ast.util.AstNodeIndex
 import kwasm.ast.util.MutableAstNodeIndex
@@ -115,7 +115,11 @@ fun ValidationContext(module: WasmModule): ValidationContext.Module {
         upcastThrown { types[it.id] = it }
     }
     module.functions.forEach {
-        val typeUse = it.typeUse ?: TypeUse(null, astNodeListOf(), astNodeListOf())
+        val typeUse = it.typeUse ?: TypeUse(
+            null,
+            astNodeListOf(),
+            astNodeListOf()
+        )
 
         // If the typeUse has an index, validate that there is a defined type for that index
         // TODO: pass the context when it's available on the AstNode

@@ -16,23 +16,23 @@ package kwasm.validation
 
 import com.google.common.truth.Truth.assertThat
 import kwasm.ast.AstNode
-import kwasm.ast.ElementType
-import kwasm.ast.FunctionType
-import kwasm.ast.GlobalType
+import kwasm.ast.type.ElementType
+import kwasm.ast.type.FunctionType
+import kwasm.ast.type.GlobalType
 import kwasm.ast.Identifier
-import kwasm.ast.Index
-import kwasm.ast.Limits
-import kwasm.ast.MemoryType
-import kwasm.ast.Param
-import kwasm.ast.Result
-import kwasm.ast.TableType
-import kwasm.ast.Type
-import kwasm.ast.TypeUse
-import kwasm.ast.ValueType
+import kwasm.ast.module.Index
+import kwasm.ast.type.Limits
+import kwasm.ast.type.MemoryType
+import kwasm.ast.type.Param
+import kwasm.ast.type.Result
+import kwasm.ast.type.TableType
+import kwasm.ast.module.Type
+import kwasm.ast.module.TypeUse
+import kwasm.ast.type.ValueType
 import kwasm.ast.astNodeListOf
 import kwasm.ast.util.AstNodeIndex
 import kwasm.format.text.Tokenizer
-import kwasm.format.text.parseModule
+import kwasm.format.text.module.parseModule
 import org.assertj.core.api.Assertions.fail
 import org.junit.Assert.assertThrows
 import org.junit.Test
@@ -131,12 +131,16 @@ class ValidationContextTest {
             TypeUse(
                 null,
                 astNodeListOf(
-                    Param(Identifier.Local(null, null), ValueType.I64)
+                    Param(
+                        Identifier.Local(null, null),
+                        ValueType.I64
+                    )
                 ),
                 astNodeListOf(
                     Result(ValueType.F64)
                 )
-            ))
+            )
+        )
         assertThat(context.functions["$2"]).isEqualTo(
             TypeUse(
                 Index.ByIdentifier(Identifier.Type("$0")),
@@ -150,7 +154,10 @@ class ValidationContextTest {
                 Identifier.Type("$0"),
                 FunctionType(
                     astNodeListOf(
-                        Param(Identifier.Local(null, null), ValueType.I32)
+                        Param(
+                            Identifier.Local(null, null),
+                            ValueType.I32
+                        )
                     ),
                     astNodeListOf(
                         Result(ValueType.F32)

@@ -15,7 +15,7 @@
 package kwasm.validation.type
 
 import kwasm.ParseRule
-import kwasm.format.text.parseMemoryType
+import kwasm.format.text.type.parseMemoryType
 import kwasm.validation.ValidationContext
 import kwasm.validation.ValidationException
 import org.junit.Assert.assertThrows

@@ -14,7 +14,7 @@
 
 package kwasm.validation.type
 
-import kwasm.ast.MemoryType
+import kwasm.ast.type.MemoryType
 import kwasm.validation.ValidationContext
 import kwasm.validation.ValidationVisitor
 import kotlin.math.pow

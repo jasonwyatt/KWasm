@@ -15,7 +15,7 @@
 package kwasm.validation.type
 
 import kwasm.ParseRule
-import kwasm.format.text.parseGlobalType
+import kwasm.format.text.type.parseGlobalType
 import kwasm.validation.ValidationContext
 import org.junit.Rule
 import org.junit.Test

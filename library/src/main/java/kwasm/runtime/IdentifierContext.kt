@@ -15,7 +15,7 @@
 package kwasm.runtime
 
 import kwasm.KWasmRuntimeException
-import kwasm.ast.FunctionType
+import kwasm.ast.type.FunctionType
 import kwasm.ast.Identifier
 
 /**

@@ -14,10 +14,10 @@
 
 package kwasm
 
-import kwasm.ast.WasmModule
+import kwasm.ast.module.WasmModule
 import kwasm.format.ParseContext
 import kwasm.format.text.Tokenizer
-import kwasm.format.text.parseModule
+import kwasm.format.text.module.parseModule
 import kwasm.format.text.token.Token
 import org.junit.rules.TestRule
 import org.junit.runner.Description

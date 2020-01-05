@@ -16,7 +16,7 @@ package kwasm.ast.util
 
 import kwasm.ast.AstNode
 import kwasm.ast.Identifier
-import kwasm.ast.Index
+import kwasm.ast.module.Index
 
 /**
  * Zero-indexed and named-lookup table of [AstNode]s.
