@@ -45,14 +45,15 @@ class CommentTest {
                 block comment
                (; with an inner block comment ;)
             ;)
-        """.trimIndent()
+            """.trimIndent()
         )
         assertThat(result.tokens).isEmpty()
     }
 
     @Test
     fun stripComments_withMultipleComments_returnsTokensBetweenThem() {
-        val commentBlob = """
+        val commentBlob =
+            """
             ;; first line comment
             ;; second line comment
             ;; third line comment
@@ -60,7 +61,7 @@ class CommentTest {
             (;
                a multiline block comment
             ;)
-        """.trimIndent()
+            """.trimIndent()
         val comments = commentBlob.split("\n")
         var result = Comment.stripComments(commentBlob, CONTEXT)
         assertThat(result.tokens.size).isEqualTo(4)
@@ -73,7 +74,8 @@ class CommentTest {
         result = Comment.stripComments(
             """
             (; a block comment ;) with some text before (; another block comment ;)
-        """.trimIndent(), CONTEXT
+            """.trimIndent(),
+            CONTEXT
         )
         assertThat(result.tokens.size).isEqualTo(1)
         assertThat(result.tokens[0].sequence).isEqualTo(" with some text before ")
@@ -121,7 +123,8 @@ class CommentTest {
 
     @Test
     fun stripComments_withNestedBlockComments_worksAsIntended() {
-        val source = """
+        val source =
+            """
             This is my first line.
             (;
                 Here's a comment
@@ -131,7 +134,7 @@ class CommentTest {
                     right here
                 ;)    
             ;) Here's another line
-        """.trimIndent()
+            """.trimIndent()
         val result = Comment.stripComments(source, CONTEXT)
         assertThat(result.tokens).hasSize(2)
         val firstToken = result.tokens[0]

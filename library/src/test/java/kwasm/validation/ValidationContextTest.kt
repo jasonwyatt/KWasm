@@ -16,20 +16,20 @@ package kwasm.validation
 
 import com.google.common.truth.Truth.assertThat
 import kwasm.ast.AstNode
+import kwasm.ast.Identifier
+import kwasm.ast.astNodeListOf
+import kwasm.ast.module.Index
+import kwasm.ast.module.Type
+import kwasm.ast.module.TypeUse
 import kwasm.ast.type.ElementType
 import kwasm.ast.type.FunctionType
 import kwasm.ast.type.GlobalType
-import kwasm.ast.Identifier
-import kwasm.ast.module.Index
 import kwasm.ast.type.Limits
 import kwasm.ast.type.MemoryType
 import kwasm.ast.type.Param
 import kwasm.ast.type.Result
 import kwasm.ast.type.TableType
-import kwasm.ast.module.Type
-import kwasm.ast.module.TypeUse
 import kwasm.ast.type.ValueType
-import kwasm.ast.astNodeListOf
 import kwasm.ast.util.AstNodeIndex
 import kwasm.format.text.Tokenizer
 import kwasm.format.text.module.parseModule
@@ -46,9 +46,9 @@ class ValidationContextTest {
     fun conversion_throws_whenFuncReferences_nonExistentType() {
         val module = Tokenizer().tokenize(
             """
-                (module
-                    (func $1 (type $0) (return))
-                )
+            (module
+                (func $1 (type $0) (return))
+            )
             """.trimIndent()
         ).parseModule(0)?.astNode ?: fail("Expected module")
 
@@ -62,9 +62,9 @@ class ValidationContextTest {
     fun conversion_throws_whenFuncImportReferences_nonExistentType() {
         val module = Tokenizer().tokenize(
             """
-                (module
-                    (import "a" "b" (func $1 (type $0)))
-                )
+            (module
+                (import "a" "b" (func $1 (type $0)))
+            )
             """.trimIndent()
         ).parseModule(0)?.astNode ?: fail("Expected module")
 
@@ -78,10 +78,10 @@ class ValidationContextTest {
     fun conversion_throws_whenModuleImportsTable_afterDefiningOne() {
         val module = Tokenizer().tokenize(
             """
-                (module
-                    (table 0 1 funcref)
-                    (import "a" "b" (table 0 1 funcref))
-                )
+            (module
+                (table 0 1 funcref)
+                (import "a" "b" (table 0 1 funcref))
+            )
             """.trimIndent()
         ).parseModule(0)?.astNode ?: fail("Expected module")
 
@@ -95,10 +95,10 @@ class ValidationContextTest {
     fun conversion_throws_whenModuleImportsMemory_afterDefiningOne() {
         val module = Tokenizer().tokenize(
             """
-                (module
-                    (memory 0 1)
-                    (import "a" "b" (memory 0 1))
-                )
+            (module
+                (memory 0 1)
+                (import "a" "b" (memory 0 1))
+            )
             """.trimIndent()
         ).parseModule(0)?.astNode ?: fail("Expected module")
 
@@ -112,15 +112,15 @@ class ValidationContextTest {
     fun conversion() {
         val module = Tokenizer().tokenize(
             """
-                (module
-                    (type $0 (func (param i32) (result f32)))
-                    (func $1 (param i64) (result f64) (local i32))
-                    (table 0 1 funcref) 
-                    (memory 0 1)
-                    (global $2 (mut i32) (i32.const 0))
-                    (import "a" "b" (func $2 (type $0)))
-                    (import "a" "b" (global $1 f32))
-                )
+            (module
+                (type $0 (func (param i32) (result f32)))
+                (func $1 (param i64) (result f64) (local i32))
+                (table 0 1 funcref) 
+                (memory 0 1)
+                (global $2 (mut i32) (i32.const 0))
+                (import "a" "b" (func $2 (type $0)))
+                (import "a" "b" (global $1 f32))
+            )
             """.trimIndent()
         ).parseModule(0) ?: fail("Expected module")
 

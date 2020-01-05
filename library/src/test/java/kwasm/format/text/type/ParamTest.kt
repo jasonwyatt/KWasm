@@ -16,9 +16,9 @@ package kwasm.format.text.type
 
 import com.google.common.truth.Truth.assertThat
 import kwasm.ast.Identifier
+import kwasm.ast.astNodeListOf
 import kwasm.ast.type.Param
 import kwasm.ast.type.ValueType
-import kwasm.ast.astNodeListOf
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import kwasm.format.text.ParseResult

@@ -43,7 +43,8 @@ fun List<Token>.parseMemarg(fromIndex: Int, expectedMaxBytes: Int): ParseResult<
             MemArg(
                 0,
                 expectedMaxBytes * 8
-            ).deDupe(), 0
+            ).deDupe(),
+            0
         )
 
     val memArg = when {

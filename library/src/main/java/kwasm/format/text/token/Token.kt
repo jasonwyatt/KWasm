@@ -21,5 +21,3 @@ interface Token {
     /** Location of where the token was found in the .wast file. */
     val context: ParseContext?
 }
-
-

@@ -99,16 +99,16 @@ inline val <reified X, reified Y> BinaryInstruction<X, Y>.inputs: Pair<ValueType
  * Base for all [Operation]s which require a single [ValueType] ([Input]) and return a value of type
  * [ReturnType].
  */
-interface UnaryOperation<Input : ValueType, ReturnType : ValueType>
-    : UnaryInstruction<Input>,
+interface UnaryOperation<Input : ValueType, ReturnType : ValueType> :
+    UnaryInstruction<Input>,
     Operation<ReturnType>
 
 /**
  * Base for all [Operation]s which require a two [Argument]s and return a value of type
  * [ReturnType].
  */
-interface BinaryOperation<X : ValueType, Y : ValueType, ReturnType : ValueType>
-    : BinaryInstruction<X, Y>,
+interface BinaryOperation<X : ValueType, Y : ValueType, ReturnType : ValueType> :
+    BinaryInstruction<X, Y>,
     Operation<ReturnType>
 
 /**

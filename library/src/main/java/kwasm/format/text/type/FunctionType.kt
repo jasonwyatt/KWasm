@@ -60,7 +60,8 @@ fun List<Token>.parseFunctionType(fromIndex: Int): ParseResult<FunctionType> {
         FunctionType(
             parsedParamList.astNode,
             parsedResultList.astNode
-        ), currentIndex - fromIndex
+        ),
+        currentIndex - fromIndex
     )
 }
 

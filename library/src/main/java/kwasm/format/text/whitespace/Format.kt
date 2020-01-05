@@ -29,5 +29,3 @@ object Format {
         override fun initialValue(): Regex = PATTERN_STRING.toRegex()
     }
 }
-
-

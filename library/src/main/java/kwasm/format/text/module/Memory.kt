@@ -14,23 +14,24 @@
 
 package kwasm.format.text.module
 
+import kotlin.math.ceil
 import kwasm.ast.AstNode
 import kwasm.ast.AstNodeList
+import kwasm.ast.Identifier
+import kwasm.ast.IntegerLiteral
+import kwasm.ast.astNodeListOf
+import kwasm.ast.instruction.Expression
+import kwasm.ast.instruction.NumericConstantInstruction
 import kwasm.ast.module.DataSegment
 import kwasm.ast.module.Export
 import kwasm.ast.module.ExportDescriptor
-import kwasm.ast.instruction.Expression
-import kwasm.ast.Identifier
 import kwasm.ast.module.Import
 import kwasm.ast.module.ImportDescriptor
 import kwasm.ast.module.Index
-import kwasm.ast.IntegerLiteral
-import kwasm.ast.type.Limits
 import kwasm.ast.module.Memory
-import kwasm.ast.type.MemoryType
-import kwasm.ast.instruction.NumericConstantInstruction
 import kwasm.ast.module.Offset
-import kwasm.ast.astNodeListOf
+import kwasm.ast.type.Limits
+import kwasm.ast.type.MemoryType
 import kwasm.format.ParseException
 import kwasm.format.parseCheck
 import kwasm.format.parseCheckNotNull
@@ -44,7 +45,6 @@ import kwasm.format.text.parseLiteral
 import kwasm.format.text.token.Token
 import kwasm.format.text.tokensUntilParenClosure
 import kwasm.format.text.type.parseMemoryType
-import kotlin.math.ceil
 
 /**
  * Parses a [Memory] from the receiving [List] of [Token]s.

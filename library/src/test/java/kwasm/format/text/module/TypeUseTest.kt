@@ -16,12 +16,12 @@ package kwasm.format.text.module
 
 import com.google.common.truth.Truth.assertThat
 import kwasm.ast.Identifier
-import kwasm.ast.module.Index
-import kwasm.ast.type.Param
-import kwasm.ast.module.TypeUse
-import kwasm.ast.type.ValueType
 import kwasm.ast.astNodeListOf
+import kwasm.ast.module.Index
+import kwasm.ast.module.TypeUse
+import kwasm.ast.type.Param
 import kwasm.ast.type.Result
+import kwasm.ast.type.ValueType
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import kwasm.format.text.Tokenizer
@@ -125,9 +125,9 @@ class TypeUseTest {
     fun parses_typeUse_allParamsBeforeResults() {
         val result = tokenizer.tokenize(
             """
-                (param i32) (result i64) (; 
-                    the next params/results won't be picked up 
-                ;) (param f64) (result i32) (result f32)
+            (param i32) (result i64) (; 
+                the next params/results won't be picked up 
+            ;) (param f64) (result i32) (result f32)
             """.trimIndent(),
             context
         ).parseTypeUse(0)
@@ -171,7 +171,7 @@ class TypeUseTest {
     fun parses_longform() {
         val result = tokenizer.tokenize(
             """
-                (type ${'$'}myId) (param i32) (param i64) (result f32) (result f64)
+            (type ${'$'}myId) (param i32) (param i64) (result f32) (result f64)
             """.trimIndent(),
             context
         ).parseTypeUse(0)

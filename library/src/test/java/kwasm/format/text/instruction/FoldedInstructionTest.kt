@@ -15,8 +15,8 @@
 package kwasm.format.text.instruction
 
 import com.google.common.truth.Truth.assertThat
-import kwasm.ast.instruction.ControlInstruction
 import kwasm.ast.Identifier
+import kwasm.ast.instruction.ControlInstruction
 import kwasm.ast.module.Index
 import kwasm.ast.type.Result
 import kwasm.ast.type.ResultType
@@ -88,9 +88,9 @@ class FoldedInstructionTest {
     fun parse_parsesFoldedBlock() {
         val result = tokenizer.tokenize(
             """
-                (block $0 (result i32)  
-                    return
-                )
+            (block $0 (result i32)  
+                return
+            )
             """.trimIndent(),
             context
         ).parseFoldedInstruction(0) ?: fail("Expected to find something")
@@ -113,9 +113,9 @@ class FoldedInstructionTest {
     fun parse_parsesFoldedLoop() {
         val result = tokenizer.tokenize(
             """
-                (loop $0 (result i32)  
-                    return
-                )
+            (loop $0 (result i32)  
+                return
+            )
             """.trimIndent(),
             context
         ).parseFoldedInstruction(0) ?: fail("Expected to find something")
@@ -138,11 +138,11 @@ class FoldedInstructionTest {
     fun parse_parsesFoldedIf() {
         val result = tokenizer.tokenize(
             """
-                (if $0 (result i32) (call $1) 
-                    (then  
-                        return
-                    )
+            (if $0 (result i32) (call $1) 
+                (then  
+                    return
                 )
+            )
             """.trimIndent(),
             context
         ).parseFoldedInstruction(0) ?: fail("Expected to find something")
@@ -172,10 +172,10 @@ class FoldedInstructionTest {
     fun parse_parsesFoldedIfElse() {
         val result = tokenizer.tokenize(
             """
-                (if $0 (result i32) (call $1) 
-                    (then return)
-                    (else call $2)
-                )
+            (if $0 (result i32) (call $1) 
+                (then return)
+                (else call $2)
+            )
             """.trimIndent(),
             context
         ).parseFoldedInstruction(0) ?: fail("Expected to find something")
@@ -208,7 +208,7 @@ class FoldedInstructionTest {
         var e = assertThrows(ParseException::class.java) {
             tokenizer.tokenize(
                 """
-                    (if (call $1))
+                (if (call $1))
                 """.trimIndent(),
                 context
             ).parseFoldedInstruction(0)
@@ -218,7 +218,7 @@ class FoldedInstructionTest {
         e = assertThrows(ParseException::class.java) {
             tokenizer.tokenize(
                 """
-                    (if (call $1) (else))
+                (if (call $1) (else))
                 """.trimIndent(),
                 context
             ).parseFoldedInstruction(0)
@@ -231,7 +231,7 @@ class FoldedInstructionTest {
         val e = assertThrows(ParseException::class.java) {
             tokenizer.tokenize(
                 """
-                    (if (call $1) (then return)
+                (if (call $1) (then return)
                 """.trimIndent(),
                 context
             ).parseFoldedInstruction(0)
@@ -244,7 +244,7 @@ class FoldedInstructionTest {
         var e = assertThrows(ParseException::class.java) {
             tokenizer.tokenize(
                 """
-                    (if (call $1) (then return) (call $2))
+                (if (call $1) (then return) (call $2))
                 """.trimIndent(),
                 context
             ).parseFoldedInstruction(0)
@@ -254,7 +254,7 @@ class FoldedInstructionTest {
         e = assertThrows(ParseException::class.java) {
             tokenizer.tokenize(
                 """
-                    (if (call $1) (then return) ($2))
+                (if (call $1) (then return) ($2))
                 """.trimIndent(),
                 context
             ).parseFoldedInstruction(0)
@@ -267,9 +267,9 @@ class FoldedInstructionTest {
         val e = assertThrows(ParseException::class.java) {
             tokenizer.tokenize(
                 """
-                    (if (call $1) 
-                        (then return) (else return
-                    )
+                (if (call $1) 
+                    (then return) (else return
+                )
                 """.trimIndent(),
                 context
             ).parseFoldedInstruction(0)

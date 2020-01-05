@@ -46,7 +46,8 @@ fun List<Token>.parseGlobalType(currentIndex: Int): ParseResult<GlobalType> {
             GlobalType(
                 valueTypeParseResult.astNode,
                 true
-            ), valueTypeParseResult.parseLength + 3
+            ),
+            valueTypeParseResult.parseLength + 3
         )
     } else {
         val valueTypeParseResult = this.parseValueType(currentIndex)
@@ -54,7 +55,8 @@ fun List<Token>.parseGlobalType(currentIndex: Int): ParseResult<GlobalType> {
             GlobalType(
                 valueTypeParseResult.astNode,
                 false
-            ), valueTypeParseResult.parseLength
+            ),
+            valueTypeParseResult.parseLength
         )
     }
 }

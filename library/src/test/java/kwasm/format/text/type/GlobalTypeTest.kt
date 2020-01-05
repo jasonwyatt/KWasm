@@ -38,7 +38,8 @@ class GlobalTypeTest {
             GlobalType(
                 ValueType.I32,
                 false
-            ), 1
+            ),
+            1
         )
         val actual = tokenizer.tokenize("i32", context).parseGlobalType(0)
         assertThat(actual).isEqualTo(expectedValuetype)
@@ -50,7 +51,8 @@ class GlobalTypeTest {
             GlobalType(
                 ValueType.I32,
                 true
-            ), 4
+            ),
+            4
         )
         val actual = tokenizer.tokenize("(mut i32)", context).parseGlobalType(0)
         assertThat(actual).isEqualTo(expectedValuetype)

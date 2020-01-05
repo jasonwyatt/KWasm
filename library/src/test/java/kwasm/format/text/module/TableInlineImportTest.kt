@@ -15,10 +15,10 @@
 package kwasm.format.text.module
 
 import com.google.common.truth.Truth.assertThat
-import kwasm.ast.type.ElementType
 import kwasm.ast.Identifier
 import kwasm.ast.module.Import
 import kwasm.ast.module.ImportDescriptor
+import kwasm.ast.type.ElementType
 import kwasm.ast.type.Limits
 import kwasm.ast.type.TableType
 import kwasm.format.ParseContext

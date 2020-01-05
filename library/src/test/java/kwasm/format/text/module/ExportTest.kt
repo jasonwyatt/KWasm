@@ -15,9 +15,9 @@
 package kwasm.format.text.module
 
 import com.google.common.truth.Truth.assertThat
+import kwasm.ast.Identifier
 import kwasm.ast.module.Export
 import kwasm.ast.module.ExportDescriptor
-import kwasm.ast.Identifier
 import kwasm.ast.module.Index
 import kwasm.format.ParseContext
 import kwasm.format.ParseException

@@ -14,13 +14,13 @@
 
 package kwasm.format.text
 
+import kotlin.reflect.KClass
 import kwasm.ast.Literal
 import kwasm.format.ParseException
 import kwasm.format.text.token.FloatLiteral
 import kwasm.format.text.token.IntegerLiteral
 import kwasm.format.text.token.StringLiteral
 import kwasm.format.text.token.Token
-import kotlin.reflect.KClass
 
 /** Parses a [Literal] of type [T] from the receiving [List] of [Token]s at the given position. */
 @UseExperimental(ExperimentalUnsignedTypes::class)

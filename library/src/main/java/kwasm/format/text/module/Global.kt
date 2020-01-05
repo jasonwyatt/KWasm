@@ -16,10 +16,10 @@ package kwasm.format.text.module
 
 import kwasm.ast.AstNode
 import kwasm.ast.AstNodeList
+import kwasm.ast.Identifier
 import kwasm.ast.module.Export
 import kwasm.ast.module.ExportDescriptor
 import kwasm.ast.module.Global
-import kwasm.ast.Identifier
 import kwasm.ast.module.Import
 import kwasm.ast.module.ImportDescriptor
 import kwasm.ast.module.Index

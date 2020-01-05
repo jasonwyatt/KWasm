@@ -15,18 +15,18 @@
 package kwasm.format.text.module
 
 import com.google.common.truth.Truth.assertThat
-import kwasm.ast.module.ElementSegment
-import kwasm.ast.type.ElementType
-import kwasm.ast.instruction.Expression
 import kwasm.ast.Identifier
-import kwasm.ast.module.Index
 import kwasm.ast.IntegerLiteral
-import kwasm.ast.type.Limits
+import kwasm.ast.astNodeListOf
+import kwasm.ast.instruction.Expression
 import kwasm.ast.instruction.NumericConstantInstruction
+import kwasm.ast.module.ElementSegment
+import kwasm.ast.module.Index
 import kwasm.ast.module.Offset
 import kwasm.ast.module.Table
+import kwasm.ast.type.ElementType
+import kwasm.ast.type.Limits
 import kwasm.ast.type.TableType
-import kwasm.ast.astNodeListOf
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import kwasm.format.text.Tokenizer

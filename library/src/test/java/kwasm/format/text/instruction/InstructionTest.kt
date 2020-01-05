@@ -15,8 +15,8 @@
 package kwasm.format.text.instruction
 
 import com.google.common.truth.Truth.assertThat
-import kwasm.ast.instruction.ControlInstruction
 import kwasm.ast.Identifier
+import kwasm.ast.instruction.ControlInstruction
 import kwasm.ast.module.Index
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
@@ -57,9 +57,9 @@ class InstructionTest {
     fun parsePlural_canParse_multipleInstructions() {
         val parsed = tokenizer.tokenize(
             """
-                unreachable
-                nop
-                return
+            unreachable
+            nop
+            return
             """.trimIndent(),
             context
         ).parseInstructions(0)

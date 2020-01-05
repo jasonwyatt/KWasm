@@ -16,9 +16,9 @@ package kwasm.runtime
 
 import com.google.common.truth.Truth.assertThat
 import kwasm.KWasmRuntimeException
-import kwasm.ast.type.FunctionType
 import kwasm.ast.Identifier
 import kwasm.ast.astNodeListOf
+import kwasm.ast.type.FunctionType
 import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Test

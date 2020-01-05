@@ -14,6 +14,8 @@
 
 package kwasm.format.text.instruction
 
+import kwasm.ast.Identifier
+import kwasm.ast.astNodeListOf
 import kwasm.ast.instruction.ControlInstruction
 import kwasm.ast.instruction.ControlInstruction.Break
 import kwasm.ast.instruction.ControlInstruction.BreakIf
@@ -23,18 +25,16 @@ import kwasm.ast.instruction.ControlInstruction.CallIndirect
 import kwasm.ast.instruction.ControlInstruction.NoOp
 import kwasm.ast.instruction.ControlInstruction.Return
 import kwasm.ast.instruction.ControlInstruction.Unreachable
-import kwasm.ast.Identifier
 import kwasm.ast.instruction.Instruction
-import kwasm.ast.astNodeListOf
 import kwasm.format.ParseException
 import kwasm.format.text.ParseResult
 import kwasm.format.text.asKeywordMatching
 import kwasm.format.text.isKeyword
 import kwasm.format.text.module.parseIndex
 import kwasm.format.text.module.parseIndices
-import kwasm.format.text.type.parseResultType
 import kwasm.format.text.module.parseTypeUse
 import kwasm.format.text.token.Token
+import kwasm.format.text.type.parseResultType
 
 /** This file contains parsing implementations for all of the various [ControlInstruction]s. */
 
@@ -93,8 +93,8 @@ private fun List<Token>.parseBlockOrLoopContInstruction(
     val instructions = parseInstructions(fromIndex + tokensParsed)
     tokensParsed += instructions.parseLength
 
-    getOrNull(fromIndex + tokensParsed)?.asKeywordMatching("end") ?:
-        throw ParseException(
+    getOrNull(fromIndex + tokensParsed)?.asKeywordMatching("end")
+        ?: throw ParseException(
             "Expected \"end\" for block ${opener.value}",
             getOrNull(fromIndex + tokensParsed)?.context
                 ?: getOrNull(fromIndex + tokensParsed - 1)?.context
@@ -165,12 +165,12 @@ private fun List<Token>.parseIfContInstruction(
             ?: ParseResult(astNodeListOf<Instruction>(), 0)
     tokensParsed += negativeInstructions.parseLength
 
-    getOrNull(fromIndex + tokensParsed)?.asKeywordMatching("end") ?:
-    throw ParseException(
-        "Expected \"end\" for if/else",
-        getOrNull(fromIndex + tokensParsed)?.context
-            ?: getOrNull(fromIndex + tokensParsed - 1)?.context
-    )
+    getOrNull(fromIndex + tokensParsed)?.asKeywordMatching("end")
+        ?: throw ParseException(
+            "Expected \"end\" for if/else",
+            getOrNull(fromIndex + tokensParsed)?.context
+                ?: getOrNull(fromIndex + tokensParsed - 1)?.context
+        )
     tokensParsed++
 
     val closingId = getOrNull(fromIndex + tokensParsed) as? kwasm.format.text.token.Identifier

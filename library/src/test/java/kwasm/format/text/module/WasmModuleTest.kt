@@ -15,37 +15,37 @@
 package kwasm.format.text.module
 
 import com.google.common.truth.Truth.assertThat
+import kwasm.ast.Identifier
+import kwasm.ast.IntegerLiteral
+import kwasm.ast.astNodeListOf
 import kwasm.ast.instruction.ControlInstruction
+import kwasm.ast.instruction.Expression
+import kwasm.ast.instruction.NumericConstantInstruction
 import kwasm.ast.module.DataSegment
 import kwasm.ast.module.ElementSegment
-import kwasm.ast.type.ElementType
 import kwasm.ast.module.Export
 import kwasm.ast.module.ExportDescriptor
-import kwasm.ast.instruction.Expression
-import kwasm.ast.type.FunctionType
 import kwasm.ast.module.Global
-import kwasm.ast.type.GlobalType
-import kwasm.ast.Identifier
 import kwasm.ast.module.Import
 import kwasm.ast.module.ImportDescriptor
 import kwasm.ast.module.Index
-import kwasm.ast.IntegerLiteral
-import kwasm.ast.type.Limits
 import kwasm.ast.module.Local
 import kwasm.ast.module.Memory
-import kwasm.ast.type.MemoryType
-import kwasm.ast.instruction.NumericConstantInstruction
 import kwasm.ast.module.Offset
-import kwasm.ast.type.Param
-import kwasm.ast.type.Result
 import kwasm.ast.module.StartFunction
 import kwasm.ast.module.Table
-import kwasm.ast.type.TableType
 import kwasm.ast.module.Type
 import kwasm.ast.module.TypeUse
-import kwasm.ast.type.ValueType
 import kwasm.ast.module.WasmFunction
-import kwasm.ast.astNodeListOf
+import kwasm.ast.type.ElementType
+import kwasm.ast.type.FunctionType
+import kwasm.ast.type.GlobalType
+import kwasm.ast.type.Limits
+import kwasm.ast.type.MemoryType
+import kwasm.ast.type.Param
+import kwasm.ast.type.Result
+import kwasm.ast.type.TableType
+import kwasm.ast.type.ValueType
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import kwasm.format.text.Tokenizer
@@ -112,27 +112,27 @@ class WasmModuleTest {
     fun parse_someOfEverything() {
         val result = tokenizer.tokenize(
             """
-                (module $10
-                    (import "other" "func" (func $0))
-                    (type $1 (func (param i32) (result i64)))
-                    (func $2 (local i32) return)
-                    (table $3 0 1 funcref)
-                    (memory $4 0 1)
-                    (global $5 (mut i32) (i32.const 1))
-                    (export "num2" (func $2))
-                    (start $2)
-                    (elem $3 (offset (i32.const 0)) $0)
-                    (data $4 (offset (i32.const 0)) "test")
-                    ;; inline abbreviations
-                    (func $6 (import "a" "b")) ;; 9 tokens
-                    (func $7 (export "a") return) ;; 9 tokens
-                    (table $8 (import "a" "b") 1 funcref) ;; 9 tokens
-                    (table $9 (export "a") 1 funcref) ;; 10 tokens
-                    (memory $10 (import "a" "b") 1) ;; 10 tokens
-                    (memory $11 (export "a") 1) ;; 9 tokens
-                    (global $12 (import "a" "b") i32) ;; 10 tokens
-                    (global $13 (export "a") i32 (i32.const 0)) ;; 13 tokens
-                )
+            (module $10
+                (import "other" "func" (func $0))
+                (type $1 (func (param i32) (result i64)))
+                (func $2 (local i32) return)
+                (table $3 0 1 funcref)
+                (memory $4 0 1)
+                (global $5 (mut i32) (i32.const 1))
+                (export "num2" (func $2))
+                (start $2)
+                (elem $3 (offset (i32.const 0)) $0)
+                (data $4 (offset (i32.const 0)) "test")
+                ;; inline abbreviations
+                (func $6 (import "a" "b")) ;; 9 tokens
+                (func $7 (export "a") return) ;; 9 tokens
+                (table $8 (import "a" "b") 1 funcref) ;; 9 tokens
+                (table $9 (export "a") 1 funcref) ;; 10 tokens
+                (memory $10 (import "a" "b") 1) ;; 10 tokens
+                (memory $11 (export "a") 1) ;; 9 tokens
+                (global $12 (import "a" "b") i32) ;; 10 tokens
+                (global $13 (export "a") i32 (i32.const 0)) ;; 13 tokens
+            )
             """.trimIndent(),
             context
         ).parseModule(0) ?: fail("Expected a result")
@@ -204,7 +204,8 @@ class WasmModuleTest {
                                 Identifier.Local(
                                     null,
                                     null
-                                ), ValueType.I32
+                                ),
+                                ValueType.I32
                             )
                         ),
                         astNodeListOf(Result(ValueType.I64))

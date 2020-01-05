@@ -23,10 +23,10 @@ import kwasm.format.text.ParseResult
 import kwasm.format.text.contextAt
 import kwasm.format.text.getOrThrow
 import kwasm.format.text.isOpenParen
-import kwasm.format.text.type.parseResultType
 import kwasm.format.text.token.Keyword
 import kwasm.format.text.token.Paren
 import kwasm.format.text.token.Token
+import kwasm.format.text.type.parseResultType
 
 /**
  * Parses a possibly-empty [AstNodeList] of folded [Instruction]s into an unwrapped list of

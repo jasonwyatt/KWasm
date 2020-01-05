@@ -15,8 +15,8 @@
 package kwasm.format.text.instruction
 
 import com.google.common.truth.Truth.assertThat
-import kwasm.ast.instruction.ControlInstruction
 import kwasm.ast.Identifier
+import kwasm.ast.instruction.ControlInstruction
 import kwasm.ast.module.Index
 import kwasm.format.ParseContext
 import kwasm.format.text.Tokenizer
