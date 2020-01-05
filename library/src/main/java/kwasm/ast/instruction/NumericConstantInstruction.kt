@@ -15,7 +15,6 @@
 package kwasm.ast.instruction
 
 import kwasm.ast.Literal
-import kwasm.ast.type.ValueType
 
 /**
  * Base for all numeric [Constant] [Instruction] implementations.
@@ -24,7 +23,8 @@ import kwasm.ast.type.ValueType
  * [the docs](https://webassembly.github.io/spec/core/syntax/instructions.html#numeric-instructions)
  * for more information.
  */
-sealed class NumericConstantInstruction : Instruction {
+sealed class NumericConstantInstruction<T> : Instruction {
+    abstract val value: Literal<T>
     /**
      * Represents a 32-bit integer constant instruction.
      *
@@ -34,8 +34,7 @@ sealed class NumericConstantInstruction : Instruction {
      */
     data class I32(
         override val value: Literal<Int>
-    ) : NumericConstantInstruction(),
-        Constant<Int, ValueType.I32>
+    ) : NumericConstantInstruction<Int>()
 
     /**
      * Represents a 64-bit integer constant instruction.
@@ -46,22 +45,19 @@ sealed class NumericConstantInstruction : Instruction {
      */
     data class I64(
         override val value: Literal<Long>
-    ) : NumericConstantInstruction(),
-        Constant<Long, ValueType.I64>
+    ) : NumericConstantInstruction<Long>()
 
     /**
      * Represents a 32-bit floating-point constant instruction.
      */
     data class F32(
         override val value: Literal<Float>
-    ) : NumericConstantInstruction(),
-        Constant<Float, ValueType.F32>
+    ) : NumericConstantInstruction<Float>()
 
     /**
      * Represents a 64-bit floating-point constant instruction.
      */
     data class F64(
         override val value: Literal<Double>
-    ) : NumericConstantInstruction(),
-        Constant<Double, ValueType.F64>
+    ) : NumericConstantInstruction<Double>()
 }

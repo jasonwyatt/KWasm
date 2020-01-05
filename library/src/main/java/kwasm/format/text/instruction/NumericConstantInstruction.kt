@@ -33,7 +33,9 @@ import kwasm.format.text.token.Token
  *                      ‘f64.const’ z:f64 => f64.const z
  * ```
  */
-fun List<Token>.parseNumericConstant(fromIndex: Int): ParseResult<out NumericConstantInstruction>? {
+fun List<Token>.parseNumericConstant(
+    fromIndex: Int
+): ParseResult<out NumericConstantInstruction<*>>? {
     var currentIndex = fromIndex
     val keyword = getOrNull(currentIndex) as? Keyword ?: return null
     currentIndex++
@@ -62,8 +64,5 @@ fun List<Token>.parseNumericConstant(fromIndex: Int): ParseResult<out NumericCon
         else -> null
     } ?: return null
 
-    return ParseResult(
-        instruction as NumericConstantInstruction,
-        currentIndex - fromIndex
-    )
+    return ParseResult(instruction, currentIndex - fromIndex)
 }

@@ -40,7 +40,7 @@ sealed class ValueType : AstNode {
             I64::class -> I64
             F32::class -> F32
             F64::class -> F64
-            else -> Impossible()
+            else -> Impossible("class: $klass not supported?")
         }
     }
 }

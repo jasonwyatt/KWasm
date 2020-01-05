@@ -14,9 +14,11 @@
 
 package kwasm
 
+import kwasm.ast.instruction.Instruction
 import kwasm.ast.module.WasmModule
 import kwasm.format.ParseContext
 import kwasm.format.text.Tokenizer
+import kwasm.format.text.instruction.parseInstruction
 import kwasm.format.text.module.parseModule
 import kwasm.format.text.token.Token
 import org.junit.rules.TestRule
@@ -67,4 +69,10 @@ class ParseRule : TestRule {
     /** Parse a [WasmModule] from the given wasm [source]. */
     fun String.parseModule(): WasmModule =
         requireNotNull(tokenize().parseModule(0)?.astNode) { "No module found in source:\n$this" }
+
+    /** Parse an [Instruction] from the given wasm [source]. */
+    fun String.parseInstruction(): Instruction =
+        requireNotNull(tokenize().parseInstruction(0)?.astNode) {
+            "No instruction found in source:\n$this"
+        }
 }
