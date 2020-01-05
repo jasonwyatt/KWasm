@@ -16,7 +16,7 @@ package kwasm.validation.type
 
 import kwasm.ParseRule
 import kwasm.format.ParseException
-import kwasm.format.text.parseTableType
+import kwasm.format.text.type.parseTableType
 import kwasm.validation.ValidationContext
 import kwasm.validation.ValidationException
 import org.junit.Assert.assertThrows

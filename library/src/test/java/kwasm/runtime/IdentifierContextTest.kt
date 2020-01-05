@@ -16,7 +16,7 @@ package kwasm.runtime
 
 import com.google.common.truth.Truth.assertThat
 import kwasm.KWasmRuntimeException
-import kwasm.ast.FunctionType
+import kwasm.ast.type.FunctionType
 import kwasm.ast.Identifier
 import kwasm.ast.astNodeListOf
 import org.junit.Assert.assertThrows
@@ -78,7 +78,12 @@ class IdentifierContextTest {
             assertThat(context.get<Identifier.Label>(registeredType.unique)).isEqualTo(it)
         }
 
-        Identifier.TypeDef(FunctionType(astNodeListOf(), astNodeListOf())).also {
+        Identifier.TypeDef(
+            FunctionType(
+                astNodeListOf(),
+                astNodeListOf()
+            )
+        ).also {
             assertThat(context.get(it.funcType)).isNull()
             val registeredType: Identifier.TypeDef = context.register(it)
             assertThat(context.get(registeredType.funcType)).isEqualTo(it)

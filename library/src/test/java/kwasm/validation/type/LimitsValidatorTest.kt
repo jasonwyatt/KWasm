@@ -16,7 +16,7 @@ package kwasm.validation.type
 
 import com.google.common.truth.Truth.assertThat
 import kwasm.ParseRule
-import kwasm.format.text.parseLimits
+import kwasm.format.text.type.parseLimits
 import kwasm.validation.ValidationContext
 import kwasm.validation.ValidationException
 import org.junit.Assert.assertThrows

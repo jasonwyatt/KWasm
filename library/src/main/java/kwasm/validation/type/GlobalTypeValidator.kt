@@ -14,7 +14,7 @@
 
 package kwasm.validation.type
 
-import kwasm.ast.GlobalType
+import kwasm.ast.type.GlobalType
 import kwasm.validation.ValidationContext
 import kwasm.validation.ValidationVisitor
 

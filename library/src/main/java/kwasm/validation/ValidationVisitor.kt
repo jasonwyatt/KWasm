@@ -15,7 +15,7 @@
 package kwasm.validation
 
 import kwasm.ast.AstNode
-import kwasm.ast.Instruction
+import kwasm.ast.instruction.Instruction
 
 /**
  * Base visitor interface used during validation.

@@ -15,11 +15,10 @@
 package kwasm.ast.util
 
 import com.google.common.truth.Truth.assertThat
-import kwasm.ast.Global
-import kwasm.ast.GlobalType
+import kwasm.ast.type.GlobalType
 import kwasm.ast.Identifier
-import kwasm.ast.Index
-import kwasm.ast.ValueType
+import kwasm.ast.module.Index
+import kwasm.ast.type.ValueType
 import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -73,8 +72,10 @@ class AstNodeIndexTest {
     @Test
     fun byIdentifier() {
         val index = MutableAstNodeIndex<GlobalType>()
-        index[Identifier.Global("myGlobal1")] = GlobalType(ValueType.I32, false)
-        index[Identifier.Global("myGlobal2")] = GlobalType(ValueType.I64, false)
+        index[Identifier.Global("myGlobal1")] =
+            GlobalType(ValueType.I32, false)
+        index[Identifier.Global("myGlobal2")] =
+            GlobalType(ValueType.I64, false)
 
         assertThat(index[0])
             .isEqualTo(GlobalType(ValueType.I32, false))
@@ -92,17 +93,20 @@ class AstNodeIndexTest {
     @Test
     fun setByIdentifier_throwsWhenIdentifier_usedAlready() {
         val index = MutableAstNodeIndex<GlobalType>()
-        index[Identifier.Global("myGlobal1")] = GlobalType(ValueType.I32, false)
+        index[Identifier.Global("myGlobal1")] =
+            GlobalType(ValueType.I32, false)
 
         assertThrows(IllegalStateException::class.java) {
-            index[Identifier.Global("myGlobal1")] = GlobalType(ValueType.I32, false)
+            index[Identifier.Global("myGlobal1")] =
+                GlobalType(ValueType.I32, false)
         }
     }
 
     @Test
     fun byIndex_usingIdentifier() {
         val index = MutableAstNodeIndex<GlobalType>()
-        index[Identifier.Global("myGlobal1")] = GlobalType(ValueType.I32, false)
+        index[Identifier.Global("myGlobal1")] =
+            GlobalType(ValueType.I32, false)
 
         assertThat(index[Index.ByIdentifier(Identifier.Global("myGlobal1"))])
             .isEqualTo(GlobalType(ValueType.I32, false))
@@ -113,7 +117,8 @@ class AstNodeIndexTest {
     @Test
     fun byIndex_usingInt() {
         val index = MutableAstNodeIndex<GlobalType>()
-        index[Identifier.Global("myGlobal1")] = GlobalType(ValueType.I32, false)
+        index[Identifier.Global("myGlobal1")] =
+            GlobalType(ValueType.I32, false)
 
         assertThat(index[Index.ByInt(0)])
             .isEqualTo(GlobalType(ValueType.I32, false))
@@ -124,9 +129,15 @@ class AstNodeIndexTest {
     @Test
     fun byInt() {
         val index = MutableAstNodeIndex<GlobalType>()
-        index[Identifier.Global("myGlobal1")] = GlobalType(ValueType.I32, false)
+        index[Identifier.Global("myGlobal1")] =
+            GlobalType(ValueType.I32, false)
 
-        assertThat(index[0]).isEqualTo(GlobalType(ValueType.I32, false))
+        assertThat(index[0]).isEqualTo(
+            GlobalType(
+                ValueType.I32,
+                false
+            )
+        )
         assertThat(index[1]).isNull()
     }
 
@@ -137,7 +148,17 @@ class AstNodeIndexTest {
         index[null] = GlobalType(ValueType.I64, false)
 
         assertThat(index.size).isEqualTo(2)
-        assertThat(index[0]).isEqualTo(GlobalType(ValueType.I32, false))
-        assertThat(index[1]).isEqualTo(GlobalType(ValueType.I64, false))
+        assertThat(index[0]).isEqualTo(
+            GlobalType(
+                ValueType.I32,
+                false
+            )
+        )
+        assertThat(index[1]).isEqualTo(
+            GlobalType(
+                ValueType.I64,
+                false
+            )
+        )
     }
 }

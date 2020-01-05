@@ -14,7 +14,7 @@
 
 package kwasm.validation.module
 
-import kwasm.ast.WasmModule
+import kwasm.ast.module.WasmModule
 import kwasm.ast.util.AstNodeIndex
 import kwasm.validation.ModuleValidationVisitor
 import kwasm.validation.ValidationContext

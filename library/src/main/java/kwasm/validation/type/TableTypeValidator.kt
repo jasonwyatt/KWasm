@@ -14,7 +14,7 @@
 
 package kwasm.validation.type
 
-import kwasm.ast.TableType
+import kwasm.ast.type.TableType
 import kwasm.validation.ValidationContext
 import kwasm.validation.ValidationVisitor
 

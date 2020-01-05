@@ -14,7 +14,7 @@
 
 package kwasm.validation.type
 
-import kwasm.ast.FunctionType
+import kwasm.ast.type.FunctionType
 import kwasm.validation.ValidationContext
 import kwasm.validation.ValidationVisitor
 import kwasm.validation.validate

@@ -14,7 +14,7 @@
 
 package kwasm.validation.type
 
-import kwasm.ast.Limits
+import kwasm.ast.type.Limits
 import kwasm.validation.ValidationContext
 import kwasm.validation.ValidationVisitor
 import kwasm.validation.validate
