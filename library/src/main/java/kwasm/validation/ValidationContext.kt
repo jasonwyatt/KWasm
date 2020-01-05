@@ -87,8 +87,26 @@ sealed class ValidationContext(
         override val globals: AstNodeIndex<GlobalType>,
         val locals: AstNodeIndex<ValueType>,
         val labels: AstNodeIndex<ResultType>,
+        val stack: List<ValueType>,
         val returnType: ValueType?
-    ) : ValidationContext(types, functions, tables, memories, globals)
+    ) : ValidationContext(types, functions, tables, memories, globals) {
+        /** Returns a new [FunctionBody], with the given [valueType] pushed onto the [stack]. */
+        fun pushStack(valueType: ValueType): FunctionBody = copy(stack = stack + valueType)
+
+        /**
+         * Returns the top [ValueType] from the [stack], and a new [FunctionBody] with that top item
+         * removed.
+         */
+        fun popStack(): Pair<ValueType?, FunctionBody> =
+            stack.lastOrNull() to copy(stack = stack.dropLast(1))
+
+        /**
+         * Returns the top [count] [ValueType]s from the [stack], and a new [FunctionBody] with
+         * those items removed.
+         */
+        fun popStack(count: Int): Pair<List<ValueType>, FunctionBody> =
+            stack.asReversed().take(count) to copy(stack = stack.dropLast(count))
+    }
 
     companion object {
         /** An empty [ValidationContext.Module] instance. */
@@ -98,6 +116,19 @@ sealed class ValidationContext(
             tables = AstNodeIndex(),
             memories = AstNodeIndex(),
             globals = AstNodeIndex()
+        )
+
+        /** An empty [ValidationContext.Function] instance. */
+        val EMPTY_FUNCTION_BODY = ValidationContext.FunctionBody(
+            types = AstNodeIndex(),
+            functions = AstNodeIndex(),
+            tables = AstNodeIndex(),
+            memories = AstNodeIndex(),
+            globals = AstNodeIndex(),
+            locals = AstNodeIndex(),
+            labels = AstNodeIndex(),
+            stack = emptyList(),
+            returnType = null
         )
     }
 }
