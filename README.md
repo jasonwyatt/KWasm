@@ -1,7 +1,10 @@
-[![CircleCI](https://circleci.com/gh/jasonwyatt/KWasm/tree/master.svg?style=svg)](https://circleci.com/gh/jasonwyatt/KWasm/tree/master)
-
 # KWasm
-Embeddable WebAssembly intepreter for the JVM
+
+KWasm is an Embeddable WebAssembly interpreter for the JVM
+
+[![CircleCI](https://img.shields.io/circleci/build/github/jasonwyatt/KWasm/master?style=flat-square)](https://circleci.com/gh/jasonwyatt/KWasm/tree/master)
+[![CII Best Practices Summary](https://img.shields.io/cii/summary/3559?label=cii%20best%20practices&style=flat-square)](https://bestpractices.coreinfrastructure.org/en/projects/3559)
+[![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability-percentage/jasonwyatt/KWasm?style=flat-square)](https://codeclimate.com/github/jasonwyatt/KWasm)
 
 ## Milestones
 
