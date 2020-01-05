@@ -29,12 +29,6 @@ class InstructionValidatorTest {
     @get:Rule val parser = ParseRule()
 
     @Test
-    fun numericConstantInstruction_isSupported() = parser.with {
-        "i32.const 0".parseInstruction()
-            .validate(ValidationContext.EMPTY_FUNCTION_BODY)
-    }
-
-    @Test
     fun unsupportedInstructionType_throws() {
         assertThrows(IllegalStateException::class.java) {
             DummyInstruction().validate(ValidationContext.EMPTY_FUNCTION_BODY)

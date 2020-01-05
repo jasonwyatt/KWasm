@@ -80,6 +80,7 @@ internal fun NumericInstruction.getExpectedInsAndOuts(): Pair<List<ValueType>, V
     when (this) {
         I32CountLeadingZeroes,
         I32CountTrailingZeroes,
+        I32EqualsZero,
         I32CountNonZeroBits -> listOf(I32) to I32
         I32Add,
         I32Subtract,
@@ -96,7 +97,6 @@ internal fun NumericInstruction.getExpectedInsAndOuts(): Pair<List<ValueType>, V
         I32ShiftRightUnsigned,
         I32RotateLeft,
         I32RotateRight,
-        I32EqualsZero,
         I32Equals,
         I32NotEquals,
         I32LessThanSigned,
@@ -110,6 +110,7 @@ internal fun NumericInstruction.getExpectedInsAndOuts(): Pair<List<ValueType>, V
 
         I64CountLeadingZeroes,
         I64CountTrailingZeroes,
+        I64EqualsZero,
         I64CountNonZeroBits -> listOf(I64) to I64
         I64Add,
         I64Subtract,
@@ -126,7 +127,6 @@ internal fun NumericInstruction.getExpectedInsAndOuts(): Pair<List<ValueType>, V
         I64ShiftRightUnsigned,
         I64RotateLeft,
         I64RotateRight,
-        I64EqualsZero,
         I64Equals,
         I64NotEquals,
         I64LessThanSigned,
