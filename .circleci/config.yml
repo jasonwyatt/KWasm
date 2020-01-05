@@ -41,6 +41,10 @@ jobs:
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
       - run:
+          name: ktlint
+          command: ./gradlew ktlintCheck
+
+      - run:
           name: Run Tests
           command: ./gradlew test
 
