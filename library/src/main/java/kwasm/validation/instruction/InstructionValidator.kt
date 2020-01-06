@@ -15,6 +15,7 @@
 package kwasm.validation.instruction
 
 import kwasm.ast.instruction.Instruction
+import kwasm.ast.instruction.MemoryInstruction
 import kwasm.ast.instruction.NumericConstantInstruction
 import kwasm.ast.instruction.NumericInstruction
 import kwasm.ast.instruction.ParametricInstruction
@@ -39,6 +40,7 @@ object InstructionValidator : FunctionBodyValidationVisitor<Instruction> {
         is NumericInstruction -> NumericInstructionValidator.visit(node, context)
         is ParametricInstruction -> ParametricInstructionValidator.visit(node, context)
         is VariableInstruction -> VariableInstructionValidator.visit(node, context)
+        is MemoryInstruction -> MemoryInstructionValidator.visit(node, context)
         else -> Impossible()
     }
 }
