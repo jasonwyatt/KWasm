@@ -34,7 +34,7 @@ class VariableInstructionTest {
             .parseInstruction(0) ?: fail("Expected an instruction")
         assertThat(result.parseLength).isEqualTo(2)
         val instruction = result.astNode as VariableInstruction.LocalGet
-        assertThat(instruction.valueAstNode.stringRepr).isEqualTo("\$var")
+        assertThat(instruction.valueAstNode.toString()).isEqualTo("\$var")
     }
 
     @Test
@@ -43,7 +43,7 @@ class VariableInstructionTest {
             .parseVariableInstruction(0) ?: fail("Expected an instruction")
         assertThat(result.parseLength).isEqualTo(2)
         val instruction = result.astNode as VariableInstruction.LocalGet
-        assertThat(instruction.valueAstNode.stringRepr).isEqualTo("\$var")
+        assertThat(instruction.valueAstNode.toString()).isEqualTo("\$var")
     }
 
     @Test
@@ -52,7 +52,7 @@ class VariableInstructionTest {
             .parseVariableInstruction(0) ?: fail("Expected an instruction")
         assertThat(result.parseLength).isEqualTo(2)
         val instruction = result.astNode as VariableInstruction.LocalSet
-        assertThat(instruction.valueAstNode.stringRepr).isEqualTo("\$var")
+        assertThat(instruction.valueAstNode.toString()).isEqualTo("\$var")
     }
 
     @Test
@@ -61,7 +61,7 @@ class VariableInstructionTest {
             .parseVariableInstruction(0) ?: fail("Expected an instruction")
         assertThat(result.parseLength).isEqualTo(2)
         val instruction = result.astNode as VariableInstruction.LocalTee
-        assertThat(instruction.valueAstNode.stringRepr).isEqualTo("\$var")
+        assertThat(instruction.valueAstNode.toString()).isEqualTo("\$var")
     }
 
     @Test
@@ -70,7 +70,7 @@ class VariableInstructionTest {
             .parseVariableInstruction(0) ?: fail("Expected an instruction")
         assertThat(result.parseLength).isEqualTo(2)
         val instruction = result.astNode as VariableInstruction.GlobalGet
-        assertThat(instruction.valueAstNode.stringRepr).isEqualTo("\$var")
+        assertThat(instruction.valueAstNode.toString()).isEqualTo("\$var")
     }
 
     @Test
@@ -79,6 +79,6 @@ class VariableInstructionTest {
             .parseVariableInstruction(0) ?: fail("Expected an instruction")
         assertThat(result.parseLength).isEqualTo(2)
         val instruction = result.astNode as VariableInstruction.GlobalSet
-        assertThat(instruction.valueAstNode.stringRepr).isEqualTo("\$var")
+        assertThat(instruction.valueAstNode.toString()).isEqualTo("\$var")
     }
 }

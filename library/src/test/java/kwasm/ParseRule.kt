@@ -15,10 +15,15 @@
 package kwasm
 
 import kwasm.ast.instruction.Instruction
+import kwasm.ast.module.Global
+import kwasm.ast.module.Local
 import kwasm.ast.module.WasmModule
 import kwasm.format.ParseContext
 import kwasm.format.text.Tokenizer
 import kwasm.format.text.instruction.parseInstruction
+import kwasm.format.text.module.parseGlobal
+import kwasm.format.text.module.parseLocal
+import kwasm.format.text.module.parseLocals
 import kwasm.format.text.module.parseModule
 import kwasm.format.text.token.Token
 import org.junit.rules.TestRule
@@ -63,16 +68,28 @@ class ParseRule : TestRule {
      */
     fun with(block: ParseRule.() -> Unit) = with(this, block)
 
-    /** Tokenizes the given wasm [source]. */
+    /** Tokenizes the given wasm source. */
     fun String.tokenize(): List<Token> = tokenizer.tokenize(trimIndent(), context)
 
-    /** Parse a [WasmModule] from the given wasm [source]. */
+    /** Parse a [WasmModule] from the given wasm source. */
     fun String.parseModule(): WasmModule =
         requireNotNull(tokenize().parseModule(0)?.astNode) { "No module found in source:\n$this" }
 
-    /** Parse an [Instruction] from the given wasm [source]. */
+    /** Parse an [Instruction] from the given wasm source. */
     fun String.parseInstruction(): Instruction =
         requireNotNull(tokenize().parseInstruction(0)?.astNode) {
             "No instruction found in source:\n$this"
+        }
+
+    /** Parse a [Local] from the given wasm source. */
+    fun String.parseLocals(): List<Local> =
+        requireNotNull(tokenize().parseLocals(0).astNode) {
+            "No locals found in source:\n$this"
+        }
+
+    /** Parse a [Global] from the given wasm source. */
+    fun String.parseGlobal(): Global =
+        requireNotNull(tokenize().parseGlobal(0)?.astNode) {
+            "No global found in source:\n$this"
         }
 }

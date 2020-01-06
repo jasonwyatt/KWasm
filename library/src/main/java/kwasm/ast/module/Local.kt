@@ -27,5 +27,4 @@ import kwasm.ast.type.ValueType
  * referenced through local indices in the function’s body. The index of the first local is the
  * smallest index not referencing a parameter.
  */
-data class Local(val id: Identifier.Local?, val valueType: ValueType?) :
-    AstNode
+data class Local(val id: Identifier.Local?, val valueType: ValueType) : AstNode

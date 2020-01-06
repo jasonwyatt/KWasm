@@ -24,7 +24,7 @@ import kwasm.validation.validateNotNull
 /**
  * Validator of [ParametricInstruction] nodes.
  *
- * From [the docs]():
+ * From [the docs](https://webassembly.github.io/spec/core/valid/instructions.html#parametric-instructions):
  *
  * [ParametricInstruction.Drop]
  * * The instruction is valid with type `\[t] =>[]`, for any value type `t`.

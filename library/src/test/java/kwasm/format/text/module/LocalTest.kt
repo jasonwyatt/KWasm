@@ -66,13 +66,11 @@ class LocalTest {
     }
 
     @Test
-    fun parse_returnsLocalWithNoType_ifAnonymous() {
+    fun parse_returnsEmptyListOfLocals_ifAnonymous() {
         val result = tokenizer.tokenize("(local)", context).parseLocal(0)
             ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(3)
-        assertThat(result.astNode).containsExactly(
-            Local(null, null)
-        )
+        assertThat(result.astNode).isEmpty()
     }
 
     @Test

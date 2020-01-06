@@ -24,6 +24,7 @@ import kwasm.ast.instruction.NumericInstruction
 import kwasm.ast.module.Index
 import kwasm.ast.module.Local
 import kwasm.ast.module.TypeUse
+import kwasm.ast.type.ValueType
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import kwasm.format.text.Tokenizer
@@ -111,9 +112,9 @@ class WasmFunctionTest {
 
     @Test
     fun parse_parsesLocalsOnly() {
-        val result = tokenizer.tokenize("(func (local) (local))", context).parseWasmFunction(0)
-            ?: fail("Expected a result")
-        assertThat(result.parseLength).isEqualTo(9)
+        val result = tokenizer.tokenize("(func (local i32) (local i32))", context)
+            .parseWasmFunction(0) ?: fail("Expected a result")
+        assertThat(result.parseLength).isEqualTo(11)
         assertThat(result.astNode.id).isEqualTo(Identifier.Function(null, null))
         assertThat(result.astNode.typeUse).isEqualTo(
             TypeUse(
@@ -123,8 +124,8 @@ class WasmFunctionTest {
             )
         )
         assertThat(result.astNode.locals).containsExactly(
-            Local(null, null),
-            Local(null, null)
+            Local(null, ValueType.I32),
+            Local(null, ValueType.I32)
         )
         assertThat(result.astNode.instructions).isEmpty()
     }
@@ -152,7 +153,7 @@ class WasmFunctionTest {
     fun parse_parsesTheWholeShebang() {
         val result = tokenizer.tokenize(
             """
-            (func $0 (type $1) (local) (local)
+            (func $0 (type $1) (local i32 i32)
                 (i32.add
                     (i32.const 1)
                     (i32.const 2)
@@ -162,7 +163,7 @@ class WasmFunctionTest {
             context
         ).parseWasmFunction(0) ?: fail("Expected a result")
 
-        assertThat(result.parseLength).isEqualTo(25)
+        assertThat(result.parseLength).isEqualTo(24)
         assertThat(result.astNode.id).isEqualTo(Identifier.Function("$0"))
         assertThat(result.astNode.typeUse).isEqualTo(
             TypeUse(
@@ -172,8 +173,8 @@ class WasmFunctionTest {
             )
         )
         assertThat(result.astNode.locals).containsExactly(
-            Local(null, null),
-            Local(null, null)
+            Local(null, ValueType.I32),
+            Local(null, ValueType.I32)
         ).inOrder()
         assertThat(result.astNode.instructions).containsExactly(
             NumericConstantInstruction.I32(IntegerLiteral.S32(1)),
