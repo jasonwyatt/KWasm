@@ -17,7 +17,7 @@ package kwasm.format.text.instruction
 import kwasm.ast.Identifier
 import kwasm.ast.instruction.VariableInstruction
 import kwasm.format.text.ParseResult
-import kwasm.format.text.parseIdentifier
+import kwasm.format.text.module.parseIndex
 import kwasm.format.text.token.Keyword
 import kwasm.format.text.token.Token
 
@@ -42,27 +42,27 @@ fun List<Token>.parseVariableInstruction(fromIndex: Int): ParseResult<out Variab
 
     val instruction = when (keyword.value) {
         "local.get" ->
-            parseIdentifier<Identifier.Local>(currentIndex).let {
+            parseIndex<Identifier.Local>(currentIndex).let {
                 currentIndex += it.parseLength
                 VariableInstruction.LocalGet(it.astNode)
             }
         "local.set" ->
-            parseIdentifier<Identifier.Local>(currentIndex).let {
+            parseIndex<Identifier.Local>(currentIndex).let {
                 currentIndex += it.parseLength
                 VariableInstruction.LocalSet(it.astNode)
             }
         "local.tee" ->
-            parseIdentifier<Identifier.Local>(currentIndex).let {
+            parseIndex<Identifier.Local>(currentIndex).let {
                 currentIndex += it.parseLength
                 VariableInstruction.LocalTee(it.astNode)
             }
         "global.get" ->
-            parseIdentifier<Identifier.Global>(currentIndex).let {
+            parseIndex<Identifier.Global>(currentIndex).let {
                 currentIndex += it.parseLength
                 VariableInstruction.GlobalGet(it.astNode)
             }
         "global.set" ->
-            parseIdentifier<Identifier.Global>(currentIndex).let {
+            parseIndex<Identifier.Global>(currentIndex).let {
                 currentIndex += it.parseLength
                 VariableInstruction.GlobalSet(it.astNode)
             }

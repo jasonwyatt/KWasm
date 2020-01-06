@@ -18,6 +18,7 @@ import kwasm.ast.instruction.Instruction
 import kwasm.ast.instruction.NumericConstantInstruction
 import kwasm.ast.instruction.NumericInstruction
 import kwasm.ast.instruction.ParametricInstruction
+import kwasm.ast.instruction.VariableInstruction
 import kwasm.util.Impossible
 import kwasm.validation.FunctionBodyValidationVisitor
 import kwasm.validation.ValidationContext
@@ -37,6 +38,7 @@ object InstructionValidator : FunctionBodyValidationVisitor<Instruction> {
         is NumericConstantInstruction<*> -> NumericConstantInstructionValidator.visit(node, context)
         is NumericInstruction -> NumericInstructionValidator.visit(node, context)
         is ParametricInstruction -> ParametricInstructionValidator.visit(node, context)
+        is VariableInstruction -> VariableInstructionValidator.visit(node, context)
         else -> Impossible()
     }
 }

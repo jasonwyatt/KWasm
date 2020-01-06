@@ -15,6 +15,7 @@
 package kwasm.ast.instruction
 
 import kwasm.ast.Identifier
+import kwasm.ast.module.Index
 
 /**
  * Base for all variable [Instruction] implementations.
@@ -29,34 +30,34 @@ sealed class VariableInstruction : Instruction {
      * Represents the local.get instruction.
      */
     data class LocalGet(
-        override val valueAstNode: Identifier.Local
+        override val valueAstNode: Index<Identifier.Local>
     ) : VariableInstruction(), Argument
 
     /**
      * Represents the local.set instruction.
      */
     data class LocalSet(
-        override val valueAstNode: Identifier.Local
+        override val valueAstNode: Index<Identifier.Local>
     ) : VariableInstruction(), Argument
 
     /**
      * Represents the local.tee instruction.
      */
     data class LocalTee(
-        override val valueAstNode: Identifier.Local
+        override val valueAstNode: Index<Identifier.Local>
     ) : VariableInstruction(), Argument
 
     /**
      * Represents the global.get instruction.
      */
     data class GlobalGet(
-        override val valueAstNode: Identifier.Global
+        override val valueAstNode: Index<Identifier.Global>
     ) : VariableInstruction(), Argument
 
     /**
      * Represents the global.set instruction.
      */
     data class GlobalSet(
-        override val valueAstNode: Identifier.Global
+        override val valueAstNode: Index<Identifier.Global>
     ) : VariableInstruction(), Argument
 }

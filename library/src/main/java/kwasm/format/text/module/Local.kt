@@ -59,7 +59,7 @@ fun List<Token>.parseLocal(fromIndex: Int): ParseResult<AstNodeList<Local>>? {
 
     return ParseResult(
         if (valTypes.astNode.isEmpty() && id == null) {
-            astNodeListOf(Local(null, null))
+            astNodeListOf()
         } else {
             AstNodeList(valTypes.astNode.map { Local(id, it) })
         },
