@@ -22,7 +22,6 @@ import kwasm.format.ParseContext
 import kwasm.format.text.Tokenizer
 import kwasm.format.text.instruction.parseInstruction
 import kwasm.format.text.module.parseGlobal
-import kwasm.format.text.module.parseLocal
 import kwasm.format.text.module.parseLocals
 import kwasm.format.text.module.parseModule
 import kwasm.format.text.token.Token

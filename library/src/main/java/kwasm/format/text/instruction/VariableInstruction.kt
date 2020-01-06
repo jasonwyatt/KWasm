@@ -18,7 +18,6 @@ import kwasm.ast.Identifier
 import kwasm.ast.instruction.VariableInstruction
 import kwasm.format.text.ParseResult
 import kwasm.format.text.module.parseIndex
-import kwasm.format.text.parseIdentifier
 import kwasm.format.text.token.Keyword
 import kwasm.format.text.token.Token
 
