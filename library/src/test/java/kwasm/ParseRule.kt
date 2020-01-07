@@ -14,6 +14,7 @@
 
 package kwasm
 
+import kwasm.ast.AstNodeList
 import kwasm.ast.instruction.Instruction
 import kwasm.ast.module.Global
 import kwasm.ast.module.Local
@@ -21,6 +22,7 @@ import kwasm.ast.module.WasmModule
 import kwasm.format.ParseContext
 import kwasm.format.text.Tokenizer
 import kwasm.format.text.instruction.parseInstruction
+import kwasm.format.text.instruction.parseInstructions
 import kwasm.format.text.module.parseGlobal
 import kwasm.format.text.module.parseLocals
 import kwasm.format.text.module.parseModule
@@ -91,4 +93,8 @@ class ParseRule : TestRule {
         requireNotNull(tokenize().parseGlobal(0)?.astNode) {
             "No global found in source:\n$this"
         }
+
+    /** Parse a sequence of [Instruction]s from the given wasm source. */
+    fun String.parseInstructions(): AstNodeList<out Instruction> =
+        tokenize().parseInstructions(0).astNode
 }
