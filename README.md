@@ -6,6 +6,21 @@ KWasm is an Embeddable WebAssembly interpreter for the JVM
 [![CII Best Practices Summary](https://img.shields.io/cii/summary/3559?label=cii%20best%20practices&style=flat-square)](https://bestpractices.coreinfrastructure.org/en/projects/3559)
 [![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability-percentage/jasonwyatt/KWasm?style=flat-square)](https://codeclimate.com/github/jasonwyatt/KWasm)
 
+## Goals
+
+The primary goal of KWasm is to be a relatively lightweight, embeddable, WebAssembly interpreter for applications 
+running in the JVM (or on Android).  Beyond that, KWasm strives to:
+
+* meet the latest current [WebAssembly Specification](https://webassembly.github.io/spec/core/index.html)'s requirements,
+* use minimal system resources,
+* maintain WebAssembly's strict sandbox-like functionality, and
+* support interoperation between Java/Kotlin code and the WebAssembly it is tasked with running.
+
+Achieving good performance is a goal as well, but as with all interpeters: performance will never be as good as a 
+compiled solution.
+
+The primary benefit of interpretation over compilation is the capability for dynamic module loading & execution.
+
 ## Milestones
 
 The development of KWasm will be done in a series of milestones:
@@ -20,6 +35,28 @@ With optional milestones:
 1. Implement a WASM->JVM Bytecode compiler.
 
 Where milestones 2 and 3 are parallelizable.
+
+## Recommended Development Environment Setup
+
+Prerequisites:
+
+* [IntelliJ IDEA](https://www.jetbrains.com/idea/download) or [Android Studio](https://developer.android.com/studio/index.html)
+
+From the directory of your choice:
+
+1. Clone the repository to your local machine.
+1. Open IntelliJ/Android Studio, and Choose "New Project from Existing Sources"
+1. Select the `KWasm` directory created in step 1.
+
+That's it! The IDE will sync the project and you can begin working on KWasm.
+
+### Running Tests
+
+You can run the entire test suite with:
+
+```bash
+./gradlew test
+```
 
 ## License
 
