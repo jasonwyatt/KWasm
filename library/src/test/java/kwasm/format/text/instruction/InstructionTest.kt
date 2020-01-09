@@ -16,7 +16,11 @@ package kwasm.format.text.instruction
 
 import com.google.common.truth.Truth.assertThat
 import kwasm.ast.Identifier
+import kwasm.ast.IntegerLiteral
 import kwasm.ast.instruction.ControlInstruction
+import kwasm.ast.instruction.NumericConstantInstruction
+import kwasm.ast.instruction.NumericInstruction
+import kwasm.ast.instruction.ParametricInstruction
 import kwasm.ast.module.Index
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
@@ -101,5 +105,20 @@ class InstructionTest {
             ).isEqualTo(ControlInstruction.BreakIf(Index.ByIdentifier(Identifier.Label("\$$it"))))
         }
         assertThat(result.parseLength).isEqualTo(16)
+    }
+
+    @Test
+    fun parsePlural_parsesFoldedInstruction_followedByAnotherFolded() {
+        val result = tokenizer.tokenize(
+            """(i32.add (i32.const 1) (i32.const 2)) (drop)""",
+            context
+        ).parseInstructions(0)
+        assertThat(result.astNode).containsExactly(
+            NumericConstantInstruction.I32(IntegerLiteral.S32(1)),
+            NumericConstantInstruction.I32(IntegerLiteral.S32(2)),
+            NumericInstruction.I32Add,
+            ParametricInstruction.Drop
+        ).inOrder()
+        assertThat(result.parseLength).isEqualTo(14)
     }
 }

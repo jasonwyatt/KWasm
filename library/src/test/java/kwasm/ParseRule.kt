@@ -15,12 +15,14 @@
 package kwasm
 
 import kwasm.ast.AstNodeList
+import kwasm.ast.instruction.Expression
 import kwasm.ast.instruction.Instruction
 import kwasm.ast.module.Global
 import kwasm.ast.module.Local
 import kwasm.ast.module.WasmModule
 import kwasm.format.ParseContext
 import kwasm.format.text.Tokenizer
+import kwasm.format.text.instruction.parseExpression
 import kwasm.format.text.instruction.parseInstruction
 import kwasm.format.text.instruction.parseInstructions
 import kwasm.format.text.module.parseGlobal
@@ -97,4 +99,7 @@ class ParseRule : TestRule {
     /** Parse a sequence of [Instruction]s from the given wasm source. */
     fun String.parseInstructions(): AstNodeList<out Instruction> =
         tokenize().parseInstructions(0).astNode
+
+    /** Parse an [Expression] from the given wasm source. */
+    fun String.parseExpression(): Expression = tokenize().parseExpression(0).astNode
 }
