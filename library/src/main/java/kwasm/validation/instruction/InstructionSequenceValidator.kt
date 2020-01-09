@@ -27,14 +27,14 @@ import kwasm.validation.validate
  * @param requiredEndStack see [InstructionSequenceValidator.requiredEndStack]
  * @param strictEndStackMatchRequired see [InstructionSequenceValidator.strictEndStackMatchRequired]
  */
-fun AstNodeList<out Instruction>.validate(
+fun List<Instruction>.validate(
     context: ValidationContext.FunctionBody,
     requiredEndStack: List<ValueType>? = null,
     strictEndStackMatchRequired: Boolean = false
 ) = InstructionSequenceValidator(
     requiredEndStack,
     strictEndStackMatchRequired
-).visit(this, context)
+).visit(this as? AstNodeList<out Instruction> ?: AstNodeList(this), context)
 
 /**
  * Validator of sequences of [Instruction] nodes.
