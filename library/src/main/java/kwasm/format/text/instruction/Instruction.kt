@@ -46,24 +46,21 @@ fun List<Token>.parseInstructions(
     var instructionsParsed = 0
 
     while (instructionsParsed < max && fromIndex + tokensParsed < size) {
-        try {
-            val foldedInstruction = parseFoldedInstruction(fromIndex + tokensParsed)
-            var foldedWasNull = true
-            if (foldedInstruction != null) {
-                // If we found a folded instruction, unwrap its individual instructions into the
-                // result.
-                result.addAll(foldedInstruction.astNode)
-                tokensParsed += foldedInstruction.parseLength
-                instructionsParsed += foldedInstruction.astNode.size
-                foldedWasNull = false
-            }
+        val foldedInstruction = parseFoldedInstruction(fromIndex + tokensParsed)
+        var foldedWasNull = true
+        if (foldedInstruction != null) {
+            // If we found a folded instruction, unwrap its individual instructions into the result.
+            result.addAll(foldedInstruction.astNode)
+            tokensParsed += foldedInstruction.parseLength
+            instructionsParsed += foldedInstruction.astNode.size
+            foldedWasNull = false
+        }
 
-            val instruction = parseInstruction(fromIndex + tokensParsed)
-                ?: if (foldedWasNull) break else continue
-            result += instruction.astNode
-            tokensParsed += instruction.parseLength
-            instructionsParsed++
-        } catch (e: ParseException) { break }
+        val instruction = parseInstruction(fromIndex + tokensParsed)
+            ?: if (foldedWasNull) break else continue
+        result += instruction.astNode
+        tokensParsed += instruction.parseLength
+        instructionsParsed++
     }
 
     if (instructionsParsed < min) {

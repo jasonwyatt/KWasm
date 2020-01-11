@@ -34,17 +34,6 @@ class ExpressionValidatorTest {
     val parser = ParseRule()
 
     @Test
-    fun isInvalid_with_nonEmptyStartingStack() = parser.with {
-        val context = EMPTY_FUNCTION_BODY.pushStack(ValueType.I32)
-
-        assertThrows(ValidationException::class.java) {
-            "i32.const 0".parseExpression().validate(null, context)
-        }.also {
-            assertThat(it).hasMessageThat().contains("Expressions must operate on an empty stack")
-        }
-    }
-
-    @Test
     fun isInvalid_whenConstantRequired_butNonConstantIncluded() = parser.with {
         assertThrows(ValidationException::class.java) {
             "(i32.add (i32.const 0) (i32.const 1))".parseExpression()

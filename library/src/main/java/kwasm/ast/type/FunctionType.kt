@@ -29,4 +29,8 @@ import kwasm.ast.AstNode
 data class FunctionType(
     val parameters: List<Param>,
     val returnValueEnums: List<Result>
-) : AstNode
+) : AstNode {
+    override fun toString(): String =
+        "[${parameters.joinToString { it.valType.toString() }}] => " +
+            "[${returnValueEnums.joinToString { it.valType.toString() }}]"
+}

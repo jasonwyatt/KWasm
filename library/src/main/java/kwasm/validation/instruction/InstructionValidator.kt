@@ -14,6 +14,7 @@
 
 package kwasm.validation.instruction
 
+import kwasm.ast.instruction.ControlInstruction
 import kwasm.ast.instruction.Instruction
 import kwasm.ast.instruction.MemoryInstruction
 import kwasm.ast.instruction.NumericConstantInstruction
@@ -23,6 +24,7 @@ import kwasm.ast.instruction.VariableInstruction
 import kwasm.util.Impossible
 import kwasm.validation.FunctionBodyValidationVisitor
 import kwasm.validation.ValidationContext
+import kwasm.validation.instruction.control.ControlInstructionValidator
 
 /** Validates the [Instruction]. */
 fun Instruction.validate(context: ValidationContext.FunctionBody): ValidationContext.FunctionBody =
@@ -41,6 +43,7 @@ object InstructionValidator : FunctionBodyValidationVisitor<Instruction> {
         is ParametricInstruction -> ParametricInstructionValidator.visit(node, context)
         is VariableInstruction -> VariableInstructionValidator.visit(node, context)
         is MemoryInstruction -> MemoryInstructionValidator.visit(node, context)
+        is ControlInstruction -> ControlInstructionValidator.visit(node, context)
         else -> Impossible()
     }
 }

@@ -23,6 +23,7 @@ import kwasm.ast.module.Index
  */
 interface AstNodeIndex<T : AstNode> {
     val size: Int
+    val values: Set<T?>
 
     operator fun get(identifier: Identifier): T?
     operator fun get(index: Index<*>): T?
@@ -39,8 +40,9 @@ interface AstNodeIndex<T : AstNode> {
  */
 interface MutableAstNodeIndex<T : AstNode> : AstNodeIndex<T> {
     operator fun plusAssign(node: T)
-
     operator fun set(identifier: Identifier?, node: T)
+    fun prepend(identifier: Identifier?, node: T) : MutableAstNodeIndex<T>
+    fun prepend(node: T) : MutableAstNodeIndex<T>
 }
 
 /** Creates a new [AstNodeIndex]. */
@@ -57,6 +59,9 @@ private data class AstNodeIndexImpl<T : AstNode>(
     override val size: Int
         get() = nodes.size
 
+    override val values: Set<T?>
+        get() = nodes.toSet()
+
     override operator fun plusAssign(node: T) {
         nodes += node
     }
@@ -68,6 +73,19 @@ private data class AstNodeIndexImpl<T : AstNode>(
             nodesByIdentifier[it] = node
         }
         nodes += node
+    }
+
+    override fun prepend(identifier: Identifier?, node: T) = apply {
+        nodes.add(0, node)
+        identifier?.stringRepr?.let {
+            // TODO: throw an exception with the ParseContext when nodes have context.
+            check(it !in nodesByIdentifier) { "Identifier: \"$it\" is already in use" }
+            nodesByIdentifier[it] = node
+        }
+    }
+
+    override fun prepend(node: T) = apply {
+        nodes.add(0, node)
     }
 
     override operator fun get(identifier: Identifier): T? =

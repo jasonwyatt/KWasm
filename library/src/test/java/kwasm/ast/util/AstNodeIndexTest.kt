@@ -18,6 +18,8 @@ import com.google.common.truth.Truth.assertThat
 import kwasm.ast.Identifier
 import kwasm.ast.module.Index
 import kwasm.ast.type.GlobalType
+import kwasm.ast.type.Result
+import kwasm.ast.type.ResultType
 import kwasm.ast.type.ValueType
 import org.junit.Assert.assertThrows
 import org.junit.Test
@@ -160,5 +162,32 @@ class AstNodeIndexTest {
                 false
             )
         )
+    }
+
+    @Test
+    fun prepend_withReusedIdentifier_throws() {
+        val index = MutableAstNodeIndex<ResultType>()
+        index[Identifier.Label("\$foo")] = ResultType(Result(ValueType.I32))
+        assertThrows(IllegalStateException::class.java) {
+            index.prepend(Identifier.Label("\$foo"), ResultType(Result(ValueType.I64)))
+        }
+    }
+
+    @Test
+    fun prepend_withIdentiifier() {
+        val index = MutableAstNodeIndex<ResultType>()
+        index[null] = ResultType(Result(ValueType.I64))
+        index.prepend(Identifier.Label("\$foo"), ResultType(Result(ValueType.I32)))
+
+        assertThat(index[0]).isEqualTo(ResultType(Result(ValueType.I32)))
+    }
+
+    @Test
+    fun prepend_withoutIdentiifier() {
+        val index = MutableAstNodeIndex<ResultType>()
+        index[null] = ResultType(Result(ValueType.I64))
+        index.prepend(ResultType(Result(ValueType.I32)))
+
+        assertThat(index[0]).isEqualTo(ResultType(Result(ValueType.I32)))
     }
 }
