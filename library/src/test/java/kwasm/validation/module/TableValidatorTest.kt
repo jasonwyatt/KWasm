@@ -16,7 +16,6 @@ package kwasm.validation.module
 
 import kwasm.ParseRule
 import kwasm.validation.ValidationContext.Companion.EMPTY_MODULE
-import kwasm.validation.ValidationException
 import org.junit.Assert.assertThrows
 import org.junit.Rule
 import org.junit.Test
