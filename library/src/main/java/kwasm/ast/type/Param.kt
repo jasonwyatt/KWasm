@@ -25,5 +25,15 @@ import kwasm.ast.Identifier
  *   param    ::=  ‘(’ ‘param’  id?  t:valtype ‘)’  => t
  * ```
  */
-data class Param(val id: Identifier.Local, val valType: ValueType) :
-    AstNode
+data class Param(val id: Identifier.Local, val valType: ValueType) : AstNode {
+    override fun equals(other: Any?): Boolean {
+        if (other === this) return true
+        if (other !is Param) return false
+        if (other.valType != valType) return false
+        return other.id.stringRepr == id.stringRepr ||
+            (other.id.stringRepr == null && id.stringRepr != null) ||
+            (other.id.stringRepr != null && id.stringRepr == null)
+    }
+
+    override fun hashCode(): Int = valType.hashCode()
+}

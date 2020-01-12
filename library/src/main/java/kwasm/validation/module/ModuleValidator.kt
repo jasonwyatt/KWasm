@@ -109,6 +109,9 @@ object ModuleValidator : ModuleValidationVisitor<WasmModule> {
         resultContext = node.tables.fold(resultContext) { lastContext, table ->
             table.validate(lastContext)
         }
+        resultContext = node.functions.fold(resultContext) { lastContext, function ->
+            function.validate(lastContext)
+        }
 
         validate(
             node.tables.size <= 1,

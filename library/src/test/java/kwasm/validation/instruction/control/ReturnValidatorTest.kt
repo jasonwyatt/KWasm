@@ -85,6 +85,6 @@ class ReturnValidatorTest {
                     returnType = ResultType(Result(ValueType.I64))
                 ).pushStack(ValueType.I32).pushStack(ValueType.I64)
             )
-        assertThat(result.stack).containsExactly(ValueType.I32)
+        assertThat(result.stack).containsExactly(ValueType.I32, ValueType.I64)
     }
 }
