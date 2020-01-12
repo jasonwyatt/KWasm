@@ -96,13 +96,13 @@ object ModuleValidator : ModuleValidationVisitor<WasmModule> {
         node: WasmModule,
         context: ValidationContext.Module
     ): ValidationContext.Module {
-        @Suppress("UNUSED_VARIABLE") // TODO: remove once we're validating globals.
         val globalContext = context.copy(
             types = AstNodeIndex(),
             functions = AstNodeIndex(),
             tables = AstNodeIndex(),
             memories = AstNodeIndex()
         )
+        node.globals.forEach { it.validate(globalContext) }
 
         var resultContext = node.memories.fold(context) { lastContext, memory ->
             memory.validate(lastContext)

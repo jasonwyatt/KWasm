@@ -73,7 +73,23 @@ sealed class ValidationContext(
         override val tables: AstNodeIndex<TableType>,
         override val memories: AstNodeIndex<MemoryType>,
         override val globals: AstNodeIndex<GlobalType>
-    ) : ValidationContext(types, functions, tables, memories, globals)
+    ) : ValidationContext(types, functions, tables, memories, globals) {
+        fun toFunctionBody(
+            locals: AstNodeIndex<ValueType> = AstNodeIndex(),
+            labels: AstNodeIndex<ResultType> = AstNodeIndex(),
+            returnType: ResultType? = null
+        ): FunctionBody = FunctionBody(
+            types,
+            functions,
+            tables,
+            memories,
+            globals,
+            locals,
+            labels,
+            emptyList(),
+            returnType
+        )
+    }
 
     /**
      * For validating [Instruction]s within a [WasmFunction] body or [Expression].
