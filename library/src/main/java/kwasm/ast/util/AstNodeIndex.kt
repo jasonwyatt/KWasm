@@ -41,8 +41,8 @@ interface AstNodeIndex<T : AstNode> {
 interface MutableAstNodeIndex<T : AstNode> : AstNodeIndex<T> {
     operator fun plusAssign(node: T)
     operator fun set(identifier: Identifier?, node: T)
-    fun prepend(identifier: Identifier?, node: T) : MutableAstNodeIndex<T>
-    fun prepend(node: T) : MutableAstNodeIndex<T>
+    fun prepend(identifier: Identifier?, node: T): MutableAstNodeIndex<T>
+    fun prepend(node: T): MutableAstNodeIndex<T>
 }
 
 /** Creates a new [AstNodeIndex]. */

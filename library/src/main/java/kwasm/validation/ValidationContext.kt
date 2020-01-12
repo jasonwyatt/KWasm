@@ -23,7 +23,6 @@ import kwasm.ast.module.WasmFunction
 import kwasm.ast.module.WasmModule
 import kwasm.ast.type.GlobalType
 import kwasm.ast.type.MemoryType
-import kwasm.ast.type.Result
 import kwasm.ast.type.ResultType
 import kwasm.ast.type.TableType
 import kwasm.ast.type.ValueType
@@ -113,8 +112,8 @@ sealed class ValidationContext(
             stack.asReversed().take(count) to copy(stack = stack.dropLast(count))
 
         /** Prepends a [ResultType] onto the [labels] list with the given identifier. */
-        fun prependLabel(identifier: Identifier.Label, label: ResultType)
-            = copy(labels = labels.toMutableIndex().prepend(identifier, label))
+        fun prependLabel(identifier: Identifier.Label, label: ResultType) =
+            copy(labels = labels.toMutableIndex().prepend(identifier, label))
 
         /** Prepends a [ResultType] onto the [labels] list. */
         fun prependLabel(label: ResultType) = copy(labels = labels.toMutableIndex().prepend(label))

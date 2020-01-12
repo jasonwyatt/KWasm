@@ -60,33 +60,36 @@ class LoopValidatorTest {
 
     @Test
     fun valid_expectedType_noBreaks_noLabel() = parser.with {
-        val result = """
+        val result =
+            """
             (loop (result i32) 
                 (i32.add (i32.const 1) (i32.const 2))
             )
-        """.trimIndent().parseInstructions().validate(EMPTY_FUNCTION_BODY)
+            """.trimIndent().parseInstructions().validate(EMPTY_FUNCTION_BODY)
         assertThat(result.stack).containsExactly(ValueType.I32)
     }
 
     @Test
     fun valid_expectedType_break_noLabel() = parser.with {
-        val result = """
+        val result =
+            """
             (loop (result i32)
                 (i32.const 0)
                 (br 0)
             )
-        """.trimIndent().parseInstructions().validate(EMPTY_FUNCTION_BODY)
+            """.trimIndent().parseInstructions().validate(EMPTY_FUNCTION_BODY)
         assertThat(result.stack).containsExactly(ValueType.I32)
     }
 
     @Test
     fun valid_expectedType_break_label() = parser.with {
-        val result = """
+        val result =
+            """
             (loop $0 (result i32)
                 (i32.const 0)
                 (br $0)
             )
-        """.trimIndent().parseInstructions().validate(EMPTY_FUNCTION_BODY)
+            """.trimIndent().parseInstructions().validate(EMPTY_FUNCTION_BODY)
         assertThat(result.stack).containsExactly(ValueType.I32)
     }
 }

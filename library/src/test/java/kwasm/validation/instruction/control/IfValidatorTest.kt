@@ -35,9 +35,9 @@ class IfValidatorTest {
     fun invalid_ifTopOfStack_isNotI32() = parser.with {
         assertThrows(ValidationException::class.java) {
             """
-                (if 
-                    (then (nop))
-                )
+            (if 
+                (then (nop))
+            )
             """.trimIndent()
                 .parseInstructions()
                 .validate(EMPTY_FUNCTION_BODY.pushStack(ValueType.I64))
@@ -45,9 +45,9 @@ class IfValidatorTest {
 
         assertThrows(ValidationException::class.java) {
             """
-                (if 
-                    (then (nop))
-                )
+            (if 
+                (then (nop))
+            )
             """.trimIndent()
                 .parseInstructions()
                 .validate(EMPTY_FUNCTION_BODY.pushStack(ValueType.F32))
@@ -55,9 +55,9 @@ class IfValidatorTest {
 
         assertThrows(ValidationException::class.java) {
             """
-                (if 
-                    (then (nop))
-                )
+            (if 
+                (then (nop))
+            )
             """.trimIndent()
                 .parseInstructions()
                 .validate(EMPTY_FUNCTION_BODY.pushStack(ValueType.F64))
@@ -77,9 +77,9 @@ class IfValidatorTest {
     fun invalid_ifInstructions_finishWithWrongType() = parser.with {
         assertThrows(ValidationException::class.java) {
             """
-                (if (result i64) 
-                    (then (i32.const 1))
-                )
+            (if (result i64) 
+                (then (i32.const 1))
+            )
             """.trimIndent().parseInstructions().validate(STARTER_CONTEXT)
         }
     }
@@ -88,9 +88,9 @@ class IfValidatorTest {
     fun invalid_ifInstructions_finishWithWrongType_expected_nonePresent() = parser.with {
         assertThrows(ValidationException::class.java) {
             """
-                (if (result i64) 
-                    (then (nop))
-                )
+            (if (result i64) 
+                (then (nop))
+            )
             """.trimIndent().parseInstructions().validate(STARTER_CONTEXT)
         }
     }
@@ -108,10 +108,10 @@ class IfValidatorTest {
     fun invalid_elseInstructions_finishWithWrongType() = parser.with {
         assertThrows(ValidationException::class.java) {
             """
-                (if (result i64) 
-                    (then (i64.const 1))
-                    (else (i32.const 1))
-                )
+            (if (result i64) 
+                (then (i64.const 1))
+                (else (i32.const 1))
+            )
             """.trimIndent().parseInstructions().validate(STARTER_CONTEXT)
         }
     }
@@ -120,10 +120,10 @@ class IfValidatorTest {
     fun invalid_elseInstructions_finishWithWrongType_expected_nonePresent() = parser.with {
         assertThrows(ValidationException::class.java) {
             """
-                (if (result i64) 
-                    (then (i64.const 1))
-                    (else (nop))
-                )
+            (if (result i64) 
+                (then (i64.const 1))
+                (else (nop))
+            )
             """.trimIndent().parseInstructions().validate(STARTER_CONTEXT)
         }
     }
@@ -131,26 +131,24 @@ class IfValidatorTest {
     @Test
     fun valid_noExpectedResult() = parser.with {
         var result = """
-            (if
-                (then (nop))
-                (else (nop))
-            )
-        """.trimIndent()
-            .parseInstructions()
-            .validate(STARTER_CONTEXT)
+        (if
+            (then (nop))
+            (else (nop))
+        )
+        """.trimIndent().parseInstructions().validate(STARTER_CONTEXT)
         assertThat(result.stack).isEmpty()
 
         result = """
-            (if
-                (then 
-                    (i32.add (i32.const 0) (i32.const 1))
-                    (drop)
-                )
-                (else (nop)
-                    (i32.add (i32.const 2) (i32.const 3))
-                    (drop)
-                )
+        (if
+            (then 
+                (i32.add (i32.const 0) (i32.const 1))
+                (drop)
             )
+            (else (nop)
+                (i32.add (i32.const 2) (i32.const 3))
+                (drop)
+            )
+        )
         """.trimIndent()
             .parseInstructions()
             .validate(STARTER_CONTEXT)
@@ -159,20 +157,22 @@ class IfValidatorTest {
 
     @Test
     fun valid_expectedResult() = parser.with {
-        val result = """
+        val result =
+            """
             (if (result f32)
                 (then (f32.const 0.0))
                 (else (f32.const 1.0))
             )
-        """.trimIndent()
-            .parseInstructions()
-            .validate(STARTER_CONTEXT)
+            """.trimIndent()
+                .parseInstructions()
+                .validate(STARTER_CONTEXT)
         assertThat(result.stack).containsExactly(ValueType.F32)
     }
 
     @Test
     fun valid_nested() = parser.with {
-        val result = """
+        val result =
+            """
             (if (result i32)
                 (then 
                     (i32.const 0)
@@ -192,9 +192,9 @@ class IfValidatorTest {
                     i32.const 1
                 )
             )
-        """.trimIndent()
-            .parseInstructions()
-            .validate(STARTER_CONTEXT)
+            """.trimIndent()
+                .parseInstructions()
+                .validate(STARTER_CONTEXT)
         assertThat(result.stack).containsExactly(ValueType.I32)
     }
 
