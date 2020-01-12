@@ -62,23 +62,22 @@ fun WasmModule.validate(context: ValidationContext.Module = ValidationContext(th
  *    * `C.return` is empty.
  * * Let `C′` be the context where `C′.globals` is the sequence `globals(it*)` and all other fields
  *   are empty.
- * TODO:
- *  * Under the context `C`:
- *    * For each `functype_i` in `module.types`, the function type `functype_i` must be valid.
- *    * For each `func_i` in `module.funcs`, the definition `func_i` must be valid with a function
+ * * Under the context `C`:
+ *   * TODO: For each `functype_i` in `module.types`, the function type `functype_i` must be valid.
+ *   * TODO: For each `func_i` in `module.funcs`, the definition `func_i` must be valid with a function
  *      type `ft_i`.
- *    * For each `table_i` in `module.tables`, the definition `table_i` must be valid with a table
- *      type `tt_i`.
- *    * For each `mem_i` in `module.mems`, the definition `mem_i` must be valid with a memory type
- *      `mt_i`.
- *    * For each `global_i` in `module.globals:` Under the context `C′`, the definition `global_i`
- *      must be valid with a global type `gt_i`.
- *    * For each `elem_i` in `module.elem`, the segment `elem_i` must be valid.
- *    * For each `data_i` in `module.data`, the segment `data_i` must be valid.
- *    * If `module.start` is non-empty, then `module.start` must be valid.
- *    * For each `import_i` in `module.imports`, the segment `import_i` must be valid with an
+ *   * For each `table_i` in `module.tables`, the definition `table_i` must be valid with a table
+ *     type `tt_i`.
+ *   * For each `mem_i` in `module.mems`, the definition `mem_i` must be valid with a memory type
+ *     `mt_i`.
+ *   * For each `global_i` in `module.globals:` Under the context `C′`, the definition `global_i`
+ *     must be valid with a global type `gt_i`.
+ *   * TODO: For each `elem_i` in `module.elem`, the segment `elem_i` must be valid.
+ *   * TODO: For each `data_i` in `module.data`, the segment `data_i` must be valid.
+ *   * TODO: If `module.start` is non-empty, then `module.start` must be valid.
+ *   * TODO: For each `import_i` in `module.imports`, the segment `import_i` must be valid with an
  *      external type `it_i`.
- *    * For each `export_i` in `module.exports`, the segment `export_i` must be valid with external
+ *   * TODO: For each `export_i` in `module.exports`, the segment `export_i` must be valid with external
  *      type `et_i`.
  * * The length of `C.tables` must not be larger than `1`.
  * * The length of `C.mems` must not be larger than `1`.
