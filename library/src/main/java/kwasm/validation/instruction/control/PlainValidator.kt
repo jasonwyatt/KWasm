@@ -117,13 +117,13 @@ internal fun ControlInstruction.BreakIf.validateBreakIf(
     )
 
     return labelResult.result?.valType?.let {
-        val (top, finalContext) = context.popStack()
+        val (top, finalContext) = updatedContext.popStack()
         validate(
             top == it,
             parseContext = null,
             message = "Expected $it at the second position in the stack"
         )
-        finalContext
+        finalContext.pushStack(it)
     } ?: updatedContext
 }
 
@@ -160,7 +160,7 @@ internal fun ControlInstruction.BreakTable.validateBreakTable(
     )
 
     return defaultResult.result?.valType?.let {
-        val (top, finalContext) = context.popStack()
+        val (top, finalContext) = updatedContext.popStack()
         validate(
             top == it,
             parseContext = null,
@@ -182,7 +182,9 @@ internal fun ControlInstruction.BreakTable.validateBreakTable(
  * * Then the instruction is valid with type `[t*^1 t?] => [t*^2]`, for any sequences of value
  *   types `t*^1` and `t*^2`.
  */
-internal fun validateReturn(context: ValidationContext.FunctionBody): ValidationContext.FunctionBody {
+internal fun validateReturn(
+    context: ValidationContext.FunctionBody
+): ValidationContext.FunctionBody {
     val returnType = validateNotNull(
         context.returnType,
         parseContext = null,

@@ -24,5 +24,6 @@ import kwasm.ast.AstNode
  *   result   ::=  ‘(’ ‘result’  t:valtype ‘)’  => t
  * ```
  */
-data class Result(val valType: ValueType) :
-    AstNode
+data class Result(val valType: ValueType) : AstNode {
+    override fun toString(): String = "$valType"
+}

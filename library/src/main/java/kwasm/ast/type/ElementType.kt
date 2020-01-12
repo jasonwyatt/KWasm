@@ -21,5 +21,7 @@ package kwasm.ast.type
 enum class ElementType {
     FunctionReference {
         override fun toString(): String = "funcref"
-    }
+    },
+    /** Purely for testing purposes. */
+    Illegal
 }

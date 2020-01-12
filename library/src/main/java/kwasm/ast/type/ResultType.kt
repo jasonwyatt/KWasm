@@ -24,5 +24,6 @@ import kwasm.ast.AstNode
  *   resultType   ::=  (t:result)?  => [t?]
  * ```
  */
-data class ResultType(val result: Result?) :
-    AstNode
+data class ResultType(val result: Result?) : AstNode {
+    override fun toString(): String = "(result${ if (result != null) " $result" else ""})"
+}
