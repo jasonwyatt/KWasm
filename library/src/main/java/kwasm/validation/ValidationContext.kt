@@ -14,6 +14,7 @@
 
 package kwasm.validation
 
+import kwasm.ast.Identifier
 import kwasm.ast.astNodeListOf
 import kwasm.ast.module.ImportDescriptor
 import kwasm.ast.module.Type
@@ -88,8 +89,11 @@ sealed class ValidationContext(
         val locals: AstNodeIndex<ValueType>,
         val labels: AstNodeIndex<ResultType>,
         val stack: List<ValueType>,
-        val returnType: ValueType?
+        val returnType: ResultType?
     ) : ValidationContext(types, functions, tables, memories, globals) {
+        /** Returns the [ValueType] at the top of the stack without popping it. */
+        fun peekStack(): ValueType? = stack.lastOrNull()
+
         /** Returns a new [FunctionBody], with the given [valueType] pushed onto the [stack]. */
         fun pushStack(valueType: ValueType): FunctionBody = copy(stack = stack + valueType)
 
@@ -106,6 +110,13 @@ sealed class ValidationContext(
          */
         fun popStack(count: Int): Pair<List<ValueType>, FunctionBody> =
             stack.asReversed().take(count) to copy(stack = stack.dropLast(count))
+
+        /** Prepends a [ResultType] onto the [labels] list with the given identifier. */
+        fun prependLabel(identifier: Identifier.Label, label: ResultType) =
+            copy(labels = labels.toMutableIndex().prepend(identifier, label))
+
+        /** Prepends a [ResultType] onto the [labels] list. */
+        fun prependLabel(label: ResultType) = copy(labels = labels.toMutableIndex().prepend(label))
     }
 
     companion object {

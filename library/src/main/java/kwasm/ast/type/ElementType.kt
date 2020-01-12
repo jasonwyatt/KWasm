@@ -19,5 +19,9 @@ package kwasm.ast.type
  * is supported.
  */
 enum class ElementType {
-    FunctionReference
+    FunctionReference {
+        override fun toString(): String = "funcref"
+    },
+    /** Purely for testing purposes. */
+    Illegal
 }

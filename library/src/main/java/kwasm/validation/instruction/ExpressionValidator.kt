@@ -64,12 +64,6 @@ class ExpressionValidator(
         context: ValidationContext.FunctionBody
     ): ValidationContext.FunctionBody {
         validate(
-            context.stack.isEmpty(),
-            parseContext = null,
-            message = "Expressions must operate on an empty stack"
-        )
-
-        validate(
             !isConstant || node.instructions.all { it.isConstant(context) },
             parseContext = null,
             message = "Constant expressions may only contain ((i|f)(32|64)).const and " +
