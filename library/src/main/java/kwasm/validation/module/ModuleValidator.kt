@@ -104,8 +104,11 @@ object ModuleValidator : ModuleValidationVisitor<WasmModule> {
             memories = AstNodeIndex()
         )
 
-        val resultContext = node.memories.fold(context) { lastContext, memory ->
+        var resultContext = node.memories.fold(context) { lastContext, memory ->
             memory.validate(lastContext)
+        }
+        resultContext = node.tables.fold(resultContext) { lastContext, table ->
+            table.validate(lastContext)
         }
 
         validate(
