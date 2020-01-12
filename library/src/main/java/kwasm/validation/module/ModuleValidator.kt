@@ -104,7 +104,9 @@ object ModuleValidator : ModuleValidationVisitor<WasmModule> {
             memories = AstNodeIndex()
         )
 
-        // TODO: validate children (see TODO above).
+        val resultContext = node.memories.fold(context) { lastContext, memory ->
+            memory.validate(lastContext)
+        }
 
         validate(
             node.tables.size <= 1,
@@ -122,6 +124,6 @@ object ModuleValidator : ModuleValidationVisitor<WasmModule> {
             "The following export names are used more than once: ${duplicateExports.keys}"
         }
 
-        return context
+        return resultContext
     }
 }
