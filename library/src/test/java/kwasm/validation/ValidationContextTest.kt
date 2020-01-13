@@ -148,7 +148,7 @@ class ValidationContextTest {
                 astNodeListOf()
             )
         )
-        assertThat(context.types.size).isEqualTo(1)
+        assertThat(context.types.size).isEqualTo(2)
         assertThat(context.types["$0"]).isEqualTo(
             Type(
                 Identifier.Type("$0"),
@@ -161,6 +161,22 @@ class ValidationContextTest {
                     ),
                     astNodeListOf(
                         Result(ValueType.F32)
+                    )
+                )
+            )
+        )
+        assertThat(context.types[1]).isEqualTo(
+            Type(
+                null,
+                FunctionType(
+                    astNodeListOf(
+                        Param(
+                            Identifier.Local(null, null),
+                            ValueType.I64
+                        )
+                    ),
+                    astNodeListOf(
+                        Result(ValueType.F64)
                     )
                 )
             )

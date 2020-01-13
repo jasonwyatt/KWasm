@@ -192,11 +192,11 @@ internal fun validateReturn(
     )
 
     return returnType.result?.valType?.let {
-        val (top, updatedContext) = context.popStack()
+        val top = context.peekStack()
         validate(top == it, parseContext = null) {
             "Expected $it at the top of the stack"
         }
-        updatedContext
+        context
     } ?: context
 }
 

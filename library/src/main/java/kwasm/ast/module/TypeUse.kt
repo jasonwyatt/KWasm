@@ -16,6 +16,7 @@ package kwasm.ast.module
 
 import kwasm.ast.AstNode
 import kwasm.ast.Identifier
+import kwasm.ast.type.FunctionType
 import kwasm.ast.type.Param
 import kwasm.ast.type.Result
 
@@ -59,4 +60,11 @@ data class TypeUse(
     val index: Index<Identifier.Type>?,
     val params: List<Param>,
     val results: List<Result>
-) : AstNode
+) : AstNode {
+    /** A [FunctionType] matching the [TypeUse]. */
+    val functionType: FunctionType = FunctionType(params, results)
+
+    /** Converts the [TypeUse] into a [Type]. */
+    fun toType(): Type =
+        Type((index as? Index.ByIdentifier<Identifier.Type>)?.indexVal, functionType)
+}

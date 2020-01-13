@@ -137,7 +137,7 @@ sealed class ValidationContext(
 
     companion object {
         /** An empty [ValidationContext.Module] instance. */
-        val EMPTY_MODULE = ValidationContext.Module(
+        val EMPTY_MODULE = Module(
             types = AstNodeIndex(),
             functions = AstNodeIndex(),
             tables = AstNodeIndex(),
@@ -146,7 +146,7 @@ sealed class ValidationContext(
         )
 
         /** An empty [ValidationContext.Function] instance. */
-        val EMPTY_FUNCTION_BODY = ValidationContext.FunctionBody(
+        val EMPTY_FUNCTION_BODY = FunctionBody(
             types = AstNodeIndex(),
             functions = AstNodeIndex(),
             tables = AstNodeIndex(),
@@ -178,12 +178,7 @@ fun ValidationContext(module: WasmModule): ValidationContext.Module {
             astNodeListOf(),
             astNodeListOf()
         )
-
-        // If the typeUse has an index, validate that there is a defined type for that index
-        // TODO: pass the context when it's available on the AstNode
-        validate(typeUse.index == null || types[typeUse.index] != null) {
-            "Function uses type ${typeUse.index}, but it's not declared by the module"
-        }
+        types.addTypeUse(typeUse)
 
         upcastThrown { functions[it.id] = typeUse }
     }
@@ -200,12 +195,7 @@ fun ValidationContext(module: WasmModule): ValidationContext.Module {
         when (val descriptor = import.descriptor) {
             is ImportDescriptor.Function -> {
                 val typeUse = descriptor.typeUse
-
-                // If the typeUse has an index, validate that there is a defined type for that index
-                // TODO: pass the context when it's available on the AstNode
-                validate(typeUse.index == null || types[typeUse.index] != null) {
-                    "Function uses type ${typeUse.index}, but it's not declared by the module"
-                }
+                types.addTypeUse(typeUse)
 
                 upcastThrown { functions[descriptor.id] = typeUse }
             }
@@ -236,4 +226,16 @@ fun ValidationContext(module: WasmModule): ValidationContext.Module {
     }
 
     return ValidationContext.Module(types, functions, tables, memories, globals)
+}
+
+private fun MutableAstNodeIndex<Type>.addTypeUse(typeUse: TypeUse) {
+    if (typeUse.index == null) {
+        // Implicit type use, add it to types.
+        this[null] = typeUse.toType()
+    } else {
+        // If the typeUse has an index, validate that there is a defined type for that index
+        validate(this[typeUse.index] != null, parseContext = null) {
+            "Function uses type ${typeUse.index}, but it's not declared by the module"
+        }
+    }
 }

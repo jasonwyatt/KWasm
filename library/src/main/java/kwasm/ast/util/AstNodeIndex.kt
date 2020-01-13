@@ -28,6 +28,7 @@ interface AstNodeIndex<T : AstNode> {
     operator fun get(identifier: Identifier): T?
     operator fun get(index: Index<*>): T?
     operator fun get(index: Int): T?
+    operator fun contains(node: T): Boolean
 
     fun toMutableIndex(): MutableAstNodeIndex<T>
     fun toImmutableIndex(): AstNodeIndex<T>
@@ -97,6 +98,8 @@ private data class AstNodeIndexImpl<T : AstNode>(
     }
 
     override operator fun get(index: Int): T? = nodes.getOrNull(index)
+
+    override operator fun contains(node: T): Boolean = nodes.any { it == node }
 
     override fun toMutableIndex(): MutableAstNodeIndex<T> = AstNodeIndexImpl(
         mutableListOf<T?>().apply { addAll(nodes) },
