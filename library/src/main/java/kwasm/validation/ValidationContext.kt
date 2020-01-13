@@ -178,16 +178,7 @@ fun ValidationContext(module: WasmModule): ValidationContext.Module {
             astNodeListOf(),
             astNodeListOf()
         )
-
-        if (typeUse.index == null) {
-            // Implicit type use, add it to types.
-            types[null] = typeUse.toType()
-        } else {
-            // If the typeUse has an index, validate that there is a defined type for that index
-            validate(types[typeUse.index] != null, parseContext = null) {
-                "Function uses type ${typeUse.index}, but it's not declared by the module"
-            }
-        }
+        types.addTypeUse(typeUse)
 
         upcastThrown { functions[it.id] = typeUse }
     }
@@ -204,16 +195,7 @@ fun ValidationContext(module: WasmModule): ValidationContext.Module {
         when (val descriptor = import.descriptor) {
             is ImportDescriptor.Function -> {
                 val typeUse = descriptor.typeUse
-
-                if (typeUse.index == null) {
-                    // Implicit type use, add it to types.
-                    types[null] = typeUse.toType()
-                } else {
-                    // If the typeUse has an index, validate that there is a defined type for that index
-                    validate(types[typeUse.index] != null, parseContext = null) {
-                        "Function uses type ${typeUse.index}, but it's not declared by the module"
-                    }
-                }
+                types.addTypeUse(typeUse)
 
                 upcastThrown { functions[descriptor.id] = typeUse }
             }
@@ -244,4 +226,16 @@ fun ValidationContext(module: WasmModule): ValidationContext.Module {
     }
 
     return ValidationContext.Module(types, functions, tables, memories, globals)
+}
+
+private fun MutableAstNodeIndex<Type>.addTypeUse(typeUse: TypeUse) {
+    if (typeUse.index == null) {
+        // Implicit type use, add it to types.
+        this[null] = typeUse.toType()
+    } else {
+        // If the typeUse has an index, validate that there is a defined type for that index
+        validate(this[typeUse.index] != null, parseContext = null) {
+            "Function uses type ${typeUse.index}, but it's not declared by the module"
+        }
+    }
 }
