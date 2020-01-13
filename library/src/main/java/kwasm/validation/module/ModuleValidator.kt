@@ -74,7 +74,7 @@ fun WasmModule.validate(context: ValidationContext.Module = ValidationContext(th
  *     must be valid with a global type `gt_i`.
  *   * For each `elem_i` in `module.elem`, the segment `elem_i` must be valid.
  *   * For each `data_i` in `module.data`, the segment `data_i` must be valid.
- *   * TODO: If `module.start` is non-empty, then `module.start` must be valid.
+ *   * If `module.start` is non-empty, then `module.start` must be valid.
  *   * TODO: For each `import_i` in `module.imports`, the segment `import_i` must be valid with an
  *      external type `it_i`.
  *   * TODO: For each `export_i` in `module.exports`, the segment `export_i` must be valid with external
@@ -118,6 +118,7 @@ object ModuleValidator : ModuleValidationVisitor<WasmModule> {
         resultContext = node.data.fold(resultContext) { lastContext, data ->
             data.validate(lastContext)
         }
+        resultContext = node.start?.validate(resultContext) ?: resultContext
 
         validate(
             node.tables.size <= 1,
