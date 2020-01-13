@@ -63,7 +63,7 @@ fun WasmModule.validate(context: ValidationContext.Module = ValidationContext(th
  * * Let `C′` be the context where `C′.globals` is the sequence `globals(it*)` and all other fields
  *   are empty.
  * * Under the context `C`:
- *   * TODO: For each `functype_i` in `module.types`, the function type `functype_i` must be valid.
+ *   * For each `functype_i` in `module.types`, the function type `functype_i` must be valid.
  *   * For each `func_i` in `module.funcs`, the definition `func_i` must be valid with a function
  *      type `ft_i`.
  *   * For each `table_i` in `module.tables`, the definition `table_i` must be valid with a table
@@ -72,7 +72,7 @@ fun WasmModule.validate(context: ValidationContext.Module = ValidationContext(th
  *     `mt_i`.
  *   * For each `global_i` in `module.globals:` Under the context `C′`, the definition `global_i`
  *     must be valid with a global type `gt_i`.
- *   * TODO: For each `elem_i` in `module.elem`, the segment `elem_i` must be valid.
+ *   * For each `elem_i` in `module.elem`, the segment `elem_i` must be valid.
  *   * For each `data_i` in `module.data`, the segment `data_i` must be valid.
  *   * TODO: If `module.start` is non-empty, then `module.start` must be valid.
  *   * TODO: For each `import_i` in `module.imports`, the segment `import_i` must be valid with an
@@ -111,6 +111,9 @@ object ModuleValidator : ModuleValidationVisitor<WasmModule> {
         }
         resultContext = node.functions.fold(resultContext) { lastContext, function ->
             function.validate(lastContext)
+        }
+        resultContext = node.elements.fold(resultContext) { lastContext, element ->
+            element.validate(lastContext)
         }
         resultContext = node.data.fold(resultContext) { lastContext, data ->
             data.validate(lastContext)
