@@ -32,6 +32,7 @@ interface AstNodeIndex<T : AstNode> {
 
     fun toMutableIndex(): MutableAstNodeIndex<T>
     fun toImmutableIndex(): AstNodeIndex<T>
+    fun any(block: (T?) -> Boolean): Boolean
 }
 
 /**
@@ -110,4 +111,6 @@ private data class AstNodeIndexImpl<T : AstNode>(
         mutableListOf<T?>().apply { addAll(nodes) },
         mutableMapOf<String, T>().apply { putAll(nodesByIdentifier) }
     )
+
+    override fun any(block: (T?) -> Boolean): Boolean = nodes.any { block(it) }
 }

@@ -24,6 +24,7 @@ import kwasm.validation.validateNotNull
 fun Export.validate(context: ValidationContext.Module): ValidationContext.Module =
     ExportValidator.visit(this, context)
 
+/** Validates the [ExportDescriptor] node. */
 fun ExportDescriptor<*>.validate(context: ValidationContext.Module): ValidationContext.Module =
     ExportDescriptorValidator.visit(this, context)
 

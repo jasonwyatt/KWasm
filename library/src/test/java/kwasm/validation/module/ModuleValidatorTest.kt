@@ -27,9 +27,6 @@ import org.junit.runners.JUnit4
 class ModuleValidatorTest {
     @get:Rule val parser = ParseRule()
 
-    // TODO: add more tests to check that modules' children are validated according to the spec
-    //   when those child types' validators are ready
-
     @Test
     fun moduleWithZeroMemoriesAndZeroTables_isValid() = parser.with {
         """
