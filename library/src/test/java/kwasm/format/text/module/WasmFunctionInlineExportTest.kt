@@ -94,6 +94,16 @@ class WasmFunctionInlineExportTest {
             ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(7)
         assertThat(result.astNode).containsExactly(
+            WasmFunction(
+                Identifier.Function(null, null),
+                TypeUse(
+                    null,
+                    astNodeListOf(),
+                    astNodeListOf()
+                ),
+                astNodeListOf(),
+                astNodeListOf()
+            ),
             Export(
                 "a",
                 ExportDescriptor.Function(
@@ -110,6 +120,16 @@ class WasmFunctionInlineExportTest {
             ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(8)
         assertThat(result.astNode).containsExactly(
+            WasmFunction(
+                Identifier.Function("$0"),
+                TypeUse(
+                    null,
+                    astNodeListOf(),
+                    astNodeListOf()
+                ),
+                astNodeListOf(),
+                astNodeListOf()
+            ),
             Export(
                 "a",
                 ExportDescriptor.Function(
@@ -127,6 +147,16 @@ class WasmFunctionInlineExportTest {
         ).parseInlineWasmFunctionExport(0) ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(16)
         assertThat(result.astNode).containsExactly(
+            WasmFunction(
+                Identifier.Function("$0"),
+                TypeUse(
+                    null,
+                    astNodeListOf(),
+                    astNodeListOf()
+                ),
+                astNodeListOf(),
+                astNodeListOf()
+            ),
             Export(
                 "a",
                 ExportDescriptor.Function(
@@ -145,7 +175,7 @@ class WasmFunctionInlineExportTest {
                     Index.ByIdentifier(Identifier.Function("$0"))
                 )
             )
-        ).inOrder()
+        )
     }
 
     @Test

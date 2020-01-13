@@ -17,6 +17,7 @@ package kwasm.format.text.module
 import kwasm.ast.AstNode
 import kwasm.ast.AstNodeList
 import kwasm.ast.Identifier
+import kwasm.ast.astNodeListOf
 import kwasm.ast.module.Export
 import kwasm.ast.module.ExportDescriptor
 import kwasm.ast.module.Import
@@ -166,15 +167,6 @@ fun List<Token>.parseInlineWasmFunctionExport(fromIndex: Int): ParseResult<AstNo
         )
     )
 
-    if (isClosedParen(currentIndex)) {
-        // No `...` case, so we can return here.
-        currentIndex++
-        return ParseResult(
-            AstNodeList(result),
-            currentIndex - fromIndex
-        )
-    }
-
     // Looks like there might be more to handle, so construct a new list of tokens to recurse with.
     // Add the opening paren and 'func' keyword.
     val withoutFirstExport = mutableListOf(
@@ -191,6 +183,21 @@ fun List<Token>.parseInlineWasmFunctionExport(fromIndex: Int): ParseResult<AstNo
 
     // Add all of the tokens until the closing paren for the func block.
     withoutFirstExport.addAll(tokensUntilParenClosure(currentIndex, expectedClosures = 1))
+
+    if (isClosedParen(currentIndex)) {
+        // No `...` case, so we can return here.
+        val function = parseCheckNotNull(contextAt(currentIndex), withoutFirstExport.parseWasmFunction(0))
+        currentIndex += (function.parseLength - lengthOfPrefix)
+        return ParseResult(
+            AstNodeList(
+                result.apply {
+                    add(0, function.astNode)
+                }
+            ),
+            currentIndex - fromIndex
+        )
+    }
+
 
     // Recurse.
     val additionalItems = parseCheckNotNull(
