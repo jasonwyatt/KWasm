@@ -17,7 +17,6 @@ package kwasm.format.text.module
 import kwasm.ast.AstNode
 import kwasm.ast.AstNodeList
 import kwasm.ast.Identifier
-import kwasm.ast.astNodeListOf
 import kwasm.ast.module.Export
 import kwasm.ast.module.ExportDescriptor
 import kwasm.ast.module.Import
@@ -197,7 +196,6 @@ fun List<Token>.parseInlineWasmFunctionExport(fromIndex: Int): ParseResult<AstNo
             currentIndex - fromIndex
         )
     }
-
 
     // Recurse.
     val additionalItems = parseCheckNotNull(
