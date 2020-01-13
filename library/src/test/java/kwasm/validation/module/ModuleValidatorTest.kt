@@ -89,13 +89,13 @@ class ModuleValidatorTest {
     fun uniqueExports_areValid() = parser.with {
         """
             (module
-                (func (export "foo"))
+                (func $0 (export "foo"))
             )
         """.parseModule().validate()
 
         """
             (module
-                (func (export "foo") (export "bar"))
+                (func $0 (export "foo") (export "bar"))
             )
         """.parseModule().validate()
     }
