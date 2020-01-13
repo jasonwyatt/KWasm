@@ -19,7 +19,6 @@ import kwasm.ast.module.ImportDescriptor
 import kwasm.validation.ModuleValidationVisitor
 import kwasm.validation.ValidationContext
 import kwasm.validation.type.validate
-import kwasm.validation.validate
 import kwasm.validation.validateNotNull
 
 /** Validates the [Import] node. */
