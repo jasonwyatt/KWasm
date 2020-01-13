@@ -64,7 +64,7 @@ fun WasmModule.validate(context: ValidationContext.Module = ValidationContext(th
  *   are empty.
  * * Under the context `C`:
  *   * TODO: For each `functype_i` in `module.types`, the function type `functype_i` must be valid.
- *   * TODO: For each `func_i` in `module.funcs`, the definition `func_i` must be valid with a function
+ *   * For each `func_i` in `module.funcs`, the definition `func_i` must be valid with a function
  *      type `ft_i`.
  *   * For each `table_i` in `module.tables`, the definition `table_i` must be valid with a table
  *     type `tt_i`.
@@ -73,7 +73,7 @@ fun WasmModule.validate(context: ValidationContext.Module = ValidationContext(th
  *   * For each `global_i` in `module.globals:` Under the context `C′`, the definition `global_i`
  *     must be valid with a global type `gt_i`.
  *   * TODO: For each `elem_i` in `module.elem`, the segment `elem_i` must be valid.
- *   * TODO: For each `data_i` in `module.data`, the segment `data_i` must be valid.
+ *   * For each `data_i` in `module.data`, the segment `data_i` must be valid.
  *   * TODO: If `module.start` is non-empty, then `module.start` must be valid.
  *   * TODO: For each `import_i` in `module.imports`, the segment `import_i` must be valid with an
  *      external type `it_i`.
@@ -88,7 +88,7 @@ fun WasmModule.validate(context: ValidationContext.Module = ValidationContext(th
  * * Let `gt*` be the concatenation of the internal global types `gt_i`, in index order.
  * * Let `it*` be the concatenation of external types `it_i` of the imports, in index order.
  * * Let `et*` be the concatenation of external types `et_i` of the exports, in index order.
- * * Then the module is valid with external types `it* → et*`.
+ * * Then the module is valid with external types `it* => et*`.
  */
 object ModuleValidator : ModuleValidationVisitor<WasmModule> {
     override fun visit(
@@ -111,6 +111,9 @@ object ModuleValidator : ModuleValidationVisitor<WasmModule> {
         }
         resultContext = node.functions.fold(resultContext) { lastContext, function ->
             function.validate(lastContext)
+        }
+        resultContext = node.data.fold(resultContext) { lastContext, data ->
+            data.validate(lastContext)
         }
 
         validate(
