@@ -20,9 +20,16 @@ import kwasm.format.text.token.util.TokenMatchResult
 /** Representations of Open/Close Parentheses in source WebAssembly. */
 sealed class Paren : Token {
     /** Representation of `(`, and its location within the source. */
-    data class Open(override val context: ParseContext? = null) : Paren()
+    @Suppress("EqualsOrHashCode") // This is intentional.
+    class Open(override val context: ParseContext? = null) : Paren() {
+        override fun equals(other: Any?): Boolean = other is Open
+    }
+
     /** Representation of `)`, and its location within the source. */
-    data class Closed(override val context: ParseContext? = null) : Paren()
+    @Suppress("EqualsOrHashCode") // This is intentional.
+    class Closed(override val context: ParseContext? = null) : Paren() {
+        override fun equals(other: Any?): Boolean = other is Closed
+    }
 }
 
 fun RawToken.findParen(): TokenMatchResult? {

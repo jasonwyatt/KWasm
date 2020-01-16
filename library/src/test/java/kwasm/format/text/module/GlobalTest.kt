@@ -74,12 +74,11 @@ class GlobalTest {
         val result = tokenizer.tokenize("(global i32)", context).parseGlobal(0)
             ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(4)
-        assertThat(result.astNode).isEqualTo(
-            Global(
-                Identifier.Global(null, null),
-                GlobalType(ValueType.I32, false),
-                Expression(astNodeListOf())
-            )
+        assertThat(result.astNode.globalType).isEqualTo(
+            GlobalType(ValueType.I32, false)
+        )
+        assertThat(result.astNode.initExpression).isEqualTo(
+            Expression(astNodeListOf())
         )
     }
 
@@ -88,12 +87,11 @@ class GlobalTest {
         val result = tokenizer.tokenize("(global (mut i32))", context).parseGlobal(0)
             ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(7)
-        assertThat(result.astNode).isEqualTo(
-            Global(
-                Identifier.Global(null, null),
-                GlobalType(ValueType.I32, true),
-                Expression(astNodeListOf())
-            )
+        assertThat(result.astNode.globalType).isEqualTo(
+            GlobalType(ValueType.I32, true)
+        )
+        assertThat(result.astNode.initExpression).isEqualTo(
+            Expression(astNodeListOf())
         )
     }
 

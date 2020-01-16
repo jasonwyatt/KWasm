@@ -275,8 +275,12 @@ fun List<Token>.parseInlineMemoryExport(fromIndex: Int): ParseResult<AstNodeList
     )
 
     // Add the id.
-    (0 until identifier.parseLength).forEach {
-        withoutFirstExport.add(this[fromIndex + 2 + it])
+    if (identifier.parseLength == 0) {
+        withoutFirstExport.add(kwasm.format.text.token.Identifier(identifier.astNode.toString()))
+    } else {
+        (0 until identifier.parseLength).forEach {
+            withoutFirstExport.add(this[fromIndex + 2 + it])
+        }
     }
 
     val lengthOfPrefix = withoutFirstExport.size

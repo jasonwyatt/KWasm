@@ -44,7 +44,7 @@ inline fun <reified T : Identifier> List<Token>.parseIdentifier(fromIndex: Int, 
                 ?.takeIf { it.unique != null && (it.unique as Int) >= 0 },
             "Identifier must not be negative"
         )
-    } else createIdentifier<T>(null, null)
+    } else createIdentifier<T>("\$token-${getOrNull(fromIndex).hashCode()}")
     return id?.let { ParseResult(it, currentIndex - fromIndex) }
         ?: throw ParseException("Unsupported identifier type: ${T::class}", contextAt(fromIndex))
 }

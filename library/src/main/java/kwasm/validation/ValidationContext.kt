@@ -200,21 +200,13 @@ fun ValidationContext(module: WasmModule): ValidationContext.Module {
                 upcastThrown { functions[descriptor.id] = typeUse }
             }
             is ImportDescriptor.Table -> {
-                validate(
-                    descriptor.id.stringRepr != null ||
-                        descriptor.id.unique != null ||
-                        tables[0] == null
-                ) {
+                validate(tables[0] == null) {
                     "Cannot import a table when one is already defined by the module"
                 }
                 upcastThrown { tables[descriptor.id] = descriptor.tableType }
             }
             is ImportDescriptor.Memory -> {
-                validate(
-                    descriptor.id.stringRepr != null ||
-                        descriptor.id.unique != null ||
-                        memories[0] == null
-                ) {
+                validate(memories[0] == null) {
                     "Cannot import a memory when one is already defined by the module"
                 }
                 upcastThrown { memories[descriptor.id] = descriptor.memoryType }

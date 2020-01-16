@@ -93,24 +93,21 @@ class WasmFunctionInlineExportTest {
             .parseInlineWasmFunctionExport(0)
             ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(7)
-        assertThat(result.astNode).containsExactly(
-            WasmFunction(
-                Identifier.Function(null, null),
-                TypeUse(
-                    null,
-                    astNodeListOf(),
-                    astNodeListOf()
-                ),
+        val func = result.astNode[0] as WasmFunction
+        val export = result.astNode[1] as Export
+
+        assertThat(func.typeUse).isEqualTo(
+            TypeUse(
+                null,
                 astNodeListOf(),
                 astNodeListOf()
-            ),
-            Export(
-                "a",
-                ExportDescriptor.Function(
-                    Index.ByIdentifier(Identifier.Function(null, null))
-                )
             )
-        ).inOrder()
+        )
+        assertThat(func.locals).isEmpty()
+        assertThat(func.instructions).isEmpty()
+        assertThat(export.name).isEqualTo("a")
+        assertThat(export.descriptor.index)
+            .isEqualTo(Index.ByIdentifier(func.id ?: fail("ID should be non-null")))
     }
 
     @Test

@@ -96,14 +96,10 @@ class MemoryInlineExportTest {
             .parseInlineMemoryExport(0)
             ?: Assertions.fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(7)
-        assertThat(result.astNode).containsExactly(
-            Export(
-                "a",
-                ExportDescriptor.Memory(
-                    Index.ByIdentifier(Identifier.Memory(null, null))
-                )
-            )
-        ).inOrder()
+        assertThat(result.astNode.size).isEqualTo(1)
+        val export = result.astNode[0] as Export
+        assertThat(export.name).isEqualTo("a")
+        assertThat(export.descriptor).isInstanceOf(ExportDescriptor.Memory::class.java)
     }
 
     @Test

@@ -72,7 +72,7 @@ class WasmFunctionTest {
         val result = tokenizer.tokenize("(func)", context).parseWasmFunction(0)
             ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(3)
-        assertThat(result.astNode.id).isEqualTo(Identifier.Function(null, null))
+        assertThat(result.astNode.id).isNotNull()
         assertThat(result.astNode.typeUse).isEqualTo(
             TypeUse(null, astNodeListOf(), astNodeListOf())
         )
@@ -98,7 +98,7 @@ class WasmFunctionTest {
         val result = tokenizer.tokenize("(func (type $0))", context).parseWasmFunction(0)
             ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(7)
-        assertThat(result.astNode.id).isEqualTo(Identifier.Function(null, null))
+        assertThat(result.astNode.id).isNotNull()
         assertThat(result.astNode.typeUse).isEqualTo(
             TypeUse(
                 Index.ByIdentifier(Identifier.Type("$0")),
@@ -115,7 +115,7 @@ class WasmFunctionTest {
         val result = tokenizer.tokenize("(func (local i32) (local i32))", context)
             .parseWasmFunction(0) ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(11)
-        assertThat(result.astNode.id).isEqualTo(Identifier.Function(null, null))
+        assertThat(result.astNode.id).isNotNull()
         assertThat(result.astNode.typeUse).isEqualTo(
             TypeUse(
                 null,
@@ -135,7 +135,7 @@ class WasmFunctionTest {
         val result = tokenizer.tokenize("(func (unreachable))", context).parseWasmFunction(0)
             ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(6)
-        assertThat(result.astNode.id).isEqualTo(Identifier.Function(null, null))
+        assertThat(result.astNode.id).isNotNull()
         assertThat(result.astNode.typeUse).isEqualTo(
             TypeUse(
                 null,
