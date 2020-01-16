@@ -107,18 +107,15 @@ class WasmFunctionInlineImportTest {
             ?: fail("Expected a result")
 
         assertThat(result.parseLength).isEqualTo(8)
-        assertThat(result.astNode).isEqualTo(
-            Import(
-                "a",
-                "b",
-                ImportDescriptor.Function(
-                    Identifier.Function(null, null),
-                    TypeUse(
-                        null,
-                        astNodeListOf(),
-                        astNodeListOf()
-                    )
-                )
+        assertThat(result.astNode.moduleName).isEqualTo("a")
+        assertThat(result.astNode.name).isEqualTo("b")
+        val descriptor = result.astNode.descriptor as ImportDescriptor.Function
+        assertThat(descriptor.id.stringRepr).isNotNull()
+        assertThat(descriptor.typeUse).isEqualTo(
+            TypeUse(
+                null,
+                astNodeListOf(),
+                astNodeListOf()
             )
         )
     }

@@ -39,40 +39,56 @@ sealed class Identifier(
     data class Type(
         override val stringRepr: String? = null,
         override val unique: Int? = "$stringRepr".hashCode()
-    ) : Identifier(unique, stringRepr)
+    ) : Identifier(unique, stringRepr) {
+        override fun toString() = "$stringRepr"
+    }
 
     data class Function(
         override val stringRepr: String? = null,
         override val unique: Int? = "$stringRepr".hashCode()
-    ) : Identifier(unique, stringRepr)
+    ) : Identifier(unique, stringRepr) {
+        override fun toString() = "$stringRepr"
+    }
 
     data class Table(
         override val stringRepr: String? = null,
         override val unique: Int? = "$stringRepr".hashCode()
-    ) : Identifier(unique, stringRepr)
+    ) : Identifier(unique, stringRepr) {
+        override fun toString() = "$stringRepr"
+    }
 
     data class Memory(
         override val stringRepr: String? = null,
         override val unique: Int? = "$stringRepr".hashCode()
-    ) : Identifier(unique, stringRepr)
+    ) : Identifier(unique, stringRepr) {
+        override fun toString() = "$stringRepr"
+    }
 
     data class Global(
         override val stringRepr: String? = null,
         override val unique: Int? = "$stringRepr".hashCode()
-    ) : Identifier(unique, stringRepr)
+    ) : Identifier(unique, stringRepr) {
+        override fun toString() = "$stringRepr"
+    }
 
     data class Local(
         override val stringRepr: String? = null,
         override val unique: Int? = "$stringRepr".hashCode()
-    ) : Identifier(unique, stringRepr)
+    ) : Identifier(unique, stringRepr) {
+        override fun toString() = "$stringRepr"
+    }
 
     data class Label(
         override val stringRepr: String? = null,
         override val unique: Int? = "$stringRepr".hashCode()
-    ) : Identifier(unique, stringRepr)
+    ) : Identifier(unique, stringRepr) {
+        override fun toString() = "$stringRepr"
+    }
 
     data class TypeDef(
         val funcType: FunctionType,
         override val stringRepr: String? = null
-    ) : Identifier(null, stringRepr)
+    ) : Identifier(null, stringRepr) {
+        override fun toString() = "$stringRepr"
+    }
 }

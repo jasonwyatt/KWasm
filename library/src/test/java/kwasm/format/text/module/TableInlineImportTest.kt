@@ -105,17 +105,13 @@ class TableInlineImportTest {
             ?: Assertions.fail("Expected a result")
 
         assertThat(result.parseLength).isEqualTo(10)
-        assertThat(result.astNode).isEqualTo(
-            Import(
-                "a",
-                "b",
-                ImportDescriptor.Table(
-                    Identifier.Table(null, null),
-                    TableType(
-                        Limits(1),
-                        ElementType.FunctionReference
-                    )
-                )
+        assertThat(result.astNode.moduleName).isEqualTo("a")
+        assertThat(result.astNode.name).isEqualTo("b")
+        val descriptor = result.astNode.descriptor as ImportDescriptor.Table
+        assertThat(descriptor.tableType).isEqualTo(
+            TableType(
+                Limits(1),
+                ElementType.FunctionReference
             )
         )
     }

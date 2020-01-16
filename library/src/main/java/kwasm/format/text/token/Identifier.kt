@@ -14,7 +14,7 @@
 
 package kwasm.format.text.token
 
-import kwasm.ast.Identifier
+import kwasm.ast.Identifier as AstIdentifier
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import kwasm.format.text.token.util.TokenMatchResult
@@ -35,7 +35,8 @@ import kwasm.format.text.token.util.TokenMatchResult
  *              ':', '<', '=', '>', '?', '@', '\', '^', '_', '`', '|', '~'
  * ```
  */
-data class Identifier(
+@Suppress("EqualsOrHashCode")
+class Identifier(
     private val sequence: CharSequence,
     override val context: ParseContext? = null
 ) : Token {
@@ -49,16 +50,22 @@ data class Identifier(
         "$sequence"
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (other === this) return true
+        if (other !is kwasm.format.text.token.Identifier) return false
+        return other.sequence == sequence
+    }
+
     /** Gets an instance of a [kwasm.ast.Identifier] based on the [value]. */
-    inline fun <reified IdentifierType : Identifier> getAstValue(): IdentifierType =
+    inline fun <reified IdentifierType : AstIdentifier> getAstValue(): IdentifierType =
         when (IdentifierType::class) {
-            Identifier.Type::class -> Identifier.Type(stringRepr = value)
-            Identifier.Function::class -> Identifier.Function(stringRepr = value)
-            Identifier.Global::class -> Identifier.Global(stringRepr = value)
-            Identifier.Label::class -> Identifier.Label(stringRepr = value)
-            Identifier.Local::class -> Identifier.Local(stringRepr = value)
-            Identifier.Memory::class -> Identifier.Memory(stringRepr = value)
-            Identifier.Table::class -> Identifier.Table(stringRepr = value)
+            AstIdentifier.Type::class -> AstIdentifier.Type(stringRepr = value)
+            AstIdentifier.Function::class -> AstIdentifier.Function(stringRepr = value)
+            AstIdentifier.Global::class -> AstIdentifier.Global(stringRepr = value)
+            AstIdentifier.Label::class -> AstIdentifier.Label(stringRepr = value)
+            AstIdentifier.Local::class -> AstIdentifier.Local(stringRepr = value)
+            AstIdentifier.Memory::class -> AstIdentifier.Memory(stringRepr = value)
+            AstIdentifier.Table::class -> AstIdentifier.Table(stringRepr = value)
             else -> throw ParseException(
                 "Unsupported AST Identifier type: ${IdentifierType::class.java}",
                 context
@@ -75,12 +82,12 @@ data class Identifier(
 }
 
 fun RawToken.findIdentifier(): TokenMatchResult? {
-    val match = kwasm.format.text.token.Identifier.PATTERN.get()
+    val match = Identifier.PATTERN.get()
         .findAll(sequence).maxBy { it.value.length } ?: return null
     return TokenMatchResult(match.range.first, match.value)
 }
 
 fun RawToken.isIdentifier(): Boolean =
-    kwasm.format.text.token.Identifier.PATTERN.get().matchEntire(sequence) != null
+    Identifier.PATTERN.get().matchEntire(sequence) != null
 
-fun RawToken.toIdentifier(): kwasm.format.text.token.Identifier = Identifier(sequence, context)
+fun RawToken.toIdentifier(): Identifier = Identifier(sequence, context)

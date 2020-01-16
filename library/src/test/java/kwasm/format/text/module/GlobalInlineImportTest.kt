@@ -16,6 +16,7 @@ package kwasm.format.text.module
 
 import com.google.common.truth.Truth.assertThat
 import kwasm.ast.Identifier
+import kwasm.ast.module.Export
 import kwasm.ast.module.Import
 import kwasm.ast.module.ImportDescriptor
 import kwasm.ast.type.GlobalType
@@ -103,19 +104,11 @@ class GlobalInlineImportTest {
             ?: Assertions.fail("Expected a result")
 
         assertThat(result.parseLength).isEqualTo(9)
-        assertThat(result.astNode).isEqualTo(
-            Import(
-                "a",
-                "b",
-                ImportDescriptor.Global(
-                    Identifier.Global(null, null),
-                    GlobalType(
-                        ValueType.I32,
-                        false
-                    )
-                )
-            )
-        )
+        assertThat(result.astNode.moduleName).isEqualTo("a")
+        assertThat(result.astNode.name).isEqualTo("b")
+        val descriptor = result.astNode.descriptor as ImportDescriptor.Global
+        assertThat(descriptor.globalType.valueType).isEqualTo(ValueType.I32)
+        assertThat(descriptor.globalType.mutable).isFalse()
     }
 
     @Test

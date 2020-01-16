@@ -154,24 +154,23 @@ class TableTest {
         val result = tokenizer.tokenize("(table funcref (elem))", context)
             .parseTableAndElementSegment(0) ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(7)
-        assertThat(result.astNode).containsExactly(
-            Table(
-                Identifier.Table(null, null),
-                TableType(
-                    Limits(0, 0),
-                    ElementType.FunctionReference
-                )
-            ),
-            ElementSegment(
-                Index.ByIdentifier(Identifier.Table(null, null)),
-                Offset(
-                    Expression(
-                        astNodeListOf(NumericConstantInstruction.I32(IntegerLiteral.S32(0)))
-                    )
-                ),
-                astNodeListOf()
+        val table = result.astNode[0] as Table
+        assertThat(table.tableType).isEqualTo(
+            TableType(
+                Limits(0, 0),
+                ElementType.FunctionReference
             )
-        ).inOrder()
+        )
+        val elementSegment = result.astNode[1] as ElementSegment
+        assertThat(elementSegment.tableIndex).isEqualTo(Index.ByIdentifier(table.id))
+        assertThat(elementSegment.offset).isEqualTo(
+            Offset(
+                Expression(
+                    astNodeListOf(NumericConstantInstruction.I32(IntegerLiteral.S32(0)))
+                )
+            )
+        )
+        assertThat(elementSegment.init).isEmpty()
     }
 
     @Test

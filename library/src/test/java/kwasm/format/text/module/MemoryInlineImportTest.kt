@@ -104,18 +104,10 @@ class MemoryInlineImportTest {
             ?: Assertions.fail("Expected a result")
 
         assertThat(result.parseLength).isEqualTo(9)
-        assertThat(result.astNode).isEqualTo(
-            Import(
-                "a",
-                "b",
-                ImportDescriptor.Memory(
-                    Identifier.Memory(null, null),
-                    MemoryType(
-                        Limits(1)
-                    )
-                )
-            )
-        )
+        assertThat(result.astNode.moduleName).isEqualTo("a")
+        assertThat(result.astNode.name).isEqualTo("b")
+        val descriptor = result.astNode.descriptor as ImportDescriptor.Memory
+        assertThat(descriptor.memoryType).isEqualTo(MemoryType(Limits(1)))
     }
 
     @Test

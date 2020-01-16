@@ -97,14 +97,9 @@ class TableInlineExportTest {
             .parseInlineTableExport(0)
             ?: Assertions.fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(7)
-        assertThat(result.astNode).containsExactly(
-            Export(
-                "a",
-                ExportDescriptor.Table(
-                    Index.ByIdentifier(Identifier.Table(null, null))
-                )
-            )
-        ).inOrder()
+        val export = result.astNode[0] as Export
+        assertThat(export.descriptor as? ExportDescriptor.Table).isNotNull()
+        assertThat(export.name).isEqualTo("a")
     }
 
     @Test

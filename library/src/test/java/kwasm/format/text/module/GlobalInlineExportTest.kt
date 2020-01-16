@@ -93,14 +93,9 @@ class GlobalInlineExportTest {
             .parseInlineGlobalExport(0)
             ?: Assertions.fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(7)
-        assertThat(result.astNode).containsExactly(
-            Export(
-                "a",
-                ExportDescriptor.Global(
-                    Index.ByIdentifier(Identifier.Global(null, null))
-                )
-            )
-        ).inOrder()
+        assertThat(result.astNode.size).isEqualTo(1)
+        val node = result.astNode[0] as Export
+        assertThat(node.name).isEqualTo("a")
     }
 
     @Test

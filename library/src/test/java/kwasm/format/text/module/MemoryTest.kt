@@ -138,23 +138,18 @@ class MemoryTest {
         val result = tokenizer.tokenize("(memory (data))", context)
             .parseMemoryAndDataSegment(0) ?: Assertions.fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(6)
-        assertThat(result.astNode).containsExactly(
-            Memory(
-                Identifier.Memory(null, null),
-                MemoryType(
-                    Limits(0, 0)
+        assertThat(result.astNode.size).isEqualTo(2)
+        val memory = result.astNode[0] as Memory
+        val dataSegment = result.astNode[1] as DataSegment
+        assertThat(memory.memoryType).isEqualTo(MemoryType(Limits(0, 0)))
+        assertThat(dataSegment.offset).isEqualTo(
+            Offset(
+                Expression(
+                    astNodeListOf(NumericConstantInstruction.I32(IntegerLiteral.S32(0)))
                 )
-            ),
-            DataSegment(
-                Index.ByIdentifier(Identifier.Memory(null, null)),
-                Offset(
-                    Expression(
-                        astNodeListOf(NumericConstantInstruction.I32(IntegerLiteral.S32(0)))
-                    )
-                ),
-                "".toByteArray(Charsets.UTF_8)
             )
-        ).inOrder()
+        )
+        assertThat(dataSegment.init).isEqualTo("".toByteArray(Charsets.UTF_8))
     }
 
     @Test
