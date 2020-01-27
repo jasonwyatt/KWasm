@@ -52,45 +52,44 @@ interface Memory {
     val sizeBytes: Int
         get() = sizePages * PAGE_SIZE
 
+    /** Runs the [block] within a thread-safe mutual exclusion. */
+    suspend fun <T : Any?> lock(block: suspend Memory.() -> T): T
+
     /** Reads an [Int] from the [Memory] at the given [offset]. */
     fun readInt(offset: Int, byteWidth: Int = 4, alignment: Int = 0): Int
 
     /** Reads a [UInt] from the [Memory] at the given [offset]. */
-    fun readUInt(offset: Int, byteWidth: Int = 4, alignment: Int = 0): UInt =
-        readInt(offset, byteWidth, alignment).toUInt()
+    fun readUInt(offset: Int, byteWidth: Int = 4, alignment: Int = 0): UInt
 
     /** Reads a [Long] from the [Memory] at the given [offset]. */
     fun readLong(offset: Int, byteWidth: Int = 8, alignment: Int = 0): Long
 
     /** Reads a [ULong] from the [Memory] at the given [offset]. */
-    fun readULong(offset: Int, byteWidth: Int = 8, alignment: Int = 0): ULong =
-        readLong(offset, byteWidth, alignment).toULong()
+    fun readULong(offset: Int, byteWidth: Int = 8, alignment: Int = 0): ULong
 
     /** Reads a [Float] from the [Memory] at the given [offset]. */
-    fun readFloat(offset: Int, byteWidth: Int = 4, alignment: Int = 0): Float
+    fun readFloat(offset: Int, alignment: Int = 0): Float
 
     /** Reads a [Double] from the [Memory] at the given [offset]. */
-    fun readDouble(offset: Int, byteWidth: Int = 8, alignment: Int = 0): Double
+    fun readDouble(offset: Int, alignment: Int = 0): Double
 
     /** Writes an [Int] to the [Memory] at the given [offset]. */
     fun writeInt(value: Int, offset: Int, byteWidth: Int = 4, alignment: Int = 0)
 
     /** Writes a [UInt] to the [Memory] at the given [offset]. */
-    fun writeUInt(value: UInt, offset: Int, byteWidth: Int = 4, alignment: Int = 0) =
-        writeInt(value.toInt(), offset, byteWidth, alignment)
+    fun writeUInt(value: UInt, offset: Int, byteWidth: Int = 4, alignment: Int = 0)
 
     /** Writes a [Long] to the [Memory] at the given [offset]. */
     fun writeLong(value: Long, offset: Int, byteWidth: Int = 8, alignment: Int = 0)
 
     /** Writes a [ULong] to the [Memory] at the given [offset]. */
-    fun writeULong(value: ULong, offset: Int, byteWidth: Int = 8, alignment: Int = 0) =
-        writeLong(value.toLong(), offset, byteWidth, alignment)
+    fun writeULong(value: ULong, offset: Int, byteWidth: Int = 8, alignment: Int = 0)
 
     /** Writes a [Float] to the [Memory] at the given [offset]. */
-    fun writeFloat(value: Float, offset: Int, byteWidth: Int = 4, alignment: Int = 0)
+    fun writeFloat(value: Float, offset: Int, alignment: Int = 0)
 
     /** Writes a [Double] to the [Memory] at the given [offset]. */
-    fun writeDouble(value: Double, offset: Int, byteWidth: Int = 8, alignment: Int = 0)
+    fun writeDouble(value: Double, offset: Int, alignment: Int = 0)
 
     /**
      * Reads [length] bytes starting at the given [memoryOffset] from the [Memory] into the supplied

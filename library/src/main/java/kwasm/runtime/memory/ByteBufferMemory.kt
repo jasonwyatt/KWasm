@@ -14,13 +14,15 @@
 
 package kwasm.runtime.memory
 
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+import kotlin.math.ceil
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 import kwasm.runtime.Memory
 import kwasm.runtime.Memory.Companion.GROW_FAILURE
 import kwasm.runtime.Memory.Companion.PAGE_SIZE
 import kwasm.util.Impossible
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-import kotlin.math.ceil
 
 @Suppress("EXPERIMENTAL_API_USAGE", "MemberVisibilityCanBePrivate")
 internal class ByteBufferMemory(
@@ -28,6 +30,7 @@ internal class ByteBufferMemory(
     initialData: ByteArray = ByteArray(0),
     initialPages: Int = maxOf(1, ceil(initialData.size / PAGE_SIZE.toDouble()).toInt())
 ) : Memory {
+    private val semaphore = Semaphore(1)
     private val pages = mutableListOf<ByteBuffer>()
     private val tempBytes = ByteArray(8)
     private val tempBuffer = ByteBuffer.allocate(8).order(ByteOrder.LITTLE_ENDIAN)
@@ -36,7 +39,7 @@ internal class ByteBufferMemory(
         require(maximumPages > 0) {
             "Maximum size must be > 0 pages"
         }
-        require(maximumPages >= initialPages * PAGE_SIZE) {
+        require(maximumPages >= initialPages) {
             "Maximum size specified as $maximumPages page(s), but initialPages = $initialPages"
         }
         require(maximumPages * PAGE_SIZE >= initialData.size) {
@@ -53,11 +56,14 @@ internal class ByteBufferMemory(
             initializedPages++
         }
 
-        writeBytes(initialData, 0)
+        writeBytes(initialData, offset = 0)
     }
 
     override val sizePages: Int
         get() = pages.size
+
+    override suspend fun <T> lock(block: suspend Memory.() -> T): T =
+        semaphore.withPermit { this.block() }
 
     override fun readInt(offset: Int, byteWidth: Int, alignment: Int): Int {
         byteWidth.assertValidByteWidth<Int>()
@@ -68,6 +74,18 @@ internal class ByteBufferMemory(
             pages[currentPage].getInt(offset % PAGE_SIZE)
         } else {
             pages.readInt(offset, byteWidth)
+        }
+    }
+
+    override fun readUInt(offset: Int, byteWidth: Int, alignment: Int): UInt {
+        byteWidth.assertValidByteWidth<Int>()
+        val currentPage = offset / PAGE_SIZE
+
+        return if (byteWidth == 4 && offset % PAGE_SIZE < PAGE_SIZE - 4) {
+            // Simple case... use ByteBuffer directly.
+            pages[currentPage].getInt(offset % PAGE_SIZE).toUInt()
+        } else {
+            pages.readUInt(offset, byteWidth)
         }
     }
 
@@ -83,27 +101,37 @@ internal class ByteBufferMemory(
         }
     }
 
-    override fun readFloat(offset: Int, byteWidth: Int, alignment: Int): Float {
-        byteWidth.assertValidByteWidth<Float>()
-        val currentPage = offset / PAGE_SIZE
-
-        return if (byteWidth == 4 && offset % PAGE_SIZE < PAGE_SIZE - 4) {
-            // Simple case... use ByteBuffer directly.
-            pages[currentPage].getFloat(offset % PAGE_SIZE)
-        } else {
-            pages.readFloat(offset, byteWidth)
-        }
-    }
-
-    override fun readDouble(offset: Int, byteWidth: Int, alignment: Int): Double {
-        byteWidth.assertValidByteWidth<Double>()
+    override fun readULong(offset: Int, byteWidth: Int, alignment: Int): ULong {
+        byteWidth.assertValidByteWidth<Long>()
         val currentPage = offset / PAGE_SIZE
 
         return if (byteWidth == 8 && offset % PAGE_SIZE < PAGE_SIZE - 8) {
             // Simple case... use ByteBuffer directly.
+            pages[currentPage].getLong(offset % PAGE_SIZE).toULong()
+        } else {
+            pages.readULong(offset, byteWidth)
+        }
+    }
+
+    override fun readFloat(offset: Int, alignment: Int): Float {
+        val currentPage = offset / PAGE_SIZE
+
+        return if (offset % PAGE_SIZE < PAGE_SIZE - 4) {
+            // Simple case... use ByteBuffer directly.
+            pages[currentPage].getFloat(offset % PAGE_SIZE)
+        } else {
+            pages.readFloat(offset)
+        }
+    }
+
+    override fun readDouble(offset: Int, alignment: Int): Double {
+        val currentPage = offset / PAGE_SIZE
+
+        return if (offset % PAGE_SIZE < PAGE_SIZE - 8) {
+            // Simple case... use ByteBuffer directly.
             pages[currentPage].getDouble(offset % PAGE_SIZE)
         } else {
-            pages.readDouble(offset, byteWidth)
+            pages.readDouble(offset)
         }
     }
 
@@ -119,6 +147,18 @@ internal class ByteBufferMemory(
         }
     }
 
+    override fun writeUInt(value: UInt, offset: Int, byteWidth: Int, alignment: Int) {
+        byteWidth.assertValidByteWidth<Int>()
+        val currentPage = offset / PAGE_SIZE
+
+        if (byteWidth == 4 && offset % PAGE_SIZE < PAGE_SIZE - 4) {
+            // Simple case... use ByteBuffer directly.
+            pages[currentPage].putInt(offset % PAGE_SIZE, value.toInt())
+        } else {
+            pages.writeUInt(value, offset, byteWidth)
+        }
+    }
+
     override fun writeLong(value: Long, offset: Int, byteWidth: Int, alignment: Int) {
         byteWidth.assertValidByteWidth<Long>()
         val currentPage = offset / PAGE_SIZE
@@ -131,11 +171,22 @@ internal class ByteBufferMemory(
         }
     }
 
-    override fun writeFloat(value: Float, offset: Int, byteWidth: Int, alignment: Int) {
-        byteWidth.assertValidByteWidth<Float>()
+    override fun writeULong(value: ULong, offset: Int, byteWidth: Int, alignment: Int) {
+        byteWidth.assertValidByteWidth<Long>()
         val currentPage = offset / PAGE_SIZE
 
-        if (byteWidth == 4 && offset % PAGE_SIZE < PAGE_SIZE - 4) {
+        if (byteWidth == 8 && offset % PAGE_SIZE < PAGE_SIZE - 8) {
+            // Simple case... use ByteBuffer directly.
+            pages[currentPage].putLong(offset % PAGE_SIZE, value.toLong())
+        } else {
+            pages.writeULong(value, offset, byteWidth)
+        }
+    }
+
+    override fun writeFloat(value: Float, offset: Int, alignment: Int) {
+        val currentPage = offset / PAGE_SIZE
+
+        if (offset % PAGE_SIZE < PAGE_SIZE - 4) {
             // Simple case... use ByteBuffer directly.
             pages[currentPage].putFloat(offset % PAGE_SIZE, value)
         } else {
@@ -143,11 +194,10 @@ internal class ByteBufferMemory(
         }
     }
 
-    override fun writeDouble(value: Double, offset: Int, byteWidth: Int, alignment: Int) {
-        byteWidth.assertValidByteWidth<Double>()
+    override fun writeDouble(value: Double, offset: Int, alignment: Int) {
         val currentPage = offset / PAGE_SIZE
 
-        if (byteWidth == 8 && offset % PAGE_SIZE < PAGE_SIZE - 8) {
+        if (offset % PAGE_SIZE < PAGE_SIZE - 8) {
             // Simple case... use ByteBuffer directly.
             pages[currentPage].putDouble(offset % PAGE_SIZE, value)
         } else {
@@ -161,7 +211,7 @@ internal class ByteBufferMemory(
         outOffset: Int,
         length: Int
     ): Int {
-        require(length <= out.size - outOffset) {
+        require(outOffset + length <= out.size) {
             "Invalid read length ($length) for output array (size: ${out.size}) starting at " +
                 "output offset: $outOffset"
         }
@@ -172,10 +222,10 @@ internal class ByteBufferMemory(
     }
 
     override fun writeBytes(value: ByteArray, offset: Int, valueOffset: Int, valueLength: Int) {
-        require(valueOffset + valueLength < value.size) {
+        require(valueOffset + valueLength <= value.size) {
             "Illegal offset/length for value with size: ${value.size}"
         }
-        require(offset + valueLength < sizeBytes) {
+        require(offset + valueLength <= sizeBytes) {
             "Value with size ${value.size} bytes cannot fit into memory with size: $sizeBytes " +
                 "bytes ($sizePages page(s))"
         }
@@ -217,9 +267,9 @@ internal class ByteBufferMemory(
         return sizeBefore
     }
 
-    internal fun List<ByteBuffer>.readInt(offset: Int, byteWidth: Int): Int {
+    private fun List<ByteBuffer>.readInt(offset: Int, byteWidth: Int): Int {
         val result = this.readBytes(tempBytes, offset, byteWidth).toBigEndianInt(byteWidth)
-        return when(byteWidth) {
+        return when (byteWidth) {
             1 -> result.toByte().toInt()
             2 -> result.toShort().toInt()
             4 -> result
@@ -227,7 +277,17 @@ internal class ByteBufferMemory(
         }
     }
 
-    internal fun List<ByteBuffer>.writeInt(value: Int, offset: Int, byteWidth: Int) {
+    private fun List<ByteBuffer>.readUInt(offset: Int, byteWidth: Int): UInt {
+        val result = this.readBytes(tempBytes, offset, byteWidth).toBigEndianInt(byteWidth)
+        return when (byteWidth) {
+            1 -> result.toUByte().toUInt()
+            2 -> result.toUShort().toUInt()
+            4 -> result.toUInt()
+            else -> Impossible()
+        }
+    }
+
+    private fun List<ByteBuffer>.writeInt(value: Int, offset: Int, byteWidth: Int) {
         val wrappedValue = value.wrap(byteWidth)
         var currentPage = offset / PAGE_SIZE
         var currentPositionInPage = offset % PAGE_SIZE
@@ -242,9 +302,24 @@ internal class ByteBufferMemory(
         }
     }
 
-    internal fun List<ByteBuffer>.readLong(offset: Int, byteWidth: Int): Long {
+    private fun List<ByteBuffer>.writeUInt(value: UInt, offset: Int, byteWidth: Int) {
+        val wrappedValue = value.toLong().wrap(byteWidth)
+        var currentPage = offset / PAGE_SIZE
+        var currentPositionInPage = offset % PAGE_SIZE
+        repeat(byteWidth) {
+            val byte = (wrappedValue ushr (8 * it)) and 0xFF
+            this[currentPage].put(currentPositionInPage, byte.toByte())
+            currentPositionInPage++
+            if (currentPositionInPage == PAGE_SIZE) {
+                currentPositionInPage = 0
+                currentPage++
+            }
+        }
+    }
+
+    private fun List<ByteBuffer>.readLong(offset: Int, byteWidth: Int): Long {
         val result = this.readBytes(tempBytes, offset, byteWidth).toBigEndianLong(byteWidth)
-        return when(byteWidth) {
+        return when (byteWidth) {
             1 -> result.toByte().toLong()
             2 -> result.toShort().toLong()
             4 -> result.toInt().toLong()
@@ -253,7 +328,18 @@ internal class ByteBufferMemory(
         }
     }
 
-    internal fun List<ByteBuffer>.writeLong(value: Long, offset: Int, byteWidth: Int) {
+    private fun List<ByteBuffer>.readULong(offset: Int, byteWidth: Int): ULong {
+        val result = this.readBytes(tempBytes, offset, byteWidth).toBigEndianLong(byteWidth)
+        return when (byteWidth) {
+            1 -> result.toUByte().toULong()
+            2 -> result.toUShort().toULong()
+            4 -> result.toUInt().toULong()
+            8 -> result.toULong()
+            else -> Impossible()
+        }
+    }
+
+    private fun List<ByteBuffer>.writeLong(value: Long, offset: Int, byteWidth: Int) {
         val wrappedValue = value.wrap(byteWidth)
         var currentPage = offset / PAGE_SIZE
         var currentPositionInPage = offset % PAGE_SIZE
@@ -268,55 +354,41 @@ internal class ByteBufferMemory(
         }
     }
 
-    internal fun List<ByteBuffer>.readFloat(offset: Int, byteWidth: Int): Float {
-        val result = this.readBytes(tempBytes, offset, byteWidth).toBigEndianInt(byteWidth)
-        return when(byteWidth) {
-            1 -> result.toByte().toFloat()
-            2 -> result.toShort().toFloat()
-            4 -> result.toFloat()
-            else -> Impossible()
+    private fun List<ByteBuffer>.writeULong(value: ULong, offset: Int, byteWidth: Int) {
+        val wrappedValue = value.wrap(byteWidth)
+        var currentPage = offset / PAGE_SIZE
+        var currentPositionInPage = offset % PAGE_SIZE
+        repeat(byteWidth) {
+            val byte = (wrappedValue shr (8 * it)) and 0xFF.toULong()
+            this[currentPage].put(currentPositionInPage, byte.toByte())
+            currentPositionInPage++
+            if (currentPositionInPage == PAGE_SIZE) {
+                currentPositionInPage = 0
+                currentPage++
+            }
         }
     }
 
-    internal fun List<ByteBuffer>.writeFloat(value: Float, offset: Int) {
+    private fun List<ByteBuffer>.readFloat(offset: Int): Float {
+        this.readBytes(tempBuffer.array(), offset, 4)
+        return tempBuffer.getFloat(0)
+    }
+
+    @Suppress("unused")
+    private fun List<ByteBuffer>.writeFloat(value: Float, offset: Int) {
         tempBuffer.putFloat(0, value)
-        var currentPage = offset / PAGE_SIZE
-        var currentPositionInPage = offset % PAGE_SIZE
-        repeat(4) {
-            val byte = tempBuffer.get(it)
-            this[currentPage].put(currentPositionInPage, byte)
-            currentPositionInPage++
-            if (currentPositionInPage == PAGE_SIZE) {
-                currentPositionInPage = 0
-                currentPage++
-            }
-        }
+        writeBytes(tempBuffer.array(), offset, 0, 4)
     }
 
-    internal fun List<ByteBuffer>.readDouble(offset: Int, byteWidth: Int): Double {
-        val result = this.readBytes(tempBytes, offset, byteWidth).toBigEndianLong(byteWidth)
-        return when(byteWidth) {
-            1 -> result.toByte().toDouble()
-            2 -> result.toShort().toDouble()
-            4 -> result.toInt().toDouble()
-            8 -> result.toDouble()
-            else -> Impossible()
-        }
+    private fun List<ByteBuffer>.readDouble(offset: Int): Double {
+        this.readBytes(tempBuffer.array(), offset, 8)
+        return tempBuffer.getDouble(0)
     }
 
-    internal fun List<ByteBuffer>.writeDouble(value: Double, offset: Int) {
+    @Suppress("unused")
+    private fun List<ByteBuffer>.writeDouble(value: Double, offset: Int) {
         tempBuffer.putDouble(0, value)
-        var currentPage = offset / PAGE_SIZE
-        var currentPositionInPage = offset % PAGE_SIZE
-        repeat(8) {
-            val byte = tempBuffer.get(it)
-            this[currentPage].put(currentPositionInPage, byte)
-            currentPositionInPage++
-            if (currentPositionInPage == PAGE_SIZE) {
-                currentPositionInPage = 0
-                currentPage++
-            }
-        }
+        writeBytes(tempBuffer.array(), offset, 0, 8)
     }
 
     private fun List<ByteBuffer>.readBytes(
@@ -351,38 +423,5 @@ internal class ByteBufferMemory(
             currentPageOffset = 0
         }
         return out
-    }
-
-    private fun ByteArray.toBigEndianInt(length: Int): Int {
-        var result = 0
-        repeat(length) { result += this[it].toInt() shl 8 }
-        return result
-    }
-
-    private fun ByteArray.toBigEndianLong(length: Int): Long {
-        var result = 0L
-        repeat(length) { result += this[it].toInt() shl 8 }
-        return result
-    }
-
-    private fun Int.wrap(bytes: Int) = when (bytes) {
-        1 -> this % BYTE_MAX_VALUE.toInt()
-        2 -> this % SHORT_MAX_VALUE.toInt()
-        4 -> this
-        else -> Impossible()
-    }
-
-    private fun Long.wrap(bytes: Int) = when (bytes) {
-        1 -> this % BYTE_MAX_VALUE
-        2 -> this % SHORT_MAX_VALUE
-        4 -> this % INT_MAX_VALUE
-        8 -> this
-        else -> Impossible()
-    }
-
-    companion object {
-        private const val BYTE_MAX_VALUE = 256L
-        private const val SHORT_MAX_VALUE = 65536L
-        private const val INT_MAX_VALUE = 4294967296L
     }
 }

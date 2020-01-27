@@ -12,11 +12,17 @@
  * limitations under the License.
  */
 
+@file:Suppress("EXPERIMENTAL_API_USAGE")
+
 package kwasm.runtime.memory
 
 import kwasm.util.Impossible
 
-internal inline fun <reified T> Int.assertValidByteWidth() =
+private const val BYTE_MAX_VALUE = 256L
+private const val SHORT_MAX_VALUE = 65536L
+private val INT_MAX_VALUE = UInt.MAX_VALUE.toLong()
+
+internal inline fun <reified T : Number> Int.assertValidByteWidth() =
     when (T::class) {
         Int::class, Float::class ->
             require(this == 1 || this == 2 || this == 4) {
@@ -28,3 +34,38 @@ internal inline fun <reified T> Int.assertValidByteWidth() =
             }
         else -> Impossible()
     }
+
+internal fun Int.wrap(bytes: Int) = when (bytes) {
+    1 -> this % BYTE_MAX_VALUE.toInt()
+    2 -> this % SHORT_MAX_VALUE.toInt()
+    4 -> this
+    else -> Impossible()
+}
+
+internal fun Long.wrap(bytes: Int) = when (bytes) {
+    1 -> this % BYTE_MAX_VALUE
+    2 -> this % SHORT_MAX_VALUE
+    4 -> this % INT_MAX_VALUE
+    8 -> this
+    else -> Impossible()
+}
+
+internal fun ULong.wrap(bytes: Int) = when (bytes) {
+    1 -> this % BYTE_MAX_VALUE.toULong()
+    2 -> this % SHORT_MAX_VALUE.toULong()
+    4 -> this % INT_MAX_VALUE.toULong()
+    8 -> this
+    else -> Impossible()
+}
+
+internal fun ByteArray.toBigEndianInt(length: Int): Int {
+    var result = 0
+    repeat(length) { result = result or (this[it].toUByte().toInt() shl (8 * it)) }
+    return result
+}
+
+internal fun ByteArray.toBigEndianLong(length: Int): Long {
+    var result = 0L
+    repeat(length) { result = result or (this[it].toUByte().toLong() shl (8 * it)) }
+    return result
+}
