@@ -15,6 +15,7 @@
 package kwasm.ast.instruction
 
 import kwasm.ast.AstNode
+import kwasm.ast.type.ResultType
 
 /** Base for all instruction [AstNode] implementations. */
 interface Instruction : AstNode {
@@ -24,6 +25,8 @@ interface Instruction : AstNode {
 
 /** Base for all instruction [AstNode] implementations which are "block" instructions. */
 interface BlockInstruction : Instruction {
+    val result: ResultType
+
     override val isPlain: Boolean
         get() = false
 }

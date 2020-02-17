@@ -59,19 +59,19 @@ import kwasm.ast.type.ResultType
 sealed class ControlInstruction : Instruction {
     data class Block(
         val label: Identifier.Label,
-        val result: ResultType,
+        override val result: ResultType,
         val instructions: List<Instruction>
     ) : ControlInstruction(), BlockInstruction
 
     data class Loop(
         val label: Identifier.Label,
-        val result: ResultType,
+        override val result: ResultType,
         val instructions: List<Instruction>
     ) : ControlInstruction(), BlockInstruction
 
     data class If(
         val label: Identifier.Label,
-        val result: ResultType,
+        override val result: ResultType,
         val positiveInstructions: List<Instruction>,
         val negativeInstructions: List<Instruction>
     ) : ControlInstruction(), BlockInstruction
