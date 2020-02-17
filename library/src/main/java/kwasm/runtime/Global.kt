@@ -14,6 +14,9 @@
 
 package kwasm.runtime
 
+import kwasm.ast.type.GlobalType
+import kwasm.ast.type.ValueType
+
 /**
  * From [the docs]():
  *
@@ -63,4 +66,44 @@ sealed class Global<T> {
         override var value: kotlin.Double,
         override val mutable: Boolean
     ) : Global<kotlin.Double>()
+
+    companion object {
+        /**
+         * From [the docs](https://webassembly.github.io/spec/core/exec/modules.html#alloc-global):
+         *
+         * 1. Let `globaltype` be the global type to allocate and `val` the value to initialize
+         *    the global with.
+         * 1. Let `mut t` be the structure of global type `globaltype`.
+         * 1. Let `a` be the first free global address in `S`.
+         * 1. Let `globalinst` be the global instance `{value val, mut mut}`.
+         * 1. Append `globalinst` to the `globals` of `S`.
+         * 1. Return `a`.
+         */
+        fun <T : Number> Store.allocate(
+            globalType: GlobalType,
+            value: T
+        ): Store.Allocation<Address.Global> {
+            val globalInst = when (globalType.valueType) {
+                ValueType.I32 -> {
+                    val intValue = requireNotNull(value as? kotlin.Int) { "Expected I32 value" }
+                    Int(intValue, globalType.mutable)
+                }
+                ValueType.I64 -> {
+                    val longValue = requireNotNull(value as? kotlin.Long) { "Expected I64 value" }
+                    Long(longValue, globalType.mutable)
+                }
+                ValueType.F32 -> {
+                    val floatValue = requireNotNull(value as? kotlin.Float) { "Expected F32 value" }
+                    Float(floatValue, globalType.mutable)
+                }
+                ValueType.F64 -> {
+                    val doubleValue =
+                        requireNotNull(value as? kotlin.Double) { "Expected F64 value" }
+                    Double(doubleValue, globalType.mutable)
+                }
+            }
+
+            return allocateGlobal(globalInst)
+        }
+    }
 }

@@ -15,9 +15,6 @@
 package kwasm.runtime
 
 import com.google.common.truth.Truth.assertThat
-import kwasm.api.HostFunction
-import kwasm.ast.type.FunctionType
-import kwasm.runtime.memory.ByteBufferMemory
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -25,25 +22,22 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class StoreTest {
     @Test
-    fun pseudoConstructor() {
-        val expectedFunctions = mutableListOf<FunctionInstance>()
-        val expectedTables = mutableListOf<Table>()
-        val expectedMemories = mutableListOf<Memory>()
-        val expectedGlobals = mutableListOf<Global<*>>()
-        val store = Store {
-            functions += FunctionInstance.Host(
-                FunctionType(emptyList(), emptyList()),
-                HostFunction()
-            ).also { expectedFunctions += it }
-            tables += Table(emptyList()).also { expectedTables += it }
-            memories += ByteBufferMemory().also { expectedMemories += it }
-            globals += Global.Int(10, true).also { expectedGlobals += it }
-            globals += Global.Float(10f, false).also { expectedGlobals += it }
-        }
+    fun allocateGlobal() {
+        var store = Store()
 
-        assertThat(store.functions).containsExactlyElementsIn(expectedFunctions)
-        assertThat(store.tables).containsExactlyElementsIn(expectedTables)
-        assertThat(store.memories).containsExactlyElementsIn(expectedMemories)
-        assertThat(store.globals).containsExactlyElementsIn(expectedGlobals)
+        store = store.allocateGlobal(Global.Int(0, true))
+            .let { (newStore, address) ->
+                assertThat(newStore).isNotSameInstanceAs(store)
+                assertThat(newStore.globals).hasSize(1)
+                assertThat(address.value).isEqualTo(0)
+                newStore
+            }
+        store = store.allocateGlobal(Global.Float(0f, true))
+            .let { (newStore, address) ->
+                assertThat(newStore).isNotSameInstanceAs(store)
+                assertThat(newStore.globals).hasSize(2)
+                assertThat(address.value).isEqualTo(1)
+                newStore
+            }
     }
 }
