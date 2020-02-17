@@ -27,7 +27,10 @@ internal abstract class BaseStack<T : StackElement>(
     private val values = LinkedList<T>()
 
     init {
-        values.addAll(initialValues)
+        require(initialValues.size <= maxCapacity) {
+            "Initial values for stack: $name exceeds maximum capacity: $maxCapacity"
+        }
+        values.addAll(initialValues.asReversed())
     }
 
     override val height: Int
@@ -41,32 +44,14 @@ internal abstract class BaseStack<T : StackElement>(
     }
 
     override fun pop(): T {
-        check(height > 0) { "Stack is empty" }
+        check(height > 0) { "Stack: $name is empty" }
         return values.pop()
     }
 
     override fun peek(): T? = values.peek()
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null) return false
-
-        other as BaseStack<*>
-
-        if (name != other.name) return false
-        if (values != other.values) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = name.hashCode()
-        result = 31 * result + values.hashCode()
-        return result
-    }
-
     companion object {
         // TODO: tune?
-        private const val DEFAULT_MAX_CAPACITY = 4096
+        internal const val DEFAULT_MAX_CAPACITY = 4096
     }
 }

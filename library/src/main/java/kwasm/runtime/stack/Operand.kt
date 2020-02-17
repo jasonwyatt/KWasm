@@ -14,7 +14,9 @@
 
 @file:Suppress("EXPERIMENTAL_API_USAGE")
 
-package kwasm.runtime
+package kwasm.runtime.stack
+
+import kwasm.runtime.StackElement
 
 /**
  * Defines a value for use in WebAssembly at runtime.

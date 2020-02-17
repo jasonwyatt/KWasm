@@ -14,12 +14,9 @@
 
 package kwasm.runtime.stack
 
-/** Holds the stack of operand [Value]s for use during execution. */
-internal class OperandStack(
-    initialValues: List<Value<*>> = emptyList(),
-    maxCapacity: Int = DEFAULT_MAX_CAPACITY
-) : BaseStack<Value<*>>(NAME, initialValues, maxCapacity) {
-    companion object {
-        private const val NAME = "Op"
-    }
-}
+/** Runtime [Stack]s to use while executing a WebAssembly program. */
+internal data class RuntimeStacks(
+    val operands: OperandStack = OperandStack(),
+    val labels: LabelStack = LabelStack(),
+    val activations: ActivationStack = ActivationStack()
+)

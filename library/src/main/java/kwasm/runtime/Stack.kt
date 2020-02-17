@@ -34,12 +34,13 @@ internal interface Stack<T : StackElement> {
 
 /**
  * Pops [StackElement]s off the [Stack] until the [predicate] returns `true`, and returns that
- * element.
+ * element or `null` if a value matching the predicate could not be found after popping the full
+ * contents of the stack.
  */
-internal fun <T : StackElement> Stack<T>.popUntil(predicate: (T) -> Boolean): T {
-    var top: T
+internal inline fun <T : StackElement> Stack<T>.popUntil(predicate: (T) -> Boolean): T? {
+    var top: T?
     do {
-        top = pop()
-    } while (!predicate(top))
+        top = peek()
+    } while (top != null && !predicate(pop()))
     return top
 }

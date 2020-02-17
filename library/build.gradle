@@ -48,3 +48,9 @@ compileKotlin {
         freeCompilerArgs = ["-XXLanguage:+InlineClasses", "-Xuse-experimental=kotlin.Experimental"]
     }
 }
+
+test {
+    testLogging {
+        events = ["passed", "skipped", "failed"]
+    }
+}

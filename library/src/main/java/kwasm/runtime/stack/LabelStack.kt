@@ -14,12 +14,15 @@
 
 package kwasm.runtime.stack
 
-/** Holds the stack of operand [Value]s for use during execution. */
-internal class OperandStack(
-    initialValues: List<Value<*>> = emptyList(),
+/**
+ * Holds the [kwasm.runtime.Stack] of [Label] values the WebAssembly program is capable of
+ * branching-to.
+ */
+internal class LabelStack(
+    initialValues: List<Label> = emptyList(),
     maxCapacity: Int = DEFAULT_MAX_CAPACITY
-) : BaseStack<Value<*>>(NAME, initialValues, maxCapacity) {
+) : BaseStack<Label>(NAME, initialValues, maxCapacity) {
     companion object {
-        private const val NAME = "Op"
+        private const val NAME = "Label"
     }
 }

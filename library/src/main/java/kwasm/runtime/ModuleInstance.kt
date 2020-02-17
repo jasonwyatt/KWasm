@@ -12,14 +12,7 @@
  * limitations under the License.
  */
 
-package kwasm.runtime.stack
+package kwasm.runtime
 
-/** Holds the stack of operand [Value]s for use during execution. */
-internal class OperandStack(
-    initialValues: List<Value<*>> = emptyList(),
-    maxCapacity: Int = DEFAULT_MAX_CAPACITY
-) : BaseStack<Value<*>>(NAME, initialValues, maxCapacity) {
-    companion object {
-        private const val NAME = "Op"
-    }
+interface ModuleInstance {
 }
