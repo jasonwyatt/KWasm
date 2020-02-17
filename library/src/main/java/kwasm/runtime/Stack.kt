@@ -15,7 +15,7 @@
 package kwasm.runtime
 
 /** Defines an element in one of the runtime [Stack]s. */
-internal interface StackElement
+interface StackElement
 
 /** Defines a runtime stack of [StackElement]s of type [T]. */
 internal interface Stack<T : StackElement> {

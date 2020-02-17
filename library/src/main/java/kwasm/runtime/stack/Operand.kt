@@ -38,7 +38,7 @@ import kwasm.runtime.StackElement
  *              f64.const f64
  * ```
  */
-internal interface Value<T : Number> : StackElement {
+interface Value<T : Number> : StackElement {
     val value: T
 }
 
