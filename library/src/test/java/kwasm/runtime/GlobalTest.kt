@@ -15,6 +15,10 @@
 package kwasm.runtime
 
 import com.google.common.truth.Truth.assertThat
+import kwasm.ast.type.GlobalType
+import kwasm.ast.type.ValueType
+import kwasm.runtime.Global.Companion.allocate
+import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -52,5 +56,161 @@ class GlobalTest {
         val long = Global.Long(10L, true)
         long.unsigned = ULong.MAX_VALUE
         assertThat(long.value).isEqualTo(-1)
+    }
+
+    @Test
+    fun allocate_i32_throwsWhenValueIsNotInt() {
+        val store = Store()
+
+        assertThrows(IllegalArgumentException::class.java) {
+            store.allocate(GlobalType(ValueType.I32, true), 42L)
+        }.also { assertThat(it).hasMessageThat().contains("Expected I32 value") }
+        assertThrows(IllegalArgumentException::class.java) {
+            store.allocate(GlobalType(ValueType.I32, true), 42.0f)
+        }.also { assertThat(it).hasMessageThat().contains("Expected I32 value") }
+        assertThrows(IllegalArgumentException::class.java) {
+            store.allocate(GlobalType(ValueType.I32, true), 42.0)
+        }.also { assertThat(it).hasMessageThat().contains("Expected I32 value") }
+    }
+
+    @Test
+    fun allocate_i32() {
+        var store = Store()
+
+        store = store.allocate(GlobalType(ValueType.I32, true), 42)
+            .let { (newStore, addr) ->
+                assertThat(addr.value).isEqualTo(0)
+                assertThat(newStore.globals).hasSize(1)
+                assertThat(newStore.globals[0].value).isEqualTo(42)
+                assertThat(newStore.globals[0].mutable).isTrue()
+
+                newStore
+            }
+        store.allocate(GlobalType(ValueType.I32, false), 1337)
+            .let { (newStore, addr) ->
+                assertThat(addr.value).isEqualTo(1)
+                assertThat(newStore.globals).hasSize(2)
+                assertThat(newStore.globals[1].value).isEqualTo(1337)
+                assertThat(newStore.globals[1].mutable).isFalse()
+
+                newStore
+            }
+    }
+
+    @Test
+    fun allocate_i64_throwsWhenValueIsNotLong() {
+        val store = Store()
+
+        assertThrows(IllegalArgumentException::class.java) {
+            store.allocate(GlobalType(ValueType.I64, true), 42)
+        }.also { assertThat(it).hasMessageThat().contains("Expected I64 value") }
+        assertThrows(IllegalArgumentException::class.java) {
+            store.allocate(GlobalType(ValueType.I64, true), 42.0f)
+        }.also { assertThat(it).hasMessageThat().contains("Expected I64 value") }
+        assertThrows(IllegalArgumentException::class.java) {
+            store.allocate(GlobalType(ValueType.I64, true), 42.0)
+        }.also { assertThat(it).hasMessageThat().contains("Expected I64 value") }
+    }
+
+    @Test
+    fun allocate_i64() {
+        var store = Store()
+
+        store = store.allocate(GlobalType(ValueType.I64, true), 42L)
+            .let { (newStore, addr) ->
+                assertThat(addr.value).isEqualTo(0)
+                assertThat(newStore.globals).hasSize(1)
+                assertThat(newStore.globals[0].value).isEqualTo(42)
+                assertThat(newStore.globals[0].mutable).isTrue()
+
+                newStore
+            }
+        store.allocate(GlobalType(ValueType.I64, false), 1337L)
+            .let { (newStore, addr) ->
+                assertThat(addr.value).isEqualTo(1)
+                assertThat(newStore.globals).hasSize(2)
+                assertThat(newStore.globals[1].value).isEqualTo(1337L)
+                assertThat(newStore.globals[1].mutable).isFalse()
+
+                newStore
+            }
+    }
+
+    @Test
+    fun allocate_f32_throwsWhenValueIsNotLong() {
+        val store = Store()
+
+        assertThrows(IllegalArgumentException::class.java) {
+            store.allocate(GlobalType(ValueType.F32, true), 42)
+        }.also { assertThat(it).hasMessageThat().contains("Expected F32 value") }
+        assertThrows(IllegalArgumentException::class.java) {
+            store.allocate(GlobalType(ValueType.F32, true), 42L)
+        }.also { assertThat(it).hasMessageThat().contains("Expected F32 value") }
+        assertThrows(IllegalArgumentException::class.java) {
+            store.allocate(GlobalType(ValueType.F32, true), 42.0)
+        }.also { assertThat(it).hasMessageThat().contains("Expected F32 value") }
+    }
+
+    @Test
+    fun allocate_f32() {
+        var store = Store()
+
+        store = store.allocate(GlobalType(ValueType.F32, true), 42.0f)
+            .let { (newStore, addr) ->
+                assertThat(addr.value).isEqualTo(0)
+                assertThat(newStore.globals).hasSize(1)
+                assertThat(newStore.globals[0].value).isEqualTo(42.0f)
+                assertThat(newStore.globals[0].mutable).isTrue()
+
+                newStore
+            }
+        store.allocate(GlobalType(ValueType.F32, false), 1337.0f)
+            .let { (newStore, addr) ->
+                assertThat(addr.value).isEqualTo(1)
+                assertThat(newStore.globals).hasSize(2)
+                assertThat(newStore.globals[1].value).isEqualTo(1337.0f)
+                assertThat(newStore.globals[1].mutable).isFalse()
+
+                newStore
+            }
+    }
+
+    @Test
+    fun allocate_f64_throwsWhenValueIsNotLong() {
+        val store = Store()
+
+        assertThrows(IllegalArgumentException::class.java) {
+            store.allocate(GlobalType(ValueType.F64, true), 42)
+        }.also { assertThat(it).hasMessageThat().contains("Expected F64 value") }
+        assertThrows(IllegalArgumentException::class.java) {
+            store.allocate(GlobalType(ValueType.F64, true), 42.0f)
+        }.also { assertThat(it).hasMessageThat().contains("Expected F64 value") }
+        assertThrows(IllegalArgumentException::class.java) {
+            store.allocate(GlobalType(ValueType.F64, true), 42L)
+        }.also { assertThat(it).hasMessageThat().contains("Expected F64 value") }
+    }
+
+    @Test
+    fun allocate_f64() {
+        var store = Store()
+
+        store = store.allocate(GlobalType(ValueType.F64, true), 42.0)
+            .let { (newStore, addr) ->
+                assertThat(addr.value).isEqualTo(0)
+                assertThat(newStore.globals).hasSize(1)
+                assertThat(newStore.globals[0].value).isEqualTo(42.0)
+                assertThat(newStore.globals[0].mutable).isTrue()
+
+                newStore
+            }
+        store.allocate(GlobalType(ValueType.F64, false), 1337.0)
+            .let { (newStore, addr) ->
+                assertThat(addr.value).isEqualTo(1)
+                assertThat(newStore.globals).hasSize(2)
+                assertThat(newStore.globals[1].value).isEqualTo(1337.0)
+                assertThat(newStore.globals[1].mutable).isFalse()
+
+                newStore
+            }
     }
 }

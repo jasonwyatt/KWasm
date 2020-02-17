@@ -32,22 +32,14 @@ package kwasm.runtime
  * ```
  */
 data class Store internal constructor(
-    val functions: List<FunctionInstance>,
-    val tables: List<Table>,
-    val memories: List<Memory>,
-    val globals: List<Global<*>>
+    val functions: List<FunctionInstance> = emptyList(),
+    val tables: List<Table> = emptyList(),
+    val memories: List<Memory> = emptyList(),
+    val globals: List<Global<*>> = emptyList()
 ) {
-    class Builder internal constructor(
-        val functions: MutableList<FunctionInstance> = mutableListOf(),
-        val tables: MutableList<Table> = mutableListOf(),
-        val memories: MutableList<Memory> = mutableListOf(),
-        val globals: MutableList<Global<*>> = mutableListOf()
-    ) {
-        fun build() = Store(functions, tables, memories, globals)
-    }
-}
+    /** Allocates the provided [Global]. */
+    fun allocateGlobal(global: Global<*>): Allocation<Address.Global> =
+        Allocation(copy(globals = globals + global), Address.Global(globals.size))
 
-/** Builder of a [Store]. */
-@Suppress("FunctionName")
-fun Store(builder: Store.Builder.() -> Unit): Store =
-    Store.Builder().apply(builder).build()
+    data class Allocation<T : Address>(val updatedStore: Store, val allocatedAddress: T)
+}
