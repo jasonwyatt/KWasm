@@ -14,5 +14,4 @@
 
 package kwasm.runtime
 
-interface ModuleInstance {
-}
+interface ModuleInstance

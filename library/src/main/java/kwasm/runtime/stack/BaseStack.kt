@@ -14,9 +14,9 @@
 
 package kwasm.runtime.stack
 
+import java.util.LinkedList
 import kwasm.runtime.Stack
 import kwasm.runtime.StackElement
-import java.util.LinkedList
 
 /** Base implementation of [Stack]. */
 internal abstract class BaseStack<T : StackElement>(
