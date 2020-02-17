@@ -18,6 +18,7 @@ import com.google.common.truth.Truth.assertThat
 import kwasm.ast.type.ElementType
 import kwasm.ast.type.Limits
 import kwasm.ast.type.TableType
+import kwasm.runtime.Table.Companion.allocate
 import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -42,5 +43,18 @@ class TableTest {
         }
         assertThat(table.elements).containsExactly(Address.Function(1))
         assertThat(table.maxSize).isEqualTo(10)
+    }
+
+    @Test
+    fun allocate() {
+        val store = Store()
+
+        store.allocate(TableType(Limits(0, 25L), ElementType.FunctionReference))
+            .also { (newStore, addr) ->
+                assertThat(addr.value).isEqualTo(0)
+                assertThat(newStore.tables).hasSize(1)
+                assertThat(newStore.tables[0])
+                    .isEqualTo(Table(TableType(Limits(0, 25L), ElementType.FunctionReference)))
+            }
     }
 }
