@@ -41,5 +41,9 @@ data class Store internal constructor(
     fun allocateGlobal(global: Global<*>): Allocation<Address.Global> =
         Allocation(copy(globals = globals + global), Address.Global(globals.size))
 
+    /** Allocates the provided [Table]. */
+    fun allocateTable(table: Table): Allocation<Address.Table> =
+        Allocation(copy(tables = tables + table), Address.Table(tables.size))
+
     data class Allocation<T : Address>(val updatedStore: Store, val allocatedAddress: T)
 }

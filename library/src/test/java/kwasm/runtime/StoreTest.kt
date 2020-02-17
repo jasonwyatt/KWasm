@@ -40,4 +40,15 @@ class StoreTest {
                 newStore
             }
     }
+
+    @Test
+    fun allocateTable() {
+        val store = Store()
+        store.allocateTable(Table(emptyList(), 1))
+            .also { (newStore, address) ->
+                assertThat(newStore).isNotSameInstanceAs(store)
+                assertThat(newStore.tables).hasSize(1)
+                assertThat(address.value).isEqualTo(0)
+            }
+    }
 }

@@ -47,6 +47,21 @@ data class Table(
             "Elements in table cannot exceed the maximum size: ${maxSize.toUInt()}"
         }
     }
+
+    companion object {
+        /**
+         * From [the docs](https://webassembly.github.io/spec/core/exec/modules.html#alloc-table):
+         *
+         * 1. Let `tabletype` be the table type to allocate.
+         * 1. Let `({min n, max m?} elemtype)` be the structure of table type `tabletype`.
+         * 1. Let `a` be the first free table address in `S`.
+         * 1. Let `tableinst` be the table instance `{elem(ϵ)^n, max m?}` with `n` empty elements.
+         * 1. Append `tableinst` to the `tables` of `S`.
+         * 1. Return `a`.
+         */
+        fun Store.allocate(tableType: TableType): Store.Allocation<Address.Table> =
+            allocateTable(Table(tableType))
+    }
 }
 
 /**
@@ -54,7 +69,7 @@ data class Table(
  * the [Table]'s elements.
  */
 @Suppress("EXPERIMENTAL_API_USAGE", "FunctionName")
-fun Table(tableType: TableType, builder: (MutableList<Address.Function>) -> Unit): Table {
+fun Table(tableType: TableType, builder: (MutableList<Address.Function>) -> Unit = {}): Table {
     val elements = mutableListOf<Address.Function>().also(builder)
     return Table(elements, maxSize = tableType.limits.max?.toInt() ?: UInt.MAX_VALUE.toInt())
 }
