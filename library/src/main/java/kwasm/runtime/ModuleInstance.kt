@@ -20,7 +20,7 @@ import kwasm.ast.type.FunctionType
  * Represents an instantiated [kwasm.ast.module.WasmModule].
  *
  * From [the docs](https://webassembly.github.io/spec/core/exec/runtime.html#module-instances):
- * 
+ *
  * A module instance is the runtime representation of a module. It is created by instantiating a
  * module, and collects runtime representations of all entities that are imported, defined, or
  * exported by the module.
@@ -35,12 +35,12 @@ import kwasm.ast.type.FunctionType
  *                      exports exportinst*
  *                  }
  * ```
- * 
+ *
  * Each component references runtime instances corresponding to respective declarations from the
  * original module – whether imported or defined – in the order of their static indices. Function
  * instances, table instances, memory instances, and global instances are referenced with an
  * indirection through their respective addresses in the store.
- * 
+ *
  * It is an invariant of the semantics that all export instances in a given module instance have
  * different names.
  */
