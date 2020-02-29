@@ -18,6 +18,7 @@ import kwasm.ast.Identifier
 import kwasm.ast.module.Index
 import kwasm.runtime.ModuleInstance
 import kwasm.runtime.StackElement
+import kwasm.runtime.Value
 
 /**
  * Represents an Activation Frame in a running WebAssembly program.

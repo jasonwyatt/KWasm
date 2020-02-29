@@ -14,8 +14,6 @@
 
 package kwasm.runtime
 
-import kwasm.runtime.stack.Value
-
 /**
  * Represents the result of a computation.
  *
@@ -32,10 +30,10 @@ import kwasm.runtime.stack.Value
  *
  * In the current version of WebAssembly, a result can consist of at most one value.
  */
-sealed class Result {
+sealed class Result<T : Value<*>> {
     /** Successful result of computation. */
-    data class Ok<T : Number>(val value: Value<T>) : Result()
+    data class Ok<T : Value<*>>(val value: T) : Result<T>()
 
     /** An error occurred during computation. */
-    data class Trap(val exception: Throwable) : Result()
+    data class Trap<T : Value<*>>(val exception: Throwable) : Result<T>()
 }

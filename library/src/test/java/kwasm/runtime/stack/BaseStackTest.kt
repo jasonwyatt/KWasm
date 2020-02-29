@@ -15,6 +15,11 @@
 package kwasm.runtime.stack
 
 import com.google.common.truth.Truth.assertThat
+import kwasm.runtime.DoubleValue
+import kwasm.runtime.FloatValue
+import kwasm.runtime.IntValue
+import kwasm.runtime.LongValue
+import kwasm.runtime.Value
 import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith

@@ -14,6 +14,8 @@
 
 package kwasm.runtime.stack
 
+import kwasm.runtime.Value
+
 /** Holds the stack of operand [Value]s for use during execution. */
 internal class OperandStack(
     initialValues: List<Value<*>> = emptyList(),

@@ -48,6 +48,6 @@ sealed class FunctionInstance(open val type: FunctionType) {
     /** A function supplied by the host. */
     data class Host(
         override val type: FunctionType,
-        val hostFunction: HostFunction
+        val hostFunction: HostFunction<*>
     ) : FunctionInstance(type)
 }
