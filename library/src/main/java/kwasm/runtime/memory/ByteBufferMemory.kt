@@ -26,7 +26,7 @@ import kwasm.util.Impossible
 
 @Suppress("EXPERIMENTAL_API_USAGE", "MemberVisibilityCanBePrivate")
 internal class ByteBufferMemory(
-    private val maximumPages: Int = 10, // 64 Megabytes
+    internal val maximumPages: Int = 10, // 64 Megabytes
     initialData: ByteArray = ByteArray(0),
     initialPages: Int = maxOf(1, ceil(initialData.size / PAGE_SIZE.toDouble()).toInt())
 ) : Memory {
