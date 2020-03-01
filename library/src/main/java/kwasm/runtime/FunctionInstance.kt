@@ -54,6 +54,23 @@ sealed class FunctionInstance(open val type: FunctionType) {
 
     companion object {
         /**
+         * From [the docs](https://webassembly.github.io/spec/core/exec/modules.html#alloc-func):
+         *
+         * 1. Let `func` be the function to allocate and `moduleinst` its module instance.
+         * 1. Let `a` be the first free function address in `S`.
+         * 1. Let `functype` be the function type `moduleinst.types\[func.type]`.
+         * 1. Let `funcinst` be the function instance
+         *    `{type functype, module moduleinst, code func}`.
+         * 1. Append `funcinst` to the `funcs` of `S`.
+         * 1. Return `a`.
+         */
+        fun Store.allocate(
+            moduleInstance: ModuleInstance,
+            wasmFunction: WasmFunction
+        ): Store.Allocation<Address.Function> =
+            allocateFunction(Module(moduleInstance, wasmFunction))
+
+        /**
          * From [the
          * docs](https://webassembly.github.io/spec/core/exec/modules.html#host-functions):
          *
