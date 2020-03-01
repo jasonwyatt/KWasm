@@ -15,6 +15,7 @@
 package kwasm.runtime
 
 import kwasm.api.HostFunction
+import kwasm.api.functionType
 import kwasm.ast.module.WasmFunction
 import kwasm.ast.type.FunctionType
 
@@ -50,4 +51,19 @@ sealed class FunctionInstance(open val type: FunctionType) {
         override val type: FunctionType,
         val hostFunction: HostFunction<*>
     ) : FunctionInstance(type)
+
+    companion object {
+        /**
+         * From [the
+         * docs](https://webassembly.github.io/spec/core/exec/modules.html#host-functions):
+         *
+         * 1. Let `hostfunc` be the host function to allocate and `functype` its function type.
+         * 1. Let `a` be the first free function address in `S`.
+         * 1. Let `funcinst` be the function instance `{type functype, hostcode hostfunc}`.
+         * 1. Append `funcinst` to the `funcs` of `S`.
+         * 1. Return `a`.
+         */
+        fun Store.allocate(hostFunction: HostFunction<*>): Store.Allocation<Address.Function> =
+            allocateFunction(Host(hostFunction.functionType, hostFunction))
+    }
 }
