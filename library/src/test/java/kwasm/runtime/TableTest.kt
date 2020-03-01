@@ -18,7 +18,6 @@ import com.google.common.truth.Truth.assertThat
 import kwasm.ast.type.ElementType
 import kwasm.ast.type.Limits
 import kwasm.ast.type.TableType
-import kwasm.runtime.Table.Companion.allocate
 import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith

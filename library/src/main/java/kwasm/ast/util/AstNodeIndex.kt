@@ -33,6 +33,8 @@ interface AstNodeIndex<T : AstNode> {
     fun toMutableIndex(): MutableAstNodeIndex<T>
     fun toImmutableIndex(): AstNodeIndex<T>
     fun any(block: (T?) -> Boolean): Boolean
+
+    fun positionOf(index: Index<*>): Int
 }
 
 /**
@@ -58,6 +60,7 @@ private data class AstNodeIndexImpl<T : AstNode>(
     private val nodes: MutableList<T?> = mutableListOf(),
     private val nodesByIdentifier: MutableMap<String, T> = mutableMapOf()
 ) : MutableAstNodeIndex<T> {
+
     override val size: Int
         get() = nodes.size
 
@@ -88,6 +91,16 @@ private data class AstNodeIndexImpl<T : AstNode>(
 
     override fun prepend(node: T) = apply {
         nodes.add(0, node)
+    }
+
+    override fun positionOf(index: Index<*>): Int = when (index) {
+        is Index.ByIdentifier<*> -> {
+            val node = requireNotNull(nodesByIdentifier[index.indexVal.stringRepr]) {
+                "Node with index $index not found in module"
+            }
+            nodes.indexOf(node)
+        }
+        is Index.ByInt -> index.indexVal
     }
 
     override operator fun get(identifier: Identifier): T? =
