@@ -14,9 +14,11 @@
 
 @file:Suppress("EXPERIMENTAL_API_USAGE")
 
-package kwasm.runtime.stack
+package kwasm.runtime
 
-import kwasm.runtime.StackElement
+import kotlin.reflect.KClass
+import kwasm.ast.type.ValueType
+import kwasm.util.Impossible
 
 /**
  * Defines a value for use in WebAssembly at runtime.
@@ -40,6 +42,14 @@ import kwasm.runtime.StackElement
  */
 interface Value<T : Number> : StackElement {
     val value: T
+}
+
+/**
+ * Represents an empty value. Should only ever be used as a return-type for a void/Unit
+ * [kwasm.api.HostFunction].
+ */
+object EmptyValue : Value<Byte> {
+    override val value: Byte = 1
 }
 
 /** Holds a 32-bit integer [Value]. */
@@ -77,3 +87,13 @@ fun Float.toValue(): FloatValue = FloatValue(this)
 
 /** Wraps a [Double] in a [DoubleValue]. */
 fun Double.toValue(): DoubleValue = DoubleValue(this)
+
+/** Converts a [KClass] for a [Value] class to a [ValueType]. */
+fun KClass<out Value<*>>.toValueType(): ValueType? = when (this) {
+    IntValue::class -> ValueType.I32
+    LongValue::class -> ValueType.I64
+    FloatValue::class -> ValueType.F32
+    DoubleValue::class -> ValueType.F64
+    EmptyValue::class -> null
+    else -> Impossible("Unsupported Value: $this")
+}

@@ -45,5 +45,9 @@ data class Store internal constructor(
     fun allocateTable(table: Table): Allocation<Address.Table> =
         Allocation(copy(tables = tables + table), Address.Table(tables.size))
 
+    /** Allocates the provided [FunctionInstance]. */
+    fun allocateFunction(function: FunctionInstance): Allocation<Address.Function> =
+        Allocation(copy(functions = functions + function), Address.Function(functions.size))
+
     data class Allocation<T : Address>(val updatedStore: Store, val allocatedAddress: T)
 }
