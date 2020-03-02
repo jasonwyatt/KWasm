@@ -20,6 +20,8 @@ import kwasm.api.UnitHostFunction
 import kwasm.api.functionType
 import kwasm.format.text.module.parseWasmFunction
 import kwasm.runtime.FunctionInstance.Companion.allocate
+import kwasm.runtime.util.AddressIndex
+import kwasm.runtime.util.TypeIndex
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -38,11 +40,11 @@ class FunctionInstanceTest {
 
         val store = Store()
         val moduleInstance = ModuleInstance(
-            emptyList(),
-            emptyList(),
-            emptyList(),
-            emptyList(),
-            emptyList(),
+            TypeIndex(),
+            AddressIndex(),
+            AddressIndex(),
+            AddressIndex(),
+            AddressIndex(),
             emptyList()
         )
 
