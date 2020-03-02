@@ -18,7 +18,6 @@ import com.google.common.truth.Truth.assertThat
 import kwasm.api.ByteBufferMemoryProvider
 import kwasm.ast.type.Limits
 import kwasm.ast.type.MemoryType
-import kwasm.runtime.Memory.Companion.allocate
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4

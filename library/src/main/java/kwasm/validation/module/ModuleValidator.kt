@@ -28,9 +28,8 @@ import kwasm.validation.validate
  *
  * @throws ValidationException if the module, or any of its children, are deemed invalid.
  */
-fun WasmModule.validate(context: ValidationContext.Module = ValidationContext(this)) {
+fun WasmModule.validate(context: ValidationContext.Module = ValidationContext(this)) =
     ModuleValidator.visit(this, context)
-}
 
 /**
  * Validator of [WasmModule]s.

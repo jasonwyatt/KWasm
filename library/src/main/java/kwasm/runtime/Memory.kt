@@ -135,27 +135,27 @@ interface Memory {
 
         /** Returns the minimum number of pages required to hold the specified number of [bytes]. */
         fun pagesForBytes(bytes: Long): Int = ceil(bytes / PAGE_SIZE.toDouble()).toInt()
-
-        /**
-         * From [the docs](https://webassembly.github.io/spec/core/exec/modules.html#alloc-mem):
-         *
-         * 1. Let `memtype` be the memory type to allocate.
-         * 1. Let `{min n, max m?}` be the structure of memory type `memtype`.
-         * 1. Let `a` be the first free memory address in `S`.
-         * 1. Let `meminst` be the memory instance `{data (0x00)^(n⋅64Ki), max m?}` that contains
-         *    `n` pages of zeroed bytes.
-         * 1. Append `meminst` to the `mems` of `S`.
-         * 1. Return `a`.
-         */
-        fun Store.allocate(
-            memoryProvider: MemoryProvider,
-            memoryType: MemoryType
-        ): Store.Allocation<Address.Memory> {
-            val memory = memoryProvider.buildMemory(
-                memoryType.limits.min.toInt(),
-                memoryType.limits.max?.toInt()
-            )
-            return allocateMemory(memory)
-        }
     }
+}
+
+/**
+ * From [the docs](https://webassembly.github.io/spec/core/exec/modules.html#alloc-mem):
+ *
+ * 1. Let `memtype` be the memory type to allocate.
+ * 1. Let `{min n, max m?}` be the structure of memory type `memtype`.
+ * 1. Let `a` be the first free memory address in `S`.
+ * 1. Let `meminst` be the memory instance `{data (0x00)^(n⋅64Ki), max m?}` that contains
+ *    `n` pages of zeroed bytes.
+ * 1. Append `meminst` to the `mems` of `S`.
+ * 1. Return `a`.
+ */
+fun Store.allocate(
+    memoryProvider: MemoryProvider,
+    memoryType: MemoryType
+): Store.Allocation<Address.Memory> {
+    val memory = memoryProvider.buildMemory(
+        memoryType.limits.min.toInt(),
+        memoryType.limits.max?.toInt()
+    )
+    return allocateMemory(memory)
 }
