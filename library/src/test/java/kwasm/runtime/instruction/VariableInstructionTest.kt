@@ -30,7 +30,6 @@ import kwasm.runtime.Store
 import kwasm.runtime.stack.Activation
 import kwasm.runtime.stack.ActivationStack
 import kwasm.runtime.stack.OperandStack
-import kwasm.runtime.stack.RuntimeStacks
 import kwasm.runtime.toValue
 import kwasm.runtime.util.AddressIndex
 import kwasm.runtime.util.TypeIndex
