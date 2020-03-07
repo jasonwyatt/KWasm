@@ -17,26 +17,53 @@ package kwasm.runtime.instruction
 import com.google.common.truth.Truth.assertThat
 import kwasm.KWasmRuntimeException
 import kwasm.ParseRule
+import kwasm.ast.Identifier
+import kwasm.ast.module.Index
+import kwasm.ast.module.Type
 import kwasm.ast.util.toGlobalIndex
 import kwasm.runtime.Address
 import kwasm.runtime.EmptyExecutionContext
 import kwasm.runtime.ExecutionContext
 import kwasm.runtime.Global
+import kwasm.runtime.ModuleInstance
 import kwasm.runtime.Store
+import kwasm.runtime.stack.Activation
+import kwasm.runtime.stack.ActivationStack
+import kwasm.runtime.stack.OperandStack
 import kwasm.runtime.toValue
+import kwasm.runtime.util.AddressIndex
+import kwasm.runtime.util.TypeIndex
 import org.junit.Assert.assertThrows
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+@Suppress("UNCHECKED_CAST")
 @RunWith(JUnit4::class)
 class VariableInstructionTest {
     @get:Rule
     val parser = ParseRule()
 
+    @Suppress("UNCHECKED_CAST")
     private val executionContext: ExecutionContext
         get() = EmptyExecutionContext().let {
+            it.stacks.activations.push(
+                Activation(
+                    locals = mapOf(
+                        Index.ByInt(0) as Index<Identifier.Local> to 10.0.toValue()
+                    ),
+                    functionIndex = Index.ByInt(0) as Index<Identifier.Function>,
+                    module = ModuleInstance(
+                        TypeIndex(emptyList<Type>()),
+                        AddressIndex(),
+                        AddressIndex(),
+                        AddressIndex(),
+                        AddressIndex(),
+                        emptyList()
+                    )
+                )
+            )
             it.moduleInstance.globalAddresses.addAll(
                 listOf(
                     Address.Global(0),
@@ -245,5 +272,150 @@ class VariableInstructionTest {
         assertThat(resultContext).isSameInstanceAs(context)
         assertThat(resultContext.stacks.operands.height).isEqualTo(0)
         assertThat(resultContext.store.globals[3].value).isEqualTo(11.0)
+    }
+
+    @Test
+    fun localGet_throwsWhenActivationStack_isEmpty() = parser.with {
+        val instruction = "local.get 0".parseInstruction()
+        // Nothing  in the activation stack.
+        val context = executionContext.copy(
+            stacks = executionContext.stacks.copy(activations = ActivationStack())
+        )
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(context)
+        }.also {
+            assertThat(it).hasMessageThat()
+                .contains("No call frame available on the activation stack")
+        }
+    }
+
+    @Test
+    fun localGet_throwsWhenLocalNotfound() = parser.with {
+        val instruction = "local.get 1".parseInstruction()
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContext)
+        }.also {
+            assertThat(it).hasMessageThat()
+                .contains("Expected local with index 1, but none was found")
+        }
+    }
+
+    @Test
+    fun localGet_valid() = parser.with {
+        val instruction = "local.get 0".parseInstruction()
+        val result = instruction.execute(executionContext)
+        assertThat(result.stacks.operands.peek()).isEqualTo(10.0.toValue())
+    }
+
+    @Test
+    fun localSet_throwsWhenActivationStack_isEmpty() = parser.with {
+        val instruction = "local.set 0".parseInstruction()
+        // Nothing  in the activation stack.
+        val context = executionContext.copy(
+            stacks = executionContext.stacks.copy(activations = ActivationStack())
+        )
+
+        assertThrows(IllegalStateException::class.java) {
+            instruction.execute(context)
+        }
+    }
+
+    @Test
+    fun localSet_throwsWhenOperandStack_isEmpty() = parser.with {
+        val instruction = "local.set 0".parseInstruction()
+        val context = executionContext.copy(
+            stacks = executionContext.stacks.copy(operands = OperandStack())
+        )
+        assertThrows(IllegalStateException::class.java) {
+            instruction.execute(context)
+        }
+    }
+
+    @Test
+    fun localSet_throwsWhenLocalNotFound() = parser.with {
+        val instruction = "local.set 1".parseInstruction()
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContext)
+        }.also {
+            assertThat(it).hasMessageThat()
+                .contains("Expected local with index 1, but none was found")
+        }
+    }
+
+    @Test
+    fun localSet_valid() = parser.with {
+        val instruction = "local.set 0".parseInstruction()
+        val operands = OperandStack()
+        operands.push(42.0.toValue())
+        val context = executionContext.copy(
+            stacks = executionContext.stacks.copy(operands = operands)
+        )
+
+        val updatedContext = instruction.execute(context)
+        val updatedActivation = updatedContext.stacks.activations.peek()!!
+        assertThat(updatedActivation.locals[Index.ByInt(0) as Index<Identifier.Local>])
+            .isEqualTo(42.0.toValue())
+        assertThat(updatedContext.stacks.operands.height).isEqualTo(0)
+    }
+
+    @Test
+    fun localTee_throwsWhenActivationStack_isEmpty() = parser.with {
+        val instruction = "local.tee 0".parseInstruction()
+        // Nothing  in the activation stack.
+        val context = executionContext.copy(
+            stacks = executionContext.stacks.copy(
+                activations = ActivationStack(),
+                operands = OperandStack(listOf(42.toValue()))
+            )
+        )
+
+        assertThrows(IllegalStateException::class.java) {
+            instruction.execute(context)
+        }
+    }
+
+    @Test
+    fun localTee_throwsWhenOperandStack_isEmpty() = parser.with {
+        val instruction = "local.tee 0".parseInstruction()
+        val context = executionContext.copy(
+            stacks = executionContext.stacks.copy(operands = OperandStack())
+        )
+        assertThrows(IllegalStateException::class.java) {
+            instruction.execute(context)
+        }
+    }
+
+    @Test
+    fun localTee_throwsWhenLocalNotFound() = parser.with {
+        val instruction = "local.tee 1".parseInstruction()
+        val operands = OperandStack()
+        operands.push(42.0.toValue())
+        val context = executionContext.copy(
+            stacks = executionContext.stacks.copy(operands = operands)
+        )
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(context)
+        }.also {
+            assertThat(it).hasMessageThat()
+                .contains("Expected local with index 1, but none was found")
+        }
+    }
+
+    @Test
+    fun localTee_valid() = parser.with {
+        val instruction = "local.tee 0".parseInstruction()
+        val operands = OperandStack()
+        operands.push(42.0.toValue())
+        val context = executionContext.copy(
+            stacks = executionContext.stacks.copy(operands = operands)
+        )
+
+        val updatedContext = instruction.execute(context)
+        val updatedActivation = updatedContext.stacks.activations.peek()!!
+        assertThat(updatedActivation.locals[Index.ByInt(0) as Index<Identifier.Local>])
+            .isEqualTo(42.0.toValue())
+        assertThat(updatedContext.stacks.operands.height).isEqualTo(1)
+        assertThat(updatedContext.stacks.operands.peek()).isEqualTo(42.0.toValue())
     }
 }

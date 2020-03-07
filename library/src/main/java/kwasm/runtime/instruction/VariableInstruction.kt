@@ -15,13 +15,16 @@
 package kwasm.runtime.instruction
 
 import kwasm.KWasmRuntimeException
+import kwasm.ast.Identifier
 import kwasm.ast.instruction.VariableInstruction
+import kwasm.ast.module.Index
 import kwasm.runtime.DoubleValue
 import kwasm.runtime.ExecutionContext
 import kwasm.runtime.FloatValue
 import kwasm.runtime.Global
 import kwasm.runtime.IntValue
 import kwasm.runtime.LongValue
+import kwasm.runtime.Value
 import kwasm.runtime.toValue
 
 /**
@@ -32,7 +35,9 @@ internal fun VariableInstruction.execute(
 ): ExecutionContext = when (this) {
     is VariableInstruction.GlobalGet -> this.execute(context)
     is VariableInstruction.GlobalSet -> this.execute(context)
-    else -> TODO("$this not supported yet")
+    is VariableInstruction.LocalGet -> this.execute(context)
+    is VariableInstruction.LocalSet -> this.execute(context)
+    is VariableInstruction.LocalTee -> this.execute(context)
 }
 
 /**
@@ -106,4 +111,66 @@ internal fun VariableInstruction.GlobalSet.execute(context: ExecutionContext): E
         }
     }
     return context
+}
+
+/**
+ * From [the docs](https://webassembly.github.io/spec/core/exec/instructions.html#exec-local-get):
+ *
+ * 1. Let `F` be the current frame.
+ * 1. Assert: due to validation, `F.locals\[x]` exists.
+ * 1. Let `val` be the value `F.locals\[x]`.
+ * 1. Push the value `val` to the stack.
+ */
+internal fun VariableInstruction.LocalGet.execute(context: ExecutionContext): ExecutionContext {
+    val frame = context.stacks.activations.peek()
+        ?: throw KWasmRuntimeException("No call frame available on the activation stack.")
+    val local = frame.locals[valueAstNode]
+        ?: throw KWasmRuntimeException(
+            "Expected local with index $valueAstNode, but none was found"
+        )
+    context.stacks.operands.push(local)
+    return context
+}
+
+/**
+ * From [the docs](https://webassembly.github.io/spec/core/exec/instructions.html#exec-local-set):
+ *
+ * 1. Let `F` be the current frame.
+ * 1. Assert: due to validation, `F.locals\[x]` exists.
+ * 1. Assert: due to validation, a value is on the top of the stack.
+ * 1. Pop the value `val` from the stack.
+ * 1. Replace `F.locals\[x]` with the value `val`.
+ */
+internal fun VariableInstruction.LocalSet.execute(context: ExecutionContext): ExecutionContext {
+    val frame = context.stacks.activations.pop()
+    if (valueAstNode !in frame.locals) {
+        throw KWasmRuntimeException(
+            "Expected local with index $valueAstNode, but none was found"
+        )
+    }
+    val newValue = context.stacks.operands.pop()
+
+    val updatedLocals = mutableMapOf<Index<Identifier.Local>, Value<*>>()
+    updatedLocals.putAll(frame.locals)
+    updatedLocals[valueAstNode] = newValue
+
+    val updatedFrame = frame.copy(locals = updatedLocals)
+    context.stacks.activations.push(updatedFrame)
+    return context
+}
+
+/**
+ * From [the docs](https://webassembly.github.io/spec/core/exec/instructions.html#exec-local-tee):
+ *
+ * 1. Assert: due to validation, a value is on the top of the stack.
+ * 1. Pop the value `val` from the stack.
+ * 1. Push the value `val` to the stack.
+ * 1. Push the value `val` to the stack.
+ * 1. Execute the instruction `(local.set x)`.
+ */
+internal fun VariableInstruction.LocalTee.execute(context: ExecutionContext): ExecutionContext {
+    val value = context.stacks.operands.pop()
+    context.stacks.operands.push(value)
+    context.stacks.operands.push(value)
+    return VariableInstruction.LocalSet(valueAstNode).execute(context)
 }
