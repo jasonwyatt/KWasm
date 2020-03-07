@@ -16,6 +16,12 @@
 
 package kwasm.runtime.instruction
 
+import kotlin.math.absoluteValue
+import kotlin.math.ceil
+import kotlin.math.floor
+import kotlin.math.round
+import kotlin.math.sqrt
+import kotlin.math.truncate
 import kwasm.KWasmRuntimeException
 import kwasm.ast.instruction.NumericInstruction
 import kwasm.runtime.DoubleValue
@@ -25,12 +31,6 @@ import kwasm.runtime.IntValue
 import kwasm.runtime.LongValue
 import kwasm.runtime.Value
 import kwasm.runtime.toValue
-import kotlin.math.absoluteValue
-import kotlin.math.ceil
-import kotlin.math.floor
-import kotlin.math.round
-import kotlin.math.sqrt
-import kotlin.math.truncate
 
 /**
  * See
@@ -322,7 +322,7 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
  */
 internal inline fun <reified In : Value<*>, reified Out : Value<*>> unaryOp(
     executionContext: ExecutionContext,
-    op: (In) -> Out
+    crossinline op: (In) -> Out
 ): ExecutionContext {
     val stackTop = executionContext.stacks.operands.pop()
     if (stackTop !is In) throw KWasmRuntimeException("Top of stack is invalid type")

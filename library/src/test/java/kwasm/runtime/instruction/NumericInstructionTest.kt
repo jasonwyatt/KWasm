@@ -15,20 +15,19 @@
 package kwasm.runtime.instruction
 
 import com.google.common.truth.Truth.assertThat
+import kotlin.math.sqrt
 import kwasm.KWasmRuntimeException
 import kwasm.ParseRule
 import kwasm.runtime.EmptyExecutionContext
 import kwasm.runtime.ExecutionContext
 import kwasm.runtime.IntValue
 import kwasm.runtime.Value
-import kwasm.runtime.stack.OperandStack
 import kwasm.runtime.toValue
 import org.junit.Assert.assertThrows
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import kotlin.math.sqrt
 
 @RunWith(JUnit4::class)
 class NumericInstructionTest {
