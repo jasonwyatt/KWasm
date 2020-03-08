@@ -36,9 +36,12 @@ import kwasm.runtime.toValue
  * See
  * [the docs](https://webassembly.github.io/spec/core/exec/instructions.html#numeric-instructions):
  */
+@UseExperimental(ExperimentalStdlibApi::class)
 internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionContext {
     when (this) {
-        NumericInstruction.I32Add -> TODO()
+        NumericInstruction.I32Add -> binaryOp<IntValue>(context) { x, y ->
+            (x.value + y.value).toValue()
+        }
         NumericInstruction.I32CountLeadingZeroes -> unaryOp(context) { x: IntValue ->
             if (x.value == 0) 32.toValue()
             else {
@@ -90,20 +93,59 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
                 }
             }
         }
-        NumericInstruction.I32Subtract -> TODO()
-        NumericInstruction.I32Multiply -> TODO()
-        NumericInstruction.I32DivideSigned -> TODO()
-        NumericInstruction.I32DivideUnsigned -> TODO()
-        NumericInstruction.I32RemainderSigned -> TODO()
-        NumericInstruction.I32RemainderUnsigned -> TODO()
-        NumericInstruction.I32BitwiseAnd -> TODO()
-        NumericInstruction.I32BitwiseOr -> TODO()
-        NumericInstruction.I32BitwiseXor -> TODO()
-        NumericInstruction.I32ShiftLeft -> TODO()
-        NumericInstruction.I32ShiftRightSigned -> TODO()
-        NumericInstruction.I32ShiftRightUnsigned -> TODO()
-        NumericInstruction.I32RotateLeft -> TODO()
-        NumericInstruction.I32RotateRight -> TODO()
+        NumericInstruction.I32Subtract -> binaryOp<IntValue>(context) { x, y ->
+            (x.value - y.value).toValue()
+        }
+        NumericInstruction.I32Multiply -> binaryOp<IntValue>(context) { x, y ->
+            (x.value * y.value).toValue()
+        }
+        NumericInstruction.I32DivideSigned -> binaryOp<IntValue>(context) { x, y ->
+            if (y.value == 0) throw KWasmRuntimeException("Cannot divide by zero.")
+            else if (x.value == Int.MIN_VALUE && y.value == -1)
+                throw KWasmRuntimeException("Quotient unrepresentable as 32bit integer.")
+            (x.value / y.value).toValue()
+        }
+        NumericInstruction.I32DivideUnsigned -> binaryOp<IntValue>(context) { x, y ->
+            if (y.value == 0) throw KWasmRuntimeException("Cannot divide by zero.")
+            (x.unsignedValue / y.unsignedValue).toValue()
+        }
+        NumericInstruction.I32RemainderSigned -> binaryOp<IntValue>(context) { x, y ->
+            if (y.value == 0) throw KWasmRuntimeException("Cannot divide by zero.")
+            (x.value % y.value).toValue()
+        }
+        NumericInstruction.I32RemainderUnsigned -> binaryOp<IntValue>(context) { x, y ->
+            if (y.value == 0) throw KWasmRuntimeException("Cannot divide by zero.")
+            (x.unsignedValue % y.unsignedValue).toValue()
+        }
+        NumericInstruction.I32BitwiseAnd -> binaryOp<IntValue>(context) { x, y ->
+            (x.value and y.value).toValue()
+        }
+        NumericInstruction.I32BitwiseOr -> binaryOp<IntValue>(context) { x, y ->
+            (x.value or y.value).toValue()
+        }
+        NumericInstruction.I32BitwiseXor -> binaryOp<IntValue>(context) { x, y ->
+            (x.value xor y.value).toValue()
+        }
+        NumericInstruction.I32ShiftLeft -> binaryOp<IntValue>(context) { x, y ->
+            val distance = (y.unsignedValue % 32u).toInt()
+            (x.value shl distance).toValue()
+        }
+        NumericInstruction.I32ShiftRightSigned -> binaryOp<IntValue>(context) { x, y ->
+            val distance = (y.unsignedValue % 32u).toInt()
+            (x.value shr distance).toValue()
+        }
+        NumericInstruction.I32ShiftRightUnsigned -> binaryOp<IntValue>(context) { x, y ->
+            val distance = (y.unsignedValue % 32u).toInt()
+            (x.value ushr distance).toValue()
+        }
+        NumericInstruction.I32RotateLeft -> binaryOp<IntValue>(context) { x, y ->
+            val distance = (y.unsignedValue % 32u).toInt()
+            ((x.value shl distance) or (x.value ushr -distance)).toValue()
+        }
+        NumericInstruction.I32RotateRight -> binaryOp<IntValue>(context) { x, y ->
+            val distance = (y.unsignedValue % 32u).toInt()
+            ((x.value ushr distance) or (x.value shl -distance)).toValue()
+        }
         NumericInstruction.I32EqualsZero -> testOp(context) { x: IntValue -> x.value == 0 }
         NumericInstruction.I32Equals -> relOp<IntValue>(context) { x, y -> x.value == y.value }
         NumericInstruction.I32NotEquals -> relOp<IntValue>(context) { x, y -> x.value != y.value }
@@ -182,21 +224,59 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
                 }
             }
         }
-        NumericInstruction.I64Add -> TODO()
-        NumericInstruction.I64Subtract -> TODO()
-        NumericInstruction.I64Multiply -> TODO()
-        NumericInstruction.I64DivideSigned -> TODO()
-        NumericInstruction.I64DivideUnsigned -> TODO()
-        NumericInstruction.I64RemainderSigned -> TODO()
-        NumericInstruction.I64RemainderUnsigned -> TODO()
-        NumericInstruction.I64BitwiseAnd -> TODO()
-        NumericInstruction.I64BitwiseOr -> TODO()
-        NumericInstruction.I64BitwiseXor -> TODO()
-        NumericInstruction.I64ShiftLeft -> TODO()
-        NumericInstruction.I64ShiftRightSigned -> TODO()
-        NumericInstruction.I64ShiftRightUnsigned -> TODO()
-        NumericInstruction.I64RotateLeft -> TODO()
-        NumericInstruction.I64RotateRight -> TODO()
+        NumericInstruction.I64Add -> binaryOp<LongValue>(context) { x, y ->
+            (x.value + y.value).toValue()
+        }
+        NumericInstruction.I64Subtract -> binaryOp<LongValue>(context) { x, y ->
+            (x.value - y.value).toValue()
+        }
+        NumericInstruction.I64Multiply -> binaryOp<LongValue>(context) { x, y ->
+            (x.value * y.value).toValue()
+        }
+        NumericInstruction.I64DivideSigned -> binaryOp<LongValue>(context) { x, y ->
+            if (y.value == 0L) throw KWasmRuntimeException("Cannot divide by zero.")
+            else if (x.value == Long.MIN_VALUE && y.value == -1L)
+                throw KWasmRuntimeException("Quotient unrepresentable as 64bit integer.")
+            (x.value / y.value).toValue()
+        }
+        NumericInstruction.I64DivideUnsigned -> binaryOp<LongValue>(context) { x, y ->
+            if (y.value == 0L) throw KWasmRuntimeException("Cannot divide by zero.")
+            (x.unsignedValue / y.unsignedValue).toValue()
+        }
+        NumericInstruction.I64RemainderSigned -> binaryOp<LongValue>(context) { x, y ->
+            if (y.value == 0L) throw KWasmRuntimeException("Cannot divide by zero.")
+            (x.value % y.value).toValue()
+        }
+        NumericInstruction.I64RemainderUnsigned -> binaryOp<LongValue>(context) { x, y ->
+            if (y.value == 0L) throw KWasmRuntimeException("Cannot divide by zero.")
+            (x.unsignedValue % y.unsignedValue).toValue()
+        }
+        NumericInstruction.I64BitwiseAnd -> binaryOp<LongValue>(context) { x, y ->
+            (x.value and y.value).toValue()
+        }
+        NumericInstruction.I64BitwiseOr -> binaryOp<LongValue>(context) { x, y ->
+            (x.value or y.value).toValue()
+        }
+        NumericInstruction.I64BitwiseXor -> binaryOp<LongValue>(context) { x, y ->
+            (x.value xor y.value).toValue()
+        }
+        NumericInstruction.I64ShiftLeft -> binaryOp<LongValue>(context) { x, y ->
+            (x.value shl (y.unsignedValue % 64uL).toInt()).toValue()
+        }
+        NumericInstruction.I64ShiftRightSigned -> binaryOp<LongValue>(context) { x, y ->
+            (x.value shr (y.unsignedValue % 64uL).toInt()).toValue()
+        }
+        NumericInstruction.I64ShiftRightUnsigned -> binaryOp<LongValue>(context) { x, y ->
+            (x.value ushr (y.unsignedValue % 64uL).toInt()).toValue()
+        }
+        NumericInstruction.I64RotateLeft -> binaryOp<LongValue>(context) { x, y ->
+            val distance = (y.unsignedValue % 64uL).toInt()
+            ((x.value shl distance) or (x.value ushr -distance)).toValue()
+        }
+        NumericInstruction.I64RotateRight -> binaryOp<LongValue>(context) { x, y ->
+            val distance = (y.unsignedValue % 64uL).toInt()
+            ((x.value ushr distance) or (x.value shl -distance)).toValue()
+        }
         NumericInstruction.I64EqualsZero -> testOp(context) { x: LongValue -> x.value == 0L }
         NumericInstruction.I64Equals -> relOp<LongValue>(context) { x, y -> x.value == y.value }
         NumericInstruction.I64NotEquals -> relOp<LongValue>(context) { x, y -> x.value != y.value }
@@ -493,6 +573,38 @@ internal inline fun <reified In : Value<*>, reified Out : Value<*>> unaryOp(
 
     val newTop = op(stackTop)
     executionContext.stacks.operands.push(newTop)
+
+    return executionContext
+}
+
+/**
+ * From [the docs](https://webassembly.github.io/spec/core/exec/instructions.html#exec-binop):
+ *
+ * ```
+ *   t.binop
+ * ```
+ *
+ * 1. Assert: due to validation, two values of value type `t` are on the top of the stack.
+ * 1. Pop the value `t.const c_2` from the stack.
+ * 1. Pop the value `t.const c_1` from the stack.
+ * 1. If `binopt(c_1, c_2)` is defined, then:
+ *    * Let `c` be a possible result of computing `binopt(c_1, c_2)`.
+ *    * Push the value `t.const c` to the stack.
+ * 1. Else:
+ *    * Trap.
+ */
+internal inline fun <reified Type : Value<*>> binaryOp(
+    executionContext: ExecutionContext,
+    crossinline op: (Type, Type) -> Type
+): ExecutionContext {
+    val arg2 = executionContext.stacks.operands.pop()
+    if (arg2 !is Type) throw KWasmRuntimeException("RHS is invalid type")
+
+    val arg1 = executionContext.stacks.operands.pop()
+    if (arg1 !is Type) throw KWasmRuntimeException("LHS is invalid type")
+
+    val result = op(arg1, arg2)
+    executionContext.stacks.operands.push(result)
 
     return executionContext
 }
