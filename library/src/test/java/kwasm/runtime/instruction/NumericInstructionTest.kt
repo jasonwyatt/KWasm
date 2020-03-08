@@ -16,6 +16,7 @@ package kwasm.runtime.instruction
 
 import com.google.common.truth.Truth.assertThat
 import kotlin.math.sqrt
+import kotlin.random.Random
 import kwasm.KWasmRuntimeException
 import kwasm.ParseRule
 import kwasm.runtime.EmptyExecutionContext
@@ -30,6 +31,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+@ExperimentalStdlibApi
+@Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
 @RunWith(JUnit4::class)
 class NumericInstructionTest {
     @get:Rule
@@ -37,6 +40,36 @@ class NumericInstructionTest {
 
     private val executionContext: ExecutionContext
         get() = EmptyExecutionContext()
+
+    @Test
+    fun i32Add() = parser.with {
+        val instruction = "i32.add".parseInstruction()
+
+        var resultContext = instruction.execute(
+            executionContextWithOpStack(0.toValue(), 0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(0.toValue(), 1.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(1.toValue(), 0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(0.toValue(), (-1).toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining((-1).toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack((-1).toValue(), 0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining((-1).toValue())
+    }
 
     @Test
     fun i32CountLeadingZeroes() = parser.with {
@@ -412,6 +445,348 @@ class NumericInstructionTest {
     }
 
     @Test
+    fun i32Subtract() = parser.with {
+        val instruction = "i32.sub".parseInstruction()
+
+        var resultContext = instruction.execute(
+            executionContextWithOpStack(0.toValue(), 0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(0.toValue(), 1.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining((-1).toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(1.toValue(), 0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(0.toValue(), (-1).toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack((-1).toValue(), 0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining((-1).toValue())
+    }
+
+    @Test
+    fun i32Multiply() = parser.with {
+        val instruction = "i32.mul".parseInstruction()
+
+        var resultContext = instruction.execute(
+            executionContextWithOpStack(0.toValue(), 0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(0.toValue(), 1.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(1.toValue(), 0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(2.toValue(), (-1).toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining((-2).toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(2.toValue(), 2.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(4.toValue())
+    }
+
+    @Test
+    fun i32DivideSigned() = parser.with {
+        val instruction = "i32.div_s".parseInstruction()
+        var resultContext: ExecutionContext
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(
+                executionContextWithOpStack(1.toValue(), 0.toValue())
+            )
+        }.also { assertThat(it).hasMessageThat().contains("Cannot divide by zero.") }
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(
+                executionContextWithOpStack(Int.MIN_VALUE.toValue(), (-1).toValue())
+            )
+        }.also {
+            assertThat(it).hasMessageThat().contains("Quotient unrepresentable as 32bit integer.")
+        }
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(0.toValue(), 1.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(2.toValue(), (-1).toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining((-2).toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(2.toValue(), 2.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(2.toValue(), 4.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+    }
+
+    @Test
+    fun i32DivideUnsigned() = parser.with {
+        val instruction = "i32.div_u".parseInstruction()
+        var resultContext: ExecutionContext
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(
+                executionContextWithOpStack(1.toValue(), 0.toValue())
+            )
+        }.also { assertThat(it).hasMessageThat().contains("Cannot divide by zero.") }
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(0.toValue(), 1.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(2.toValue(), (-1).toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(UInt.MAX_VALUE.toValue(), 1.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(UInt.MAX_VALUE.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(2.toValue(), 2.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(2.toValue(), 4.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+    }
+
+    @Test
+    fun i32RemainderSigned() = parser.with {
+        val instruction = "i32.rem_s".parseInstruction()
+        var resultContext: ExecutionContext
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(
+                executionContextWithOpStack(1.toValue(), 0.toValue())
+            )
+        }.also { assertThat(it).hasMessageThat().contains("Cannot divide by zero.") }
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(0.toValue(), 1.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(1.toValue(), (-2).toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack((-1).toValue(), 2.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining((-1).toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack((-1).toValue(), (-2).toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining((-1).toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(2.toValue(), 2.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(2.toValue(), 4.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(2.toValue())
+    }
+
+    @Test
+    fun i32RemainderUnsigned() = parser.with {
+        val instruction = "i32.rem_u".parseInstruction()
+        var resultContext: ExecutionContext
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(
+                executionContextWithOpStack(1.toValue(), 0.toValue())
+            )
+        }.also { assertThat(it).hasMessageThat().contains("Cannot divide by zero.") }
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(0.toValue(), 1.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(2.toValue(), 2.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(2.toValue(), 4.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(2.toValue())
+    }
+
+    @Test
+    fun i32BitwiseAnd() = parser.with {
+        val instruction = "i32.and".parseInstruction()
+        val random = Random(System.currentTimeMillis())
+
+        repeat(500) {
+            val randomLhs = random.nextInt()
+            val randomRhs = random.nextInt()
+            val expected = (randomLhs and randomRhs).toValue()
+
+            val resultContext = instruction.execute(
+                executionContextWithOpStack(randomLhs.toValue(), randomRhs.toValue())
+            )
+            assertThat(resultContext).hasOpStackContaining(expected)
+        }
+    }
+
+    @Test
+    fun i32BitwiseOr() = parser.with {
+        val instruction = "i32.or".parseInstruction()
+        val random = Random(System.currentTimeMillis())
+
+        repeat(500) {
+            val randomLhs = random.nextInt()
+            val randomRhs = random.nextInt()
+            val expected = (randomLhs or randomRhs).toValue()
+
+            val resultContext = instruction.execute(
+                executionContextWithOpStack(randomLhs.toValue(), randomRhs.toValue())
+            )
+            assertThat(resultContext).hasOpStackContaining(expected)
+        }
+    }
+
+    @Test
+    fun i32BitwiseXor() = parser.with {
+        val instruction = "i32.xor".parseInstruction()
+        val random = Random(System.currentTimeMillis())
+
+        repeat(500) {
+            val randomLhs = random.nextInt()
+            val randomRhs = random.nextInt()
+            val expected = (randomLhs xor randomRhs).toValue()
+
+            val resultContext = instruction.execute(
+                executionContextWithOpStack(randomLhs.toValue(), randomRhs.toValue())
+            )
+            assertThat(resultContext).hasOpStackContaining(expected)
+        }
+    }
+
+    @Test
+    fun i32ShiftLeft() = parser.with {
+        val instruction = "i32.shl".parseInstruction()
+        val random = Random(System.currentTimeMillis())
+
+        repeat(500) {
+            val randomLhs = random.nextInt()
+            val randomRhs = random.nextInt()
+            val expected = (randomLhs shl randomRhs).toValue()
+
+            val resultContext = instruction.execute(
+                executionContextWithOpStack(randomLhs.toValue(), randomRhs.toValue())
+            )
+            assertThat(resultContext).hasOpStackContaining(expected)
+        }
+    }
+
+    @Test
+    fun i32ShiftRightSigned() = parser.with {
+        val instruction = "i32.shr_s".parseInstruction()
+        val random = Random(System.currentTimeMillis())
+
+        repeat(500) {
+            val randomLhs = random.nextInt()
+            val randomRhs = random.nextInt()
+            val expected = (randomLhs shr randomRhs).toValue()
+
+            val resultContext = instruction.execute(
+                executionContextWithOpStack(randomLhs.toValue(), randomRhs.toValue())
+            )
+            assertThat(resultContext).hasOpStackContaining(expected)
+        }
+    }
+
+    @Test
+    fun i32ShiftRightUnsigned() = parser.with {
+        val instruction = "i32.shr_u".parseInstruction()
+        val random = Random(System.currentTimeMillis())
+
+        repeat(500) {
+            val randomLhs = random.nextInt()
+            val randomRhs = random.nextInt()
+            val expected = (randomLhs ushr randomRhs).toValue()
+
+            val resultContext = instruction.execute(
+                executionContextWithOpStack(randomLhs.toValue(), randomRhs.toValue())
+            )
+            assertThat(resultContext).hasOpStackContaining(expected)
+        }
+    }
+
+    @Test
+    fun i32RotateLeft() = parser.with {
+        val instruction = "i32.rotl".parseInstruction()
+        val random = Random(System.currentTimeMillis())
+
+        repeat(500) {
+            val randomLhs = random.nextInt()
+            val randomRhs = random.nextInt()
+            val expected = (randomLhs.rotateLeft(randomRhs)).toValue()
+
+            val resultContext = instruction.execute(
+                executionContextWithOpStack(randomLhs.toValue(), randomRhs.toValue())
+            )
+            assertThat(resultContext).hasOpStackContaining(expected)
+        }
+    }
+
+    @Test
+    fun i32RotateRight() = parser.with {
+        val instruction = "i32.rotr".parseInstruction()
+        val random = Random(System.currentTimeMillis())
+
+        repeat(500) {
+            val randomLhs = random.nextInt()
+            val randomRhs = random.nextInt()
+            val expected = (randomLhs.rotateRight(randomRhs)).toValue()
+
+            val resultContext = instruction.execute(
+                executionContextWithOpStack(randomLhs.toValue(), randomRhs.toValue())
+            )
+            assertThat(resultContext).hasOpStackContaining(expected)
+        }
+    }
+
+    @Test
     fun i64CountLeadingZeroes() = parser.with {
         val instruction = "i64.clz".parseInstruction()
 
@@ -466,6 +841,378 @@ class NumericInstructionTest {
             }
             // add a 1-bit to the stack start value
             stackStartValue = (stackStartValue shl 1) or 1
+        }
+    }
+
+    @Test
+    fun i64Add() = parser.with {
+        val instruction = "i64.add".parseInstruction()
+
+        var resultContext = instruction.execute(
+            executionContextWithOpStack(0L.toValue(), 0L.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0L.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(0L.toValue(), 1L.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1L.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(1L.toValue(), 0L.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1L.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(0L.toValue(), (-1L).toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining((-1L).toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack((-1L).toValue(), 0L.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining((-1L).toValue())
+    }
+
+    @Test
+    fun i64Subtract() = parser.with {
+        val instruction = "i64.sub".parseInstruction()
+
+        var resultContext = instruction.execute(
+            executionContextWithOpStack(0L.toValue(), 0L.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0L.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(0L.toValue(), 1L.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining((-1L).toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(1L.toValue(), 0L.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1L.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(0L.toValue(), (-1L).toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1L.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack((-1L).toValue(), 0L.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining((-1L).toValue())
+    }
+
+    @Test
+    fun i64Multiply() = parser.with {
+        val instruction = "i64.mul".parseInstruction()
+
+        var resultContext = instruction.execute(
+            executionContextWithOpStack(0L.toValue(), 0L.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0L.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(0L.toValue(), 1L.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0L.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(1L.toValue(), 0L.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0L.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(2L.toValue(), (-1L).toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining((-2L).toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(2L.toValue(), 2L.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(4L.toValue())
+    }
+
+    @Test
+    fun i64DivideSigned() = parser.with {
+        val instruction = "i64.div_s".parseInstruction()
+        var resultContext: ExecutionContext
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(
+                executionContextWithOpStack(1L.toValue(), 0L.toValue())
+            )
+        }.also { assertThat(it).hasMessageThat().contains("Cannot divide by zero.") }
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(
+                executionContextWithOpStack(Long.MIN_VALUE.toValue(), (-1L).toValue())
+            )
+        }.also {
+            assertThat(it).hasMessageThat().contains("Quotient unrepresentable as 64bit integer.")
+        }
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(0L.toValue(), 1L.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0L.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(2L.toValue(), (-1L).toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining((-2L).toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(2L.toValue(), 2L.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1L.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(2L.toValue(), 4L.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0L.toValue())
+    }
+
+    @Test
+    fun i64DivideUnsigned() = parser.with {
+        val instruction = "i64.div_u".parseInstruction()
+        var resultContext: ExecutionContext
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(
+                executionContextWithOpStack(1L.toValue(), 0L.toValue())
+            )
+        }.also { assertThat(it).hasMessageThat().contains("Cannot divide by zero.") }
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(0L.toValue(), 1L.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0L.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(2L.toValue(), (-1L).toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0L.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(ULong.MAX_VALUE.toValue(), 1L.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(ULong.MAX_VALUE.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(2L.toValue(), 2L.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1L.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(2L.toValue(), 4L.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0L.toValue())
+    }
+
+    @Test
+    fun i64RemainderSigned() = parser.with {
+        val instruction = "i64.rem_s".parseInstruction()
+        var resultContext: ExecutionContext
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(
+                executionContextWithOpStack(1L.toValue(), 0L.toValue())
+            )
+        }.also { assertThat(it).hasMessageThat().contains("Cannot divide by zero.") }
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(0L.toValue(), 1L.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0L.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(1L.toValue(), (-2L).toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1L.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack((-1L).toValue(), 2L.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining((-1L).toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack((-1L).toValue(), (-2L).toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining((-1L).toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(2L.toValue(), 2L.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0L.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(2L.toValue(), 4L.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(2L.toValue())
+    }
+
+    @Test
+    fun i64RemainderUnsigned() = parser.with {
+        val instruction = "i64.rem_u".parseInstruction()
+        var resultContext: ExecutionContext
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(
+                executionContextWithOpStack(1L.toValue(), 0L.toValue())
+            )
+        }.also { assertThat(it).hasMessageThat().contains("Cannot divide by zero.") }
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(0L.toValue(), 1L.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0L.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(2L.toValue(), 2L.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0L.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(2L.toValue(), 4L.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(2L.toValue())
+    }
+
+    @Test
+    fun i64BitwiseAnd() = parser.with {
+        val instruction = "i64.and".parseInstruction()
+        val random = Random(System.currentTimeMillis())
+
+        repeat(500) {
+            val randomLhs = random.nextLong()
+            val randomRhs = random.nextLong()
+            val expected = (randomLhs and randomRhs).toValue()
+
+            val resultContext = instruction.execute(
+                executionContextWithOpStack(randomLhs.toValue(), randomRhs.toValue())
+            )
+            assertThat(resultContext).hasOpStackContaining(expected)
+        }
+    }
+
+    @Test
+    fun i64BitwiseOr() = parser.with {
+        val instruction = "i64.or".parseInstruction()
+        val random = Random(System.currentTimeMillis())
+
+        repeat(500) {
+            val randomLhs = random.nextLong()
+            val randomRhs = random.nextLong()
+            val expected = (randomLhs or randomRhs).toValue()
+
+            val resultContext = instruction.execute(
+                executionContextWithOpStack(randomLhs.toValue(), randomRhs.toValue())
+            )
+            assertThat(resultContext).hasOpStackContaining(expected)
+        }
+    }
+
+    @Test
+    fun i64BitwiseXor() = parser.with {
+        val instruction = "i64.xor".parseInstruction()
+        val random = Random(System.currentTimeMillis())
+
+        repeat(500) {
+            val randomLhs = random.nextLong()
+            val randomRhs = random.nextLong()
+            val expected = (randomLhs xor randomRhs).toValue()
+
+            val resultContext = instruction.execute(
+                executionContextWithOpStack(randomLhs.toValue(), randomRhs.toValue())
+            )
+            assertThat(resultContext).hasOpStackContaining(expected)
+        }
+    }
+
+    @Test
+    fun i64ShiftLeft() = parser.with {
+        val instruction = "i64.shl".parseInstruction()
+        val random = Random(System.currentTimeMillis())
+
+        repeat(500) {
+            val randomLhs = random.nextLong()
+            val randomRhs = random.nextLong().toULong()
+            val expected = (randomLhs shl (randomRhs % 64uL).toInt()).toValue()
+
+            val resultContext = instruction.execute(
+                executionContextWithOpStack(randomLhs.toValue(), randomRhs.toValue())
+            )
+            assertThat(resultContext).hasOpStackContaining(expected)
+        }
+    }
+
+    @Test
+    fun i64ShiftRightSigned() = parser.with {
+        val instruction = "i64.shr_s".parseInstruction()
+        val random = Random(System.currentTimeMillis())
+
+        repeat(500) {
+            val randomLhs = random.nextLong()
+            val randomRhs = random.nextLong().toULong()
+            val expected = (randomLhs shr (randomRhs % 64uL).toInt()).toValue()
+
+            val resultContext = instruction.execute(
+                executionContextWithOpStack(randomLhs.toValue(), randomRhs.toValue())
+            )
+            assertThat(resultContext).hasOpStackContaining(expected)
+        }
+    }
+
+    @Test
+    fun i64ShiftRightUnsigned() = parser.with {
+        val instruction = "i64.shr_u".parseInstruction()
+        val random = Random(System.currentTimeMillis())
+
+        repeat(500) {
+            val randomLhs = random.nextLong()
+            val randomRhs = random.nextLong().toULong()
+            val expected = (randomLhs ushr (randomRhs % 64uL).toInt()).toValue()
+
+            val resultContext = instruction.execute(
+                executionContextWithOpStack(randomLhs.toValue(), randomRhs.toValue())
+            )
+            assertThat(resultContext).hasOpStackContaining(expected)
+        }
+    }
+
+    @Test
+    fun i64RotateLeft() = parser.with {
+        val instruction = "i64.rotl".parseInstruction()
+        val random = Random(System.currentTimeMillis())
+
+        repeat(500) {
+            val randomLhs = random.nextLong()
+            val randomRhs = random.nextLong().toULong()
+            val expected = (randomLhs.rotateLeft((randomRhs % 64uL).toInt())).toValue()
+
+            val resultContext = instruction.execute(
+                executionContextWithOpStack(randomLhs.toValue(), randomRhs.toValue())
+            )
+            assertThat(resultContext).hasOpStackContaining(expected)
+        }
+    }
+
+    @Test
+    fun i64RotateRight() = parser.with {
+        val instruction = "i64.rotr".parseInstruction()
+        val random = Random(System.currentTimeMillis())
+
+        repeat(500) {
+            val randomLhs = random.nextLong()
+            val randomRhs = random.nextLong().toULong()
+            val expected = (randomLhs.rotateRight((randomRhs % 64uL).toInt())).toValue()
+
+            val resultContext = instruction.execute(
+                executionContextWithOpStack(randomLhs.toValue(), randomRhs.toValue())
+            )
+            assertThat(resultContext).hasOpStackContaining(expected)
         }
     }
 
@@ -2123,6 +2870,42 @@ class NumericInstructionTest {
         result = relOp<IntValue>(
             executionContextWithOpStack(42.toValue(), (-42).toValue())
         ) { _, _ -> false }
+        assertThat(result).hasOpStackContaining(0.toValue())
+    }
+
+    @Test
+    fun binaryOp_throws_ifStackDoesntHaveEnoughOperands() {
+        assertThrows(IllegalStateException::class.java) {
+            binaryOp<IntValue>(executionContext) { _, _ -> 1.toValue() }
+        }
+        assertThrows(IllegalStateException::class.java) {
+            binaryOp<IntValue>(executionContextWithOpStack(1.toValue())) { _, _ -> 1.toValue() }
+        }
+    }
+
+    @Test
+    fun binaryOp_throws_ifStackHasWrongTypes() {
+        assertThrows(KWasmRuntimeException::class.java) {
+            binaryOp<IntValue>(executionContextWithOpStack(1.toValue(), 1L.toValue())) { _, _ ->
+                1.toValue()
+            }
+        }.also {
+            assertThat(it).hasMessageThat().contains("RHS is invalid type")
+        }
+        assertThrows(KWasmRuntimeException::class.java) {
+            binaryOp<IntValue>(executionContextWithOpStack(1L.toValue(), 1.toValue())) { _, _ ->
+                1.toValue()
+            }
+        }.also {
+            assertThat(it).hasMessageThat().contains("LHS is invalid type")
+        }
+    }
+
+    @Test
+    fun binaryOp_valid() {
+        val result = binaryOp<IntValue>(
+            executionContextWithOpStack(42.toValue(), (-42).toValue())
+        ) { x, y -> (x.value + y.value).toValue() }
         assertThat(result).hasOpStackContaining(0.toValue())
     }
 
