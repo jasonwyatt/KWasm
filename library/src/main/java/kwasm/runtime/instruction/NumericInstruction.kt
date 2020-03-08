@@ -252,12 +252,78 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
         NumericInstruction.F32Min -> TODO()
         NumericInstruction.F32Max -> TODO()
         NumericInstruction.F32CopySign -> TODO()
-        NumericInstruction.F32Equals -> TODO()
-        NumericInstruction.F32NotEquals -> TODO()
-        NumericInstruction.F32LessThan -> TODO()
-        NumericInstruction.F32GreaterThan -> TODO()
-        NumericInstruction.F32LessThanEqualTo -> TODO()
-        NumericInstruction.F32GreaterThanEqualTo -> TODO()
+        NumericInstruction.F32Equals -> relOp<FloatValue>(context) { x, y ->
+            if (
+                x.value.isNaN() ||
+                y.value.isNaN() ||
+                x.value == -Float.NaN ||
+                y.value == -Float.NaN
+            ) false
+            else x == y
+        }
+        NumericInstruction.F32NotEquals -> relOp<FloatValue>(context) { x, y ->
+            if (
+                x.value.isNaN() ||
+                y.value.isNaN() ||
+                x.value == -Float.NaN ||
+                y.value == -Float.NaN
+            ) true
+            else x != y
+        }
+        NumericInstruction.F32LessThan -> relOp<FloatValue>(context) { x, y ->
+            if (
+                x.value.isNaN() ||
+                y.value.isNaN() ||
+                x.value == -Float.NaN ||
+                y.value == -Float.NaN
+            ) false
+            else if (x.value == Float.POSITIVE_INFINITY) false
+            else if (x.value == Float.NEGATIVE_INFINITY) true
+            else if (y.value == Float.POSITIVE_INFINITY) true
+            else if (y.value == Float.NEGATIVE_INFINITY) false
+            else x.value < y.value
+        }
+        NumericInstruction.F32GreaterThan -> relOp<FloatValue>(context) { x, y ->
+            if (
+                x.value.isNaN() ||
+                y.value.isNaN() ||
+                x.value == -Float.NaN ||
+                y.value == -Float.NaN
+            ) false
+            else if (x.value == Float.POSITIVE_INFINITY) true
+            else if (x.value == Float.NEGATIVE_INFINITY) false
+            else if (y.value == Float.POSITIVE_INFINITY) false
+            else if (y.value == Float.NEGATIVE_INFINITY) true
+            else x.value > y.value
+        }
+        NumericInstruction.F32LessThanEqualTo -> relOp<FloatValue>(context) { x, y ->
+            if (
+                x.value.isNaN() ||
+                y.value.isNaN() ||
+                x.value == -Float.NaN ||
+                y.value == -Float.NaN
+            ) false
+            else if (x.value == y.value) true
+            else if (x.value == Float.POSITIVE_INFINITY) false
+            else if (x.value == Float.NEGATIVE_INFINITY) true
+            else if (y.value == Float.POSITIVE_INFINITY) true
+            else if (y.value == Float.NEGATIVE_INFINITY) false
+            else x.value <= y.value
+        }
+        NumericInstruction.F32GreaterThanEqualTo -> relOp<FloatValue>(context) { x, y ->
+            if (
+                x.value.isNaN() ||
+                y.value.isNaN() ||
+                x.value == -Float.NaN ||
+                y.value == -Float.NaN
+            ) false
+            else if (x.value == y.value) true
+            else if (x.value == Float.POSITIVE_INFINITY) true
+            else if (x.value == Float.NEGATIVE_INFINITY) false
+            else if (y.value == Float.POSITIVE_INFINITY) false
+            else if (y.value == Float.NEGATIVE_INFINITY) true
+            else x.value >= y.value
+        }
         NumericInstruction.F64AbsoluteValue -> unaryOp(context) { x: DoubleValue ->
             x.value.absoluteValue.toValue()
         }
@@ -286,12 +352,78 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
         NumericInstruction.F64Min -> TODO()
         NumericInstruction.F64Max -> TODO()
         NumericInstruction.F64CopySign -> TODO()
-        NumericInstruction.F64Equals -> TODO()
-        NumericInstruction.F64NotEquals -> TODO()
-        NumericInstruction.F64LessThan -> TODO()
-        NumericInstruction.F64GreaterThan -> TODO()
-        NumericInstruction.F64LessThanEqualTo -> TODO()
-        NumericInstruction.F64GreaterThanEqualTo -> TODO()
+        NumericInstruction.F64Equals -> relOp<DoubleValue>(context) { x, y ->
+            if (
+                x.value.isNaN() ||
+                y.value.isNaN() ||
+                x.value == -Double.NaN ||
+                y.value == -Double.NaN
+            ) false
+            else x == y
+        }
+        NumericInstruction.F64NotEquals -> relOp<DoubleValue>(context) { x, y ->
+            if (
+                x.value.isNaN() ||
+                y.value.isNaN() ||
+                x.value == -Double.NaN ||
+                y.value == -Double.NaN
+            ) true
+            else x != y
+        }
+        NumericInstruction.F64LessThan -> relOp<DoubleValue>(context) { x, y ->
+            if (
+                x.value.isNaN() ||
+                y.value.isNaN() ||
+                x.value == -Double.NaN ||
+                y.value == -Double.NaN
+            ) false
+            else if (x.value == Double.POSITIVE_INFINITY) false
+            else if (x.value == Double.NEGATIVE_INFINITY) true
+            else if (y.value == Double.POSITIVE_INFINITY) true
+            else if (y.value == Double.NEGATIVE_INFINITY) false
+            else x.value < y.value
+        }
+        NumericInstruction.F64GreaterThan -> relOp<DoubleValue>(context) { x, y ->
+            if (
+                x.value.isNaN() ||
+                y.value.isNaN() ||
+                x.value == -Double.NaN ||
+                y.value == -Double.NaN
+            ) false
+            else if (x.value == Double.POSITIVE_INFINITY) true
+            else if (x.value == Double.NEGATIVE_INFINITY) false
+            else if (y.value == Double.POSITIVE_INFINITY) false
+            else if (y.value == Double.NEGATIVE_INFINITY) true
+            else x.value > y.value
+        }
+        NumericInstruction.F64LessThanEqualTo -> relOp<DoubleValue>(context) { x, y ->
+            if (
+                x.value.isNaN() ||
+                y.value.isNaN() ||
+                x.value == -Double.NaN ||
+                y.value == -Double.NaN
+            ) false
+            else if (x.value == y.value) true
+            else if (x.value == Double.POSITIVE_INFINITY) false
+            else if (x.value == Double.NEGATIVE_INFINITY) true
+            else if (y.value == Double.POSITIVE_INFINITY) true
+            else if (y.value == Double.NEGATIVE_INFINITY) false
+            else x.value <= y.value
+        }
+        NumericInstruction.F64GreaterThanEqualTo -> relOp<DoubleValue>(context) { x, y ->
+            if (
+                x.value.isNaN() ||
+                y.value.isNaN() ||
+                x.value == -Double.NaN ||
+                y.value == -Double.NaN
+            ) false
+            else if (x.value == y.value) true
+            else if (x.value == Double.POSITIVE_INFINITY) true
+            else if (x.value == Double.NEGATIVE_INFINITY) false
+            else if (y.value == Double.POSITIVE_INFINITY) false
+            else if (y.value == Double.NEGATIVE_INFINITY) true
+            else x.value >= y.value
+        }
         NumericInstruction.I32WrapI64 -> TODO()
         NumericInstruction.I32TruncateF32Signed -> TODO()
         NumericInstruction.I32TruncateF32Unsigned -> TODO()
