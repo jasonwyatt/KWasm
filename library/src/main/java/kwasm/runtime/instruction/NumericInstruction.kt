@@ -590,10 +590,14 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
             truncated.toUInt().toValue()
         }
         NumericInstruction.I32ReinterpretF32 -> unaryOp(context) { x: FloatValue ->
-            (x.value).toRawBits().toValue()
+            x.value.toRawBits().toValue()
         }
-        NumericInstruction.I64ExtendI32Signed -> TODO()
-        NumericInstruction.I64ExtendI32Unsigned -> TODO()
+        NumericInstruction.I64ExtendI32Signed -> unaryOp(context) { x: IntValue ->
+            x.value.toLong().toValue()
+        }
+        NumericInstruction.I64ExtendI32Unsigned -> unaryOp(context) { x: IntValue ->
+            x.unsignedValue.toULong().toValue()
+        }
         NumericInstruction.I64TruncateF32Signed -> unaryOp<FloatValue, LongValue>(context) { x ->
             if (x.value.isNaN())
                 throw KWasmRuntimeException("Cannot truncate NaN")
@@ -641,18 +645,42 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
         NumericInstruction.I64ReinterpretF64 -> unaryOp(context) { x: DoubleValue ->
             (x.value).toRawBits().toValue()
         }
-        NumericInstruction.F32ConvertI32Signed -> TODO()
-        NumericInstruction.F32ConvertI32Unsigned -> TODO()
-        NumericInstruction.F32ConvertI64Signed -> TODO()
-        NumericInstruction.F32ConvertI64Unsigned -> TODO()
-        NumericInstruction.F32DemoteF64 -> TODO()
-        NumericInstruction.F32ReinterpretI32 -> TODO()
-        NumericInstruction.F64ConvertI32Signed -> TODO()
-        NumericInstruction.F64ConvertI32Unsigned -> TODO()
-        NumericInstruction.F64ConvertI64Signed -> TODO()
-        NumericInstruction.F64ConvertI64Unsigned -> TODO()
-        NumericInstruction.F64PromoteF32 -> TODO()
-        NumericInstruction.F64ReinterpretI64 -> TODO()
+        NumericInstruction.F32ConvertI32Signed -> unaryOp(context) { x: IntValue ->
+            x.value.toFloat().toValue()
+        }
+        NumericInstruction.F32ConvertI32Unsigned -> unaryOp(context) { x: IntValue ->
+            x.unsignedValue.toFloat().toValue()
+        }
+        NumericInstruction.F32ConvertI64Signed -> unaryOp(context) { x: LongValue ->
+            x.value.toFloat().toValue()
+        }
+        NumericInstruction.F32ConvertI64Unsigned -> unaryOp(context) { x: LongValue ->
+            x.unsignedValue.toFloat().toValue()
+        }
+        NumericInstruction.F32DemoteF64 -> unaryOp(context) { x: DoubleValue ->
+            x.value.toFloat().toValue()
+        }
+        NumericInstruction.F32ReinterpretI32 -> unaryOp(context) { x: IntValue ->
+            Float.fromBits(x.value).toValue()
+        }
+        NumericInstruction.F64ConvertI32Signed -> unaryOp(context) { x: IntValue ->
+            x.value.toDouble().toValue()
+        }
+        NumericInstruction.F64ConvertI32Unsigned -> unaryOp(context) { x: IntValue ->
+            x.unsignedValue.toDouble().toValue()
+        }
+        NumericInstruction.F64ConvertI64Signed -> unaryOp(context) { x: LongValue ->
+            x.value.toDouble().toValue()
+        }
+        NumericInstruction.F64ConvertI64Unsigned -> unaryOp(context) { x: LongValue ->
+            x.unsignedValue.toDouble().toValue()
+        }
+        NumericInstruction.F64PromoteF32 -> unaryOp(context) { x: FloatValue ->
+            x.value.toDouble().toValue()
+        }
+        NumericInstruction.F64ReinterpretI64 -> unaryOp(context) { x: LongValue ->
+            Double.fromBits(x.value).toValue()
+        }
     }
     return context
 }

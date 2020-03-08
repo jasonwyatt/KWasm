@@ -36,7 +36,9 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @ExperimentalStdlibApi
-@Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS", "CanBeVal")
+@Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS", "CanBeVal",
+    "FLOAT_LITERAL_CONFORMS_ZERO"
+)
 @RunWith(JUnit4::class)
 class NumericInstructionTest {
     @get:Rule
@@ -4896,6 +4898,26 @@ class NumericInstructionTest {
     ).forEach { it.check("i32.reinterpret_f32") }
 
     @Test
+    fun i64ExtendI32Signed() = listOf(
+        TestCase(-1L, -1),
+        TestCase(0L, 0),
+        TestCase(10000L, 10000),
+        TestCase(-10000L, -10000),
+        TestCase(0x7fffffffL, 0x7fffffff),
+        TestCase(0xffffffff80000000uL.toLong(), 0x80000000u.toInt())
+    ).forEach { it.check("i64.extend_i32_s") }
+
+    @Test
+    fun i64ExtendI32Unsigned() = listOf(
+        TestCase(0L, 0),
+        TestCase(10000L, 10000),
+        TestCase(0xffffd8f0L, -10000),
+        TestCase(0xffffffffL, -1),
+        TestCase(0x7fffffffL, 0x7fffffff),
+        TestCase(0x80000000L, 0x80000000u.toInt())
+    ).forEach { it.check("i64.extend_i32_u") }
+
+    @Test
     fun i64TruncateF32Signed() = parser.with {
         val instruction = "i64.trunc_f32_s".parseInstruction()
         var resultContext: ExecutionContext
@@ -5083,6 +5105,139 @@ class NumericInstructionTest {
         TestCase(1.0.toRawBits(), 1.0),
         TestCase((-1.0).toRawBits(), -1.0)
     ).forEach { it.check("i64.reinterpret_f64") }
+
+    @Test
+    fun f32ConvertI32Signed() = listOf(
+        TestCase(-1f, -1),
+        TestCase(1f, 1),
+        TestCase(0f, 0),
+        TestCase(Int.MAX_VALUE.toFloat(), Int.MAX_VALUE),
+        TestCase(Int.MIN_VALUE.toFloat(), Int.MIN_VALUE),
+        TestCase(1234567890f, 1234567890)
+    ).forEach { it.check("f32.convert_i32_s") }
+
+    @Test
+    fun f32ConvertI32Unsigned() = listOf(
+        TestCase(UInt.MAX_VALUE.toFloat(), -1),
+        TestCase(1f, 1),
+        TestCase(0f, 0),
+        TestCase(Int.MAX_VALUE.toFloat(), Int.MAX_VALUE),
+        TestCase(Int.MIN_VALUE.toUInt().toFloat(), Int.MIN_VALUE),
+        TestCase(1234567890f, 1234567890)
+    ).forEach { it.check("f32.convert_i32_u") }
+
+    @Test
+    fun f32ConvertI64Signed() = listOf(
+        TestCase(-1f, -1L),
+        TestCase(1f, 1L),
+        TestCase(0f, 0L),
+        TestCase(Long.MAX_VALUE.toFloat(), Long.MAX_VALUE),
+        TestCase(Long.MIN_VALUE.toFloat(), Long.MIN_VALUE),
+        TestCase(12345678901234f, 12345678901234L)
+    ).forEach { it.check("f32.convert_i64_s") }
+
+    @Test
+    fun f32ConvertI64Unsigned() = listOf(
+        TestCase(ULong.MAX_VALUE.toFloat(), -1L),
+        TestCase(1f, 1L),
+        TestCase(0f, 0L),
+        TestCase(Long.MAX_VALUE.toFloat(), Long.MAX_VALUE),
+        TestCase(Long.MIN_VALUE.toULong().toFloat(), Long.MIN_VALUE),
+        TestCase(12345678901234f, 12345678901234L)
+    ).forEach { it.check("f32.convert_i64_u") }
+
+    @Test
+    fun f32DemoteF64() = listOf(
+        TestCase(Float.NaN, Double.NaN),
+        TestCase(-Float.NaN, -Double.NaN),
+        TestCase(Float.POSITIVE_INFINITY, Double.POSITIVE_INFINITY),
+        TestCase(Float.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY),
+        TestCase(-0f, -0.0),
+        TestCase(0f, 0.0),
+        TestCase(42f, 42.0)
+    ).forEach { it.check("f32.demote_f64") }
+
+    @Test
+    fun f32ReinterpretI32() = listOf(
+        TestCase(0f, 0),
+        TestCase(-0f, 0x80000000u.toInt()),
+        TestCase(1.4e-45f, 1),
+        TestCase(Float.NaN, -1),
+        TestCase(1.6535997e-34f, 123456789),
+        TestCase(-0f, Int.MIN_VALUE),
+        TestCase(Float.POSITIVE_INFINITY, 0x7f800000),
+        TestCase(Float.NEGATIVE_INFINITY, 0xff800000u.toInt()),
+        TestCase(Float.NaN, 0x7fc00000),
+        TestCase(-Float.NaN, 0xffc00000u.toInt()),
+        TestCase(Float.NaN, 0x7fa00000),
+        TestCase(-Float.NaN, 0xffa00000u.toInt())
+    ).forEach { it.check("f32.reinterpret_i32") }
+
+    @Test
+    fun f64ConvertI32Signed() = listOf(
+        TestCase(-1.0, -1),
+        TestCase(1.0, 1),
+        TestCase(0.0, 0),
+        TestCase(Int.MAX_VALUE.toDouble(), Int.MAX_VALUE),
+        TestCase(Int.MIN_VALUE.toDouble(), Int.MIN_VALUE),
+        TestCase(1234567890.0, 1234567890)
+    ).forEach { it.check("f64.convert_i32_s") }
+
+    @Test
+    fun f64ConvertI32Unsigned() = listOf(
+        TestCase(UInt.MAX_VALUE.toDouble(), -1),
+        TestCase(1.0, 1),
+        TestCase(0.0, 0),
+        TestCase(Int.MAX_VALUE.toDouble(), Int.MAX_VALUE),
+        TestCase(Int.MIN_VALUE.toUInt().toDouble(), Int.MIN_VALUE),
+        TestCase(1234567890.0, 1234567890)
+    ).forEach { it.check("f64.convert_i32_u") }
+
+    @Test
+    fun f64ConvertI64Signed() = listOf(
+        TestCase(-1.0, -1L),
+        TestCase(1.0, 1L),
+        TestCase(0.0, 0L),
+        TestCase(Long.MAX_VALUE.toDouble(), Long.MAX_VALUE),
+        TestCase(Long.MIN_VALUE.toDouble(), Long.MIN_VALUE),
+        TestCase(12345678901234.0, 12345678901234L)
+    ).forEach { it.check("f64.convert_i64_s") }
+
+    @Test
+    fun f64ConvertI64Unsigned() = listOf(
+        TestCase(ULong.MAX_VALUE.toDouble(), -1L),
+        TestCase(1.0, 1L),
+        TestCase(0.0, 0L),
+        TestCase(Long.MAX_VALUE.toDouble(), Long.MAX_VALUE),
+        TestCase(Long.MIN_VALUE.toULong().toDouble(), Long.MIN_VALUE),
+        TestCase(12345678901234.0, 12345678901234L)
+    ).forEach { it.check("f64.convert_i64_u") }
+
+    @Test
+    fun f64PromoteF32() = listOf(
+        TestCase(Double.POSITIVE_INFINITY, Float.POSITIVE_INFINITY),
+        TestCase(Double.NEGATIVE_INFINITY, Float.NEGATIVE_INFINITY),
+        TestCase(Double.NaN, Float.NaN),
+        TestCase(-Double.NaN, -Float.NaN),
+        TestCase(-0.0, -0f),
+        TestCase(0.0, 0f),
+        TestCase(42.0, 42f)
+    ).forEach { it.check("f64.promote_f32") }
+
+    @Test
+    fun f64ReinterpretI64() = listOf(
+        TestCase(0.0, 0L),
+        TestCase(Double.MIN_VALUE, 1L),
+        TestCase(-Double.NaN, -1L),
+        TestCase(-0.0, 0x8000000000000000uL.toLong()),
+        TestCase(6.09957582e-315, 1234567890L),
+        TestCase(Double.POSITIVE_INFINITY, 0x7ff0000000000000L),
+        TestCase(Double.NEGATIVE_INFINITY, 0xfff0000000000000uL.toLong()),
+        TestCase(Double.NaN, 0x7ff8000000000000L),
+        TestCase(-Double.NaN, 0xfff8000000000000uL.toLong()),
+        TestCase(Double.NaN, 0x7ff4000000000000L),
+        TestCase(-Double.NaN, 0xfff4000000000000uL.toLong())
+    ).forEach { it.check("f64.reinterpret_i64") }
 
     @Test
     fun unaryOp_throws_ifStackEmpty() {
