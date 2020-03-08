@@ -19,6 +19,8 @@ package kwasm.runtime.instruction
 import kotlin.math.absoluteValue
 import kotlin.math.ceil
 import kotlin.math.floor
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.round
 import kotlin.math.sqrt
 import kotlin.math.truncate
@@ -325,13 +327,31 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
         NumericInstruction.F32SquareRoot -> unaryOp(context) { x: FloatValue ->
             sqrt(x.value).toValue()
         }
-        NumericInstruction.F32Add -> TODO()
-        NumericInstruction.F32Subtract -> TODO()
-        NumericInstruction.F32Multiply -> TODO()
-        NumericInstruction.F32Divide -> TODO()
-        NumericInstruction.F32Min -> TODO()
-        NumericInstruction.F32Max -> TODO()
-        NumericInstruction.F32CopySign -> TODO()
+        NumericInstruction.F32Add -> binaryOp<FloatValue>(context) { x, y ->
+            (x.value + y.value).toValue()
+        }
+        NumericInstruction.F32Subtract -> binaryOp<FloatValue>(context) { x, y ->
+            (x.value - y.value).toValue()
+        }
+        NumericInstruction.F32Multiply -> binaryOp<FloatValue>(context) { x, y ->
+            (x.value * y.value).toValue()
+        }
+        NumericInstruction.F32Divide -> binaryOp<FloatValue>(context) { x, y ->
+            (x.value / y.value).toValue()
+        }
+        NumericInstruction.F32Min -> binaryOp<FloatValue>(context) { x, y ->
+            min(x.value, y.value).toValue()
+        }
+        NumericInstruction.F32Max -> binaryOp<FloatValue>(context) { x, y ->
+            max(x.value, y.value).toValue()
+        }
+        NumericInstruction.F32CopySign -> binaryOp<FloatValue>(context) { x, y ->
+            when {
+                y.value <= -0f && x.value >= 0f -> (-x.value).toValue()
+                y.value >= 0f && x.value <= -0f -> (-x.value).toValue()
+                else -> x
+            }
+        }
         NumericInstruction.F32Equals -> relOp<FloatValue>(context) { x, y ->
             if (
                 x.value.isNaN() ||
@@ -425,13 +445,31 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
         NumericInstruction.F64SquareRoot -> unaryOp(context) { x: DoubleValue ->
             sqrt(x.value).toValue()
         }
-        NumericInstruction.F64Add -> TODO()
-        NumericInstruction.F64Subtract -> TODO()
-        NumericInstruction.F64Multiply -> TODO()
-        NumericInstruction.F64Divide -> TODO()
-        NumericInstruction.F64Min -> TODO()
-        NumericInstruction.F64Max -> TODO()
-        NumericInstruction.F64CopySign -> TODO()
+        NumericInstruction.F64Add -> binaryOp<DoubleValue>(context) { x, y ->
+            (x.value + y.value).toValue()
+        }
+        NumericInstruction.F64Subtract -> binaryOp<DoubleValue>(context) { x, y ->
+            (x.value - y.value).toValue()
+        }
+        NumericInstruction.F64Multiply -> binaryOp<DoubleValue>(context) { x, y ->
+            (x.value * y.value).toValue()
+        }
+        NumericInstruction.F64Divide -> binaryOp<DoubleValue>(context) { x, y ->
+            (x.value / y.value).toValue()
+        }
+        NumericInstruction.F64Min -> binaryOp<DoubleValue>(context) { x, y ->
+            min(x.value, y.value).toValue()
+        }
+        NumericInstruction.F64Max -> binaryOp<DoubleValue>(context) { x, y ->
+            max(x.value, y.value).toValue()
+        }
+        NumericInstruction.F64CopySign -> binaryOp<DoubleValue>(context) { x, y ->
+            when {
+                y.value <= -0.0 && x.value >= 0.0 -> (-x.value).toValue()
+                y.value >= 0.0 && x.value <= -0.0 -> (-x.value).toValue()
+                else -> x
+            }
+        }
         NumericInstruction.F64Equals -> relOp<DoubleValue>(context) { x, y ->
             if (
                 x.value.isNaN() ||
