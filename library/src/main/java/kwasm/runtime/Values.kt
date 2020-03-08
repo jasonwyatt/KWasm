@@ -16,6 +16,7 @@
 
 package kwasm.runtime
 
+import kwasm.KWasmRuntimeException
 import kotlin.reflect.KClass
 import kwasm.ast.type.ValueType
 import kwasm.util.Impossible
@@ -87,6 +88,16 @@ fun Float.toValue(): FloatValue = FloatValue(this)
 
 /** Wraps a [Double] in a [DoubleValue]. */
 fun Double.toValue(): DoubleValue = DoubleValue(this)
+
+/** Wraps the receiving value as a [Value] instance. */
+@Suppress("UNCHECKED_CAST")
+inline fun <reified T : Number> T.toValue(): Value<*> = when (this) {
+    is Int -> IntValue(this)
+    is Long -> LongValue(this)
+    is Float -> FloatValue(this)
+    is Double -> DoubleValue(this)
+    else -> throw KWasmRuntimeException("Unsupported type: ${T::class} for Value conversion")
+}
 
 /** Converts a [KClass] for a [Value] class to a [ValueType]. */
 fun KClass<out Value<*>>.toValueType(): ValueType? = when (this) {

@@ -14,11 +14,14 @@
 
 package kwasm.runtime.instruction
 
+import com.google.common.truth.StandardSubjectBuilder
 import com.google.common.truth.Truth.assertThat
+import com.google.common.truth.Truth.assertWithMessage
 import kotlin.math.sqrt
 import kotlin.random.Random
 import kwasm.KWasmRuntimeException
 import kwasm.ParseRule
+import kwasm.ast.instruction.Instruction
 import kwasm.runtime.EmptyExecutionContext
 import kwasm.runtime.ExecutionContext
 import kwasm.runtime.FloatValue
@@ -26,13 +29,14 @@ import kwasm.runtime.IntValue
 import kwasm.runtime.Value
 import kwasm.runtime.toValue
 import org.junit.Assert.assertThrows
+import org.junit.Assert.fail
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @ExperimentalStdlibApi
-@Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
+@Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS", "CanBeVal")
 @RunWith(JUnit4::class)
 class NumericInstructionTest {
     @get:Rule
@@ -4679,6 +4683,408 @@ class NumericInstructionTest {
     }
 
     @Test
+    fun i32WrapI64() = parser.with {
+        val instruction = "i32.wrap_i64".parseInstruction()
+        var resultContext: ExecutionContext
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(0xFFFFFFFFFFFFFFFFuL.toValue())
+        )
+        assertThat(resultContext)
+            .hasOpStackContaining((0xFFFFFFFFFFFFFFFFuL % 0xFFFFFFFFuL).toInt().toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack((0xFFFFFFFFuL + 1uL).toValue())
+        )
+        assertThat(resultContext)
+            .hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack((0xFFFFFFFFuL).toValue())
+        )
+        assertThat(resultContext)
+            .hasOpStackContaining(0.toValue())
+    }
+
+    @Test
+    fun i32TruncateF32Signed() = parser.with {
+        val instruction = "i32.trunc_f32_s".parseInstruction()
+        var resultContext: ExecutionContext
+
+        // NaNs
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack(Float.NaN.toValue()))
+        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate NaN") }
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack((-Float.NaN).toValue()))
+        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate NaN") }
+
+        // Infinites
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack(Float.POSITIVE_INFINITY.toValue()))
+        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate Infinity") }
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack(Float.NEGATIVE_INFINITY.toValue()))
+        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate Infinity") }
+
+        // Out of bounds
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack((-1e10f).toValue()))
+        }.also {
+            assertThat(it).hasMessageThat().contains("Cannot truncate, magnitude too large for i32")
+        }
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack(1e10f.toValue()))
+        }.also {
+            assertThat(it).hasMessageThat().contains("Cannot truncate, magnitude too large for i32")
+        }
+
+        // Okay
+
+        resultContext = instruction.execute(executionContextWithOpStack(42.2f.toValue()))
+        assertThat(resultContext).hasOpStackContaining(42.toValue())
+    }
+
+    @Test
+    fun i32TruncateF32Unsigned() = parser.with {
+        val instruction = "i32.trunc_f32_u".parseInstruction()
+        var resultContext: ExecutionContext
+
+        // NaNs
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack(Float.NaN.toValue()))
+        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate NaN") }
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack((-Float.NaN).toValue()))
+        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate NaN") }
+
+        // Infinites
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack(Float.POSITIVE_INFINITY.toValue()))
+        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate Infinity") }
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack(Float.NEGATIVE_INFINITY.toValue()))
+        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate Infinity") }
+
+        // Out of bounds
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack((-1f).toValue()))
+        }.also {
+            assertThat(it).hasMessageThat().contains("Cannot truncate negative f32 to unsigned i32")
+        }
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack((0x1000000000uL.toFloat()).toValue()))
+        }.also {
+            assertThat(it).hasMessageThat().contains("Cannot truncate, magnitude too large for i32")
+        }
+
+        // Okay
+
+        resultContext = instruction.execute(executionContextWithOpStack(42.2f.toValue()))
+        assertThat(resultContext).hasOpStackContaining(42.toValue())
+    }
+
+    @Test
+    fun i32TruncateF64Signed() = parser.with {
+        val instruction = "i32.trunc_f64_s".parseInstruction()
+        var resultContext: ExecutionContext
+
+        // NaNs
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack(Double.NaN.toValue()))
+        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate NaN") }
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack((-Double.NaN).toValue()))
+        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate NaN") }
+
+        // Infinites
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack(Double.POSITIVE_INFINITY.toValue()))
+        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate Infinity") }
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack(Double.NEGATIVE_INFINITY.toValue()))
+        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate Infinity") }
+
+        // Out of bounds
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack((-1e10).toValue()))
+        }.also {
+            assertThat(it).hasMessageThat().contains("Cannot truncate, magnitude too large for i32")
+        }
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack(1e10.toValue()))
+        }.also {
+            assertThat(it).hasMessageThat().contains("Cannot truncate, magnitude too large for i32")
+        }
+
+        // Okay
+
+        resultContext = instruction.execute(executionContextWithOpStack(42.2.toValue()))
+        assertThat(resultContext).hasOpStackContaining(42.toValue())
+    }
+
+    @Test
+    fun i32TruncateF64Unsigned() = parser.with {
+        val instruction = "i32.trunc_f64_u".parseInstruction()
+        var resultContext: ExecutionContext
+
+        // NaNs
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack(Double.NaN.toValue()))
+        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate NaN") }
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack((-Double.NaN).toValue()))
+        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate NaN") }
+
+        // Infinites
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack(Double.POSITIVE_INFINITY.toValue()))
+        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate Infinity") }
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack(Double.NEGATIVE_INFINITY.toValue()))
+        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate Infinity") }
+
+        // Out of bounds
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack((-1.0).toValue()))
+        }.also {
+            assertThat(it).hasMessageThat().contains("Cannot truncate negative f64 to unsigned i32")
+        }
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack((0x1000000000uL.toDouble()).toValue()))
+        }.also {
+            assertThat(it).hasMessageThat().contains("Cannot truncate, magnitude too large for i32")
+        }
+
+        // Okay
+
+        resultContext = instruction.execute(executionContextWithOpStack(42.2.toValue()))
+        assertThat(resultContext).hasOpStackContaining(42.toValue())
+    }
+
+    @Test
+    fun i32ReinterpretF32() = listOf(
+        TestCase(0x7fc00000u.toInt(), Float.NaN),
+        TestCase(0x7f800000u.toInt(), Float.POSITIVE_INFINITY),
+        TestCase(0xff800000u.toInt(), Float.NEGATIVE_INFINITY),
+        TestCase(1.0f.toRawBits(), 1.0f),
+        TestCase((-1.0f).toRawBits(), -1.0f)
+    ).forEach { it.check("i32.reinterpret_f32") }
+
+    @Test
+    fun i64TruncateF32Signed() = parser.with {
+        val instruction = "i64.trunc_f32_s".parseInstruction()
+        var resultContext: ExecutionContext
+
+        // NaNs
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack(Float.NaN.toValue()))
+        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate NaN") }
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack((-Float.NaN).toValue()))
+        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate NaN") }
+
+        // Infinites
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack(Float.POSITIVE_INFINITY.toValue()))
+        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate Infinity") }
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack(Float.NEGATIVE_INFINITY.toValue()))
+        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate Infinity") }
+
+        // Out of bounds
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack((-1e20f).toValue()))
+        }.also {
+            assertThat(it).hasMessageThat().contains("Cannot truncate, magnitude too large for i64")
+        }
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack(1e20f.toValue()))
+        }.also {
+            assertThat(it).hasMessageThat().contains("Cannot truncate, magnitude too large for i64")
+        }
+
+        // Okay
+
+        resultContext = instruction.execute(executionContextWithOpStack(42.2f.toValue()))
+        assertThat(resultContext).hasOpStackContaining(42L.toValue())
+    }
+
+    @Test
+    fun i64TruncateF32Unsigned() = parser.with {
+        val instruction = "i64.trunc_f32_u".parseInstruction()
+        var resultContext: ExecutionContext
+
+        // NaNs
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack(Float.NaN.toValue()))
+        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate NaN") }
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack((-Float.NaN).toValue()))
+        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate NaN") }
+
+        // Infinites
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack(Float.POSITIVE_INFINITY.toValue()))
+        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate Infinity") }
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack(Float.NEGATIVE_INFINITY.toValue()))
+        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate Infinity") }
+
+        // Out of bounds
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack((-1.0f).toValue()))
+        }.also {
+            assertThat(it).hasMessageThat().contains("Cannot truncate negative f32 to unsigned i64")
+        }
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack(1e21f.toValue()))
+        }.also {
+            assertThat(it).hasMessageThat().contains("Cannot truncate, magnitude too large for i64")
+        }
+
+        // Okay
+
+        resultContext = instruction.execute(executionContextWithOpStack(42.2f.toValue()))
+        assertThat(resultContext).hasOpStackContaining(42L.toValue())
+    }
+
+    @Test
+    fun i64TruncateF64Signed() = parser.with {
+        val instruction = "i64.trunc_f64_s".parseInstruction()
+        var resultContext: ExecutionContext
+
+        // NaNs
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack(Double.NaN.toValue()))
+        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate NaN") }
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack((-Double.NaN).toValue()))
+        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate NaN") }
+
+        // Infinites
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack(Double.POSITIVE_INFINITY.toValue()))
+        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate Infinity") }
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack(Double.NEGATIVE_INFINITY.toValue()))
+        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate Infinity") }
+
+        // Out of bounds
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack((-1e20).toValue()))
+        }.also {
+            assertThat(it).hasMessageThat().contains("Cannot truncate, magnitude too large for i64")
+        }
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack(1e20.toValue()))
+        }.also {
+            assertThat(it).hasMessageThat().contains("Cannot truncate, magnitude too large for i64")
+        }
+
+        // Okay
+
+        resultContext = instruction.execute(executionContextWithOpStack(42.2.toValue()))
+        assertThat(resultContext).hasOpStackContaining(42L.toValue())
+    }
+
+    @Test
+    fun i64TruncateF64Unsigned() = parser.with {
+        val instruction = "i64.trunc_f64_u".parseInstruction()
+        var resultContext: ExecutionContext
+
+        // NaNs
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack(Double.NaN.toValue()))
+        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate NaN") }
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack((-Double.NaN).toValue()))
+        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate NaN") }
+
+        // Infinites
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack(Double.POSITIVE_INFINITY.toValue()))
+        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate Infinity") }
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack(Double.NEGATIVE_INFINITY.toValue()))
+        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate Infinity") }
+
+        // Out of bounds
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack((-1.0).toValue()))
+        }.also {
+            assertThat(it).hasMessageThat().contains("Cannot truncate negative f64 to unsigned i64")
+        }
+
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack(1e21.toValue()))
+        }.also {
+            assertThat(it).hasMessageThat().contains("Cannot truncate, magnitude too large for i64")
+        }
+
+        // Okay
+
+        resultContext = instruction.execute(executionContextWithOpStack(42.2.toValue()))
+        assertThat(resultContext).hasOpStackContaining(42L.toValue())
+    }
+
+    @Test
+    fun i64ReinterpretF64() = listOf(
+        TestCase(0x7ff8000000000000L, Double.NaN),
+        TestCase(0x7ff0000000000000L, Double.POSITIVE_INFINITY),
+        TestCase(0xfff0000000000000uL.toLong(), Double.NEGATIVE_INFINITY),
+        TestCase(1.0.toRawBits(), 1.0),
+        TestCase((-1.0).toRawBits(), -1.0)
+    ).forEach { it.check("i64.reinterpret_f64") }
+
+    @Test
     fun unaryOp_throws_ifStackEmpty() {
         assertThrows(IllegalStateException::class.java) {
             unaryOp<IntValue, IntValue>(executionContext) {
@@ -4822,6 +5228,22 @@ class NumericInstructionTest {
         }
     }
 
+    private inner class TestCase(val expected: Number, vararg val opStack: Number) {
+        fun check(source: String) {
+            var instruction: Instruction? = null
+            parser.with { instruction = source.parseInstruction() }
+
+            val resultContext = instruction!!.execute(
+                executionContextWithOpStack(*(opStack.map { it.toValue() }.toTypedArray()))
+            )
+
+            val inputStr = opStack.joinToString(prefix = "[", postfix = "]")
+            assertWithMessage("$source with input $inputStr should output $expected")
+                .thatContext(resultContext)
+                .hasOpStackContaining(expected.toValue())
+        }
+    }
+
     private fun executionContextWithOpStack(vararg stackVals: Value<*>) =
         executionContext.also {
             stackVals.forEach { stackVal ->
@@ -4829,3 +5251,21 @@ class NumericInstructionTest {
             }
         }
 }
+
+internal class ExecutionContextSubject(
+    private val builder: StandardSubjectBuilder,
+    private val context: ExecutionContext
+) {
+    fun hasOpStackContaining(vararg vals: Value<*>) {
+        val stack = mutableListOf<Value<*>>()
+        while (context.stacks.operands.peek() != null) {
+            stack += context.stacks.operands.pop()
+        }
+        stack.reverse()
+        builder.that(stack).containsExactly(*vals).inOrder()
+    }
+}
+
+internal fun StandardSubjectBuilder.thatContext(context: ExecutionContext) =
+    ExecutionContextSubject(this, context)
+
