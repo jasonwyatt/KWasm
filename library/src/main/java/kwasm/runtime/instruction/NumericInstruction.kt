@@ -104,17 +104,33 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
         NumericInstruction.I32ShiftRightUnsigned -> TODO()
         NumericInstruction.I32RotateLeft -> TODO()
         NumericInstruction.I32RotateRight -> TODO()
-        NumericInstruction.I32EqualsZero -> TODO()
-        NumericInstruction.I32Equals -> TODO()
-        NumericInstruction.I32NotEquals -> TODO()
-        NumericInstruction.I32LessThanSigned -> TODO()
-        NumericInstruction.I32LessThanUnsigned -> TODO()
-        NumericInstruction.I32GreaterThanSigned -> TODO()
-        NumericInstruction.I32GreaterThanUnsigned -> TODO()
-        NumericInstruction.I32LessThanEqualToSigned -> TODO()
-        NumericInstruction.I32LessThanEqualToUnsigned -> TODO()
-        NumericInstruction.I32GreaterThanEqualToSigned -> TODO()
-        NumericInstruction.I32GreaterThanEqualToUnsigned -> TODO()
+        NumericInstruction.I32EqualsZero -> testOp(context) { x: IntValue -> x.value == 0 }
+        NumericInstruction.I32Equals -> relOp<IntValue>(context) { x, y -> x.value == y.value }
+        NumericInstruction.I32NotEquals -> relOp<IntValue>(context) { x, y -> x.value != y.value }
+        NumericInstruction.I32LessThanSigned -> relOp<IntValue>(context) { x, y ->
+            x.value < y.value
+        }
+        NumericInstruction.I32LessThanUnsigned -> relOp<IntValue>(context) { x, y ->
+            x.unsignedValue < y.unsignedValue
+        }
+        NumericInstruction.I32GreaterThanSigned -> relOp<IntValue>(context) { x, y ->
+            x.value > y.value
+        }
+        NumericInstruction.I32GreaterThanUnsigned -> relOp<IntValue>(context) { x, y ->
+            x.unsignedValue > y.unsignedValue
+        }
+        NumericInstruction.I32LessThanEqualToSigned -> relOp<IntValue>(context) { x, y ->
+            x.value <= y.value
+        }
+        NumericInstruction.I32LessThanEqualToUnsigned -> relOp<IntValue>(context) { x, y ->
+            x.unsignedValue <= y.unsignedValue
+        }
+        NumericInstruction.I32GreaterThanEqualToSigned -> relOp<IntValue>(context) { x, y ->
+            x.value >= y.value
+        }
+        NumericInstruction.I32GreaterThanEqualToUnsigned -> relOp<IntValue>(context) { x, y ->
+            x.unsignedValue >= y.unsignedValue
+        }
         NumericInstruction.I64CountLeadingZeroes -> unaryOp(context) { x: LongValue ->
             if (x.value == 0L) 64L.toValue()
             else {
@@ -181,17 +197,33 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
         NumericInstruction.I64ShiftRightUnsigned -> TODO()
         NumericInstruction.I64RotateLeft -> TODO()
         NumericInstruction.I64RotateRight -> TODO()
-        NumericInstruction.I64EqualsZero -> TODO()
-        NumericInstruction.I64Equals -> TODO()
-        NumericInstruction.I64NotEquals -> TODO()
-        NumericInstruction.I64LessThanSigned -> TODO()
-        NumericInstruction.I64LessThanUnsigned -> TODO()
-        NumericInstruction.I64GreaterThanSigned -> TODO()
-        NumericInstruction.I64GreaterThanUnsigned -> TODO()
-        NumericInstruction.I64LessThanEqualToSigned -> TODO()
-        NumericInstruction.I64LessThanEqualToUnsigned -> TODO()
-        NumericInstruction.I64GreaterThanEqualToSigned -> TODO()
-        NumericInstruction.I64GreaterThanEqualToUnsigned -> TODO()
+        NumericInstruction.I64EqualsZero -> testOp(context) { x: LongValue -> x.value == 0L }
+        NumericInstruction.I64Equals -> relOp<LongValue>(context) { x, y -> x.value == y.value }
+        NumericInstruction.I64NotEquals -> relOp<LongValue>(context) { x, y -> x.value != y.value }
+        NumericInstruction.I64LessThanSigned -> relOp<LongValue>(context) { x, y ->
+            x.value < y.value
+        }
+        NumericInstruction.I64LessThanUnsigned -> relOp<LongValue>(context) { x, y ->
+            x.unsignedValue < y.unsignedValue
+        }
+        NumericInstruction.I64GreaterThanSigned -> relOp<LongValue>(context) { x, y ->
+            x.value > y.value
+        }
+        NumericInstruction.I64GreaterThanUnsigned -> relOp<LongValue>(context) { x, y ->
+            x.unsignedValue > y.unsignedValue
+        }
+        NumericInstruction.I64LessThanEqualToSigned -> relOp<LongValue>(context) { x, y ->
+            x.value <= y.value
+        }
+        NumericInstruction.I64LessThanEqualToUnsigned -> relOp<LongValue>(context) { x, y ->
+            x.unsignedValue <= y.unsignedValue
+        }
+        NumericInstruction.I64GreaterThanEqualToSigned -> relOp<LongValue>(context) { x, y ->
+            x.value >= y.value
+        }
+        NumericInstruction.I64GreaterThanEqualToUnsigned -> relOp<LongValue>(context) { x, y ->
+            x.unsignedValue >= y.unsignedValue
+        }
         NumericInstruction.F32AbsoluteValue -> unaryOp(context) { x: FloatValue ->
             x.value.absoluteValue.toValue()
         }
@@ -329,6 +361,64 @@ internal inline fun <reified In : Value<*>, reified Out : Value<*>> unaryOp(
 
     val newTop = op(stackTop)
     executionContext.stacks.operands.push(newTop)
+
+    return executionContext
+}
+
+/**
+ * From [the docs](https://webassembly.github.io/spec/core/exec/instructions.html#exec-testop):
+ *
+ * ```
+ *   t.testop
+ * ```
+ *
+ * 1. Assert: due to validation, a value of value type `t` is on the top of the stack.
+ * 1. Pop the value `t.const c_1` from the stack.
+ * 1. Let `c` be the result of computing `testopt(c_1)`.
+ * 1. Push the value `i32.const c` to the stack.
+ */
+internal inline fun <reified In : Value<*>> testOp(
+    executionContext: ExecutionContext,
+    crossinline op: (In) -> Boolean
+): ExecutionContext {
+    val stackTop = executionContext.stacks.operands.pop()
+    if (stackTop !is In) throw KWasmRuntimeException("Top of stack is invalid type")
+
+    val testResult = op(stackTop)
+    executionContext.stacks.operands.push(
+        if (testResult) 1.toValue() else 0.toValue()
+    )
+
+    return executionContext
+}
+
+/**
+ * From [the docs](https://webassembly.github.io/spec/core/exec/instructions.html#exec-relop):
+ *
+ * ```
+ *   t.relop
+ * ```
+ *
+ * 1. Assert: due to validation, two values of value type `t` are on the top of the stack.
+ * 1. Pop the value `t.const c_2` from the stack.
+ * 1. Pop the value `t.const c_1` from the stack.
+ * 1. Let `c` be the result of computing `relopt(c_1, c_2)`.
+ * 1. Push the value `i32.const c` to the stack.
+ */
+internal inline fun <reified In : Value<*>> relOp(
+    executionContext: ExecutionContext,
+    crossinline op: (In, In) -> Boolean
+): ExecutionContext {
+    val arg2 = executionContext.stacks.operands.pop()
+    if (arg2 !is In) throw KWasmRuntimeException("RHS is invalid type")
+
+    val arg1 = executionContext.stacks.operands.pop()
+    if (arg1 !is In) throw KWasmRuntimeException("LHS is invalid type")
+
+    val result = op(arg1, arg2)
+    executionContext.stacks.operands.push(
+        if (result) 1.toValue() else 0.toValue()
+    )
 
     return executionContext
 }
