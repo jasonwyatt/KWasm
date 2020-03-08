@@ -1040,6 +1040,372 @@ class NumericInstructionTest {
     }
 
     @Test
+    fun f32Equals() = parser.with {
+        val instruction = "f32.eq".parseInstruction()
+
+        var resultContext = instruction.execute(
+            executionContextWithOpStack(42f.toValue(), 42f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42f.toValue(), 41f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(41f.toValue(), 42f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Float.NaN.toValue(), 42f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42f.toValue(), Float.NaN.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Float.NaN.toValue(), Float.NaN.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+    }
+
+    @Test
+    fun f32NotEquals() = parser.with {
+        val instruction = "f32.ne".parseInstruction()
+
+        var resultContext = instruction.execute(
+            executionContextWithOpStack(42f.toValue(), 42f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42f.toValue(), 41f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(41f.toValue(), 42f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Float.NaN.toValue(), 42f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42f.toValue(), Float.NaN.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Float.NaN.toValue(), Float.NaN.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+    }
+
+    @Test
+    fun f32LessThan() = parser.with {
+        val instruction = "f32.lt".parseInstruction()
+
+        var resultContext = instruction.execute(
+            executionContextWithOpStack(42f.toValue(), 42f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42f.toValue(), 41f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(41f.toValue(), 42f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack((-41f).toValue(), 42f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack((-42f).toValue(), (-41f).toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Float.NaN.toValue(), 42f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42f.toValue(), Float.NaN.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Float.NaN.toValue(), Float.NaN.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        //  Check infinity cases
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Float.POSITIVE_INFINITY.toValue(), 42f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Float.NEGATIVE_INFINITY.toValue(), 42f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42f.toValue(), Float.POSITIVE_INFINITY.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42f.toValue(), Float.NEGATIVE_INFINITY.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+    }
+
+    @Test
+    fun f32GreaterThan() = parser.with {
+        val instruction = "f32.gt".parseInstruction()
+
+        var resultContext = instruction.execute(
+            executionContextWithOpStack(42f.toValue(), 42f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42f.toValue(), 41f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(41f.toValue(), 42f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack((-41f).toValue(), 42f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack((-42f).toValue(), (-41f).toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Float.NaN.toValue(), 42f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42f.toValue(), Float.NaN.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Float.NaN.toValue(), Float.NaN.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        //  Check infinity cases
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Float.POSITIVE_INFINITY.toValue(), 42f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Float.NEGATIVE_INFINITY.toValue(), 42f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42f.toValue(), Float.POSITIVE_INFINITY.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42f.toValue(), Float.NEGATIVE_INFINITY.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+    }
+
+    @Test
+    fun f32LessThanEqualTo() = parser.with {
+        val instruction = "f32.le".parseInstruction()
+
+        var resultContext = instruction.execute(
+            executionContextWithOpStack(42f.toValue(), 42f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42f.toValue(), 41f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(41f.toValue(), 42f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack((-41f).toValue(), 42f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack((-42f).toValue(), (-41f).toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Float.NaN.toValue(), 42f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42f.toValue(), Float.NaN.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Float.NaN.toValue(), Float.NaN.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        //  Check infinity cases
+        resultContext = instruction.execute(
+            executionContextWithOpStack(
+                Float.POSITIVE_INFINITY.toValue(),
+                Float.POSITIVE_INFINITY.toValue()
+            )
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(
+                Float.NEGATIVE_INFINITY.toValue(),
+                Float.NEGATIVE_INFINITY.toValue()
+            )
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Float.POSITIVE_INFINITY.toValue(), 42f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Float.NEGATIVE_INFINITY.toValue(), 42f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42f.toValue(), Float.POSITIVE_INFINITY.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42f.toValue(), Float.NEGATIVE_INFINITY.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+    }
+
+    @Test
+    fun f32GreaterThanEqualTo() = parser.with {
+        val instruction = "f32.ge".parseInstruction()
+
+        var resultContext = instruction.execute(
+            executionContextWithOpStack(42f.toValue(), 42f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42f.toValue(), 41f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(41f.toValue(), 42f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack((-41f).toValue(), 42f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack((-42f).toValue(), (-41f).toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Float.NaN.toValue(), 42f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42f.toValue(), Float.NaN.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Float.NaN.toValue(), Float.NaN.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        //  Check infinity cases
+        resultContext = instruction.execute(
+            executionContextWithOpStack(
+                Float.POSITIVE_INFINITY.toValue(),
+                Float.POSITIVE_INFINITY.toValue()
+            )
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(
+                Float.NEGATIVE_INFINITY.toValue(),
+                Float.NEGATIVE_INFINITY.toValue()
+            )
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Float.POSITIVE_INFINITY.toValue(), 42f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Float.NEGATIVE_INFINITY.toValue(), 42f.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42f.toValue(), Float.POSITIVE_INFINITY.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42f.toValue(), Float.NEGATIVE_INFINITY.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+    }
+
+    @Test
     fun f64AbsoluteValue() = parser.with {
         val instruction = "f64.abs".parseInstruction()
 
@@ -1295,6 +1661,372 @@ class NumericInstructionTest {
 
         resultContext = instruction.execute(executionContextWithOpStack(0.1.toValue()))
         assertThat(resultContext).hasOpStackContaining(sqrt(0.1).toValue())
+    }
+
+    @Test
+    fun f64Equals() = parser.with {
+        val instruction = "f64.eq".parseInstruction()
+
+        var resultContext = instruction.execute(
+            executionContextWithOpStack(42.0.toValue(), 42.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42.0.toValue(), 41.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(41.0.toValue(), 42.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Double.NaN.toValue(), 42.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42.0.toValue(), Double.NaN.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Double.NaN.toValue(), Double.NaN.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+    }
+
+    @Test
+    fun f64NotEquals() = parser.with {
+        val instruction = "f64.ne".parseInstruction()
+
+        var resultContext = instruction.execute(
+            executionContextWithOpStack(42.0.toValue(), 42.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42.0.toValue(), 41.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(41.0.toValue(), 42.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Double.NaN.toValue(), 42.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42.0.toValue(), Double.NaN.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Double.NaN.toValue(), Double.NaN.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+    }
+
+    @Test
+    fun f64LessThan() = parser.with {
+        val instruction = "f64.lt".parseInstruction()
+
+        var resultContext = instruction.execute(
+            executionContextWithOpStack(42.0.toValue(), 42.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42.0.toValue(), 41.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(41.0.toValue(), 42.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack((-41.0).toValue(), 42.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack((-42.0).toValue(), (-41.0).toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Double.NaN.toValue(), 42.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42.0.toValue(), Double.NaN.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Double.NaN.toValue(), Double.NaN.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        //  Check infinity cases
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Double.POSITIVE_INFINITY.toValue(), 42.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Double.NEGATIVE_INFINITY.toValue(), 42.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42.0.toValue(), Double.POSITIVE_INFINITY.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42.0.toValue(), Double.NEGATIVE_INFINITY.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+    }
+
+    @Test
+    fun f64GreaterThan() = parser.with {
+        val instruction = "f64.gt".parseInstruction()
+
+        var resultContext = instruction.execute(
+            executionContextWithOpStack(42.0.toValue(), 42.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42.0.toValue(), 41.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(41.0.toValue(), 42.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack((-41.0).toValue(), 42.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack((-42.0).toValue(), (-41.0).toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Double.NaN.toValue(), 42.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42.0.toValue(), Double.NaN.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Double.NaN.toValue(), Double.NaN.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        //  Check infinity cases
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Double.POSITIVE_INFINITY.toValue(), 42.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Double.NEGATIVE_INFINITY.toValue(), 42.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42.0.toValue(), Double.POSITIVE_INFINITY.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42.0.toValue(), Double.NEGATIVE_INFINITY.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+    }
+
+    @Test
+    fun f64LessThanEqualTo() = parser.with {
+        val instruction = "f64.le".parseInstruction()
+
+        var resultContext = instruction.execute(
+            executionContextWithOpStack(42.0.toValue(), 42.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42.0.toValue(), 41.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(41.0.toValue(), 42.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack((-41.0).toValue(), 42.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack((-42.0).toValue(), (-41.0).toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Double.NaN.toValue(), 42.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42.0.toValue(), Double.NaN.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Double.NaN.toValue(), Double.NaN.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        //  Check infinity cases
+        resultContext = instruction.execute(
+            executionContextWithOpStack(
+                Double.POSITIVE_INFINITY.toValue(),
+                Double.POSITIVE_INFINITY.toValue()
+            )
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(
+                Double.NEGATIVE_INFINITY.toValue(),
+                Double.NEGATIVE_INFINITY.toValue()
+            )
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Double.POSITIVE_INFINITY.toValue(), 42.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Double.NEGATIVE_INFINITY.toValue(), 42.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42.0.toValue(), Double.POSITIVE_INFINITY.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42.0.toValue(), Double.NEGATIVE_INFINITY.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+    }
+
+    @Test
+    fun f64GreaterThanEqualTo() = parser.with {
+        val instruction = "f64.ge".parseInstruction()
+
+        var resultContext = instruction.execute(
+            executionContextWithOpStack(42.0.toValue(), 42.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42.0.toValue(), 41.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(41.0.toValue(), 42.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack((-41.0).toValue(), 42.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack((-42.0).toValue(), (-41.0).toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Double.NaN.toValue(), 42.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42.0.toValue(), Double.NaN.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Double.NaN.toValue(), Double.NaN.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        //  Check infinity cases
+        resultContext = instruction.execute(
+            executionContextWithOpStack(
+                Double.POSITIVE_INFINITY.toValue(),
+                Double.POSITIVE_INFINITY.toValue()
+            )
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(
+                Double.NEGATIVE_INFINITY.toValue(),
+                Double.NEGATIVE_INFINITY.toValue()
+            )
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Double.POSITIVE_INFINITY.toValue(), 42.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(Double.NEGATIVE_INFINITY.toValue(), 42.0.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42.0.toValue(), Double.POSITIVE_INFINITY.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(0.toValue())
+
+        resultContext = instruction.execute(
+            executionContextWithOpStack(42.0.toValue(), Double.NEGATIVE_INFINITY.toValue())
+        )
+        assertThat(resultContext).hasOpStackContaining(1.toValue())
     }
 
     @Test
