@@ -578,318 +578,101 @@ class NumericInstructionTest {
     }
 
     @Test
-    fun i64EqualsZero() = parser.with {
-        val instruction = "i64.eqz".parseInstruction()
-
-        var resultContext = instruction.execute(executionContextWithOpStack(0L.toValue()))
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-
-        resultContext = instruction.execute(executionContextWithOpStack(1L.toValue()))
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-
-        resultContext = instruction.execute(executionContextWithOpStack((-1L).toValue()))
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-    }
+    fun i64EqualsZero() = listOf(
+        TestCase(1, 0L),
+        TestCase(0, 1L),
+        TestCase(0, -1L)
+    ).forEach { it.check("i64.eqz") }
 
     @Test
-    fun i64Equals() = parser.with {
-        val instruction = "i64.eq".parseInstruction()
-
-        var resultContext = instruction.execute(
-            executionContextWithOpStack(42L.toValue(), 42L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(42L.toValue(), 41L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(41L.toValue(), 42L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-    }
+    fun i64Equals() = listOf(
+        TestCase(1, 42L, 42L),
+        TestCase(0, 42L, 41L),
+        TestCase(0, 41L, 42L)
+    ).forEach { it.check("i64.eq") }
 
     @Test
-    fun i64NotEquals() = parser.with {
-        val instruction = "i64.ne".parseInstruction()
-
-        var resultContext = instruction.execute(
-            executionContextWithOpStack(42L.toValue(), 42L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(42L.toValue(), 41L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(41L.toValue(), 42L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-    }
+    fun i64NotEquals() = listOf(
+        TestCase(0, 42L, 42L),
+        TestCase(1, 42L, 41L),
+        TestCase(1, 41L, 42L)
+    ).forEach { it.check("i64.ne") }
 
     @Test
-    fun i64LessThanSigned() = parser.with {
-        val instruction = "i64.lt_s".parseInstruction()
-
-        var resultContext = instruction.execute(
-            executionContextWithOpStack(42L.toValue(), 42L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(42L.toValue(), 41L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(41L.toValue(), 42L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack((-41L).toValue(), 42L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack((-42L).toValue(), (-41L).toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-    }
+    fun i64LessThanSigned() = listOf(
+        TestCase(0, 42L, 42L),
+        TestCase(0, 42L, 41L),
+        TestCase(1, 41L, 42L),
+        TestCase(1, -41L, 42L),
+        TestCase(1, -42L, -41L)
+    ).forEach { it.check("i64.lt_s") }
 
     @Test
-    fun i64LessThanUnsigned() = parser.with {
-        val instruction = "i64.lt_u".parseInstruction()
-
-        var resultContext = instruction.execute(
-            executionContextWithOpStack(42L.toValue(), 42L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(42L.toValue(), 41L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(41L.toValue(), 42L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack((-41L).toValue(), 42L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack((-42L).toValue(), (-41L).toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(0L.toValue(), (-1L).toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-    }
+    fun i64LessThanUnsigned() = listOf(
+        TestCase(0, 42L, 42L),
+        TestCase(0, 42L, 41L),
+        TestCase(1, 41L, 42L),
+        TestCase(0, -41L, 42L),
+        TestCase(1, -42L, -41L),
+        TestCase(1, 0L, -1L)
+    ).forEach { it.check("i64.lt_u") }
 
     @Test
-    fun i64GreaterThanSigned() = parser.with {
-        val instruction = "i64.gt_s".parseInstruction()
-
-        var resultContext = instruction.execute(
-            executionContextWithOpStack(42L.toValue(), 42L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(42L.toValue(), 41L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(41L.toValue(), 42L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack((-41L).toValue(), 42L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack((-42L).toValue(), (-41L).toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-    }
+    fun i64GreaterThanSigned() = listOf(
+        TestCase(0, 42L, 42L),
+        TestCase(1, 42L, 41L),
+        TestCase(0, 41L, 42L),
+        TestCase(0, -41L, 42L),
+        TestCase(0, -42L, -41L)
+    ).forEach { it.check("i64.gt_s") }
 
     @Test
-    fun i64GreaterThanUnsigned() = parser.with {
-        val instruction = "i64.gt_u".parseInstruction()
-
-        var resultContext = instruction.execute(
-            executionContextWithOpStack(42L.toValue(), 42L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(42L.toValue(), 41L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(41L.toValue(), 42L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack((-41L).toValue(), 42L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack((-42L).toValue(), (-41L).toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(0L.toValue(), (-1L).toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-    }
+    fun i64GreaterThanUnsigned() = listOf(
+        TestCase(0, 42L, 42L),
+        TestCase(1, 42L, 41L),
+        TestCase(0, 41L, 42L),
+        TestCase(1, -41L, 42L),
+        TestCase(0, -42L, -41L),
+        TestCase(0, 0L, -1L)
+    ).forEach { it.check("i64.gt_u") }
 
     @Test
-    fun i64LessThanEqualToSigned() = parser.with {
-        val instruction = "i64.le_s".parseInstruction()
-
-        var resultContext = instruction.execute(
-            executionContextWithOpStack(42L.toValue(), 42L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(42L.toValue(), 41L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(41L.toValue(), 42L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack((-41L).toValue(), 42L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack((-42L).toValue(), (-41L).toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-    }
+    fun i64LessThanEqualToSigned() = listOf(
+        TestCase(1, 42L, 42L),
+        TestCase(0, 42L, 41L),
+        TestCase(1, 41L, 42L),
+        TestCase(1, -41L, 42L),
+        TestCase(1, -42L, -41L)
+    ).forEach { it.check("i64.le_s") }
 
     @Test
-    fun i64LessThanEqualToUnsigned() = parser.with {
-        val instruction = "i64.le_u".parseInstruction()
-
-        var resultContext = instruction.execute(
-            executionContextWithOpStack(42L.toValue(), 42L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(42L.toValue(), 41L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(41L.toValue(), 42L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack((-41L).toValue(), 42L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack((-42L).toValue(), (-41L).toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(0L.toValue(), (-1L).toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-    }
+    fun i64LessThanEqualToUnsigned() = listOf(
+        TestCase(1, 42L, 42L),
+        TestCase(0, 42L, 41L),
+        TestCase(1, 41L, 42L),
+        TestCase(0, -41L, 42L),
+        TestCase(1, -42L, -41L),
+        TestCase(1, 0L, -1L)
+    ).forEach { it.check("i64.le_u") }
 
     @Test
-    fun i64GreaterThanEqualToSigned() = parser.with {
-        val instruction = "i64.ge_s".parseInstruction()
-
-        var resultContext = instruction.execute(
-            executionContextWithOpStack(42L.toValue(), 42L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(42L.toValue(), 41L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(41L.toValue(), 42L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack((-41L).toValue(), 42L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack((-42L).toValue(), (-41L).toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-    }
+    fun i64GreaterThanEqualToSigned() = listOf(
+        TestCase(1, 42L, 42L),
+        TestCase(1, 42L, 41L),
+        TestCase(0, 41L, 42L),
+        TestCase(0, -41L, 42L),
+        TestCase(0, -42L, -41L)
+    ).forEach { it.check("i64.ge_s") }
 
     @Test
-    fun i64GreaterThanEqualToUnsigned() = parser.with {
-        val instruction = "i64.ge_u".parseInstruction()
-
-        var resultContext = instruction.execute(
-            executionContextWithOpStack(42L.toValue(), 42L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(42L.toValue(), 41L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(41L.toValue(), 42L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack((-41L).toValue(), 42L.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack((-42L).toValue(), (-41L).toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(0L.toValue(), (-1L).toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-    }
+    fun i64GreaterThanEqualToUnsigned() = listOf(
+        TestCase(1, 42L, 42L),
+        TestCase(1, 42L, 41L),
+        TestCase(0, 41L, 42L),
+        TestCase(1, -41L, 42L),
+        TestCase(0, -42L, -41L),
+        TestCase(0, 0L, -1L)
+    ).forEach { it.check("i64.ge_u") }
 
     @Test
     fun f32AbsoluteValue() = parser.with {
@@ -1960,74 +1743,24 @@ class NumericInstructionTest {
     ).forEach { it.check("f32.copysign") }
 
     @Test
-    fun f32Equals() = parser.with {
-        val instruction = "f32.eq".parseInstruction()
-
-        var resultContext = instruction.execute(
-            executionContextWithOpStack(42f.toValue(), 42f.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(42f.toValue(), 41f.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(41f.toValue(), 42f.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(Float.NaN.toValue(), 42f.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(42f.toValue(), Float.NaN.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(Float.NaN.toValue(), Float.NaN.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-    }
+    fun f32Equals() = listOf(
+        TestCase(1, 42f, 42f),
+        TestCase(0, 42f, 41f),
+        TestCase(0, 41f, 42f),
+        TestCase(0, Float.NaN, 42f),
+        TestCase(0, 42f, Float.NaN),
+        TestCase(0, Float.NaN, Float.NaN)
+    ).forEach { it.check("f32.eq") }
 
     @Test
-    fun f32NotEquals() = parser.with {
-        val instruction = "f32.ne".parseInstruction()
-
-        var resultContext = instruction.execute(
-            executionContextWithOpStack(42f.toValue(), 42f.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(42f.toValue(), 41f.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(41f.toValue(), 42f.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(Float.NaN.toValue(), 42f.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(42f.toValue(), Float.NaN.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(Float.NaN.toValue(), Float.NaN.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-    }
+    fun f32NotEquals() = listOf(
+        TestCase(0, 42f, 42f),
+        TestCase(1, 42f, 41f),
+        TestCase(1, 41f, 42f),
+        TestCase(1, Float.NaN, 42f),
+        TestCase(1, 42f, Float.NaN),
+        TestCase(1, Float.NaN, Float.NaN)
+    ).forEach { it.check("f32.ne") }
 
     @Test
     fun f32LessThan() = parser.with {
@@ -3509,100 +3242,32 @@ class NumericInstructionTest {
     }
 
     @Test
-    fun f64CopySign() = parser.with {
-        val instruction = "f64.copysign".parseInstruction()
-        var resultContext: ExecutionContext
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(42.0.toValue(), 1.0.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(42.0.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack((-42.0).toValue(), (-1.0).toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining((-42.0).toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(42.0.toValue(), (-1.0).toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining((-42.0).toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack((-42.0).toValue(), 1.0.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(42.0.toValue())
-    }
+    fun f64CopySign() = listOf(
+        TestCase(42.0, 42.0, 1.0),
+        TestCase(-42.0, -42.0, -1.0),
+        TestCase(-42.0, 42.0, -1.0),
+        TestCase(42.0, -42.0, 1.0)
+    ).forEach { it.check("f64.copysign") }
 
     @Test
-    fun f64Equals() = parser.with {
-        val instruction = "f64.eq".parseInstruction()
-
-        var resultContext = instruction.execute(
-            executionContextWithOpStack(42.0.toValue(), 42.0.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(42.0.toValue(), 41.0.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(41.0.toValue(), 42.0.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(Double.NaN.toValue(), 42.0.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(42.0.toValue(), Double.NaN.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(Double.NaN.toValue(), Double.NaN.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-    }
+    fun f64Equals() = listOf(
+        TestCase(1, 42.0, 42.0),
+        TestCase(0, 42.0, 41.0),
+        TestCase(0, 41.0, 42.0),
+        TestCase(0, Double.NaN, 42.0),
+        TestCase(0, 42.0, Double.NaN),
+        TestCase(0, Double.NaN, Double.NaN)
+    ).forEach { it.check("f64.eq") }
 
     @Test
-    fun f64NotEquals() = parser.with {
-        val instruction = "f64.ne".parseInstruction()
-
-        var resultContext = instruction.execute(
-            executionContextWithOpStack(42.0.toValue(), 42.0.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(0.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(42.0.toValue(), 41.0.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(41.0.toValue(), 42.0.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(Double.NaN.toValue(), 42.0.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(42.0.toValue(), Double.NaN.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-
-        resultContext = instruction.execute(
-            executionContextWithOpStack(Double.NaN.toValue(), Double.NaN.toValue())
-        )
-        assertThat(resultContext).hasOpStackContaining(1.toValue())
-    }
+    fun f64NotEquals() = listOf(
+        TestCase(0, 42.0, 42.0),
+        TestCase(1, 42.0, 41.0),
+        TestCase(1, 41.0, 42.0),
+        TestCase(1, Double.NaN, 42.0),
+        TestCase(1, 42.0, Double.NaN),
+        TestCase(1, Double.NaN, Double.NaN)
+    ).forEach { it.check("f64.ne") }
 
     @Test
     fun f64LessThan() = parser.with {
@@ -4135,182 +3800,74 @@ class NumericInstructionTest {
 
     @Test
     fun i64TruncateF32Signed() = parser.with {
-        val instruction = "i64.trunc_f32_s".parseInstruction()
-        var resultContext: ExecutionContext
-
-        // NaNs
-
-        assertThrows(KWasmRuntimeException::class.java) {
-            instruction.execute(executionContextWithOpStack(Float.NaN.toValue()))
-        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate NaN") }
-
-        assertThrows(KWasmRuntimeException::class.java) {
-            instruction.execute(executionContextWithOpStack((-Float.NaN).toValue()))
-        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate NaN") }
-
-        // Infinites
-
-        assertThrows(KWasmRuntimeException::class.java) {
-            instruction.execute(executionContextWithOpStack(Float.POSITIVE_INFINITY.toValue()))
-        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate Infinity") }
-
-        assertThrows(KWasmRuntimeException::class.java) {
-            instruction.execute(executionContextWithOpStack(Float.NEGATIVE_INFINITY.toValue()))
-        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate Infinity") }
-
-        // Out of bounds
-
-        assertThrows(KWasmRuntimeException::class.java) {
-            instruction.execute(executionContextWithOpStack((-1e20f).toValue()))
-        }.also {
-            assertThat(it).hasMessageThat().contains("Cannot truncate, magnitude too large for i64")
-        }
-
-        assertThrows(KWasmRuntimeException::class.java) {
-            instruction.execute(executionContextWithOpStack(1e20f.toValue()))
-        }.also {
-            assertThat(it).hasMessageThat().contains("Cannot truncate, magnitude too large for i64")
-        }
+        listOf(
+            // NaNs
+            KWasmErrorTestCase("Cannot truncate NaN", Float.NaN),
+            KWasmErrorTestCase("Cannot truncate NaN", -Float.NaN),
+            // Infinites
+            KWasmErrorTestCase("Cannot truncate Infinity", Float.POSITIVE_INFINITY),
+            KWasmErrorTestCase("Cannot truncate Infinity", Float.NEGATIVE_INFINITY),
+            // Out of bounds
+            KWasmErrorTestCase("Cannot truncate, magnitude too large for i64", -1e20f),
+            KWasmErrorTestCase("Cannot truncate, magnitude too large for i64", 1e20f)
+        ).forEach { it.check("i64.trunc_f32_s") }
 
         // Okay
-
-        resultContext = instruction.execute(executionContextWithOpStack(42.2f.toValue()))
-        assertThat(resultContext).hasOpStackContaining(42L.toValue())
+        TestCase(42L, 42.2f).check("i64.trunc_f32_s")
     }
 
     @Test
-    fun i64TruncateF32Unsigned() = parser.with {
-        val instruction = "i64.trunc_f32_u".parseInstruction()
-        var resultContext: ExecutionContext
-
-        // NaNs
-
-        assertThrows(KWasmRuntimeException::class.java) {
-            instruction.execute(executionContextWithOpStack(Float.NaN.toValue()))
-        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate NaN") }
-
-        assertThrows(KWasmRuntimeException::class.java) {
-            instruction.execute(executionContextWithOpStack((-Float.NaN).toValue()))
-        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate NaN") }
-
-        // Infinites
-
-        assertThrows(KWasmRuntimeException::class.java) {
-            instruction.execute(executionContextWithOpStack(Float.POSITIVE_INFINITY.toValue()))
-        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate Infinity") }
-
-        assertThrows(KWasmRuntimeException::class.java) {
-            instruction.execute(executionContextWithOpStack(Float.NEGATIVE_INFINITY.toValue()))
-        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate Infinity") }
-
-        // Out of bounds
-
-        assertThrows(KWasmRuntimeException::class.java) {
-            instruction.execute(executionContextWithOpStack((-1.0f).toValue()))
-        }.also {
-            assertThat(it).hasMessageThat().contains("Cannot truncate negative f32 to unsigned i64")
-        }
-
-        assertThrows(KWasmRuntimeException::class.java) {
-            instruction.execute(executionContextWithOpStack(1e21f.toValue()))
-        }.also {
-            assertThat(it).hasMessageThat().contains("Cannot truncate, magnitude too large for i64")
-        }
+    fun i64TruncateF32Unsigned() {
+        listOf(
+            // NaNs
+            KWasmErrorTestCase("Cannot truncate NaN", Float.NaN),
+            KWasmErrorTestCase("Cannot truncate NaN", -Float.NaN),
+            // Infinites
+            KWasmErrorTestCase("Cannot truncate Infinity", Float.POSITIVE_INFINITY),
+            KWasmErrorTestCase("Cannot truncate Infinity", Float.NEGATIVE_INFINITY),
+            // Out of bounds
+            KWasmErrorTestCase("Cannot truncate negative f32 to unsigned i64", -1f),
+            KWasmErrorTestCase("Cannot truncate, magnitude too large for i64", 1e20f)
+        ).forEach { it.check("i64.trunc_f32_u") }
 
         // Okay
-
-        resultContext = instruction.execute(executionContextWithOpStack(42.2f.toValue()))
-        assertThat(resultContext).hasOpStackContaining(42L.toValue())
+        TestCase(42L, 42.2f).check("i64.trunc_f32_u")
     }
 
     @Test
-    fun i64TruncateF64Signed() = parser.with {
-        val instruction = "i64.trunc_f64_s".parseInstruction()
-        var resultContext: ExecutionContext
-
-        // NaNs
-
-        assertThrows(KWasmRuntimeException::class.java) {
-            instruction.execute(executionContextWithOpStack(Double.NaN.toValue()))
-        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate NaN") }
-
-        assertThrows(KWasmRuntimeException::class.java) {
-            instruction.execute(executionContextWithOpStack((-Double.NaN).toValue()))
-        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate NaN") }
-
-        // Infinites
-
-        assertThrows(KWasmRuntimeException::class.java) {
-            instruction.execute(executionContextWithOpStack(Double.POSITIVE_INFINITY.toValue()))
-        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate Infinity") }
-
-        assertThrows(KWasmRuntimeException::class.java) {
-            instruction.execute(executionContextWithOpStack(Double.NEGATIVE_INFINITY.toValue()))
-        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate Infinity") }
-
-        // Out of bounds
-
-        assertThrows(KWasmRuntimeException::class.java) {
-            instruction.execute(executionContextWithOpStack((-1e20).toValue()))
-        }.also {
-            assertThat(it).hasMessageThat().contains("Cannot truncate, magnitude too large for i64")
-        }
-
-        assertThrows(KWasmRuntimeException::class.java) {
-            instruction.execute(executionContextWithOpStack(1e20.toValue()))
-        }.also {
-            assertThat(it).hasMessageThat().contains("Cannot truncate, magnitude too large for i64")
-        }
+    fun i64TruncateF64Signed() {
+        listOf(
+            // NaNs
+            KWasmErrorTestCase("Cannot truncate NaN", Double.NaN),
+            KWasmErrorTestCase("Cannot truncate NaN", -Double.NaN),
+            // Infinites
+            KWasmErrorTestCase("Cannot truncate Infinity", Double.POSITIVE_INFINITY),
+            KWasmErrorTestCase("Cannot truncate Infinity", Double.NEGATIVE_INFINITY),
+            // Out of bounds
+            KWasmErrorTestCase("Cannot truncate, magnitude too large for i64", -1e20),
+            KWasmErrorTestCase("Cannot truncate, magnitude too large for i64", 1e20)
+        ).forEach { it.check("i64.trunc_f64_s") }
 
         // Okay
-
-        resultContext = instruction.execute(executionContextWithOpStack(42.2.toValue()))
-        assertThat(resultContext).hasOpStackContaining(42L.toValue())
+        TestCase(42L, 42.2).check("i64.trunc_f64_s")
     }
 
     @Test
-    fun i64TruncateF64Unsigned() = parser.with {
-        val instruction = "i64.trunc_f64_u".parseInstruction()
-        var resultContext: ExecutionContext
-
-        // NaNs
-
-        assertThrows(KWasmRuntimeException::class.java) {
-            instruction.execute(executionContextWithOpStack(Double.NaN.toValue()))
-        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate NaN") }
-
-        assertThrows(KWasmRuntimeException::class.java) {
-            instruction.execute(executionContextWithOpStack((-Double.NaN).toValue()))
-        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate NaN") }
-
-        // Infinites
-
-        assertThrows(KWasmRuntimeException::class.java) {
-            instruction.execute(executionContextWithOpStack(Double.POSITIVE_INFINITY.toValue()))
-        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate Infinity") }
-
-        assertThrows(KWasmRuntimeException::class.java) {
-            instruction.execute(executionContextWithOpStack(Double.NEGATIVE_INFINITY.toValue()))
-        }.also { assertThat(it).hasMessageThat().contains("Cannot truncate Infinity") }
-
-        // Out of bounds
-
-        assertThrows(KWasmRuntimeException::class.java) {
-            instruction.execute(executionContextWithOpStack((-1.0).toValue()))
-        }.also {
-            assertThat(it).hasMessageThat().contains("Cannot truncate negative f64 to unsigned i64")
-        }
-
-        assertThrows(KWasmRuntimeException::class.java) {
-            instruction.execute(executionContextWithOpStack(1e21.toValue()))
-        }.also {
-            assertThat(it).hasMessageThat().contains("Cannot truncate, magnitude too large for i64")
-        }
+    fun i64TruncateF64Unsigned() {
+        listOf(
+            // NaNs
+            KWasmErrorTestCase("Cannot truncate NaN", Double.NaN),
+            KWasmErrorTestCase("Cannot truncate NaN", -Double.NaN),
+            // Infinites
+            KWasmErrorTestCase("Cannot truncate Infinity", Double.POSITIVE_INFINITY),
+            KWasmErrorTestCase("Cannot truncate Infinity", Double.NEGATIVE_INFINITY),
+            // Out of bounds
+            KWasmErrorTestCase("Cannot truncate negative f64 to unsigned i64", -1.0),
+            KWasmErrorTestCase("Cannot truncate, magnitude too large for i64", 1e21)
+        ).forEach { it.check("i64.trunc_f64_u") }
 
         // Okay
-
-        resultContext = instruction.execute(executionContextWithOpStack(42.2.toValue()))
-        assertThat(resultContext).hasOpStackContaining(42L.toValue())
+        TestCase(42L, 42.2).check("i64.trunc_f64_u")
     }
 
     @Test
