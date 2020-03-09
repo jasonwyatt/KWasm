@@ -30,6 +30,9 @@ internal interface Stack<T : StackElement> {
 
     /** Returns the [StackElement] at the top of the [Stack] without popping it. */
     fun peek(): T?
+
+    /** Empties the [Stack]. */
+    fun clear()
 }
 
 /**

@@ -25,6 +25,7 @@ import kwasm.runtime.IntValue
 import kwasm.runtime.LongValue
 import kwasm.runtime.Memory
 import kwasm.runtime.toValue
+import java.lang.IndexOutOfBoundsException
 
 /**
  * From
@@ -149,13 +150,21 @@ internal fun MemoryInstruction.StoreInt.execute(context: ExecutionContext): Exec
         4 -> {
             val intValue = valueToStore as? IntValue
                 ?: throw KWasmRuntimeException("Illegal type for i32.store")
-            memory.writeUInt(intValue.unsignedValue, ea, storageBytes)
+            try {
+                memory.writeUInt(intValue.unsignedValue, ea, storageBytes)
+            } catch (e: IndexOutOfBoundsException) {
+                throw KWasmRuntimeException("Cannot store at position $ea", e)
+            }
         }
         // storing an i64.
         8 -> {
             val longValue = valueToStore as? LongValue
                 ?: throw KWasmRuntimeException("Illegal type for i64.store")
-            memory.writeULong(longValue.unsignedValue, ea, storageBytes)
+            try {
+                memory.writeULong(longValue.unsignedValue, ea, storageBytes)
+            } catch (e: IndexOutOfBoundsException) {
+                throw KWasmRuntimeException("Cannot store at position $ea", e)
+            }
         }
         else -> throw KWasmRuntimeException("Illegal byte width: $byteWidth for store instruction")
     }

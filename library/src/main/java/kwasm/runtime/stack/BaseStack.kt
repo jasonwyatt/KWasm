@@ -50,6 +50,8 @@ internal abstract class BaseStack<T : StackElement>(
 
     override fun peek(): T? = values.peek()
 
+    override fun clear() = values.clear()
+
     companion object {
         // TODO: tune?
         internal const val DEFAULT_MAX_CAPACITY = 4096

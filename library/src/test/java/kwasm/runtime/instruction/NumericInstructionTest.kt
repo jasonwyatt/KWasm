@@ -4195,20 +4195,3 @@ class NumericInstructionTest {
             }
         }
 }
-
-internal class ExecutionContextSubject(
-    private val builder: StandardSubjectBuilder,
-    private val context: ExecutionContext
-) {
-    fun hasOpStackContaining(vararg vals: Value<*>) {
-        val stack = mutableListOf<Value<*>>()
-        while (context.stacks.operands.peek() != null) {
-            stack += context.stacks.operands.pop()
-        }
-        stack.reverse()
-        builder.that(stack).containsExactly(*vals).inOrder()
-    }
-}
-
-internal fun StandardSubjectBuilder.thatContext(context: ExecutionContext) =
-    ExecutionContextSubject(this, context)

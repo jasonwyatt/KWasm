@@ -30,13 +30,6 @@ class ByteBufferMemoryProviderTest {
         val provider = ByteBufferMemoryProvider(1024 * 1024) // 1mb
 
         assertThrows(IllegalArgumentException::class.java) {
-            provider.buildMemory(0, null)
-        }.also {
-            assertThat(it).hasMessageThat()
-                .contains("requestedMinPages must be greater than or equal to 1")
-        }
-
-        assertThrows(IllegalArgumentException::class.java) {
             provider.buildMemory(-1, null)
         }.also {
             assertThat(it).hasMessageThat()

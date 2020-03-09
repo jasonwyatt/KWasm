@@ -36,10 +36,6 @@ open class ByteBufferMemoryProvider(val maximumSizeBytes: Long) : MemoryProvider
             it
         } ?: Memory.pagesForBytes(maximumSizeBytes)
 
-        require(requestedMinPages >= 1) {
-            "requestedMinPages must be greater than or equal to 1"
-        }
-
         return ByteBufferMemory(maxPages, initialPages = requestedMinPages)
     }
 }
