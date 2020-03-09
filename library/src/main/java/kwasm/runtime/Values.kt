@@ -16,8 +16,8 @@
 
 package kwasm.runtime
 
-import kwasm.KWasmRuntimeException
 import kotlin.reflect.KClass
+import kwasm.KWasmRuntimeException
 import kwasm.ast.type.ValueType
 import kwasm.util.Impossible
 
