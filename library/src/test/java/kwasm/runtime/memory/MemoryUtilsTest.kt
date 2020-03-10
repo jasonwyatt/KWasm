@@ -141,8 +141,8 @@ class MemoryUtilsTest {
         assertThat(257L.wrap(1)).isEqualTo(1)
         assertThat(65536L.wrap(2)).isEqualTo(0)
         assertThat(65537L.wrap(2)).isEqualTo(1)
-        assertThat(UInt.MAX_VALUE.toLong().wrap(4)).isEqualTo(0)
-        assertThat((UInt.MAX_VALUE.toLong() + 1).wrap(4)).isEqualTo(1)
+        assertThat(0x100000000L.wrap(4)).isEqualTo(0)
+        assertThat(0x100000001L.wrap(4)).isEqualTo(1)
     }
 
     @Test
@@ -151,8 +151,8 @@ class MemoryUtilsTest {
         assertThat(257.toULong().wrap(1)).isEqualTo(1.toULong())
         assertThat(65536.toULong().wrap(2)).isEqualTo(0.toULong())
         assertThat(65537.toULong().wrap(2)).isEqualTo(1.toULong())
-        assertThat(UInt.MAX_VALUE.toULong().wrap(4)).isEqualTo(0.toULong())
-        assertThat((UInt.MAX_VALUE.toULong() + 1u).wrap(4)).isEqualTo(1.toULong())
+        assertThat(0x100000000uL.wrap(4)).isEqualTo(0.toULong())
+        assertThat(0x100000001uL.wrap(4)).isEqualTo(1.toULong())
     }
 
     @Test

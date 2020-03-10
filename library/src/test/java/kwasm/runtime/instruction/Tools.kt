@@ -17,13 +17,13 @@ package kwasm.runtime.instruction
 import com.google.common.truth.StandardSubjectBuilder
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
+import kotlin.reflect.KClass
 import kwasm.ParseRule
 import kwasm.ast.instruction.Instruction
 import kwasm.runtime.ExecutionContext
 import kwasm.runtime.Value
 import kwasm.runtime.toValue
 import org.junit.Assert.assertThrows
-import kotlin.reflect.KClass
 
 internal fun instructionCases(
     parser: ParseRule,
@@ -37,14 +37,14 @@ internal class InstructionTestBuilder(
     val parser: ParseRule,
     private val instructionSource: String
 ) {
-    var context: ExecutionContext? = null
+    lateinit var context: ExecutionContext
 
     fun errorCase(
         errorClass: KClass<out Throwable>,
         expectedMessage: String,
         vararg inputs: Number
     ) = apply {
-        ErrorTestCase(parser, context!!, errorClass, expectedMessage, *inputs)
+        ErrorTestCase(parser, context, errorClass, expectedMessage, *inputs)
             .check(instructionSource)
     }
 
@@ -52,11 +52,11 @@ internal class InstructionTestBuilder(
         expectedOutput: Number,
         vararg inputs: Number
     ) = apply {
-        TestCase(parser, context!!, expectedOutput, *inputs).check(instructionSource)
+        TestCase(parser, context, expectedOutput, *inputs).check(instructionSource)
     }
 
     fun validVoidCase(vararg inputs: Number) = apply {
-        TestCase(parser, context!!, null, *inputs).check(instructionSource)
+        TestCase(parser, context, null, *inputs).check(instructionSource)
     }
 }
 

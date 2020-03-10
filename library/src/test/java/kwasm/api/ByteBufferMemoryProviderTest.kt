@@ -33,7 +33,7 @@ class ByteBufferMemoryProviderTest {
             provider.buildMemory(-1, null)
         }.also {
             assertThat(it).hasMessageThat()
-                .contains("requestedMinPages must be greater than or equal to 1")
+                .contains("requestedMinPages must be greater than or equal to 0")
         }
     }
 

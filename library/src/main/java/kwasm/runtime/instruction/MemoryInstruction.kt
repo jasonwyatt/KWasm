@@ -16,6 +16,7 @@
 
 package kwasm.runtime.instruction
 
+import kotlin.IndexOutOfBoundsException
 import kwasm.KWasmRuntimeException
 import kwasm.ast.instruction.MemoryInstruction
 import kwasm.runtime.DoubleValue
@@ -25,7 +26,6 @@ import kwasm.runtime.IntValue
 import kwasm.runtime.LongValue
 import kwasm.runtime.Memory
 import kwasm.runtime.toValue
-import java.lang.IndexOutOfBoundsException
 
 /**
  * From
@@ -78,19 +78,24 @@ internal fun MemoryInstruction.LoadInt.execute(context: ExecutionContext): Execu
     val memory = context.getMemory()
     val memAddress = (context.stacks.operands.pop() as? IntValue)
         ?: throw KWasmRuntimeException("Memory loading requires i32 on top of the stack")
-    val ea = memAddress.value + arg.offset.toInt()
-    val resultValue = when (byteWidth) {
-        // i32 requested.
-        4 -> when {
-            signed -> memory.readInt(ea, storageBytes).toValue()
-            else -> memory.readUInt(ea, storageBytes).toValue()
+    val ea = (memAddress.unsignedValue + arg.offset).toInt()
+    val resultValue = try {
+            when (byteWidth) {
+            // i32 requested.
+            4 -> when {
+                signed -> memory.readInt(ea, storageBytes).toValue()
+                else -> memory.readUInt(ea, storageBytes).toValue()
+            }
+            // i64 requested.
+            8 -> when {
+                signed -> memory.readLong(ea, storageBytes).toValue()
+                else -> memory.readULong(ea, storageBytes).toValue()
+            }
+            else ->
+                throw KWasmRuntimeException("Illegal byte width: $byteWidth for load instruction")
         }
-        // i64 requested.
-        8 -> when {
-            signed -> memory.readLong(ea, storageBytes).toValue()
-            else -> memory.readULong(ea, storageBytes).toValue()
-        }
-        else -> throw KWasmRuntimeException("Illegal byte width: $byteWidth for load instruction")
+    } catch (e: IndexOutOfBoundsException) {
+        throw KWasmRuntimeException("Cannot load at position $ea", e)
     }
     context.stacks.operands.push(resultValue)
     return context
@@ -103,13 +108,18 @@ internal fun MemoryInstruction.LoadFloat.execute(context: ExecutionContext): Exe
     val memory = context.getMemory()
     val memAddress = (context.stacks.operands.pop() as? IntValue)
         ?: throw KWasmRuntimeException("Memory loading requires i32 on top of the stack")
-    val ea = memAddress.value + arg.offset.toInt()
-    val resultValue = when (byteWidth) {
-        // f32 requested.
-        4 -> memory.readFloat(ea).toValue()
-        // f64 requested.
-        8 -> memory.readDouble(ea).toValue()
-        else -> throw KWasmRuntimeException("Illegal byte width: $byteWidth for load instruction")
+    val ea = (memAddress.unsignedValue + arg.offset).toInt()
+    val resultValue = try {
+        when (byteWidth) {
+            // f32 requested.
+            4 -> memory.readFloat(ea).toValue()
+            // f64 requested.
+            8 -> memory.readDouble(ea).toValue()
+            else ->
+                throw KWasmRuntimeException("Illegal byte width: $byteWidth for load instruction")
+        }
+    } catch (e: IndexOutOfBoundsException) {
+        throw KWasmRuntimeException("Cannot load at position $ea", e)
     }
     context.stacks.operands.push(resultValue)
     return context
@@ -144,7 +154,7 @@ internal fun MemoryInstruction.StoreInt.execute(context: ExecutionContext): Exec
             "Memory storing requires an i32 at the second position in the stack"
         )
 
-    val ea = memoryAddress.value + arg.offset.toInt()
+    val ea = (memoryAddress.unsignedValue + arg.offset).toInt()
     when (byteWidth) {
         // storing an i32.
         4 -> {
@@ -153,6 +163,8 @@ internal fun MemoryInstruction.StoreInt.execute(context: ExecutionContext): Exec
             try {
                 memory.writeUInt(intValue.unsignedValue, ea, storageBytes)
             } catch (e: IndexOutOfBoundsException) {
+                throw KWasmRuntimeException("Cannot store at position $ea", e)
+            } catch (e: IllegalArgumentException) {
                 throw KWasmRuntimeException("Cannot store at position $ea", e)
             }
         }
@@ -163,6 +175,8 @@ internal fun MemoryInstruction.StoreInt.execute(context: ExecutionContext): Exec
             try {
                 memory.writeULong(longValue.unsignedValue, ea, storageBytes)
             } catch (e: IndexOutOfBoundsException) {
+                throw KWasmRuntimeException("Cannot store at position $ea", e)
+            } catch (e: IllegalArgumentException) {
                 throw KWasmRuntimeException("Cannot store at position $ea", e)
             }
         }
@@ -184,21 +198,28 @@ internal fun MemoryInstruction.StoreFloat.execute(context: ExecutionContext): Ex
             "Memory storing requires an i32 at the second position in the stack"
         )
 
-    val ea = memoryAddress.value + arg.offset.toInt()
-    when (byteWidth) {
-        // storing an f32.
-        4 -> {
-            val floatValue = valueToStore as? FloatValue
-                ?: throw KWasmRuntimeException("Illegal type for f32.store")
-            memory.writeFloat(floatValue.value, ea)
+    val ea = (memoryAddress.unsignedValue + arg.offset).toInt()
+    try {
+        when (byteWidth) {
+            // storing an f32.
+            4 -> {
+                val floatValue = valueToStore as? FloatValue
+                    ?: throw KWasmRuntimeException("Illegal type for f32.store")
+                memory.writeFloat(floatValue.value, ea)
+            }
+            // storing an f64.
+            8 -> {
+                val doubleValue = valueToStore as? DoubleValue
+                    ?: throw KWasmRuntimeException("Illegal type for f64.store")
+                memory.writeDouble(doubleValue.value, ea)
+            }
+            else ->
+                throw KWasmRuntimeException("Illegal byte width: $byteWidth for store instruction")
         }
-        // storing an f64.
-        8 -> {
-            val doubleValue = valueToStore as? DoubleValue
-                ?: throw KWasmRuntimeException("Illegal type for f64.store")
-            memory.writeDouble(doubleValue.value, ea)
-        }
-        else -> throw KWasmRuntimeException("Illegal byte width: $byteWidth for store instruction")
+    } catch (e: IndexOutOfBoundsException) {
+        throw KWasmRuntimeException("Cannot store at position $ea", e)
+    } catch (e: IllegalArgumentException) {
+        throw KWasmRuntimeException("Cannot store at position $ea", e)
     }
 
     return context
