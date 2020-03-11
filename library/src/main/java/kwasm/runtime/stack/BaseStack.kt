@@ -24,7 +24,7 @@ internal abstract class BaseStack<T : StackElement>(
     initialValues: List<T> = emptyList(),
     private val maxCapacity: Int = DEFAULT_MAX_CAPACITY
 ) : Stack<T> {
-    private val values = LinkedList<T>()
+    val values = LinkedList<T>()
 
     init {
         require(initialValues.size <= maxCapacity) {

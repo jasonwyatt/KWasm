@@ -33,8 +33,9 @@ import kwasm.runtime.StackElement
  * Intuitively, `instr*` is the continuation to execute when the branch is taken, in place of the
  * original control construct.
  */
-data class Label(
+internal data class Label(
     val identifier: Identifier?,
     val continuation: List<Instruction> = emptyList(),
-    val arity: Int = 1
+    val arity: Int = 1,
+    val opStackAtEnter: OperandStack
 ) : StackElement

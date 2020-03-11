@@ -158,8 +158,9 @@ class TypeUseTest {
 
     @Test
     fun throws_whenTypeIndex_isInvalid() {
-        val exception1 =
-            assertThrows(ParseException::class.java) { tokenizer.tokenize("(type not-an-id)").parseTypeUse(0) }
+        val exception1 = assertThrows(ParseException::class.java) {
+            tokenizer.tokenize("(type not-an-id)").parseTypeUse(0)
+        }
         assertThat(exception1).hasMessageThat().contains("Expected an index")
         val exception2 = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(type \$anId ;; but no closing paren").parseTypeUse(0)

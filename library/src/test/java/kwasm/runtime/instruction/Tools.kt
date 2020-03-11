@@ -20,10 +20,14 @@ import com.google.common.truth.Truth.assertWithMessage
 import kotlin.reflect.KClass
 import kwasm.ParseRule
 import kwasm.ast.AstNodeList
-import kwasm.ast.instruction.Expression
+import kwasm.ast.Identifier
 import kwasm.ast.instruction.Instruction
+import kwasm.ast.module.Index
+import kwasm.ast.module.Local
+import kwasm.ast.util.toFunctionIndex
 import kwasm.runtime.ExecutionContext
 import kwasm.runtime.Value
+import kwasm.runtime.stack.Activation
 import kwasm.runtime.toValue
 import org.junit.Assert.assertThrows
 
@@ -121,6 +125,19 @@ internal class ErrorTestCase(
 internal fun ExecutionContext.withOpStack(values: List<Value<*>>): ExecutionContext {
     stacks.operands.clear()
     values.forEach { stackVal -> stacks.operands.push(stackVal) }
+    return this
+}
+
+internal fun ExecutionContext.withFrameContainingLocals(
+    locals: Map<Index<Identifier.Local>, Value<*>>
+): ExecutionContext {
+    stacks.activations.push(
+        Activation(
+            "foo".toFunctionIndex(),
+            locals,
+            moduleInstance
+        )
+    )
     return this
 }
 
