@@ -24,7 +24,7 @@ internal abstract class BaseStack<T : StackElement>(
     initialValues: List<T> = emptyList(),
     private val maxCapacity: Int = DEFAULT_MAX_CAPACITY
 ) : Stack<T> {
-    private val values = LinkedList<T>()
+    val values = LinkedList<T>()
 
     init {
         require(initialValues.size <= maxCapacity) {
@@ -51,6 +51,28 @@ internal abstract class BaseStack<T : StackElement>(
     override fun peek(): T? = values.peek()
 
     override fun clear() = values.clear()
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is BaseStack<*>) return false
+
+        if (name != other.name) return false
+        if (maxCapacity != other.maxCapacity) return false
+        if (!values.containsAll(other.values)) return false
+        if (!other.values.containsAll(values)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = name.hashCode()
+        result = 31 * result + maxCapacity
+        result = 31 * result + values.hashCode()
+        return result
+    }
+
+    override fun toString(): String =
+        "Stack(name='$name', maxCapacity=$maxCapacity, values=$values)"
 
     companion object {
         // TODO: tune?

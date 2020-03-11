@@ -59,8 +59,9 @@ class LabelTest {
 
     @Test
     fun throws_whenInvalidLabelIsFound() {
-        val exception =
-            assertThrows(ParseException::class.java) { tokenizer.tokenize("$", context).parseLabel(0) }
+        val exception = assertThrows(ParseException::class.java) {
+            tokenizer.tokenize("$", context).parseLabel(0)
+        }
         assertThat(exception).hasMessageThat().contains("Invalid identifier")
     }
 }

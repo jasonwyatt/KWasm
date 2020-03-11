@@ -189,7 +189,10 @@ fun List<Token>.parseInlineWasmFunctionExport(fromIndex: Int): ParseResult<AstNo
 
     if (isClosedParen(currentIndex)) {
         // No `...` case, so we can return here.
-        val function = parseCheckNotNull(contextAt(currentIndex), withoutFirstExport.parseWasmFunction(0))
+        val function = parseCheckNotNull(
+            contextAt(currentIndex),
+            withoutFirstExport.parseWasmFunction(0)
+        )
         currentIndex += (function.parseLength - lengthOfPrefix)
         return ParseResult(
             AstNodeList(

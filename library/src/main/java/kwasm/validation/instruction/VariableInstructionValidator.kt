@@ -93,7 +93,10 @@ object VariableInstructionValidator : FunctionBodyValidationVisitor<VariableInst
         return updatedContext
     }
 
-    private fun validateLocalTee(node: VariableInstruction.LocalTee, context: ValidationContext.FunctionBody): ValidationContext.FunctionBody {
+    private fun validateLocalTee(
+        node: VariableInstruction.LocalTee,
+        context: ValidationContext.FunctionBody
+    ): ValidationContext.FunctionBody {
         val localType = validateLocalExists(context, node.valueAstNode)
         val (top, updatedContext) = context.popStack()
         validate(

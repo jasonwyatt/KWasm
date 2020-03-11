@@ -87,7 +87,9 @@ fun List<Token>.parseImportDescriptor(fromIndex: Int): ParseResult<out ImportDes
         ?: parseMemoryImportDescriptor(fromIndex)
         ?: parseGlobalImportDescriptor(fromIndex)
 
-internal fun List<Token>.parseFuncImportDescriptor(fromIndex: Int): ParseResult<ImportDescriptor.Function>? {
+internal fun List<Token>.parseFuncImportDescriptor(
+    fromIndex: Int
+): ParseResult<ImportDescriptor.Function>? {
     var currentIndex = fromIndex
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
@@ -105,7 +107,9 @@ internal fun List<Token>.parseFuncImportDescriptor(fromIndex: Int): ParseResult<
     )
 }
 
-internal fun List<Token>.parseTableImportDescriptor(fromIndex: Int): ParseResult<ImportDescriptor.Table>? {
+internal fun List<Token>.parseTableImportDescriptor(
+    fromIndex: Int
+): ParseResult<ImportDescriptor.Table>? {
     var currentIndex = fromIndex
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
@@ -123,7 +127,9 @@ internal fun List<Token>.parseTableImportDescriptor(fromIndex: Int): ParseResult
     )
 }
 
-internal fun List<Token>.parseMemoryImportDescriptor(fromIndex: Int): ParseResult<ImportDescriptor.Memory>? {
+internal fun List<Token>.parseMemoryImportDescriptor(
+    fromIndex: Int
+): ParseResult<ImportDescriptor.Memory>? {
     var currentIndex = fromIndex
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
