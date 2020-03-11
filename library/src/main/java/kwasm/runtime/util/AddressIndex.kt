@@ -41,4 +41,20 @@ class AddressIndex<T : Address>(
         is Index.ByInt -> getOrNull(index.indexVal)
         is Index.ByIdentifier<*> -> addressIndexByIdentifier[index.indexVal]?.let { getOrNull(it) }
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+
+        other as AddressIndex<*>
+
+        if (addressIndexByIdentifier != other.addressIndexByIdentifier) return false
+        if (!toList().containsAll(other.toList())) return false
+        if (!other.toList().containsAll(toList())) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        return addressIndexByIdentifier.hashCode() + 31 * this.toList().hashCode()
+    }
 }

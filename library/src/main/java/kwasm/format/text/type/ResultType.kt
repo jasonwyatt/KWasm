@@ -30,7 +30,7 @@ import kwasm.format.text.token.Token
  * ```
  */
 fun List<Token>.parseResultType(currentIndex: Int): ParseResult<ResultType> {
-    val maybeResultKeyword = this[currentIndex + 1]
+    val maybeResultKeyword = getOrNull(currentIndex + 1)
     if (maybeResultKeyword !is Keyword || maybeResultKeyword.value != "result") {
         return ParseResult(ResultType(null), 0)
     }

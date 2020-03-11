@@ -37,9 +37,7 @@ internal fun Expression.execute(
 ): ExecutionContext {
     val expressionContext = context.copy(stacks = context.stacks.copy(operands = OperandStack()))
     val executionValue =
-        instructions.fold(expressionContext) { currentContext, instruction ->
-            instruction.execute(currentContext)
-        }.let {
+        instructions.execute(expressionContext).let {
             if (it.stacks.operands.height == 0) throw KWasmRuntimeException(
                 "Expression expected to produce a value, but stack is empty"
             )

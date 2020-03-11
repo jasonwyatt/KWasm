@@ -14,6 +14,7 @@
 
 package kwasm.runtime.instruction
 
+import kwasm.ast.instruction.ControlInstruction
 import kwasm.ast.instruction.Instruction
 import kwasm.ast.instruction.MemoryInstruction
 import kwasm.ast.instruction.NumericConstantInstruction
@@ -22,6 +23,9 @@ import kwasm.ast.instruction.ParametricInstruction
 import kwasm.ast.instruction.VariableInstruction
 import kwasm.runtime.ExecutionContext
 
+/**
+ * Executes the receiving [Instruction] by multiplexing to implementation-specific variants.
+ */
 internal fun Instruction.execute(
     context: ExecutionContext
 ): ExecutionContext = when (this) {
@@ -30,5 +34,10 @@ internal fun Instruction.execute(
     is NumericInstruction -> this.execute(context)
     is MemoryInstruction -> this.execute(context)
     is ParametricInstruction -> this.execute(context)
+    is ControlInstruction -> this.execute(context)
     else -> TODO("Instruction: $this not supported yet.")
 }
+
+/** Executes a sequence of [Instruction]s. */
+internal fun List<Instruction>.execute(context: ExecutionContext): ExecutionContext =
+    fold(context) { soFar, instruction -> instruction.execute(soFar) }

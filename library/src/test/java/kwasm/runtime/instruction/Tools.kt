@@ -19,6 +19,8 @@ import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
 import kotlin.reflect.KClass
 import kwasm.ParseRule
+import kwasm.ast.AstNodeList
+import kwasm.ast.instruction.Expression
 import kwasm.ast.instruction.Instruction
 import kwasm.runtime.ExecutionContext
 import kwasm.runtime.Value
@@ -52,39 +54,47 @@ internal class InstructionTestBuilder(
         expectedOutput: Number,
         vararg inputs: Number
     ) = apply {
-        TestCase(parser, context, expectedOutput, *inputs).check(instructionSource)
+        context = TestCase(parser, context, listOf(expectedOutput), *inputs)
+            .check(instructionSource)
+    }
+
+    fun validCase(
+        expectedStack: List<Number>,
+        vararg inputs: Number
+    ) = apply {
+        context = TestCase(parser, context, expectedStack, *inputs).check(instructionSource)
     }
 
     fun validVoidCase(vararg inputs: Number) = apply {
-        TestCase(parser, context, null, *inputs).check(instructionSource)
+        context = TestCase(parser, context, emptyList(), *inputs).check(instructionSource)
     }
 }
 
-interface InstructionChecker {
-    fun check(source: String)
+internal interface InstructionChecker {
+    fun check(source: String): ExecutionContext
 }
 
 internal class TestCase(
     val parser: ParseRule,
     val context: ExecutionContext,
-    val expected: Number?,
+    val expected: List<Number>,
     vararg val opStack: Number
 ) : InstructionChecker {
-    override fun check(source: String) {
-        var instruction: Instruction? = null
-        parser.with { instruction = source.parseInstruction() }
+    override fun check(source: String): ExecutionContext {
+        var instructions: AstNodeList<out Instruction>? = null
+        parser.with { instructions = source.parseInstructions() }
 
-        val resultContext = instruction!!.execute(
+        val resultContext = instructions!!.execute(
             context.withOpStack(opStack.map { it.toValue() })
         )
 
         val inputStr = opStack.joinToString(prefix = "[", postfix = "]")
         assertWithMessage("$source with input $inputStr should output $expected")
             .thatContext(resultContext)
-            .also {
-                expected?.let { exp -> it.hasOpStackContaining(exp.toValue()) }
-                    ?: run { it.hasOpStackContaining() }
+            .also { subj ->
+                subj.hasOpStackContaining(*(expected.map { it.toValue() }.toTypedArray()))
             }
+        return resultContext
     }
 }
 
@@ -95,15 +105,16 @@ internal class ErrorTestCase(
     val expectedMessage: String,
     vararg val opStack: Number
 ) : InstructionChecker {
-    override fun check(source: String) {
-        var instruction: Instruction? = null
-        parser.with { instruction = source.parseInstruction() }
+    override fun check(source: String): ExecutionContext {
+        var instructions: List<Instruction>? = null
+        parser.with { instructions = source.parseInstructions() }
 
         assertThrows(expectedThrowable.java) {
-            instruction!!.execute(
+            instructions!!.execute(
                 context.withOpStack(opStack.map { it.toValue() })
             )
         }.also { assertThat(it).hasMessageThat().contains(expectedMessage) }
+        return context
     }
 }
 
