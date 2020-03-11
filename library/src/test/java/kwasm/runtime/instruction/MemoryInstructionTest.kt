@@ -682,10 +682,9 @@ class MemoryInstructionTest {
         var module: WasmModule? = null
 
         parser.with {
-            // TODO: make memory command work without an id.
             module = """
                 (module
-                    (memory ${'$'}foo $minPages $maxPages)
+                    (memory $minPages $maxPages)
                 )
             """.parseModule()
         }
