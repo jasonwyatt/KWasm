@@ -20,7 +20,7 @@ import kwasm.util.Impossible
 
 private const val BYTE_MAX_VALUE = 256L
 private const val SHORT_MAX_VALUE = 65536L
-private val INT_MAX_VALUE = UInt.MAX_VALUE.toLong()
+private const val INT_MAX_VALUE = 0x100000000
 
 internal inline fun <reified T : Number> Int.assertValidByteWidth() =
     when (T::class) {

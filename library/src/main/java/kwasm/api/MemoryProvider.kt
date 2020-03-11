@@ -28,6 +28,10 @@ interface MemoryProvider {
 /** Implementation of [MemoryProvider] which builds blank [ByteBufferMemory] memories. */
 open class ByteBufferMemoryProvider(val maximumSizeBytes: Long) : MemoryProvider {
     override fun buildMemory(requestedMinPages: Int, requestedMaxPages: Int?): Memory {
+        require(requestedMinPages >= 0) {
+            "requestedMinPages must be greater than or equal to 0"
+        }
+
         val maxPages = requestedMaxPages?.let {
             check(Memory.pagesForBytes(maximumSizeBytes) >= it) {
                 "Cannot fit requestedMaxPages: $it into maximum allowed size: " +
@@ -35,10 +39,6 @@ open class ByteBufferMemoryProvider(val maximumSizeBytes: Long) : MemoryProvider
             }
             it
         } ?: Memory.pagesForBytes(maximumSizeBytes)
-
-        require(requestedMinPages >= 1) {
-            "requestedMinPages must be greater than or equal to 1"
-        }
 
         return ByteBufferMemory(maxPages, initialPages = requestedMinPages)
     }

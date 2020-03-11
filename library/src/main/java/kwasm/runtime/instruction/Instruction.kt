@@ -15,6 +15,7 @@
 package kwasm.runtime.instruction
 
 import kwasm.ast.instruction.Instruction
+import kwasm.ast.instruction.MemoryInstruction
 import kwasm.ast.instruction.NumericConstantInstruction
 import kwasm.ast.instruction.NumericInstruction
 import kwasm.ast.instruction.VariableInstruction
@@ -26,5 +27,6 @@ internal fun Instruction.execute(
     is NumericConstantInstruction<*> -> this.execute(context)
     is VariableInstruction -> this.execute(context)
     is NumericInstruction -> this.execute(context)
+    is MemoryInstruction -> this.execute(context)
     else -> TODO("Instruction: $this not supported yet.")
 }

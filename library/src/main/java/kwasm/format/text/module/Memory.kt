@@ -83,7 +83,7 @@ internal fun List<Token>.parseMemoryBasic(fromIndex: Int): ParseResult<Memory>? 
     currentIndex++
     if (!isKeyword(currentIndex, "memory")) return null
     currentIndex++
-    val id = parseIdentifier<Identifier.Memory>(currentIndex)
+    val id = parseIdentifier<Identifier.Memory>(currentIndex, false)
     currentIndex += id.parseLength
     val memoryType = try { parseMemoryType(currentIndex) } catch (e: ParseException) { null }
         ?: return null

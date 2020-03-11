@@ -14,7 +14,6 @@
 
 package kwasm.runtime.instruction
 
-import com.google.common.truth.StandardSubjectBuilder
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
 import kotlin.math.sqrt
@@ -3574,19 +3573,19 @@ class NumericInstructionTest {
             executionContextWithOpStack(0xFFFFFFFFFFFFFFFFuL.toValue())
         )
         assertThat(resultContext)
-            .hasOpStackContaining((0xFFFFFFFFFFFFFFFFuL % 0xFFFFFFFFuL).toInt().toValue())
+            .hasOpStackContaining((-1).toValue())
 
         resultContext = instruction.execute(
             executionContextWithOpStack((0xFFFFFFFFuL + 1uL).toValue())
         )
         assertThat(resultContext)
-            .hasOpStackContaining(1.toValue())
+            .hasOpStackContaining(0.toValue())
 
         resultContext = instruction.execute(
             executionContextWithOpStack((0xFFFFFFFFuL).toValue())
         )
         assertThat(resultContext)
-            .hasOpStackContaining(0.toValue())
+            .hasOpStackContaining((-1).toValue())
     }
 
     @Test
@@ -4195,20 +4194,3 @@ class NumericInstructionTest {
             }
         }
 }
-
-internal class ExecutionContextSubject(
-    private val builder: StandardSubjectBuilder,
-    private val context: ExecutionContext
-) {
-    fun hasOpStackContaining(vararg vals: Value<*>) {
-        val stack = mutableListOf<Value<*>>()
-        while (context.stacks.operands.peek() != null) {
-            stack += context.stacks.operands.pop()
-        }
-        stack.reverse()
-        builder.that(stack).containsExactly(*vals).inOrder()
-    }
-}
-
-internal fun StandardSubjectBuilder.thatContext(context: ExecutionContext) =
-    ExecutionContextSubject(this, context)

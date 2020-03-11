@@ -50,7 +50,8 @@ class LimitsValidator(private val range: Long) : ValidationVisitor<Limits, Valid
                 "Limits' max value of $it must not be greater than $range"
             }
             validate(it >= node.min, parseContext = null) {
-                "Limits' max value must be greater-than or equal to its min"
+                "Limits' max value must be greater-than or equal to its " +
+                    "min (min= ${node.min}, max= ${node.max})"
             }
         }
         return context

@@ -543,7 +543,7 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
             else x.value >= y.value
         }
         NumericInstruction.I32WrapI64 -> unaryOp<LongValue, IntValue>(context) { x ->
-            (x.unsignedValue % 0xFFFFFFFFuL).toUInt().toValue()
+            (x.unsignedValue % 0x100000000uL).toUInt().toValue()
         }
         NumericInstruction.I32TruncateF32Signed -> unaryOp<FloatValue, IntValue>(context) { x ->
             if (x.value.isNaN())
