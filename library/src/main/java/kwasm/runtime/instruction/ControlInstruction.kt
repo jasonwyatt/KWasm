@@ -17,6 +17,7 @@ package kwasm.runtime.instruction
 import kwasm.KWasmRuntimeException
 import kwasm.ast.Identifier
 import kwasm.ast.instruction.ControlInstruction
+import kwasm.ast.instruction.Instruction
 import kwasm.ast.module.Index
 import kwasm.ast.type.ValueType
 import kwasm.runtime.EmptyValue
@@ -33,9 +34,21 @@ import kwasm.runtime.toValueType
 internal fun ControlInstruction.execute(
     context: ExecutionContext
 ): ExecutionContext = when (this) {
-    is ControlInstruction.Block -> this.execute(context)
-    is ControlInstruction.Loop -> TODO()
-    is ControlInstruction.If -> TODO()
+    is ControlInstruction.Block -> executeBlockOrLoop(
+        label,
+        result.result?.valType,
+        false,
+        instructions,
+        context
+    )
+    is ControlInstruction.Loop -> executeBlockOrLoop(
+        label,
+        result.result?.valType,
+        true,
+        instructions,
+        context
+    )
+    is ControlInstruction.If -> this.execute(context)
     // unreachable throws
     ControlInstruction.Unreachable -> throw KWasmRuntimeException("unreachable instruction reached")
     // nop does nothing.
@@ -58,13 +71,24 @@ internal fun ControlInstruction.execute(
  * 1. Let `n` be the arity `|t?|` of the result type `t?`.
  * 1. Let `L` be the label whose arity is `n` and whose continuation is the end of the block.
  * 1. Enter the block `instr*` with label `L`.
+ *
+ * ```
+ *   loop [t?] instr* end
+ * ```
+ *
+ * 1. Let `L` be the label whose arity is `0` and whose continuation is the start of the loop.
+ * 1. Enter the block `instr*` with label `L`.
  */
-internal fun ControlInstruction.Block.execute(context: ExecutionContext): ExecutionContext {
-    val expectedValType = result.result?.valType
-
+internal fun executeBlockOrLoop(
+    label: Identifier.Label,
+    expectedValType: ValueType?,
+    isLoop: Boolean,
+    blockInstructions: List<Instruction>,
+    context: ExecutionContext
+): ExecutionContext {
     val myLabel = Label(
         label,
-        emptyList(), // 'end of the block'
+        if (isLoop) blockInstructions else emptyList(), // 'end of the block'
         if (expectedValType != null) 1 else 0,
         context.stacks.operands
     )
@@ -72,7 +96,7 @@ internal fun ControlInstruction.Block.execute(context: ExecutionContext): Execut
     context.stacks.labels.push(myLabel)
 
     // Enter the block and run the insides with an empty op stack.
-    val postInnerContext = instructions.execute(
+    val postInnerContext = blockInstructions.execute(
         context.copy(
             stacks = context.stacks.copy(operands = OperandStack())
         )
@@ -96,6 +120,34 @@ internal fun ControlInstruction.Block.execute(context: ExecutionContext): Execut
         context.stacks.labels.pop()
         context
     } else postInnerContext // If we were jumped out-of, return the context from the internals.
+}
+
+/**
+ * From [the docs](https://webassembly.github.io/spec/core/exec/instructions.html#exec-if):
+ *
+ * ```
+ *   if [t?] instr*1 else instr*2 end
+ * ```
+ *
+ * 1. Assert: due to validation, a value of value type `i32` is on the top of the stack.
+ * 1. Pop the value `i32.const c` from the stack.
+ * 1. Let `n` be the arity `|t?|` of the result type `t?`.
+ * 1. Let `L` be the label whose arity is `n` and whose continuation is the end of the `if`
+ *    instruction.
+ * 1. If `c` is non-zero, then:
+ *    * Enter the block `instr*1` with label `L`. (see [executeBlockOrLoop])
+ * 1. Else:
+ *    * Enter the block `instr*2` with label `L`. (see [executeBlockOrLoop])
+ */
+internal fun ControlInstruction.If.execute(context: ExecutionContext): ExecutionContext {
+    val condition = context.stacks.operands.pop() as? IntValue
+        ?: throw KWasmRuntimeException("if requires i32 at the top of the stack")
+
+    return if (condition.value != 0) {
+        executeBlockOrLoop(label, result.result?.valType, false, positiveInstructions, context)
+    } else {
+        executeBlockOrLoop(label, result.result?.valType, false, negativeInstructions, context)
+    }
 }
 
 /**
@@ -199,6 +251,9 @@ internal fun executeBreakTo(
 
     // Push the label's op stack at enter stack.
     results.forEach(label.opStackAtEnter::push)
+
+    // If we have a continuation for the label that's non-empty, push the label back onto the stack
+    if (label.continuation.isNotEmpty()) context.stacks.labels.push(label)
 
     // Jump to the continuation.
     return label.continuation.execute(
