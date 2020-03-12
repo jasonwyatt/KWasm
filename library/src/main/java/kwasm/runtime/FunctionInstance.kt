@@ -14,10 +14,14 @@
 
 package kwasm.runtime
 
+import kwasm.KWasmRuntimeException
 import kwasm.api.HostFunction
+import kwasm.api.HostFunctionContext
 import kwasm.api.functionType
 import kwasm.ast.module.WasmFunction
 import kwasm.ast.type.FunctionType
+import kwasm.runtime.instruction.getMemory
+import kwasm.runtime.stack.Activation
 
 /**
  * Represents either a [WasmFunction] from a [ModuleInstance], or a [HostFunction] exposed to the
@@ -38,19 +42,53 @@ import kwasm.ast.type.FunctionType
  * A host function is a function expressed outside WebAssembly but passed to a module as an import.
  */
 sealed class FunctionInstance(open val type: FunctionType) {
+    /**
+     * Executes the [FunctionInstance].
+     */
+    internal abstract fun execute(context: ExecutionContext): ExecutionContext
+
     /** A function from within a [kwasm.ast.module.WasmModule]'s [ModuleInstance]. */
     data class Module(
         val moduleInstance: ModuleInstance,
         val code: WasmFunction
     ) : FunctionInstance(
         code.typeUse?.functionType ?: FunctionType(emptyList(), emptyList())
-    )
+    ) {
+        override fun execute(context: ExecutionContext): ExecutionContext {
+            TODO("not implemented")
+        }
+    }
 
     /** A function supplied by the host. */
     data class Host(
         override val type: FunctionType,
         val hostFunction: HostFunction<*>
-    ) : FunctionInstance(type)
+    ) : FunctionInstance(type) {
+        override fun execute(context: ExecutionContext): ExecutionContext {
+            // Collect the parameters to feed to the host function.
+            val paramTypes = hostFunction.parameterTypes
+            val paramValues = paramTypes.map { context.stacks.operands.pop() }.reversed()
+
+            // Get the available memory at our current call location, if we have one.
+            val currentMemoryAddress = context.stacks.activations.peek()
+                ?.module?.memoryAddresses?.get(0)
+            val memoryForFunction = currentMemoryAddress?.let { context.store.memories[it.value] }
+
+            // Call the function.
+            val result = hostFunction.invoke(
+                paramValues,
+                object : HostFunctionContext {
+                    override val memory: Memory? = memoryForFunction
+                }
+            )
+
+            if (result != EmptyValue) {
+                // If there was a result from the function, push it onto the stack.
+                context.stacks.operands.push(result)
+            }
+            return context
+        }
+    }
 
     companion object {
         /**
@@ -84,3 +122,7 @@ sealed class FunctionInstance(open val type: FunctionType) {
             allocateFunction(Host(hostFunction.functionType, hostFunction))
     }
 }
+
+/** Converts a [HostFunction] into a Function Instance. */
+internal fun HostFunction<*>.toFunctionInstance(): FunctionInstance.Host =
+    FunctionInstance.Host(functionType, this)
