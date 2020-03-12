@@ -14,14 +14,11 @@
 
 package kwasm.runtime
 
-import kwasm.KWasmRuntimeException
 import kwasm.api.HostFunction
 import kwasm.api.HostFunctionContext
 import kwasm.api.functionType
 import kwasm.ast.module.WasmFunction
 import kwasm.ast.type.FunctionType
-import kwasm.runtime.instruction.getMemory
-import kwasm.runtime.stack.Activation
 
 /**
  * Represents either a [WasmFunction] from a [ModuleInstance], or a [HostFunction] exposed to the

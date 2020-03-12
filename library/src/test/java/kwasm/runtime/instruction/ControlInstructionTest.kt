@@ -562,7 +562,6 @@ class ControlInstructionTest {
         )
     }
 
-
     @Test
     fun call_callsTheFunction() = instructionCases(parser, "call \$foo") {
         val timestamp = System.currentTimeMillis()

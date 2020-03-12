@@ -26,7 +26,6 @@ import kwasm.runtime.DoubleValue
 import kwasm.runtime.EmptyValue
 import kwasm.runtime.ExecutionContext
 import kwasm.runtime.FloatValue
-import kwasm.runtime.FunctionInstance
 import kwasm.runtime.IntValue
 import kwasm.runtime.Memory
 import kwasm.runtime.ModuleInstance
