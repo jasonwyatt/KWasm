@@ -19,15 +19,18 @@ import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
 import kotlin.reflect.KClass
 import kwasm.ParseRule
+import kwasm.api.HostFunction
 import kwasm.ast.AstNodeList
 import kwasm.ast.Identifier
 import kwasm.ast.instruction.Instruction
 import kwasm.ast.module.Index
 import kwasm.ast.module.Local
 import kwasm.ast.util.toFunctionIndex
+import kwasm.runtime.Address
 import kwasm.runtime.ExecutionContext
 import kwasm.runtime.Value
 import kwasm.runtime.stack.Activation
+import kwasm.runtime.toFunctionInstance
 import kwasm.runtime.toValue
 import org.junit.Assert.assertThrows
 
@@ -125,6 +128,31 @@ internal class ErrorTestCase(
 internal fun ExecutionContext.withOpStack(values: List<Value<*>>): ExecutionContext {
     stacks.operands.clear()
     values.forEach { stackVal -> stacks.operands.push(stackVal) }
+    return this
+}
+
+internal fun ExecutionContext.withHostFunction(
+    hostFunctionId: String,
+    hostFunction: HostFunction<*>
+): ExecutionContext {
+    val functionsSoFar = store.functions.toMutableList()
+    moduleInstance.functionAddresses.add(
+        Address.Function(functionsSoFar.size),
+        Identifier.Function(hostFunctionId)
+    )
+    functionsSoFar.add(hostFunction.toFunctionInstance())
+
+    return this.copy(store = store.copy(functions = functionsSoFar))
+}
+
+internal fun ExecutionContext.withEmptyFrame(): ExecutionContext {
+    stacks.activations.push(
+        Activation(
+            "blah".toFunctionIndex(),
+            emptyMap(),
+            moduleInstance
+        )
+    )
     return this
 }
 

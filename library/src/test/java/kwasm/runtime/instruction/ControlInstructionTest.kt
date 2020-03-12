@@ -17,6 +17,7 @@ package kwasm.runtime.instruction
 import com.google.common.truth.Truth.assertThat
 import kwasm.KWasmRuntimeException
 import kwasm.ParseRule
+import kwasm.api.HostFunction
 import kwasm.ast.util.toLocalIndex
 import kwasm.runtime.ExecutionContext
 import kwasm.runtime.ModuleInstance
@@ -145,6 +146,125 @@ class ControlInstructionTest {
             KWasmRuntimeException::class,
             "expected to exit with i64 on the top of the stack, but found i32"
         )
+    }
+
+    @Test
+    fun loop_empty() = instructionCases(
+        parser,
+        """
+            (loop)
+        """
+    ) {
+        context = emptyContext
+        validVoidCase()
+        validCase(1, 1)
+    }
+
+    @Test
+    fun loop_while() = instructionCases(
+        parser,
+        """
+            (loop
+                (; Increment local $0 ;)
+                (local.set $0 
+                    (i32.add (local.get $0) (i32.const 1))
+                )
+                (; Jump back to the start of the loop if local $0 is less than 10 ;)
+                (br_if 0 (i32.lt_u (local.get $0) (i32.const 10)))
+            )
+            local.get $0
+        """
+    ) {
+        context = emptyContext.withFrameContainingLocals(
+            mapOf(
+                "$0".toLocalIndex() to 0.toValue()
+            )
+        )
+        validCase(10) // should've looped 10 times
+    }
+
+    @Test
+    fun loop_while_usingIfElse() = instructionCases(
+        parser,
+        """
+            (loop
+                (if (i32.lt_u (local.get $0) (i32.const 10))
+                    (then
+                        (local.set $0
+                            (i32.add (local.get $0) (i32.const 1))
+                        )
+                        br 1
+                    )
+                )
+            )
+            local.get $0
+        """
+    ) {
+        context = emptyContext.withFrameContainingLocals(
+            mapOf(
+                "$0".toLocalIndex() to 0.toValue()
+            )
+        )
+        validCase(10) // should've looped 10 times
+    }
+
+    @Test
+    fun if_else() = instructionCases(
+        parser,
+        """
+            (if (result i32) (local.get $0)
+                (then
+                    (i32.add (local.get $1) (local.get $2))
+                )
+                (else
+                    (i32.mul (local.get $1) (local.get $2))
+                )
+            )
+        """.trimIndent()
+    ) {
+        context = emptyContext.withFrameContainingLocals(
+            mapOf(
+                "$0".toLocalIndex() to 1.toValue(),
+                "$1".toLocalIndex() to 3.toValue(),
+                "$2".toLocalIndex() to 5.toValue()
+            )
+        )
+        validCase(8) // 'then' branch should be taken
+
+        context = emptyContext.withFrameContainingLocals(
+            mapOf(
+                "$0".toLocalIndex() to 0.toValue(),
+                "$1".toLocalIndex() to 3.toValue(),
+                "$2".toLocalIndex() to 5.toValue()
+            )
+        )
+        validCase(15) // 'else' branch should be taken
+
+        context = emptyContext.withFrameContainingLocals(
+            mapOf(
+                "$0".toLocalIndex() to (-1).toValue(),
+                "$1".toLocalIndex() to 3.toValue(),
+                "$2".toLocalIndex() to 5.toValue()
+            )
+        )
+        validCase(8) // 'then' branch should be taken (condition is non-zero)
+    }
+
+    @Test
+    fun if_throws_ifTopOfStack_invalid() = instructionCases(
+        parser,
+        """
+            (if
+                (then)
+                (else)
+            )
+        """
+    ) {
+        context = emptyContext
+        errorCase(IllegalStateException::class, "Stack: Op is empty")
+        errorCase(KWasmRuntimeException::class, "if requires i32 at the top of the stack", 1L)
+        errorCase(KWasmRuntimeException::class, "if requires i32 at the top of the stack", 1f)
+        errorCase(KWasmRuntimeException::class, "if requires i32 at the top of the stack", 1.0)
     }
 
     @Test
@@ -422,5 +542,36 @@ class ControlInstructionTest {
             )
         )
         validCase(99) // should use the third target: 3
+    }
+
+    @Test
+    fun call_throws_whenNotInActivationFrame() = instructionCases(parser, "call \$foo") {
+        context = emptyContext
+        errorCase(
+            KWasmRuntimeException::class,
+            "Cannot call a function outside of an activation frame"
+        )
+    }
+
+    @Test
+    fun call_throws_whenFunctionAddressNotFound() = instructionCases(parser, "call \$foo") {
+        context = emptyContext.withEmptyFrame()
+        errorCase(
+            KWasmRuntimeException::class,
+            "Can't find function address at index \$foo"
+        )
+    }
+
+    @Test
+    fun call_callsTheFunction() = instructionCases(parser, "call \$foo") {
+        val timestamp = System.currentTimeMillis()
+        context = emptyContext.withHostFunction(
+            "\$foo",
+            HostFunction { _ ->
+                timestamp.toValue()
+            }
+        ).withEmptyFrame()
+
+        validCase(timestamp) // Should've called our function.
     }
 }

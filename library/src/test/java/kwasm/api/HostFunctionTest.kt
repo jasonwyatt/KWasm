@@ -20,14 +20,25 @@ import kwasm.ast.type.FunctionType
 import kwasm.ast.type.Param
 import kwasm.ast.type.Result
 import kwasm.ast.type.ValueType
+import kwasm.ast.util.toFunctionIndex
+import kwasm.runtime.Address
 import kwasm.runtime.DoubleValue
 import kwasm.runtime.EmptyValue
+import kwasm.runtime.ExecutionContext
 import kwasm.runtime.FloatValue
 import kwasm.runtime.IntValue
 import kwasm.runtime.Memory
+import kwasm.runtime.ModuleInstance
+import kwasm.runtime.Store
 import kwasm.runtime.Value
 import kwasm.runtime.memory.ByteBufferMemory
+import kwasm.runtime.stack.Activation
+import kwasm.runtime.stack.ActivationStack
+import kwasm.runtime.stack.RuntimeStacks
+import kwasm.runtime.toFunctionInstance
 import kwasm.runtime.toValue
+import kwasm.runtime.util.AddressIndex
+import kwasm.runtime.util.TypeIndex
 import org.junit.Assert.assertThrows
 import org.junit.Assert.fail
 import org.junit.Before
@@ -451,6 +462,90 @@ class HostFunctionTest {
             )
         }
     }
+
+    @Test
+    fun executing_unitHostFunction_executes_doesntPushToStack() {
+        var called = false
+        var result = UnitHostFunction { hostContext ->
+            called = true
+            assertThat(hostContext.memory).isNotNull()
+            assertThat(hostContext.memory?.readInt(0)).isEqualTo(42)
+        }.toFunctionInstance().execute(executionContext)
+
+        assertThat(result.stacks.operands.height).isEqualTo(0)
+        assertThat(called).isTrue()
+
+        result = UnitHostFunction { x: IntValue, hostContext ->
+            called = true
+            assertThat(x.value).isEqualTo(1)
+            assertThat(hostContext.memory).isNotNull()
+            assertThat(hostContext.memory?.readInt(0)).isEqualTo(42)
+        }.toFunctionInstance()
+            .execute(executionContext.also { it.stacks.operands.push(1.toValue()) })
+        // Should've popped the value from the stack
+        assertThat(result.stacks.operands.height).isEqualTo(0)
+        assertThat(called).isTrue()
+    }
+
+    @Test
+    fun executing_hostFunction_executes_pushesResultToStack() {
+        var called = false
+        var result = HostFunction { hostContext ->
+            called = true
+            assertThat(hostContext.memory).isNotNull()
+            assertThat(hostContext.memory?.readInt(0)).isEqualTo(42)
+            1337.toValue()
+        }.toFunctionInstance().execute(executionContext)
+        assertThat(result.stacks.operands.height).isEqualTo(1)
+        assertThat(result.stacks.operands.peek()).isEqualTo(1337.toValue())
+        assertThat(called).isTrue()
+
+        result = HostFunction { x: IntValue, y: IntValue, hostContext ->
+            called = true
+            assertThat(x.value).isEqualTo(2)
+            assertThat(y.value).isEqualTo(3)
+            assertThat(hostContext.memory).isNotNull()
+            assertThat(hostContext.memory?.readInt(0)).isEqualTo(42)
+            (x.value * y.value).toValue()
+        }.toFunctionInstance()
+            .execute(
+                executionContext.also {
+                    it.stacks.operands.push(2.toValue())
+                    it.stacks.operands.push(3.toValue())
+                }
+            )
+        // Should've returned
+        assertThat(result.stacks.operands.height).isEqualTo(1)
+        assertThat(result.stacks.operands.peek()).isEqualTo(6.toValue())
+        assertThat(called).isTrue()
+    }
+
+    private val executionContext: ExecutionContext
+        get() {
+            val moduleInstance = ModuleInstance(
+                TypeIndex(),
+                AddressIndex(),
+                AddressIndex(),
+                AddressIndex(listOf(Address.Memory(0))),
+                AddressIndex(),
+                emptyList()
+            )
+            return ExecutionContext(
+                Store(memories = listOf(ByteBufferMemory().also { it.writeInt(42, 0) })),
+                moduleInstance,
+                RuntimeStacks(
+                    activations = ActivationStack().also {
+                        it.push(
+                            Activation(
+                                "foo".toFunctionIndex(),
+                                emptyMap(),
+                                moduleInstance
+                            )
+                        )
+                    }
+                )
+            )
+        }
 
     private class Context(override val memory: Memory?) : HostFunctionContext
 }
