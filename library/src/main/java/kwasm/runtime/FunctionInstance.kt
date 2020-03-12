@@ -71,7 +71,7 @@ sealed class FunctionInstance(open val type: FunctionType) {
 
             // Get the available memory at our current call location, if we have one.
             val currentMemoryAddress = context.stacks.activations.peek()
-                ?.module?.memoryAddresses?.get(0)
+                ?.module?.memoryAddresses?.getOrNull(0)
             val memoryForFunction = currentMemoryAddress?.let { context.store.memories[it.value] }
 
             // Call the function.

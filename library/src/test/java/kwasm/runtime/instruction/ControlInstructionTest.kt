@@ -17,6 +17,7 @@ package kwasm.runtime.instruction
 import com.google.common.truth.Truth.assertThat
 import kwasm.KWasmRuntimeException
 import kwasm.ParseRule
+import kwasm.api.HostFunction
 import kwasm.ast.util.toLocalIndex
 import kwasm.runtime.ExecutionContext
 import kwasm.runtime.ModuleInstance
@@ -541,5 +542,37 @@ class ControlInstructionTest {
             )
         )
         validCase(99) // should use the third target: 3
+    }
+
+    @Test
+    fun call_throws_whenNotInActivationFrame() = instructionCases(parser, "call \$foo") {
+        context = emptyContext
+        errorCase(
+            KWasmRuntimeException::class,
+            "Cannot call a function outside of an activation frame"
+        )
+    }
+
+    @Test
+    fun call_throws_whenFunctionAddressNotFound() = instructionCases(parser, "call \$foo") {
+        context = emptyContext.withEmptyFrame()
+        errorCase(
+            KWasmRuntimeException::class,
+            "Can't find function address at index \$foo"
+        )
+    }
+
+
+    @Test
+    fun call_callsTheFunction() = instructionCases(parser, "call \$foo") {
+        val timestamp = System.currentTimeMillis()
+        context = emptyContext.withHostFunction(
+            "\$foo",
+            HostFunction { _ ->
+                timestamp.toValue()
+            }
+        ).withEmptyFrame()
+
+        validCase(timestamp) // Should've called our function.
     }
 }

@@ -57,7 +57,7 @@ internal fun ControlInstruction.execute(
     is ControlInstruction.BreakIf -> this.execute(context)
     is ControlInstruction.BreakTable -> this.execute(context)
     is ControlInstruction.Return -> TODO()
-    is ControlInstruction.Call -> TODO()
+    is ControlInstruction.Call -> this.execute(context)
     is ControlInstruction.CallIndirect -> TODO()
 }
 
@@ -198,6 +198,28 @@ internal fun ControlInstruction.BreakTable.execute(context: ExecutionContext): E
 
     val breakTarget = targets.getOrNull(param.value) ?: defaultTarget
     return executeBreakTo(breakTarget, context)
+}
+
+/**
+ * From [the docs](https://webassembly.github.io/spec/core/exec/instructions.html#exec-call):
+ *
+ * ```
+ *   call x
+ * ```
+ *
+ * 1. Let `F` be the current frame.
+ * 1. Assert: due to validation, `F.module.funcaddrs\[x]` exists.
+ * 1. Let `a` be the function address `F.module.funcaddrs\[x]`.
+ * 1. Invoke the function instance at address `a`.
+ */
+internal fun ControlInstruction.Call.execute(context: ExecutionContext): ExecutionContext {
+    val currentActivation = context.stacks.activations.peek()
+        ?: throw KWasmRuntimeException("Cannot call a function outside of an activation frame")
+    val funcAddr = currentActivation.module.functionAddresses[functionIndex]
+        ?: throw KWasmRuntimeException("Can't find function address at index $functionIndex")
+    val function = context.store.functions[funcAddr.value]
+
+    return function.execute(context)
 }
 
 /**
