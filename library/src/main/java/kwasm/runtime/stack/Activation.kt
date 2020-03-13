@@ -41,5 +41,6 @@ internal data class Activation(
     val functionIndex: Index<Identifier.Function>,
     val locals: Map<Index<Identifier.Local>, Value<*>>,
     val module: ModuleInstance,
-    val arity: Int = 1
+    val arity: Int = 1,
+    val opStackAtEnter: OperandStack = OperandStack()
 ) : StackElement

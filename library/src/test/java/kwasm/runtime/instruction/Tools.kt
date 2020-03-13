@@ -28,10 +28,15 @@ import kwasm.ast.module.Local
 import kwasm.ast.util.toFunctionIndex
 import kwasm.runtime.Address
 import kwasm.runtime.ExecutionContext
+import kwasm.runtime.FunctionInstance
+import kwasm.runtime.Table
 import kwasm.runtime.Value
 import kwasm.runtime.stack.Activation
+import kwasm.runtime.stack.OperandStack
 import kwasm.runtime.toFunctionInstance
 import kwasm.runtime.toValue
+import kwasm.runtime.util.AddressIndex
+import kwasm.runtime.util.TypeIndex
 import org.junit.Assert.assertThrows
 
 internal fun instructionCases(
@@ -156,6 +161,24 @@ internal fun ExecutionContext.withEmptyFrame(): ExecutionContext {
     return this
 }
 
+internal fun ExecutionContext.withFrameReturning(
+    arity: Int,
+    vararg operandsAtEnter: Number
+): ExecutionContext {
+    stacks.activations.push(
+        Activation(
+            "blah".toFunctionIndex(),
+            emptyMap(),
+            moduleInstance,
+            arity,
+            OperandStack().also { stack ->
+                operandsAtEnter.map { it.toValue() }.forEach(stack::push)
+            }
+        )
+    )
+    return this
+}
+
 internal fun ExecutionContext.withFrameContainingLocals(
     locals: Map<Index<Identifier.Local>, Value<*>>
 ): ExecutionContext {
@@ -167,6 +190,19 @@ internal fun ExecutionContext.withFrameContainingLocals(
         )
     )
     return this
+}
+
+internal fun ExecutionContext.withTable(vararg functions: FunctionInstance): ExecutionContext {
+    val store = store.copy(
+        functions = functions.toList(),
+        tables = listOf(Table(functions.mapIndexed { i, _ -> Address.Function(i) }))
+    )
+    val moduleInstance = moduleInstance.copy(
+        types = TypeIndex(functions.map { it.type }),
+        functionAddresses = AddressIndex(functions.mapIndexed { i, _ -> Address.Function(i) }),
+        tableAddresses = AddressIndex(listOf(Address.Table(0)))
+    )
+    return copy(store = store, moduleInstance = moduleInstance)
 }
 
 internal class ExecutionContextSubject(

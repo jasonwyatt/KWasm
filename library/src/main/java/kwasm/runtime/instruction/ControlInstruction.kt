@@ -56,9 +56,9 @@ internal fun ControlInstruction.execute(
     is ControlInstruction.Break -> this.execute(context)
     is ControlInstruction.BreakIf -> this.execute(context)
     is ControlInstruction.BreakTable -> this.execute(context)
-    is ControlInstruction.Return -> TODO()
+    is ControlInstruction.Return -> this.execute(context)
     is ControlInstruction.Call -> this.execute(context)
-    is ControlInstruction.CallIndirect -> TODO()
+    is ControlInstruction.CallIndirect -> this.execute(context)
 }
 
 /**
@@ -201,6 +201,37 @@ internal fun ControlInstruction.BreakTable.execute(context: ExecutionContext): E
 }
 
 /**
+ * From [the docs](https://webassembly.github.io/spec/core/exec/instructions.html#exec-return):
+ *
+ * ```
+ *   return
+ * ```
+ *
+ * 1. Let `F` be the current frame.
+ * 1. Let `n` be the arity of `F`.
+ * 1. Assert: due to validation, there are at least `n` values on the top of the stack.
+ * 1. Pop the results `val^n` from the stack.
+ * 1. Assert: due to validation, the stack contains at least one frame.
+ * 1. While the top of the stack is not a frame, do:
+ * 1. Pop the top element from the stack.
+ * 1. Assert: the top of the stack is the frame `F`.
+ * 1. Pop the frame from the stack.
+ * 1. Push `val^n` to the stack.
+ * 1. Jump to the instruction after the original call that pushed the frame.
+ */
+internal fun ControlInstruction.Return.execute(context: ExecutionContext): ExecutionContext {
+    val currentActivation = context.stacks.activations.pop()
+    if (context.stacks.operands.height < currentActivation.arity)
+        throw KWasmRuntimeException("Can't return, insufficient data available for function type")
+    val resultValues = (0 until currentActivation.arity).map { context.stacks.operands.pop() }
+        .reversed()
+
+    // Push the result onto the op stack we had when we entered.
+    resultValues.forEach(currentActivation.opStackAtEnter::push)
+    return context.copy(stacks = context.stacks.copy(operands = currentActivation.opStackAtEnter))
+}
+
+/**
  * From [the docs](https://webassembly.github.io/spec/core/exec/instructions.html#exec-call):
  *
  * ```
@@ -218,6 +249,69 @@ internal fun ControlInstruction.Call.execute(context: ExecutionContext): Executi
     val funcAddr = currentActivation.module.functionAddresses[functionIndex]
         ?: throw KWasmRuntimeException("Can't find function address at index $functionIndex")
     val function = context.store.functions[funcAddr.value]
+
+    return function.execute(context)
+}
+
+/**
+ * From
+ * [the docs](https://webassembly.github.io/spec/core/exec/instructions.html#exec-call-indirect):
+ *
+ * ```
+ *   call_indirect x
+ * ```
+ *
+ * 1. Let `F` be the current frame.
+ * 1. Assert: due to validation, `F.module.tableaddrs[0]` exists.
+ * 1. Let `ta` be the table address `F.module.tableaddrs\[0]`.
+ * 1. Assert: due to validation, `S.tables\[ta]` exists.
+ * 1. Let `tab` be the table instance `S.tables\[ta]`.
+ * 1. Assert: due to validation, `F.module.types\[x]` exists.
+ * 1. Let `ft_expect` be the function type `F.module.types\[x]`.
+ * 1. Assert: due to validation, a value with value type `i32` is on the top of the stack.
+ * 1. Pop the value `i32.const i` from the stack.
+ * 1. If `i` is not smaller than the length of `tab.elem`, then:
+ *    * Trap.
+ * 1. If `tab.elem\[i]` is uninitialized, then:
+ *    * Trap.
+ * 1. Let `a` be the function address `tab.elem\[i]`.
+ * 1. Assert: due to validation, `S.funcs\[a]` exists.
+ * 1. Let `f` be the function instance `S.funcs\[a]`.
+ * 1. Let `ft_actual` be the function type `f.type`.
+ * 1. If `ft_actual` and `ft_expect` differ, then:
+ *    * Trap.
+ * 1. Invoke the function instance at address `a`.
+ */
+internal fun ControlInstruction.CallIndirect.execute(context: ExecutionContext): ExecutionContext {
+    val activationFrame = context.stacks.activations.peek()
+        ?: throw KWasmRuntimeException("Cannot call_indirect from outside a function")
+    val tableAddress = activationFrame.module.tableAddresses.getOrNull(0)
+        ?: throw KWasmRuntimeException("No table allocated for module")
+    val table = context.store.tables.getOrNull(tableAddress.value)
+        ?: throw KWasmRuntimeException(
+            "No table found in the store at address ${tableAddress.value}"
+        )
+
+    val expectedFunctionType = typeUse.index?.let { activationFrame.module.types[it] }
+        ?: activationFrame.module.types.find { it == typeUse.functionType }
+        ?: throw KWasmRuntimeException("Expected type not found in module: $typeUse")
+    val argument = context.stacks.operands.pop() as? IntValue
+        ?: throw KWasmRuntimeException("Expected an i32 on the top of the stack")
+
+    if (argument.value >= table.elements.size)
+        throw KWasmRuntimeException("Table for module has no element at position ${argument.value}")
+    val functionAddress = table.elements[argument.value]
+    val function = context.store.functions.getOrNull(functionAddress.value)
+        ?: throw KWasmRuntimeException(
+            "No function found in the store at address ${functionAddress.value}"
+        )
+
+    val actualFunctionType = function.type
+    if (actualFunctionType != expectedFunctionType)
+        throw KWasmRuntimeException(
+            "Function at address ${functionAddress.value} has unexpected type. " +
+                "Expected $expectedFunctionType."
+        )
 
     return function.execute(context)
 }
