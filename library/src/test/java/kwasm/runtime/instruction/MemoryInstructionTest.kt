@@ -29,7 +29,9 @@ import kwasm.runtime.stack.Activation
 import kwasm.runtime.stack.ActivationStack
 import kwasm.runtime.stack.RuntimeStacks
 import kwasm.runtime.util.AddressIndex
+import kwasm.runtime.util.LocalIndex
 import kwasm.runtime.util.TypeIndex
+import kwasm.runtime.utils.instructionCases
 import kwasm.validation.module.validate
 import org.junit.Assert.assertThrows
 import org.junit.Rule
@@ -82,230 +84,240 @@ class MemoryInstructionTest {
     }
 
     @Test
-    fun i32Load8_s() = instructionCases(parser, "i32.load8_s") {
-        context = buildMemoryContext(1, 1)
-        context.store.memories[0].writeInt(42, offset = 0)
-        context.store.memories[0].writeUInt(0xFFFFFFFFu, offset = 4)
+    fun i32Load8_s() =
+        instructionCases(parser, "i32.load8_s") {
+            context = buildMemoryContext(1, 1)
+            context.store.memories[0].writeInt(42, offset = 0)
+            context.store.memories[0].writeUInt(0xFFFFFFFFu, offset = 4)
 
-        errorCase(KWasmRuntimeException::class, "Memory loading requires i32", 2L)
-        validCase(42, 0)
-        validCase(-1, 4)
-        validCase(-1, 5)
-        validCase(-1, 6)
-        validCase(-1, 7)
-        errorCase(
-            KWasmRuntimeException::class,
-            "Cannot load at position ${UShort.MAX_VALUE.toInt() + 1}",
-            UShort.MAX_VALUE.toInt() + 1
-        )
-    }
-
-    @Test
-    fun i32Load8_u() = instructionCases(parser, "i32.load8_u") {
-        context = buildMemoryContext(1, 1)
-        context.store.memories[0].writeInt(42, offset = 0)
-        context.store.memories[0].writeUInt(0xFFFFFFFFu, offset = 4)
-
-        errorCase(KWasmRuntimeException::class, "Memory loading requires i32", 2L)
-        validCase(42, 0)
-        validCase(0xFF, 4)
-        validCase(0xFF, 5)
-        validCase(0xFF, 6)
-        validCase(0xFF, 7)
-        errorCase(
-            KWasmRuntimeException::class,
-            "Cannot load at position ${UShort.MAX_VALUE.toInt() + 1}",
-            UShort.MAX_VALUE.toInt() + 1
-        )
-    }
-
-    @Test
-    fun i32Load16_s() = instructionCases(parser, "i32.load16_s") {
-        context = buildMemoryContext(1, 1)
-        context.store.memories[0].writeInt(42, offset = 0)
-        context.store.memories[0].writeUInt(0xFFFFFFFFu, offset = 4)
-
-        errorCase(KWasmRuntimeException::class, "Memory loading requires i32", 2L)
-        validCase(42, 0)
-        validCase(-1, 4)
-        validCase(-1, 5)
-        validCase(-1, 6)
-        validCase(0xFF, 7)
-        (0..1).forEach {
+            errorCase(KWasmRuntimeException::class, "Memory loading requires i32", 2L)
+            validCase(42, 0)
+            validCase(-1, 4)
+            validCase(-1, 5)
+            validCase(-1, 6)
+            validCase(-1, 7)
             errorCase(
                 KWasmRuntimeException::class,
-                "Cannot load at position ${UShort.MAX_VALUE.toInt() + 1 - it}",
-                UShort.MAX_VALUE.toInt() + 1 - it
+                "Cannot load at position ${UShort.MAX_VALUE.toInt() + 1}",
+                UShort.MAX_VALUE.toInt() + 1
             )
         }
-    }
 
     @Test
-    fun i32Load16_u() = instructionCases(parser, "i32.load16_u") {
-        context = buildMemoryContext(1, 1)
-        context.store.memories[0].writeInt(42, offset = 0)
-        context.store.memories[0].writeUInt(0xFFFFFFFFu, offset = 4)
+    fun i32Load8_u() =
+        instructionCases(parser, "i32.load8_u") {
+            context = buildMemoryContext(1, 1)
+            context.store.memories[0].writeInt(42, offset = 0)
+            context.store.memories[0].writeUInt(0xFFFFFFFFu, offset = 4)
 
-        errorCase(KWasmRuntimeException::class, "Memory loading requires i32", 2L)
-        validCase(42, 0)
-        validCase(0xFFFF, 4)
-        validCase(0xFFFF, 5)
-        validCase(0xFFFF, 6)
-        validCase(0xFF, 7)
-        (0..1).forEach {
+            errorCase(KWasmRuntimeException::class, "Memory loading requires i32", 2L)
+            validCase(42, 0)
+            validCase(0xFF, 4)
+            validCase(0xFF, 5)
+            validCase(0xFF, 6)
+            validCase(0xFF, 7)
             errorCase(
                 KWasmRuntimeException::class,
-                "Cannot load at position ${UShort.MAX_VALUE.toInt() + 1 - it}",
-                UShort.MAX_VALUE.toInt() + 1 - it
+                "Cannot load at position ${UShort.MAX_VALUE.toInt() + 1}",
+                UShort.MAX_VALUE.toInt() + 1
             )
         }
-    }
 
     @Test
-    fun i64Load8_s() = instructionCases(parser, "i64.load8_s") {
-        context = buildMemoryContext(1, 1)
-        context.store.memories[0].writeInt(42, offset = 0)
-        context.store.memories[0].writeULong(0xFFFFFFFFFFFFFFFFuL, offset = 4)
+    fun i32Load16_s() =
+        instructionCases(parser, "i32.load16_s") {
+            context = buildMemoryContext(1, 1)
+            context.store.memories[0].writeInt(42, offset = 0)
+            context.store.memories[0].writeUInt(0xFFFFFFFFu, offset = 4)
 
-        errorCase(KWasmRuntimeException::class, "Memory loading requires i32", 2L)
-        validCase(42L, 0)
-        validCase(-1L, 4)
-        validCase(-1L, 5)
-        validCase(-1L, 6)
-        validCase(-1L, 7)
-        validCase(-1L, 8)
-        validCase(-1L, 9)
-        validCase(-1L, 10)
-        validCase(-1L, 11)
-        errorCase(
-            KWasmRuntimeException::class,
-            "Cannot load at position ${UShort.MAX_VALUE.toInt() + 1}",
-            UShort.MAX_VALUE.toInt() + 1
-        )
-    }
-
-    @Test
-    fun i64Load8_u() = instructionCases(parser, "i64.load8_u") {
-        context = buildMemoryContext(1, 1)
-        context.store.memories[0].writeInt(42, offset = 0)
-        context.store.memories[0].writeULong(0xFFFFFFFFFFFFFFFFuL, offset = 4)
-
-        errorCase(KWasmRuntimeException::class, "Memory loading requires i32", 2L)
-        validCase(42L, 0)
-        validCase(0xFFL, 4)
-        validCase(0xFFL, 5)
-        validCase(0xFFL, 6)
-        validCase(0xFFL, 7)
-        validCase(0xFFL, 8)
-        validCase(0xFFL, 9)
-        validCase(0xFFL, 10)
-        validCase(0xFFL, 11)
-        errorCase(
-            KWasmRuntimeException::class,
-            "Cannot load at position ${UShort.MAX_VALUE.toInt() + 1}",
-            UShort.MAX_VALUE.toInt() + 1
-        )
-    }
+            errorCase(KWasmRuntimeException::class, "Memory loading requires i32", 2L)
+            validCase(42, 0)
+            validCase(-1, 4)
+            validCase(-1, 5)
+            validCase(-1, 6)
+            validCase(0xFF, 7)
+            (0..1).forEach {
+                errorCase(
+                    KWasmRuntimeException::class,
+                    "Cannot load at position ${UShort.MAX_VALUE.toInt() + 1 - it}",
+                    UShort.MAX_VALUE.toInt() + 1 - it
+                )
+            }
+        }
 
     @Test
-    fun i64Load16_s() = instructionCases(parser, "i64.load16_s") {
-        context = buildMemoryContext(1, 1)
-        context.store.memories[0].writeInt(42, offset = 0)
-        context.store.memories[0].writeULong(0xFFFFFFFFFFFFFFFFuL, offset = 4)
+    fun i32Load16_u() =
+        instructionCases(parser, "i32.load16_u") {
+            context = buildMemoryContext(1, 1)
+            context.store.memories[0].writeInt(42, offset = 0)
+            context.store.memories[0].writeUInt(0xFFFFFFFFu, offset = 4)
 
-        errorCase(KWasmRuntimeException::class, "Memory loading requires i32", 2L)
-        validCase(42L, 0)
-        validCase(-1L, 4)
-        validCase(-1L, 5)
-        validCase(-1L, 6)
-        validCase(-1L, 7)
-        validCase(-1L, 8)
-        validCase(-1L, 9)
-        validCase(-1L, 10)
-        validCase(0xFFL, 11)
-        (0..1).forEach {
+            errorCase(KWasmRuntimeException::class, "Memory loading requires i32", 2L)
+            validCase(42, 0)
+            validCase(0xFFFF, 4)
+            validCase(0xFFFF, 5)
+            validCase(0xFFFF, 6)
+            validCase(0xFF, 7)
+            (0..1).forEach {
+                errorCase(
+                    KWasmRuntimeException::class,
+                    "Cannot load at position ${UShort.MAX_VALUE.toInt() + 1 - it}",
+                    UShort.MAX_VALUE.toInt() + 1 - it
+                )
+            }
+        }
+
+    @Test
+    fun i64Load8_s() =
+        instructionCases(parser, "i64.load8_s") {
+            context = buildMemoryContext(1, 1)
+            context.store.memories[0].writeInt(42, offset = 0)
+            context.store.memories[0].writeULong(0xFFFFFFFFFFFFFFFFuL, offset = 4)
+
+            errorCase(KWasmRuntimeException::class, "Memory loading requires i32", 2L)
+            validCase(42L, 0)
+            validCase(-1L, 4)
+            validCase(-1L, 5)
+            validCase(-1L, 6)
+            validCase(-1L, 7)
+            validCase(-1L, 8)
+            validCase(-1L, 9)
+            validCase(-1L, 10)
+            validCase(-1L, 11)
             errorCase(
                 KWasmRuntimeException::class,
-                "Cannot load at position ${UShort.MAX_VALUE.toInt() + 1 - it}",
-                UShort.MAX_VALUE.toInt() + 1 - it
+                "Cannot load at position ${UShort.MAX_VALUE.toInt() + 1}",
+                UShort.MAX_VALUE.toInt() + 1
             )
         }
-    }
 
     @Test
-    fun i64Load16_u() = instructionCases(parser, "i64.load16_u") {
-        context = buildMemoryContext(1, 1)
-        context.store.memories[0].writeInt(42, offset = 0)
-        context.store.memories[0].writeULong(0xFFFFFFFFFFFFFFFFuL, offset = 4)
+    fun i64Load8_u() =
+        instructionCases(parser, "i64.load8_u") {
+            context = buildMemoryContext(1, 1)
+            context.store.memories[0].writeInt(42, offset = 0)
+            context.store.memories[0].writeULong(0xFFFFFFFFFFFFFFFFuL, offset = 4)
 
-        errorCase(KWasmRuntimeException::class, "Memory loading requires i32", 2L)
-        validCase(42L, 0)
-        validCase(0xFFFFL, 4)
-        validCase(0xFFFFL, 5)
-        validCase(0xFFFFL, 6)
-        validCase(0xFFFFL, 7)
-        validCase(0xFFFFL, 8)
-        validCase(0xFFFFL, 9)
-        validCase(0xFFFFL, 10)
-        validCase(0xFFL, 11)
-        (0..1).forEach {
+            errorCase(KWasmRuntimeException::class, "Memory loading requires i32", 2L)
+            validCase(42L, 0)
+            validCase(0xFFL, 4)
+            validCase(0xFFL, 5)
+            validCase(0xFFL, 6)
+            validCase(0xFFL, 7)
+            validCase(0xFFL, 8)
+            validCase(0xFFL, 9)
+            validCase(0xFFL, 10)
+            validCase(0xFFL, 11)
             errorCase(
                 KWasmRuntimeException::class,
-                "Cannot load at position ${UShort.MAX_VALUE.toInt() + 1 - it}",
-                UShort.MAX_VALUE.toInt() + 1 - it
+                "Cannot load at position ${UShort.MAX_VALUE.toInt() + 1}",
+                UShort.MAX_VALUE.toInt() + 1
             )
         }
-    }
 
     @Test
-    fun i64Load32_s() = instructionCases(parser, "i64.load32_s") {
-        context = buildMemoryContext(1, 1)
-        context.store.memories[0].writeInt(42, offset = 0)
-        context.store.memories[0].writeULong(0xFFFFFFFFFFFFFFFFuL, offset = 4)
+    fun i64Load16_s() =
+        instructionCases(parser, "i64.load16_s") {
+            context = buildMemoryContext(1, 1)
+            context.store.memories[0].writeInt(42, offset = 0)
+            context.store.memories[0].writeULong(0xFFFFFFFFFFFFFFFFuL, offset = 4)
 
-        errorCase(KWasmRuntimeException::class, "Memory loading requires i32", 2L)
-        validCase(42L, 0)
-        validCase(-1L, 4)
-        validCase(-1L, 5)
-        validCase(-1L, 6)
-        validCase(-1L, 7)
-        validCase(-1L, 8)
-        validCase(0xFFFFFFL, 9)
-        validCase(0xFFFFL, 10)
-        validCase(0xFFL, 11)
-        (0..3).forEach {
-            errorCase(
-                KWasmRuntimeException::class,
-                "Cannot load at position ${UShort.MAX_VALUE.toInt() + 1 - it}",
-                UShort.MAX_VALUE.toInt() + 1 - it
-            )
+            errorCase(KWasmRuntimeException::class, "Memory loading requires i32", 2L)
+            validCase(42L, 0)
+            validCase(-1L, 4)
+            validCase(-1L, 5)
+            validCase(-1L, 6)
+            validCase(-1L, 7)
+            validCase(-1L, 8)
+            validCase(-1L, 9)
+            validCase(-1L, 10)
+            validCase(0xFFL, 11)
+            (0..1).forEach {
+                errorCase(
+                    KWasmRuntimeException::class,
+                    "Cannot load at position ${UShort.MAX_VALUE.toInt() + 1 - it}",
+                    UShort.MAX_VALUE.toInt() + 1 - it
+                )
+            }
         }
-    }
 
     @Test
-    fun i64Load32_u() = instructionCases(parser, "i64.load32_u") {
-        context = buildMemoryContext(1, 1)
-        context.store.memories[0].writeInt(42, offset = 0)
-        context.store.memories[0].writeULong(0xFFFFFFFFFFFFFFFFuL, offset = 4)
+    fun i64Load16_u() =
+        instructionCases(parser, "i64.load16_u") {
+            context = buildMemoryContext(1, 1)
+            context.store.memories[0].writeInt(42, offset = 0)
+            context.store.memories[0].writeULong(0xFFFFFFFFFFFFFFFFuL, offset = 4)
 
-        errorCase(KWasmRuntimeException::class, "Memory loading requires i32", 2L)
-        validCase(42L, 0)
-        validCase(0xFFFFFFFFL, 4)
-        validCase(0xFFFFFFFFL, 5)
-        validCase(0xFFFFFFFFL, 6)
-        validCase(0xFFFFFFFFL, 7)
-        validCase(0xFFFFFFFFL, 8)
-        validCase(0xFFFFFFL, 9)
-        validCase(0xFFFFL, 10)
-        validCase(0xFFL, 11)
-        (0..3).forEach {
-            errorCase(
-                KWasmRuntimeException::class,
-                "Cannot load at position ${UShort.MAX_VALUE.toInt() + 1 - it}",
-                UShort.MAX_VALUE.toInt() + 1 - it
-            )
+            errorCase(KWasmRuntimeException::class, "Memory loading requires i32", 2L)
+            validCase(42L, 0)
+            validCase(0xFFFFL, 4)
+            validCase(0xFFFFL, 5)
+            validCase(0xFFFFL, 6)
+            validCase(0xFFFFL, 7)
+            validCase(0xFFFFL, 8)
+            validCase(0xFFFFL, 9)
+            validCase(0xFFFFL, 10)
+            validCase(0xFFL, 11)
+            (0..1).forEach {
+                errorCase(
+                    KWasmRuntimeException::class,
+                    "Cannot load at position ${UShort.MAX_VALUE.toInt() + 1 - it}",
+                    UShort.MAX_VALUE.toInt() + 1 - it
+                )
+            }
         }
-    }
+
+    @Test
+    fun i64Load32_s() =
+        instructionCases(parser, "i64.load32_s") {
+            context = buildMemoryContext(1, 1)
+            context.store.memories[0].writeInt(42, offset = 0)
+            context.store.memories[0].writeULong(0xFFFFFFFFFFFFFFFFuL, offset = 4)
+
+            errorCase(KWasmRuntimeException::class, "Memory loading requires i32", 2L)
+            validCase(42L, 0)
+            validCase(-1L, 4)
+            validCase(-1L, 5)
+            validCase(-1L, 6)
+            validCase(-1L, 7)
+            validCase(-1L, 8)
+            validCase(0xFFFFFFL, 9)
+            validCase(0xFFFFL, 10)
+            validCase(0xFFL, 11)
+            (0..3).forEach {
+                errorCase(
+                    KWasmRuntimeException::class,
+                    "Cannot load at position ${UShort.MAX_VALUE.toInt() + 1 - it}",
+                    UShort.MAX_VALUE.toInt() + 1 - it
+                )
+            }
+        }
+
+    @Test
+    fun i64Load32_u() =
+        instructionCases(parser, "i64.load32_u") {
+            context = buildMemoryContext(1, 1)
+            context.store.memories[0].writeInt(42, offset = 0)
+            context.store.memories[0].writeULong(0xFFFFFFFFFFFFFFFFuL, offset = 4)
+
+            errorCase(KWasmRuntimeException::class, "Memory loading requires i32", 2L)
+            validCase(42L, 0)
+            validCase(0xFFFFFFFFL, 4)
+            validCase(0xFFFFFFFFL, 5)
+            validCase(0xFFFFFFFFL, 6)
+            validCase(0xFFFFFFFFL, 7)
+            validCase(0xFFFFFFFFL, 8)
+            validCase(0xFFFFFFL, 9)
+            validCase(0xFFFFL, 10)
+            validCase(0xFFL, 11)
+            (0..3).forEach {
+                errorCase(
+                    KWasmRuntimeException::class,
+                    "Cannot load at position ${UShort.MAX_VALUE.toInt() + 1 - it}",
+                    UShort.MAX_VALUE.toInt() + 1 - it
+                )
+            }
+        }
 
     @Test
     fun f32Load() = instructionCases(parser, "f32.load") {
@@ -414,121 +426,126 @@ class MemoryInstructionTest {
     }
 
     @Test
-    fun i32Store8() = instructionCases(parser, "i32.store8") {
-        context = buildMemoryContext(minPages = 1, maxPages = 1)
+    fun i32Store8() =
+        instructionCases(parser, "i32.store8") {
+            context = buildMemoryContext(minPages = 1, maxPages = 1)
 
-        errorCase(KWasmRuntimeException::class, "Memory storing requires an i32", 1f, 0)
-        errorCase(KWasmRuntimeException::class, "Illegal type for i32.store", 0, 0.0)
-        errorCase(KWasmRuntimeException::class, "Illegal type for i32.store", 0, 0f)
-        errorCase(KWasmRuntimeException::class, "Illegal type for i32.store", 0, 0L)
+            errorCase(KWasmRuntimeException::class, "Memory storing requires an i32", 1f, 0)
+            errorCase(KWasmRuntimeException::class, "Illegal type for i32.store", 0, 0.0)
+            errorCase(KWasmRuntimeException::class, "Illegal type for i32.store", 0, 0f)
+            errorCase(KWasmRuntimeException::class, "Illegal type for i32.store", 0, 0L)
 
-        validVoidCase(0, 42)
-        assertThat(context.getMemory().readInt(0)).isEqualTo(42)
-        validVoidCase(1, 0xABCD)
-        assertThat(context.getMemory().readInt(1)).isEqualTo(0xCD)
-        errorCase(
-            KWasmRuntimeException::class,
-            "Cannot store at position ${UShort.MAX_VALUE.toInt() + 1}",
-            UShort.MAX_VALUE.toInt() + 1,
-            42
-        )
-    }
-
-    @Test
-    fun i32Store16() = instructionCases(parser, "i32.store16") {
-        context = buildMemoryContext(minPages = 1, maxPages = 1)
-
-        errorCase(KWasmRuntimeException::class, "Memory storing requires an i32", 1f, 0)
-        errorCase(KWasmRuntimeException::class, "Illegal type for i32.store", 0, 0.0)
-        errorCase(KWasmRuntimeException::class, "Illegal type for i32.store", 0, 0f)
-        errorCase(KWasmRuntimeException::class, "Illegal type for i32.store", 0, 0L)
-
-        validVoidCase(0, 42)
-        assertThat(context.getMemory().readInt(0)).isEqualTo(42)
-        validVoidCase(1, 0xABCD)
-        assertThat(context.getMemory().readInt(1)).isEqualTo(0xABCD)
-        validVoidCase(2, 0xABCDEF)
-        assertThat(context.getMemory().readInt(2)).isEqualTo(0xCDEF)
-        (0..1).forEach {
+            validVoidCase(0, 42)
+            assertThat(context.getMemory().readInt(0)).isEqualTo(42)
+            validVoidCase(1, 0xABCD)
+            assertThat(context.getMemory().readInt(1)).isEqualTo(0xCD)
             errorCase(
                 KWasmRuntimeException::class,
-                "Cannot store at position ${UShort.MAX_VALUE.toInt() + 1 - it}",
-                UShort.MAX_VALUE.toInt() + 1 - it,
+                "Cannot store at position ${UShort.MAX_VALUE.toInt() + 1}",
+                UShort.MAX_VALUE.toInt() + 1,
                 42
             )
         }
-    }
 
     @Test
-    fun i64Store8() = instructionCases(parser, "i64.store8") {
-        context = buildMemoryContext(minPages = 1, maxPages = 1)
+    fun i32Store16() =
+        instructionCases(parser, "i32.store16") {
+            context = buildMemoryContext(minPages = 1, maxPages = 1)
 
-        errorCase(KWasmRuntimeException::class, "Memory storing requires an i32", 1f, 0)
-        errorCase(KWasmRuntimeException::class, "Illegal type for i64.store", 0, 0.0)
-        errorCase(KWasmRuntimeException::class, "Illegal type for i64.store", 0, 0f)
-        errorCase(KWasmRuntimeException::class, "Illegal type for i64.store", 0, 0)
+            errorCase(KWasmRuntimeException::class, "Memory storing requires an i32", 1f, 0)
+            errorCase(KWasmRuntimeException::class, "Illegal type for i32.store", 0, 0.0)
+            errorCase(KWasmRuntimeException::class, "Illegal type for i32.store", 0, 0f)
+            errorCase(KWasmRuntimeException::class, "Illegal type for i32.store", 0, 0L)
 
-        validVoidCase(0, 42L)
-        assertThat(context.getMemory().readLong(0)).isEqualTo(42L)
-        validVoidCase(1, 0xABCDL)
-        assertThat(context.getMemory().readLong(1)).isEqualTo(0xCDL)
-        errorCase(
-            KWasmRuntimeException::class,
-            "Cannot store at position ${UShort.MAX_VALUE.toInt() + 1}",
-            UShort.MAX_VALUE.toInt() + 1,
-            42L
-        )
-    }
+            validVoidCase(0, 42)
+            assertThat(context.getMemory().readInt(0)).isEqualTo(42)
+            validVoidCase(1, 0xABCD)
+            assertThat(context.getMemory().readInt(1)).isEqualTo(0xABCD)
+            validVoidCase(2, 0xABCDEF)
+            assertThat(context.getMemory().readInt(2)).isEqualTo(0xCDEF)
+            (0..1).forEach {
+                errorCase(
+                    KWasmRuntimeException::class,
+                    "Cannot store at position ${UShort.MAX_VALUE.toInt() + 1 - it}",
+                    UShort.MAX_VALUE.toInt() + 1 - it,
+                    42
+                )
+            }
+        }
 
     @Test
-    fun i64Store16() = instructionCases(parser, "i64.store16") {
-        context = buildMemoryContext(minPages = 1, maxPages = 1)
+    fun i64Store8() =
+        instructionCases(parser, "i64.store8") {
+            context = buildMemoryContext(minPages = 1, maxPages = 1)
 
-        errorCase(KWasmRuntimeException::class, "Memory storing requires an i32", 1f, 0)
-        errorCase(KWasmRuntimeException::class, "Illegal type for i64.store", 0, 0.0)
-        errorCase(KWasmRuntimeException::class, "Illegal type for i64.store", 0, 0f)
-        errorCase(KWasmRuntimeException::class, "Illegal type for i64.store", 0, 0)
+            errorCase(KWasmRuntimeException::class, "Memory storing requires an i32", 1f, 0)
+            errorCase(KWasmRuntimeException::class, "Illegal type for i64.store", 0, 0.0)
+            errorCase(KWasmRuntimeException::class, "Illegal type for i64.store", 0, 0f)
+            errorCase(KWasmRuntimeException::class, "Illegal type for i64.store", 0, 0)
 
-        validVoidCase(0, 42L)
-        assertThat(context.getMemory().readLong(0)).isEqualTo(42L)
-        validVoidCase(1, 0xABCDL)
-        assertThat(context.getMemory().readLong(1)).isEqualTo(0xABCDL)
-        validVoidCase(2, 0xABCDEFL)
-        assertThat(context.getMemory().readLong(2)).isEqualTo(0xCDEFL)
-        (0..1).forEach {
+            validVoidCase(0, 42L)
+            assertThat(context.getMemory().readLong(0)).isEqualTo(42L)
+            validVoidCase(1, 0xABCDL)
+            assertThat(context.getMemory().readLong(1)).isEqualTo(0xCDL)
             errorCase(
                 KWasmRuntimeException::class,
-                "Cannot store at position ${UShort.MAX_VALUE.toInt() + 1 - it}",
-                UShort.MAX_VALUE.toInt() + 1 - it,
+                "Cannot store at position ${UShort.MAX_VALUE.toInt() + 1}",
+                UShort.MAX_VALUE.toInt() + 1,
                 42L
             )
         }
-    }
 
     @Test
-    fun i64Store32() = instructionCases(parser, "i64.store32") {
-        context = buildMemoryContext(minPages = 1, maxPages = 1)
+    fun i64Store16() =
+        instructionCases(parser, "i64.store16") {
+            context = buildMemoryContext(minPages = 1, maxPages = 1)
 
-        errorCase(KWasmRuntimeException::class, "Memory storing requires an i32", 1f, 0)
-        errorCase(KWasmRuntimeException::class, "Illegal type for i64.store", 0, 0.0)
-        errorCase(KWasmRuntimeException::class, "Illegal type for i64.store", 0, 0f)
-        errorCase(KWasmRuntimeException::class, "Illegal type for i64.store", 0, 0)
+            errorCase(KWasmRuntimeException::class, "Memory storing requires an i32", 1f, 0)
+            errorCase(KWasmRuntimeException::class, "Illegal type for i64.store", 0, 0.0)
+            errorCase(KWasmRuntimeException::class, "Illegal type for i64.store", 0, 0f)
+            errorCase(KWasmRuntimeException::class, "Illegal type for i64.store", 0, 0)
 
-        validVoidCase(0, 42L)
-        assertThat(context.getMemory().readLong(0)).isEqualTo(42L)
-        validVoidCase(1, 0xABCDEF01L)
-        assertThat(context.getMemory().readLong(1)).isEqualTo(0xABCDEF01L)
-        validVoidCase(1, 0x1FFFFFFFFL)
-        assertThat(context.getMemory().readLong(1)).isEqualTo(0xFFFFFFFFL)
-        (0..3).forEach {
-            errorCase(
-                KWasmRuntimeException::class,
-                "Cannot store at position ${UShort.MAX_VALUE.toInt() + 1 - it}",
-                UShort.MAX_VALUE.toInt() + 1 - it,
-                42L
-            )
+            validVoidCase(0, 42L)
+            assertThat(context.getMemory().readLong(0)).isEqualTo(42L)
+            validVoidCase(1, 0xABCDL)
+            assertThat(context.getMemory().readLong(1)).isEqualTo(0xABCDL)
+            validVoidCase(2, 0xABCDEFL)
+            assertThat(context.getMemory().readLong(2)).isEqualTo(0xCDEFL)
+            (0..1).forEach {
+                errorCase(
+                    KWasmRuntimeException::class,
+                    "Cannot store at position ${UShort.MAX_VALUE.toInt() + 1 - it}",
+                    UShort.MAX_VALUE.toInt() + 1 - it,
+                    42L
+                )
+            }
         }
-    }
+
+    @Test
+    fun i64Store32() =
+        instructionCases(parser, "i64.store32") {
+            context = buildMemoryContext(minPages = 1, maxPages = 1)
+
+            errorCase(KWasmRuntimeException::class, "Memory storing requires an i32", 1f, 0)
+            errorCase(KWasmRuntimeException::class, "Illegal type for i64.store", 0, 0.0)
+            errorCase(KWasmRuntimeException::class, "Illegal type for i64.store", 0, 0f)
+            errorCase(KWasmRuntimeException::class, "Illegal type for i64.store", 0, 0)
+
+            validVoidCase(0, 42L)
+            assertThat(context.getMemory().readLong(0)).isEqualTo(42L)
+            validVoidCase(1, 0xABCDEF01L)
+            assertThat(context.getMemory().readLong(1)).isEqualTo(0xABCDEF01L)
+            validVoidCase(1, 0x1FFFFFFFFL)
+            assertThat(context.getMemory().readLong(1)).isEqualTo(0xFFFFFFFFL)
+            (0..3).forEach {
+                errorCase(
+                    KWasmRuntimeException::class,
+                    "Cannot store at position ${UShort.MAX_VALUE.toInt() + 1 - it}",
+                    UShort.MAX_VALUE.toInt() + 1 - it,
+                    42L
+                )
+            }
+        }
 
     @Test
     fun f32Store() = instructionCases(parser, "f32.store") {
@@ -597,32 +614,35 @@ class MemoryInstructionTest {
     }
 
     @Test
-    fun size_returnsSize() = instructionCases(parser, "memory.size") {
-        context = buildMemoryContext(minPages = 0)
-        validCase(0)
-        context = buildMemoryContext(minPages = 1)
-        validCase(1)
-        context = buildMemoryContext(minPages = 20, maxPages = 20)
-        validCase(20)
-    }
+    fun size_returnsSize() =
+        instructionCases(parser, "memory.size") {
+            context = buildMemoryContext(minPages = 0)
+            validCase(0)
+            context = buildMemoryContext(minPages = 1)
+            validCase(1)
+            context = buildMemoryContext(minPages = 20, maxPages = 20)
+            validCase(20)
+        }
 
     @Test
-    fun grow_returnsError_ifCouldntGrow() = instructionCases(parser, "memory.grow") {
-        context = buildMemoryContext(maxPages = 1)
-        validCase(-1, 2)
-        context = buildMemoryContext(maxPages = 1)
-        validCase(-1, 20)
-    }
+    fun grow_returnsError_ifCouldntGrow() =
+        instructionCases(parser, "memory.grow") {
+            context = buildMemoryContext(maxPages = 1)
+            validCase(-1, 2)
+            context = buildMemoryContext(maxPages = 1)
+            validCase(-1, 20)
+        }
 
     @Test
-    fun grow_returnsOldSize_onSuccess() = instructionCases(parser, "memory.grow") {
-        context = buildMemoryContext()
-        validCase(0, 1)
-        validCase(1, 1)
-        validCase(2, 1)
-        validCase(3, 3)
-        validCase(6, 0)
-    }
+    fun grow_returnsOldSize_onSuccess() =
+        instructionCases(parser, "memory.grow") {
+            context = buildMemoryContext()
+            validCase(0, 1)
+            validCase(1, 1)
+            validCase(2, 1)
+            validCase(3, 3)
+            validCase(6, 0)
+        }
 
     @Test
     fun getMemory_throws_ifNoCallFrame() {
@@ -653,7 +673,7 @@ class MemoryInstructionTest {
                     it.push(
                         Activation(
                             Index.ByInt(0) as Index<Identifier.Function>,
-                            emptyMap(),
+                            LocalIndex(),
                             emptyModule
                         )
                     )
@@ -703,7 +723,7 @@ class MemoryInstructionTest {
                     push(
                         Activation(
                             Index.ByInt(0) as Index<Identifier.Function>,
-                            emptyMap(),
+                            LocalIndex(),
                             moduleAlloc.moduleInstance
                         )
                     )

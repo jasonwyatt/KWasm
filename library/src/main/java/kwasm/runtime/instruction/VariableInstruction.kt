@@ -15,16 +15,13 @@
 package kwasm.runtime.instruction
 
 import kwasm.KWasmRuntimeException
-import kwasm.ast.Identifier
 import kwasm.ast.instruction.VariableInstruction
-import kwasm.ast.module.Index
 import kwasm.runtime.DoubleValue
 import kwasm.runtime.ExecutionContext
 import kwasm.runtime.FloatValue
 import kwasm.runtime.Global
 import kwasm.runtime.IntValue
 import kwasm.runtime.LongValue
-import kwasm.runtime.Value
 import kwasm.runtime.toValue
 
 /**
@@ -142,20 +139,16 @@ internal fun VariableInstruction.LocalGet.execute(context: ExecutionContext): Ex
  * 1. Replace `F.locals\[x]` with the value `val`.
  */
 internal fun VariableInstruction.LocalSet.execute(context: ExecutionContext): ExecutionContext {
-    val frame = context.stacks.activations.pop()
+    val frame = context.stacks.activations.peek()
+        ?: throw KWasmRuntimeException("Must be in a frame to use local.set")
     if (valueAstNode !in frame.locals) {
         throw KWasmRuntimeException(
             "Expected local with index $valueAstNode, but none was found"
         )
     }
     val newValue = context.stacks.operands.pop()
+    frame.locals[valueAstNode] = newValue
 
-    val updatedLocals = mutableMapOf<Index<Identifier.Local>, Value<*>>()
-    updatedLocals.putAll(frame.locals)
-    updatedLocals[valueAstNode] = newValue
-
-    val updatedFrame = frame.copy(locals = updatedLocals)
-    context.stacks.activations.push(updatedFrame)
     return context
 }
 

@@ -22,6 +22,7 @@ import kwasm.runtime.Store
 import kwasm.runtime.stack.RuntimeStacks
 import kwasm.runtime.util.AddressIndex
 import kwasm.runtime.util.TypeIndex
+import kwasm.runtime.utils.instructionCases
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith

@@ -30,6 +30,12 @@ import kwasm.runtime.toFunctionInstance
 import kwasm.runtime.toValue
 import kwasm.runtime.util.AddressIndex
 import kwasm.runtime.util.TypeIndex
+import kwasm.runtime.utils.instructionCases
+import kwasm.runtime.utils.withEmptyFrame
+import kwasm.runtime.utils.withFrameContainingLocals
+import kwasm.runtime.utils.withFrameReturning
+import kwasm.runtime.utils.withHostFunction
+import kwasm.runtime.utils.withTable
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -67,20 +73,21 @@ class ControlInstructionTest {
     }
 
     @Test
-    fun block_noResult_hasSameStackAsBefore() = instructionCases(
-        parser,
-        """
+    fun block_noResult_hasSameStackAsBefore() =
+        instructionCases(
+            parser,
+            """
             i32.const 42
             (block
                 i32.const 2
             )
         """
-    ) {
-        context = emptyContext
-        validCase(42)
-        validCase(listOf<Number>(1f, 42), 1f)
-        assertThat(context).isEqualTo(emptyContext)
-    }
+        ) {
+            context = emptyContext
+            validCase(42)
+            validCase(listOf<Number>(1f, 42), 1f)
+            assertThat(context).isEqualTo(emptyContext)
+        }
 
     @Test
     fun block_producer() = instructionCases(
@@ -120,21 +127,22 @@ class ControlInstructionTest {
     }
 
     @Test
-    fun block_withResultType_butEmptyStack() = instructionCases(
-        parser,
-        """
+    fun block_withResultType_butEmptyStack() =
+        instructionCases(
+            parser,
+            """
             (block (result i64)
                 i64.const 1
                 drop
             )
         """
-    ) {
-        context = emptyContext
-        errorCase(
-            KWasmRuntimeException::class,
-            "expected to exit with i64 on the stack"
-        )
-    }
+        ) {
+            context = emptyContext
+            errorCase(
+                KWasmRuntimeException::class,
+                "expected to exit with i64 on the stack"
+            )
+        }
 
     @Test
     fun block_withResultType_mismatch() = instructionCases(
@@ -272,10 +280,11 @@ class ControlInstructionTest {
     }
 
     @Test
-    fun unreachable() = instructionCases(parser, "unreachable") {
-        context = emptyContext
-        errorCase(KWasmRuntimeException::class, "unreachable instruction reached")
-    }
+    fun unreachable() =
+        instructionCases(parser, "unreachable") {
+            context = emptyContext
+            errorCase(KWasmRuntimeException::class, "unreachable instruction reached")
+        }
 
     @Test
     fun nop() = instructionCases(parser, "nop") {
@@ -371,9 +380,10 @@ class ControlInstructionTest {
     }
 
     @Test
-    fun br_nested_jumpAllTheWayOut_byIdentifier() = instructionCases(
-        parser,
-        """
+    fun br_nested_jumpAllTheWayOut_byIdentifier() =
+        instructionCases(
+            parser,
+            """
             (block ${'$'}foo (result i32)
                 (block 
                     (block 
@@ -387,10 +397,10 @@ class ControlInstructionTest {
                 unreachable
             )
         """.trimIndent()
-    ) {
-        context = emptyContext
-        validCase(1)
-    }
+        ) {
+            context = emptyContext
+            validCase(1)
+        }
 
     @Test
     fun br_nested_jumpPartlyOut() = instructionCases(
@@ -415,9 +425,10 @@ class ControlInstructionTest {
     }
 
     @Test
-    fun br_nested_jumpPartlyOutByIdentifier() = instructionCases(
-        parser,
-        """
+    fun br_nested_jumpPartlyOutByIdentifier() =
+        instructionCases(
+            parser,
+            """
             (block (result i32)
                 (block ${'$'}foo 
                     (block 
@@ -431,10 +442,10 @@ class ControlInstructionTest {
                 i32.const 3
             )
         """.trimIndent()
-    ) {
-        context = emptyContext
-        validCase(3)
-    }
+        ) {
+            context = emptyContext
+            validCase(3)
+        }
 
     @Test
     fun br_if() = instructionCases(
@@ -549,272 +560,306 @@ class ControlInstructionTest {
     }
 
     @Test
-    fun return_instruction() = instructionCases(parser, "return") {
-        context = emptyContext
-        errorCase(IllegalStateException::class, "Stack: Activation is empty")
+    fun return_instruction() =
+        instructionCases(parser, "return") {
+            context = emptyContext
+            errorCase(IllegalStateException::class, "Stack: Activation is empty")
 
-        context = emptyContext.withFrameReturning(1)
-        errorCase(
-            KWasmRuntimeException::class,
-            "Can't return, insufficient data available for function type"
-        )
-
-        context = emptyContext.withFrameReturning(1, 2.0)
-        errorCase(
-            KWasmRuntimeException::class,
-            "Can't return, insufficient data available for function type"
-        )
-
-        context = emptyContext.withFrameReturning(0)
-        validVoidCase() // Void function return should contain nothing on the stack at exit
-
-        context = emptyContext.withFrameReturning(0, 1, 2, 3)
-        validCase(listOf(1, 2, 3)) // Void function return should repopulate stack with prior stack.
-
-        // Returning function should return prior stack plus the return value.
-        context = emptyContext.withFrameReturning(1, 1, 2, 3)
-        validCase(listOf(1, 2, 3, 4), 4)
-    }
-
-    @Test
-    fun call_throws_whenNotInActivationFrame() = instructionCases(parser, "call \$foo") {
-        context = emptyContext
-        errorCase(
-            KWasmRuntimeException::class,
-            "Cannot call a function outside of an activation frame"
-        )
-    }
-
-    @Test
-    fun call_throws_whenFunctionAddressNotFound() = instructionCases(parser, "call \$foo") {
-        context = emptyContext.withEmptyFrame()
-        errorCase(
-            KWasmRuntimeException::class,
-            "Can't find function address at index \$foo"
-        )
-    }
-
-    @Test
-    fun call_callsTheFunction() = instructionCases(parser, "call \$foo") {
-        val timestamp = System.currentTimeMillis()
-        context = emptyContext.withHostFunction(
-            "\$foo",
-            HostFunction { _ ->
-                timestamp.toValue()
-            }
-        ).withEmptyFrame()
-
-        validCase(timestamp) // Should've called our function.
-    }
-
-    @Test
-    fun call_indirect_outsideFunctionActivation() = instructionCases(parser, "call_indirect 0") {
-        context = emptyContext
-
-        errorCase(KWasmRuntimeException::class, "Cannot call_indirect from outside a function")
-    }
-
-    @Test
-    fun call_indirect_missingTable_forModule() = instructionCases(parser, "call_indirect 0") {
-        context = emptyContext.withEmptyFrame()
-
-        errorCase(KWasmRuntimeException::class, "No table allocated for module")
-    }
-
-    @Test
-    fun call_indirect_tableNotFoundInStore() = instructionCases(parser, "call_indirect 0") {
-        context = emptyContext
-        context = context.copy(
-            moduleInstance = context.moduleInstance.copy(
-                tableAddresses = AddressIndex(listOf(Address.Table(0)))
+            context = emptyContext.withFrameReturning(1)
+            errorCase(
+                KWasmRuntimeException::class,
+                "Can't return, insufficient data available for function type"
             )
-        ).withEmptyFrame()
 
-        errorCase(KWasmRuntimeException::class, "No table found in the store at address 0")
-    }
+            context = emptyContext.withFrameReturning(1)
+            errorCase(
+                KWasmRuntimeException::class,
+                "Can't return, insufficient data available for function type"
+            )
+
+            context = emptyContext.withFrameReturning(0)
+            validVoidCase() // Void function return should contain nothing on the stack at exit
+
+            context = emptyContext.withFrameReturning(0)
+            validCase(listOf(1, 2, 3), 1, 2, 3)
+
+            // Returning function should return prior stack plus the return value.
+            context = emptyContext.withFrameReturning(1)
+            validCase(listOf(1, 2, 3, 4), 1, 2, 3, 4)
+        }
 
     @Test
-    fun call_indirect_withTypeIndex() = instructionCases(parser, "call_indirect (type 0)") {
-        // Table is empty, as are the types
-        context = emptyContext.withTable().withEmptyFrame()
+    fun call_throws_whenNotInActivationFrame() =
+        instructionCases(parser, "call \$foo") {
+            context = emptyContext
+            errorCase(
+                KWasmRuntimeException::class,
+                "Cannot call a function outside of an activation frame"
+            )
+        }
 
-        errorCase(KWasmRuntimeException::class, "Expected type not found in module")
+    @Test
+    fun call_throws_whenFunctionAddressNotFound() =
+        instructionCases(parser, "call \$foo") {
+            context = emptyContext.withEmptyFrame()
+            errorCase(
+                KWasmRuntimeException::class,
+                "Can't find function address at index \$foo"
+            )
+        }
 
-        context = emptyContext.withTable(UnitHostFunction { Unit }.toFunctionInstance())
-            .withEmptyFrame()
-        errorCase(IllegalStateException::class, "Stack: Op is empty")
-        errorCase(KWasmRuntimeException::class, "Expected an i32 on the top of the stack", 1L)
-        errorCase(KWasmRuntimeException::class, "Expected an i32 on the top of the stack", 1f)
-        errorCase(KWasmRuntimeException::class, "Expected an i32 on the top of the stack", 1.0)
-        errorCase(KWasmRuntimeException::class, "Table for module has no element at position 1", 1)
+    @Test
+    fun call_callsTheFunction() =
+        instructionCases(parser, "call \$foo") {
+            val timestamp = System.currentTimeMillis()
+            context = emptyContext.withHostFunction(
+                "\$foo",
+                HostFunction { _ ->
+                    timestamp.toValue()
+                }
+            ).withEmptyFrame()
 
-        // Remove the function from the store itself
-        context = context.copy(store = context.store.copy(functions = emptyList()))
-        errorCase(KWasmRuntimeException::class, "No function found in the store at address 0", 0)
+            validCase(timestamp) // Should've called our function.
+        }
 
-        // Change the type of the function the type at index 0 in the table.
-        context = emptyContext.withTable(UnitHostFunction { Unit }.toFunctionInstance())
-            .withEmptyFrame()
-        context = context.copy(
-            store = context.store.copy(
-                functions = listOf(
-                    HostFunction { _ -> 10.toValue() }.toFunctionInstance()
+    @Test
+    fun call_indirect_outsideFunctionActivation() =
+        instructionCases(parser, "call_indirect 0") {
+            context = emptyContext
+
+            errorCase(KWasmRuntimeException::class, "Cannot call_indirect from outside a function")
+        }
+
+    @Test
+    fun call_indirect_missingTable_forModule() =
+        instructionCases(parser, "call_indirect 0") {
+            context = emptyContext.withEmptyFrame()
+
+            errorCase(KWasmRuntimeException::class, "No table allocated for module")
+        }
+
+    @Test
+    fun call_indirect_tableNotFoundInStore() =
+        instructionCases(parser, "call_indirect 0") {
+            context = emptyContext
+            context = context.copy(
+                moduleInstance = context.moduleInstance.copy(
+                    tableAddresses = AddressIndex(listOf(Address.Table(0)))
+                )
+            ).withEmptyFrame()
+
+            errorCase(KWasmRuntimeException::class, "No table found in the store at address 0")
+        }
+
+    @Test
+    fun call_indirect_withTypeIndex() =
+        instructionCases(parser, "call_indirect (type 0)") {
+            // Table is empty, as are the types
+            context = emptyContext.withTable().withEmptyFrame()
+
+            errorCase(KWasmRuntimeException::class, "Expected type not found in module")
+
+            context = emptyContext.withTable(UnitHostFunction { Unit }.toFunctionInstance())
+                .withEmptyFrame()
+            errorCase(IllegalStateException::class, "Stack: Op is empty")
+            errorCase(KWasmRuntimeException::class, "Expected an i32 on the top of the stack", 1L)
+            errorCase(KWasmRuntimeException::class, "Expected an i32 on the top of the stack", 1f)
+            errorCase(KWasmRuntimeException::class, "Expected an i32 on the top of the stack", 1.0)
+            errorCase(
+                KWasmRuntimeException::class,
+                "Table for module has no element at position 1",
+                1
+            )
+
+            // Remove the function from the store itself
+            context = context.copy(store = context.store.copy(functions = emptyList()))
+            errorCase(
+                KWasmRuntimeException::class,
+                "No function found in the store at address 0",
+                0
+            )
+
+            // Change the type of the function the type at index 0 in the table.
+            context = emptyContext.withTable(UnitHostFunction { Unit }.toFunctionInstance())
+                .withEmptyFrame()
+            context = context.copy(
+                store = context.store.copy(
+                    functions = listOf(
+                        HostFunction { _ -> 10.toValue() }.toFunctionInstance()
+                    )
                 )
             )
-        )
-        errorCase(
-            KWasmRuntimeException::class,
-            "Function at address 0 has unexpected type. Expected [] => []",
-            0
-        )
+            errorCase(
+                KWasmRuntimeException::class,
+                "Function at address 0 has unexpected type. Expected [] => []",
+                0
+            )
 
-        var function0Called = false
-        var function1Called = false
-        context = emptyContext.withTable(
-            UnitHostFunction {
-                function0Called = true
-            }.toFunctionInstance(),
-            UnitHostFunction {
-                function1Called = true
-            }.toFunctionInstance()
-        ).withEmptyFrame()
+            var function0Called = false
+            var function1Called = false
+            context = emptyContext.withTable(
+                UnitHostFunction {
+                    function0Called = true
+                }.toFunctionInstance(),
+                UnitHostFunction {
+                    function1Called = true
+                }.toFunctionInstance()
+            ).withEmptyFrame()
 
-        validVoidCase(0)
-        assertThat(function0Called).isTrue()
-        assertThat(function1Called).isFalse()
+            validVoidCase(0)
+            assertThat(function0Called).isTrue()
+            assertThat(function1Called).isFalse()
 
-        function0Called = false
-        function1Called = false
+            function0Called = false
+            function1Called = false
 
-        validVoidCase(1)
-        assertThat(function0Called).isFalse()
-        assertThat(function1Called).isTrue()
-    }
+            validVoidCase(1)
+            assertThat(function0Called).isFalse()
+            assertThat(function1Called).isTrue()
+        }
 
     @Test
-    fun call_indirect_emptyTypeUse() = instructionCases(parser, "call_indirect") {
-        // Table is empty, as are the types
-        context = emptyContext.withTable().withEmptyFrame()
+    fun call_indirect_emptyTypeUse() =
+        instructionCases(parser, "call_indirect") {
+            // Table is empty, as are the types
+            context = emptyContext.withTable().withEmptyFrame()
 
-        errorCase(KWasmRuntimeException::class, "Expected type not found in module")
+            errorCase(KWasmRuntimeException::class, "Expected type not found in module")
 
-        context = emptyContext.withTable(UnitHostFunction { Unit }.toFunctionInstance())
-            .withEmptyFrame()
-        errorCase(IllegalStateException::class, "Stack: Op is empty")
-        errorCase(KWasmRuntimeException::class, "Expected an i32 on the top of the stack", 1L)
-        errorCase(KWasmRuntimeException::class, "Expected an i32 on the top of the stack", 1f)
-        errorCase(KWasmRuntimeException::class, "Expected an i32 on the top of the stack", 1.0)
-        errorCase(KWasmRuntimeException::class, "Table for module has no element at position 1", 1)
+            context = emptyContext.withTable(UnitHostFunction { Unit }.toFunctionInstance())
+                .withEmptyFrame()
+            errorCase(IllegalStateException::class, "Stack: Op is empty")
+            errorCase(KWasmRuntimeException::class, "Expected an i32 on the top of the stack", 1L)
+            errorCase(KWasmRuntimeException::class, "Expected an i32 on the top of the stack", 1f)
+            errorCase(KWasmRuntimeException::class, "Expected an i32 on the top of the stack", 1.0)
+            errorCase(
+                KWasmRuntimeException::class,
+                "Table for module has no element at position 1",
+                1
+            )
 
-        // Remove the function from the store itself
-        context = context.copy(store = context.store.copy(functions = emptyList()))
-        errorCase(KWasmRuntimeException::class, "No function found in the store at address 0", 0)
+            // Remove the function from the store itself
+            context = context.copy(store = context.store.copy(functions = emptyList()))
+            errorCase(
+                KWasmRuntimeException::class,
+                "No function found in the store at address 0",
+                0
+            )
 
-        // Change the type of the function the type at index 0 in the table.
-        context = emptyContext.withTable(UnitHostFunction { Unit }.toFunctionInstance())
-            .withEmptyFrame()
-        context = context.copy(
-            store = context.store.copy(
-                functions = listOf(
-                    HostFunction { _ -> 10.toValue() }.toFunctionInstance()
+            // Change the type of the function the type at index 0 in the table.
+            context = emptyContext.withTable(UnitHostFunction { Unit }.toFunctionInstance())
+                .withEmptyFrame()
+            context = context.copy(
+                store = context.store.copy(
+                    functions = listOf(
+                        HostFunction { _ -> 10.toValue() }.toFunctionInstance()
+                    )
                 )
             )
-        )
-        errorCase(
-            KWasmRuntimeException::class,
-            "Function at address 0 has unexpected type. Expected [] => []",
-            0
-        )
+            errorCase(
+                KWasmRuntimeException::class,
+                "Function at address 0 has unexpected type. Expected [] => []",
+                0
+            )
 
-        var function0Called = false
-        var function1Called = false
-        context = emptyContext.withTable(
-            UnitHostFunction {
-                function0Called = true
-            }.toFunctionInstance(),
-            UnitHostFunction {
-                function1Called = true
-            }.toFunctionInstance()
-        ).withEmptyFrame()
+            var function0Called = false
+            var function1Called = false
+            context = emptyContext.withTable(
+                UnitHostFunction {
+                    function0Called = true
+                }.toFunctionInstance(),
+                UnitHostFunction {
+                    function1Called = true
+                }.toFunctionInstance()
+            ).withEmptyFrame()
 
-        validVoidCase(0)
-        assertThat(function0Called).isTrue()
-        assertThat(function1Called).isFalse()
+            validVoidCase(0)
+            assertThat(function0Called).isTrue()
+            assertThat(function1Called).isFalse()
 
-        function0Called = false
-        function1Called = false
+            function0Called = false
+            function1Called = false
 
-        validVoidCase(1)
-        assertThat(function0Called).isFalse()
-        assertThat(function1Called).isTrue()
-    }
+            validVoidCase(1)
+            assertThat(function0Called).isFalse()
+            assertThat(function1Called).isTrue()
+        }
 
     @Test
-    fun call_indirect_typeUseByParamsResults() = instructionCases(
-        parser,
-        "call_indirect (param i32) (result f32)"
-    ) {
-        // Table is empty, as are the types
-        context = emptyContext.withTable().withEmptyFrame()
+    fun call_indirect_typeUseByParamsResults() =
+        instructionCases(
+            parser,
+            "call_indirect (param i32) (result f32)"
+        ) {
+            // Table is empty, as are the types
+            context = emptyContext.withTable().withEmptyFrame()
 
-        errorCase(KWasmRuntimeException::class, "Expected type not found in module")
+            errorCase(KWasmRuntimeException::class, "Expected type not found in module")
 
-        context = emptyContext.withTable(
-            HostFunction { _: IntValue, _ ->
-                1f.toValue()
-            }.toFunctionInstance()
-        ).withEmptyFrame()
-        errorCase(IllegalStateException::class, "Stack: Op is empty")
-        errorCase(KWasmRuntimeException::class, "Expected an i32 on the top of the stack", 1L)
-        errorCase(KWasmRuntimeException::class, "Expected an i32 on the top of the stack", 1f)
-        errorCase(KWasmRuntimeException::class, "Expected an i32 on the top of the stack", 1.0)
-        errorCase(KWasmRuntimeException::class, "Table for module has no element at position 1", 1)
+            context = emptyContext.withTable(
+                HostFunction { _: IntValue, _ ->
+                    1f.toValue()
+                }.toFunctionInstance()
+            ).withEmptyFrame()
+            errorCase(IllegalStateException::class, "Stack: Op is empty")
+            errorCase(KWasmRuntimeException::class, "Expected an i32 on the top of the stack", 1L)
+            errorCase(KWasmRuntimeException::class, "Expected an i32 on the top of the stack", 1f)
+            errorCase(KWasmRuntimeException::class, "Expected an i32 on the top of the stack", 1.0)
+            errorCase(
+                KWasmRuntimeException::class,
+                "Table for module has no element at position 1",
+                1
+            )
 
-        // Remove the function from the store itself
-        context = context.copy(store = context.store.copy(functions = emptyList()))
-        errorCase(KWasmRuntimeException::class, "No function found in the store at address 0", 0)
+            // Remove the function from the store itself
+            context = context.copy(store = context.store.copy(functions = emptyList()))
+            errorCase(
+                KWasmRuntimeException::class,
+                "No function found in the store at address 0",
+                0
+            )
 
-        // Change the type of the function the type at index 0 in the table.
-        context = emptyContext.withTable(
-            HostFunction { _: IntValue, _ ->
-                1f.toValue()
-            }.toFunctionInstance()
-        ).withEmptyFrame()
-        context = context.copy(
-            store = context.store.copy(
-                functions = listOf(
-                    HostFunction { _ -> 10.toValue() }.toFunctionInstance()
+            // Change the type of the function the type at index 0 in the table.
+            context = emptyContext.withTable(
+                HostFunction { _: IntValue, _ ->
+                    1f.toValue()
+                }.toFunctionInstance()
+            ).withEmptyFrame()
+            context = context.copy(
+                store = context.store.copy(
+                    functions = listOf(
+                        HostFunction { _ -> 10.toValue() }.toFunctionInstance()
+                    )
                 )
             )
-        )
-        errorCase(
-            KWasmRuntimeException::class,
-            "Function at address 0 has unexpected type. Expected [i32] => [f32]",
-            0
-        )
+            errorCase(
+                KWasmRuntimeException::class,
+                "Function at address 0 has unexpected type. Expected [i32] => [f32]",
+                0
+            )
 
-        var function0Called = false
-        var function1Called = false
-        context = emptyContext.withTable(
-            HostFunction { _: IntValue, _ ->
-                function0Called = true
-                1f.toValue()
-            }.toFunctionInstance(),
-            HostFunction { _: IntValue, _ ->
-                function1Called = true
-                2f.toValue()
-            }.toFunctionInstance()
-        ).withEmptyFrame()
+            var function0Called = false
+            var function1Called = false
+            context = emptyContext.withTable(
+                HostFunction { _: IntValue, _ ->
+                    function0Called = true
+                    1f.toValue()
+                }.toFunctionInstance(),
+                HostFunction { _: IntValue, _ ->
+                    function1Called = true
+                    2f.toValue()
+                }.toFunctionInstance()
+            ).withEmptyFrame()
 
-        validCase(1f, 1, 0)
-        assertThat(function0Called).isTrue()
-        assertThat(function1Called).isFalse()
+            validCase(1f, 1, 0)
+            assertThat(function0Called).isTrue()
+            assertThat(function1Called).isFalse()
 
-        function0Called = false
-        function1Called = false
+            function0Called = false
+            function1Called = false
 
-        validCase(2f, 1, 1)
-        assertThat(function0Called).isFalse()
-        assertThat(function1Called).isTrue()
-    }
+            validCase(2f, 1, 1)
+            assertThat(function0Called).isFalse()
+            assertThat(function1Called).isTrue()
+        }
 }

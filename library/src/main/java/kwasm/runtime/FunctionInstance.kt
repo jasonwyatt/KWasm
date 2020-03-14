@@ -14,11 +14,19 @@
 
 package kwasm.runtime
 
+import kwasm.KWasmRuntimeException
 import kwasm.api.HostFunction
 import kwasm.api.HostFunctionContext
 import kwasm.api.functionType
+import kwasm.ast.Identifier
+import kwasm.ast.module.Index
 import kwasm.ast.module.WasmFunction
 import kwasm.ast.type.FunctionType
+import kwasm.ast.type.ValueType
+import kwasm.runtime.instruction.execute
+import kwasm.runtime.stack.Activation
+import kwasm.runtime.stack.OperandStack
+import kwasm.runtime.util.LocalIndex
 
 /**
  * Represents either a [WasmFunction] from a [ModuleInstance], or a [HostFunction] exposed to the
@@ -44,15 +52,117 @@ sealed class FunctionInstance(open val type: FunctionType) {
      */
     internal abstract fun execute(context: ExecutionContext): ExecutionContext
 
-    /** A function from within a [kwasm.ast.module.WasmModule]'s [ModuleInstance]. */
+    /**
+     * A function from within a [kwasm.ast.module.WasmModule]'s [ModuleInstance].
+     *
+     * From
+     * [the docs](https://webassembly.github.io/spec/core/exec/instructions.html#function-calls):
+     *
+     * ```
+     *   Invocation of function address `a`
+     * ```
+     *
+     * 1. Assert: due to validation, `S.funcs\[a]` exists. (note: already done by this point)
+     * 1. Let `f` be the function instance, `S.funcs\[a]`.
+     * 1. Let `[t^n_1] -> [t^m_2]` be the function type `f.type`.
+     * 1. Assert: due to validation, `m <= 1`.
+     * 1. Let `t*` be the list of value types `f.code.locals`.
+     * 1. Let `instr* end` be the expression `f.code.body`.
+     * 1. Assert: due to validation, `n` values are on the top of the stack.
+     * 1. Pop the values `val_n` from the stack.
+     * 1. Let `val*_0` be the list of zero values of types `t*`.
+     * 1. Let `F` be the frame `{module f.module, locals val_n val*_0}`.
+     * 1. Push the activation of `F` with arity `m` to the stack.
+     * 1. Execute the instruction `block [t^m_2] instr* end`.
+     *
+     * ```
+     *   Returning from a function
+     * ```
+     *
+     * When the end of a function is reached without a jump (i.e., `return`) or trap aborting it,
+     * then the following steps are performed.
+     *
+     * 1. Let `F` be the current frame.
+     * 1. Let `n` be the arity of the activation of `F`.
+     * 1. Assert: due to validation, there are `n` values on the top of the stack.
+     * 1. Pop the results `val_n` from the stack.
+     * 1. Assert: due to validation, the frame `F` is now on the top of the stack.
+     * 1. Pop the frame from the stack.
+     * 1. Push `val_n` back to the stack.
+     * 1. Jump to the instruction after the original call.
+     */
     data class Module(
         val moduleInstance: ModuleInstance,
         val code: WasmFunction
     ) : FunctionInstance(
         code.typeUse?.functionType ?: FunctionType(emptyList(), emptyList())
     ) {
+        @Suppress("UNCHECKED_CAST")
         override fun execute(context: ExecutionContext): ExecutionContext {
-            TODO("not implemented")
+            val type = code.typeUse?.functionType ?: FunctionType(emptyList(), emptyList())
+
+            if (type.returnValueEnums.size > 1)
+                throw KWasmRuntimeException("Function cannot have more than one return value.")
+            val body = code.instructions
+
+            if (context.stacks.operands.height < type.parameters.size)
+                throw KWasmRuntimeException(
+                    "Not enough data on the stack to call function with type: $type"
+                )
+            val arguments = type.parameters.reversed().map {
+                val arg = context.stacks.operands.pop()
+                when (it.valType) {
+                    ValueType.I32 -> arg as? IntValue
+                    ValueType.I64 -> arg as? LongValue
+                    ValueType.F32 -> arg as? FloatValue
+                    ValueType.F64 -> arg as? DoubleValue
+                } ?: throw KWasmRuntimeException(
+                    "Parameter on stack does not match required parameter type for function " +
+                        "with type: $type"
+                )
+            }.reversed()
+
+            val localIndex = LocalIndex()
+            arguments.zip(type.parameters).forEach { (argValue, param) ->
+                param.id.takeIf { it.stringRepr != null }?.let { localIndex.add(argValue, it) }
+                    ?: localIndex.add(argValue)
+            }
+            code.locals.forEach { local ->
+                local.id?.let {
+                    localIndex.add(local.valueType.zeroValue, it)
+                } ?: localIndex.add(local.valueType.zeroValue)
+            }
+
+            val activation = Activation(
+                code.id?.let { Index.ByIdentifier(it) }
+                    ?: Index.ByInt(-1) as Index<Identifier.Function>,
+                localIndex,
+                context.moduleInstance,
+                type.returnValueEnums.size
+            )
+
+            context.stacks.activations.push(activation)
+            val activationStackHeightAtCallTime = context.stacks.activations.height
+            val functionContext = context.copy(
+                // Use a fresh op stack for the function.
+                stacks = context.stacks.copy(operands = OperandStack())
+            )
+
+            // Execute the function.
+            val resultContext = body.execute(functionContext)
+
+            if (resultContext.stacks.activations.height == activationStackHeightAtCallTime) {
+                // Function exited without a `return` instruction, so we need to pop our own frame.
+                context.stacks.activations.pop()
+            }
+
+            type.returnValueEnums.map { expectedResult ->
+                resultContext.stacks.operands.pop().also {
+                    it.checkType(expectedResult.valType)
+                }
+            }.reversed().forEach(context.stacks.operands::push)
+
+            return context
         }
     }
 

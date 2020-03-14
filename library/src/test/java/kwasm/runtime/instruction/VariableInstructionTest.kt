@@ -32,6 +32,7 @@ import kwasm.runtime.stack.ActivationStack
 import kwasm.runtime.stack.OperandStack
 import kwasm.runtime.toValue
 import kwasm.runtime.util.AddressIndex
+import kwasm.runtime.util.LocalIndex
 import kwasm.runtime.util.TypeIndex
 import org.junit.Assert.assertThrows
 import org.junit.Rule
@@ -50,9 +51,7 @@ class VariableInstructionTest {
         get() = EmptyExecutionContext().let {
             it.stacks.activations.push(
                 Activation(
-                    locals = mapOf(
-                        Index.ByInt(0) as Index<Identifier.Local> to 10.0.toValue()
-                    ),
+                    locals = LocalIndex(listOf(10.0.toValue())),
                     functionIndex = Index.ByInt(0) as Index<Identifier.Function>,
                     module = ModuleInstance(
                         TypeIndex(emptyList<Type>()),
@@ -316,7 +315,7 @@ class VariableInstructionTest {
             stacks = executionContext.stacks.copy(activations = ActivationStack())
         )
 
-        assertThrows(IllegalStateException::class.java) {
+        assertThrows(KWasmRuntimeException::class.java) {
             instruction.execute(context)
         }
     }
@@ -370,7 +369,7 @@ class VariableInstructionTest {
             )
         )
 
-        assertThrows(IllegalStateException::class.java) {
+        assertThrows(KWasmRuntimeException::class.java) {
             instruction.execute(context)
         }
     }

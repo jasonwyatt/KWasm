@@ -38,6 +38,7 @@ import kwasm.runtime.stack.RuntimeStacks
 import kwasm.runtime.toFunctionInstance
 import kwasm.runtime.toValue
 import kwasm.runtime.util.AddressIndex
+import kwasm.runtime.util.LocalIndex
 import kwasm.runtime.util.TypeIndex
 import org.junit.Assert.assertThrows
 import org.junit.Assert.fail
@@ -538,7 +539,7 @@ class HostFunctionTest {
                         it.push(
                             Activation(
                                 "foo".toFunctionIndex(),
-                                emptyMap(),
+                                LocalIndex(),
                                 moduleInstance
                             )
                         )

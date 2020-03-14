@@ -15,13 +15,9 @@
 package kwasm.runtime.util
 
 import kwasm.ast.Identifier
-import kwasm.ast.module.Index
-import kwasm.runtime.Address
+import kwasm.runtime.Value
 
-/**
- * Implementation of [MutableList] which allows for [Address] lookups using [Index.ByIdentifier]
- * values.
- */
-class AddressIndex<IdentifierType : Identifier, T : Address>(
-    contents: List<T> = emptyList()
-) : ObjectIndex<IdentifierType, T>(contents)
+/** Index to use in [Activation] frames for the local-values. */
+class LocalIndex(
+    contents: List<Value<*>> = emptyList()
+) : ObjectIndex<Identifier.Local, Value<*>>(contents)
