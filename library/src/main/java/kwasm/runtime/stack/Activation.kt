@@ -18,7 +18,7 @@ import kwasm.ast.Identifier
 import kwasm.ast.module.Index
 import kwasm.runtime.ModuleInstance
 import kwasm.runtime.StackElement
-import kwasm.runtime.Value
+import kwasm.runtime.util.LocalIndex
 
 /**
  * Represents an Activation Frame in a running WebAssembly program.
@@ -39,8 +39,7 @@ import kwasm.runtime.Value
  */
 internal data class Activation(
     val functionIndex: Index<Identifier.Function>,
-    val locals: Map<Index<Identifier.Local>, Value<*>>,
+    val locals: LocalIndex,
     val module: ModuleInstance,
-    val arity: Int = 1,
-    val opStackAtEnter: OperandStack = OperandStack()
+    val arity: Int = 1
 ) : StackElement

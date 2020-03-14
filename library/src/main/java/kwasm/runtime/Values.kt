@@ -57,19 +57,35 @@ object EmptyValue : Value<Byte> {
 inline class IntValue(override val value: Int) : Value<Int> {
     val unsignedValue: UInt
         get() = value.toUInt()
+
+    companion object {
+        val ZERO = IntValue(0)
+    }
 }
 
 /** Holds a 64-bit integer [Value]. */
 inline class LongValue(override val value: Long) : Value<Long> {
     val unsignedValue: ULong
         get() = value.toULong()
+
+    companion object {
+        val ZERO = LongValue(0L)
+    }
 }
 
 /** Holds a 32-bit floating-point [Value]. */
-inline class FloatValue(override val value: Float) : Value<Float>
+inline class FloatValue(override val value: Float) : Value<Float> {
+    companion object {
+        val ZERO = FloatValue(0f)
+    }
+}
 
 /** Holds a 64-bit floating-point [Value]. */
-inline class DoubleValue(override val value: Double) : Value<Double>
+inline class DoubleValue(override val value: Double) : Value<Double> {
+    companion object {
+        val ZERO = DoubleValue(0.0)
+    }
+}
 
 /** Wraps an [Int] in an [IntValue]. */
 fun Int.toValue(): IntValue = IntValue(this)
@@ -107,4 +123,26 @@ fun KClass<out Value<*>>.toValueType(): ValueType? = when (this) {
     DoubleValue::class -> ValueType.F64
     EmptyValue::class -> null
     else -> Impossible("Unsupported Value: $this")
+}
+
+/** Gets the default zero [Value] for the receiving [ValueType]. */
+val ValueType.zeroValue: Value<*>
+    get() = when (this) {
+        ValueType.I32 -> IntValue.ZERO
+        ValueType.I64 -> LongValue.ZERO
+        ValueType.F32 -> FloatValue.ZERO
+        ValueType.F64 -> DoubleValue.ZERO
+    }
+
+/** Checks the receiving [Value] against an expected [ValueType] */
+fun Value<*>.checkType(expected: ValueType) {
+    val isOk = when (expected) {
+        ValueType.I32 -> this is IntValue
+        ValueType.I64 -> this is LongValue
+        ValueType.F32 -> this is FloatValue
+        ValueType.F64 -> this is DoubleValue
+    }
+    if (!isOk) throw KWasmRuntimeException(
+        "Expected type: $expected, but found ${this::class.toValueType()}"
+    )
 }

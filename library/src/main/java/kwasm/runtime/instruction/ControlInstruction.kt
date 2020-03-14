@@ -223,12 +223,7 @@ internal fun ControlInstruction.Return.execute(context: ExecutionContext): Execu
     val currentActivation = context.stacks.activations.pop()
     if (context.stacks.operands.height < currentActivation.arity)
         throw KWasmRuntimeException("Can't return, insufficient data available for function type")
-    val resultValues = (0 until currentActivation.arity).map { context.stacks.operands.pop() }
-        .reversed()
-
-    // Push the result onto the op stack we had when we entered.
-    resultValues.forEach(currentActivation.opStackAtEnter::push)
-    return context.copy(stacks = context.stacks.copy(operands = currentActivation.opStackAtEnter))
+    return context
 }
 
 /**

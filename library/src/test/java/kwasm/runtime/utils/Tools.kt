@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package kwasm.runtime.instruction
+package kwasm.runtime.utils
 
 import com.google.common.truth.StandardSubjectBuilder
 import com.google.common.truth.Truth.assertThat
@@ -24,18 +24,20 @@ import kwasm.ast.AstNodeList
 import kwasm.ast.Identifier
 import kwasm.ast.instruction.Instruction
 import kwasm.ast.module.Index
-import kwasm.ast.module.Local
+import kwasm.ast.module.WasmFunction
 import kwasm.ast.util.toFunctionIndex
+import kwasm.format.text.module.parseWasmFunction
 import kwasm.runtime.Address
 import kwasm.runtime.ExecutionContext
 import kwasm.runtime.FunctionInstance
 import kwasm.runtime.Table
 import kwasm.runtime.Value
+import kwasm.runtime.instruction.execute
 import kwasm.runtime.stack.Activation
-import kwasm.runtime.stack.OperandStack
 import kwasm.runtime.toFunctionInstance
 import kwasm.runtime.toValue
 import kwasm.runtime.util.AddressIndex
+import kwasm.runtime.util.LocalIndex
 import kwasm.runtime.util.TypeIndex
 import org.junit.Assert.assertThrows
 
@@ -45,6 +47,14 @@ internal fun instructionCases(
     block: InstructionTestBuilder.() -> Unit
 ) {
     InstructionTestBuilder(parser, instructionSource).apply(block)
+}
+
+internal fun functionCases(
+    parser: ParseRule,
+    functionSource: String,
+    block: FunctionTestBuilder.() -> Unit
+) {
+    FunctionTestBuilder(parser, functionSource).apply(block)
 }
 
 internal class InstructionTestBuilder(
@@ -58,32 +68,95 @@ internal class InstructionTestBuilder(
         expectedMessage: String,
         vararg inputs: Number
     ) = apply {
-        ErrorTestCase(parser, context, errorClass, expectedMessage, *inputs)
+        ErrorTestCase(
+                parser,
+                context,
+                errorClass,
+                expectedMessage,
+                *inputs
+            )
             .check(instructionSource)
     }
 
-    fun validCase(
-        expectedOutput: Number,
-        vararg inputs: Number
-    ) = apply {
-        context = TestCase(parser, context, listOf(expectedOutput), *inputs)
+    fun validCase(expectedOutput: Number, vararg inputs: Number) = apply {
+        context = TestCase(
+                parser,
+                context,
+                listOf(expectedOutput),
+                *inputs
+            )
             .check(instructionSource)
     }
 
-    fun validCase(
-        expectedStack: List<Number>,
-        vararg inputs: Number
-    ) = apply {
-        context = TestCase(parser, context, expectedStack, *inputs).check(instructionSource)
+    fun validCase(expectedStack: List<Number>, vararg inputs: Number) = apply {
+        context = TestCase(
+            parser,
+            context,
+            expectedStack,
+            *inputs
+        ).check(instructionSource)
     }
 
     fun validVoidCase(vararg inputs: Number) = apply {
-        context = TestCase(parser, context, emptyList(), *inputs).check(instructionSource)
+        context = TestCase(
+            parser,
+            context,
+            emptyList(),
+            *inputs
+        ).check(instructionSource)
     }
 }
 
+internal class FunctionTestBuilder(
+    val parser: ParseRule,
+    private val functionSource: String
+) {
+    lateinit var context: ExecutionContext
+
+    fun errorCase(
+        errorClass: KClass<out Throwable>,
+        expectedMessage: String,
+        vararg inputs: Number
+    ) = apply {
+        ErrorTestCase(
+            parser,
+            context,
+            errorClass,
+            expectedMessage,
+            *inputs
+        ).checkFunction(functionSource)
+    }
+
+    fun validCase(expectedOutput: Number, vararg inputs: Number) = apply {
+        context = TestCase(
+            parser,
+            context,
+            listOf(expectedOutput),
+            *inputs
+        ).checkFunction(functionSource)
+    }
+
+    fun validCase(expectedStack: List<Number>, vararg inputs: Number) = apply {
+        context = TestCase(
+            parser,
+            context,
+            expectedStack,
+            *inputs
+        ).checkFunction(functionSource)
+    }
+
+    fun validVoidCase(vararg inputs: Number) = apply {
+        context = TestCase(
+            parser,
+            context,
+            emptyList(),
+            *inputs
+        ).checkFunction(functionSource)
+    }
+}
 internal interface InstructionChecker {
     fun check(source: String): ExecutionContext
+    fun checkFunction(source: String): ExecutionContext
 }
 
 internal class TestCase(
@@ -100,13 +173,31 @@ internal class TestCase(
             context.withOpStack(opStack.map { it.toValue() })
         )
 
+        checkOutput(source.trimIndent(), resultContext)
+
+        return resultContext
+    }
+
+    override fun checkFunction(source: String): ExecutionContext {
+        var wasmFunction: WasmFunction? = null
+        parser.with { wasmFunction = source.tokenize().parseWasmFunction(0)!!.astNode }
+
+        val resultContext = FunctionInstance.Module(context.moduleInstance, wasmFunction!!).execute(
+            context.withOpStack(opStack.map { it.toValue() })
+        )
+
+        checkOutput(source.trimIndent(), resultContext)
+
+        return resultContext
+    }
+
+    private fun checkOutput(source: String, resultContext: ExecutionContext) {
         val inputStr = opStack.joinToString(prefix = "[", postfix = "]")
         assertWithMessage("$source with input $inputStr should output $expected")
             .thatContext(resultContext)
             .also { subj ->
                 subj.hasOpStackContaining(*(expected.map { it.toValue() }.toTypedArray()))
             }
-        return resultContext
     }
 }
 
@@ -123,6 +214,18 @@ internal class ErrorTestCase(
 
         assertThrows(expectedThrowable.java) {
             instructions!!.execute(
+                context.withOpStack(opStack.map { it.toValue() })
+            )
+        }.also { assertThat(it).hasMessageThat().contains(expectedMessage) }
+        return context
+    }
+
+    override fun checkFunction(source: String): ExecutionContext {
+        var wasmFunction: WasmFunction? = null
+        parser.with { wasmFunction = source.tokenize().parseWasmFunction(0)!!.astNode }
+
+        assertThrows(expectedThrowable.java) {
+            FunctionInstance.Module(context.moduleInstance, wasmFunction!!).execute(
                 context.withOpStack(opStack.map { it.toValue() })
             )
         }.also { assertThat(it).hasMessageThat().contains(expectedMessage) }
@@ -154,26 +257,20 @@ internal fun ExecutionContext.withEmptyFrame(): ExecutionContext {
     stacks.activations.push(
         Activation(
             "blah".toFunctionIndex(),
-            emptyMap(),
+            LocalIndex(),
             moduleInstance
         )
     )
     return this
 }
 
-internal fun ExecutionContext.withFrameReturning(
-    arity: Int,
-    vararg operandsAtEnter: Number
-): ExecutionContext {
+internal fun ExecutionContext.withFrameReturning(arity: Int): ExecutionContext {
     stacks.activations.push(
         Activation(
             "blah".toFunctionIndex(),
-            emptyMap(),
+            LocalIndex(),
             moduleInstance,
-            arity,
-            OperandStack().also { stack ->
-                operandsAtEnter.map { it.toValue() }.forEach(stack::push)
-            }
+            arity
         )
     )
     return this
@@ -185,7 +282,9 @@ internal fun ExecutionContext.withFrameContainingLocals(
     stacks.activations.push(
         Activation(
             "foo".toFunctionIndex(),
-            locals,
+            LocalIndex().also {
+                locals.forEach { (index, value) -> it[index] = value }
+            },
             moduleInstance
         )
     )

@@ -15,6 +15,7 @@
 package kwasm.runtime
 
 import kwasm.api.MemoryProvider
+import kwasm.ast.Identifier
 import kwasm.ast.module.ExportDescriptor
 import kwasm.ast.module.WasmModule
 import kwasm.runtime.FunctionInstance.Companion.allocate
@@ -53,10 +54,10 @@ import kwasm.validation.ValidationContext
  */
 data class ModuleInstance internal constructor(
     val types: TypeIndex,
-    val functionAddresses: AddressIndex<Address.Function>,
-    val tableAddresses: AddressIndex<Address.Table>,
-    val memoryAddresses: AddressIndex<Address.Memory>,
-    val globalAddresses: AddressIndex<Address.Global>,
+    val functionAddresses: AddressIndex<Identifier.Function, Address.Function>,
+    val tableAddresses: AddressIndex<Identifier.Table, Address.Table>,
+    val memoryAddresses: AddressIndex<Identifier.Memory, Address.Memory>,
+    val globalAddresses: AddressIndex<Identifier.Global, Address.Global>,
     val exports: List<Export>
 )
 
@@ -128,10 +129,10 @@ fun WasmModule.allocate(
 ): ModuleAllocationResult {
     var resultStore = store
 
-    val funcAddrs = AddressIndex<Address.Function>()
-    val tableAddrs = AddressIndex<Address.Table>()
-    val memoryAddrs = AddressIndex<Address.Memory>()
-    val globalAddrs = AddressIndex<Address.Global>()
+    val funcAddrs = AddressIndex<Identifier.Function, Address.Function>()
+    val tableAddrs = AddressIndex<Identifier.Table, Address.Table>()
+    val memoryAddrs = AddressIndex<Identifier.Memory, Address.Memory>()
+    val globalAddrs = AddressIndex<Identifier.Global, Address.Global>()
     val exportVals = mutableListOf<Export>()
 
     val externalFuncAddrs = externalValues.filterIsInstance<Address.Function>()

@@ -27,6 +27,7 @@ import kwasm.runtime.FloatValue
 import kwasm.runtime.IntValue
 import kwasm.runtime.Value
 import kwasm.runtime.toValue
+import kwasm.runtime.utils.thatContext
 import org.junit.Assert.assertThrows
 import org.junit.Rule
 import org.junit.Test
