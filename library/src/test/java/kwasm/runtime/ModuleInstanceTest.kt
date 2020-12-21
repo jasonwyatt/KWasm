@@ -303,7 +303,7 @@ class ModuleInstanceTest {
         val globalOneAddress = moduleAllocation.globalAddresses[0]
         val globalOneExport = moduleAllocation.exports[0]
         val exportedGlobalOne = store.globals[globalOneExport.address.value]
-        assertThat(globalOne.value).isEqualTo(-10)
+        assertThat(globalOne.value).isEqualTo(0) // Not initialized yet.
         assertThat(globalOne.mutable).isFalse()
         assertThat(globalOneExport.address).isEqualTo(globalOneAddress)
         assertThat(exportedGlobalOne).isSameInstanceAs(globalOne)
@@ -314,7 +314,7 @@ class ModuleInstanceTest {
         val globalTwoAddress = moduleAllocation.globalAddresses[1]
         val globalTwoExport = moduleAllocation.exports[1]
         val exportedGlobalTwo = store.globals[globalTwoExport.address.value]
-        assertThat(globalTwo.value).isEqualTo(10L)
+        assertThat(globalTwo.value).isEqualTo(0) // Not initialized yet.
         assertThat(globalTwo.mutable).isTrue()
         assertThat(globalTwoExport.address).isEqualTo(globalTwoAddress)
         assertThat(exportedGlobalTwo).isSameInstanceAs(globalTwo)
@@ -325,7 +325,7 @@ class ModuleInstanceTest {
         val globalThreeAddress = moduleAllocation.globalAddresses[2]
         val globalThreeExport = moduleAllocation.exports[2]
         val exportedGlobalThree = store.globals[globalThreeExport.address.value]
-        assertThat(globalThree.value).isEqualTo(-1.5f)
+        assertThat(globalThree.value).isEqualTo(0.0f) // Not Initialized yet.
         assertThat(globalThree.mutable).isFalse()
         assertThat(globalThreeExport.address).isEqualTo(globalThreeAddress)
         assertThat(exportedGlobalThree).isSameInstanceAs(globalThree)
@@ -336,7 +336,7 @@ class ModuleInstanceTest {
         val globalFourAddress = moduleAllocation.globalAddresses[3]
         val globalFourExport = moduleAllocation.exports[3]
         val exportedGlobalFour = store.globals[globalFourExport.address.value]
-        assertThat(globalFour.value).isEqualTo(1.5)
+        assertThat(globalFour.value).isEqualTo(0.0) // Not initialized yet.
         assertThat(globalFour.mutable).isTrue()
         assertThat(globalFourExport.address).isEqualTo(globalFourAddress)
         assertThat(exportedGlobalFour).isSameInstanceAs(globalFour)

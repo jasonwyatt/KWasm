@@ -17,6 +17,7 @@ package kwasm
 import kwasm.api.HostFunction
 import kwasm.api.MemoryProvider
 import kwasm.ast.module.Index
+import kwasm.ast.module.WasmFunction
 import kwasm.ast.module.WasmModule
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
@@ -25,6 +26,7 @@ import kwasm.format.text.module.parseModule
 import kwasm.runtime.Address
 import kwasm.runtime.ExecutionContext
 import kwasm.runtime.ImportExtern
+import kwasm.runtime.Memory
 import kwasm.runtime.ModuleInstance
 import kwasm.runtime.Store
 import kwasm.runtime.allocate
@@ -47,6 +49,24 @@ class KWasmProgram internal constructor(
     private val allocatedModules: MutableMap<String, ModuleInstance>,
     private val store: Store
 ) {
+    private val exportedMemoryAddresses =
+        moduleExports.flatMap { it.value.values }.filter { it is Address.Memory }.toSet()
+    private val exportedFunctionAddresses =
+        moduleExports.mapValues { (_, moduleExps) ->
+            moduleExps.filter { (_, expAddress) -> expAddress is Address.Function }
+        }
+    private val exportedGlobalAddresses =
+        moduleExports.mapValues { (_, moduleExps) ->
+            moduleExps.filter { (_, expAddress) -> expAddress is Address.Global }
+        }
+
+    val memory: Memory
+        get() {
+            val address = requireNotNull(exportedMemoryAddresses.firstOrNull()) {
+                "No exported memories available."
+            }
+            return store.memories[address.value]
+        }
 
     class Builder internal constructor(
         private var memoryProvider: MemoryProvider
@@ -83,6 +103,10 @@ class KWasmProgram internal constructor(
                     myImports,
                     store
                 )
+
+                allocation.exports.forEach { export ->
+                    myExports[export.name] = export.address
+                }
 
                 store = newStore
                 moduleImports[name] = myImports
@@ -162,9 +186,6 @@ class KWasmProgram internal constructor(
                         checkNotNull(allocatedModule.memoryAddresses[dataSegment.memoryIndex])
                     val memory = store.memories[memoryAddress.value]
                     val dataEnd = offsetInt + dataSegment.init.size
-                    check(memory.sizeBytes >= dataEnd) {
-                        "Memory is too small for data segment: $dataSegment"
-                    }
 
                     memory.writeBytes(dataSegment.init, offsetInt)
                 }

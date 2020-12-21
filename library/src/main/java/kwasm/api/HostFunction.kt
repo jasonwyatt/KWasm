@@ -198,6 +198,7 @@ internal val HostFunction<*>.functionType: FunctionType
                 requireNotNull(kClass.toValueType())
             )
         },
-        returnType?.let { listOf(AstResult(requireNotNull(it.toValueType()))) }
+        returnType?.takeIf { it != EmptyValue::class }
+            ?.let { listOf(AstResult(requireNotNull(it.toValueType()))) }
             ?: emptyList()
     )

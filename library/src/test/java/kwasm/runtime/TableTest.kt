@@ -28,7 +28,7 @@ class TableTest {
     @Test
     fun constructor_throws_ifElementsSize_greaterThanMaxSize() {
         assertThrows(IllegalArgumentException::class.java) {
-            Table(listOf(Address.Function(0), Address.Function(1)), maxSize = 1)
+            Table(mutableListOf(Address.Function(0), Address.Function(1)), maxSize = 1)
         }.also {
             assertThat(it).hasMessageThat()
                 .contains("Elements in table cannot exceed the maximum size: 1")
