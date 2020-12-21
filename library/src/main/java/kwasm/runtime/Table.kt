@@ -39,7 +39,7 @@ import kwasm.ast.type.TableType
  */
 @Suppress("EXPERIMENTAL_API_USAGE")
 data class Table(
-    val elements: List<Address.Function>,
+    val elements: MutableList<Address.Function>,
     val maxSize: Int = UInt.MAX_VALUE.toInt()
 ) {
     init {

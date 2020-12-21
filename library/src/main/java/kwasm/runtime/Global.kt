@@ -34,6 +34,7 @@ import kwasm.ast.type.ValueType
 sealed class Global<T> {
     abstract var value: T
     abstract val mutable: Boolean
+    abstract fun update(value: Number)
 
     data class Int(
         override var value: kotlin.Int,
@@ -44,6 +45,10 @@ sealed class Global<T> {
             set(value) {
                 this.value = value.toInt()
             }
+
+        override fun update(value: Number) {
+            this.value = value.toInt()
+        }
     }
 
     data class Long(
@@ -55,17 +60,29 @@ sealed class Global<T> {
             set(value) {
                 this.value = value.toLong()
             }
+
+        override fun update(value: Number) {
+            this.value = value.toLong()
+        }
     }
 
     data class Float(
         override var value: kotlin.Float,
         override val mutable: Boolean
-    ) : Global<kotlin.Float>()
+    ) : Global<kotlin.Float>() {
+        override fun update(value: Number) {
+            this.value = value.toFloat()
+        }
+    }
 
     data class Double(
         override var value: kotlin.Double,
         override val mutable: Boolean
-    ) : Global<kotlin.Double>()
+    ) : Global<kotlin.Double>() {
+        override fun update(value: Number) {
+            this.value = value.toDouble()
+        }
+    }
 }
 
 /**

@@ -19,7 +19,6 @@ import kwasm.ast.Identifier
 import kwasm.ast.module.ExportDescriptor
 import kwasm.ast.module.WasmModule
 import kwasm.runtime.FunctionInstance.Companion.allocate
-import kwasm.runtime.instruction.execute
 import kwasm.runtime.util.AddressIndex
 import kwasm.runtime.util.TypeIndex
 import kwasm.validation.ValidationContext
@@ -59,10 +58,33 @@ data class ModuleInstance internal constructor(
     val memoryAddresses: AddressIndex<Identifier.Memory, Address.Memory>,
     val globalAddresses: AddressIndex<Identifier.Global, Address.Global>,
     val exports: List<Export>
-)
+) {
+    /**
+     * Returns a version of this [ModuleInstance] which only consists of the available globals.
+     */
+    fun toGlobalInitInstance(importedGlobals: List<Address.Global>): ModuleInstance {
+        return ModuleInstance(
+            TypeIndex(),
+            AddressIndex(),
+            AddressIndex(),
+            AddressIndex(),
+            AddressIndex(
+                globalAddresses.filter { it in importedGlobals }
+            ),
+            emptyList()
+        )
+    }
+
+    fun toSegmentInitInstance(): ModuleInstance {
+
+    }
+}
 
 /** Result of allocating a module using [WasmModule.allocate]. */
-data class ModuleAllocationResult(val store: Store, val moduleInstance: ModuleInstance)
+data class ModuleAllocationResult(
+    val store: Store,
+    val moduleInstance: ModuleInstance
+)
 
 /**
  * Instantiates a [WasmModule] into a [ModuleInstance] given a [Store].
@@ -171,11 +193,8 @@ fun WasmModule.allocate(
 
     externalGlobalAddrs.forEach { globalAddrs.add(it.addressPlaceholder, it.identifier) }
     globals.forEach { global ->
-        val executedContext = global.initExpression.execute(EmptyExecutionContext())
-        val (newStore, addr) = resultStore.allocate(
-            global.globalType,
-            executedContext.stacks.operands.pop().value
-        )
+        val (newStore, addr) =
+            resultStore.allocate(global.globalType, global.globalType.valueType.zeroValue.value)
         globalAddrs.add(addr, global.id)
         resultStore = newStore
     }

@@ -16,34 +16,36 @@ package kwasm
 
 import kwasm.api.HostFunction
 import kwasm.api.MemoryProvider
-import kwasm.ast.module.Export
-import kwasm.ast.module.ExportDescriptor
+import kwasm.ast.module.Index
 import kwasm.ast.module.WasmModule
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import kwasm.format.text.Tokenizer
 import kwasm.format.text.module.parseModule
 import kwasm.runtime.Address
+import kwasm.runtime.ExecutionContext
 import kwasm.runtime.ImportExtern
 import kwasm.runtime.ModuleInstance
 import kwasm.runtime.Store
 import kwasm.runtime.allocate
 import kwasm.runtime.collectImportExterns
+import kwasm.runtime.instruction.execute
+import kwasm.runtime.stack.RuntimeStacks
 import kwasm.runtime.toFunctionInstance
-import kwasm.validation.ValidationContext
 import kwasm.validation.module.validate
 import java.io.BufferedInputStream
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
 import java.io.InputStreamReader
-import kotlin.math.exp
 
 /**
  *
  */
 class KWasmProgram internal constructor(
-    private val moduleExports: Map<String, Map<String, Address>>
+    private val moduleExports: Map<String, Map<String, Address>>,
+    private val allocatedModules: MutableMap<String, ModuleInstance>,
+    private val store: Store
 ) {
 
     class Builder internal constructor(
@@ -52,6 +54,7 @@ class KWasmProgram internal constructor(
         private val tokenizer = Tokenizer()
         private val hostExports = mutableMapOf<String, MutableMap<String, Address>>()
         private val parsedModules = mutableMapOf<String, WasmModule>()
+        private val modulesInOrder = mutableListOf<Pair<String, WasmModule>>()
         private var store = Store()
 
         /**
@@ -65,7 +68,11 @@ class KWasmProgram internal constructor(
             val moduleExports = mutableMapOf<String, MutableMap<String, Address>>()
 
             // Allocate the modules, and gather their exports.
-            parsedModules.forEach { (name, module) ->
+            // Currently this is done strictly in the order in which the modules were added to the
+            // builder. It would be nice to support automatically figuring out the correct order so
+            // that dependencies don't need to be added in the correct order by the caller at all
+            // times.
+            modulesInOrder.forEach { (name, module) ->
                 val myImports = module.collectImportExterns()
                 val myExports = mutableMapOf<String, Address>()
 
@@ -102,7 +109,78 @@ class KWasmProgram internal constructor(
                 }
             }
 
-            TODO("..")
+            // Initialize globals for modules.
+            modulesInOrder.forEach { (name, moduleNode) ->
+                val importedGlobals =
+                    moduleImports[name]?.mapNotNull {
+                        it.addressPlaceholder as? Address.Global
+                    } ?: emptyList()
+                val allocatedModule = allocatedModules[name] ?: return@forEach
+                val auxiliaryInstance = allocatedModule.toGlobalInitInstance(importedGlobals)
+                val context = ExecutionContext(store, auxiliaryInstance, RuntimeStacks())
+
+                moduleNode.globals.forEach { global ->
+                    val updatedContext = global.initExpression.execute(context)
+                    val address = requireNotNull(
+                        allocatedModule.globalAddresses[Index.ByIdentifier(global.id)]
+                    ) { "No address found for $global" }
+                    val globalValue = store.globals[address.value]
+                    globalValue.update(updatedContext.stacks.operands.pop().value)
+                }
+            }
+
+            // Initialize the Element Segments and Data Segments.
+            modulesInOrder.forEach { (name, moduleNode) ->
+                val allocatedModule = checkNotNull(allocatedModules[name])
+                val executionContext = ExecutionContext(store, allocatedModule, RuntimeStacks())
+
+                // Check the element segments will fit in the tables, then place them there.
+                moduleNode.elements.forEach { elementSegment ->
+                    val offsetValue = elementSegment.offset.expression.execute(executionContext)
+                            .stacks.operands.pop()
+                    val offsetInt = checkNotNull(offsetValue.value as? Int)
+                    val tableAddress =
+                        checkNotNull(allocatedModule.tableAddresses[elementSegment.tableIndex])
+                    val table = store.tables[tableAddress.value]
+                    val elementEnd = offsetInt + elementSegment.init.size
+                    check(table.maxSize >= elementEnd) {
+                        "Element segment is too long for table"
+                    }
+
+                    elementSegment.init.forEachIndexed { loc, fnIndex ->
+                        val addr = checkNotNull(allocatedModule.functionAddresses[fnIndex])
+                        table.elements[offsetInt + loc] = addr
+                    }
+                }
+
+                // Check the data segments will fit in the memories, then update the memory.
+                moduleNode.data.forEach { dataSegment ->
+                    val offsetValue = dataSegment.offset.expression.execute(executionContext)
+                        .stacks.operands.pop()
+                    val offsetInt = checkNotNull(offsetValue.value as? Int)
+                    val memoryAddress =
+                        checkNotNull(allocatedModule.memoryAddresses[dataSegment.memoryIndex])
+                    val memory = store.memories[memoryAddress.value]
+                    val dataEnd = offsetInt + dataSegment.init.size
+                    check(memory.sizeBytes >= dataEnd) {
+                        "Memory is too small for data segment: $dataSegment"
+                    }
+
+                    memory.writeBytes(dataSegment.init, offsetInt)
+                }
+            }
+
+            // Invoke the start functions.
+            modulesInOrder.forEach { (name, module) ->
+                val startFunction = module.start ?: return@forEach
+                val allocatedModule = allocatedModules[name] ?: return@forEach
+                val index = startFunction.funcIndex
+                val addr = checkNotNull(allocatedModule.functionAddresses[index])
+                val startContext = ExecutionContext(store, allocatedModule, RuntimeStacks())
+                store.functions[addr.value].execute(startContext)
+            }
+
+            return KWasmProgram(moduleExports, allocatedModules, store)
         }
 
         /**
@@ -132,7 +210,7 @@ class KWasmProgram internal constructor(
                 tokenizer.tokenize(source, ParseContext(name)).parseModule(0)?.astNode
                     ?: throw ParseException("No module found in source for $name")
 
-            parsedModules[name] = moduleTree
+            withModule(name, moduleTree)
         }
 
         /**
@@ -146,7 +224,7 @@ class KWasmProgram internal constructor(
                 ParseContext(file.path)
             )
 
-            parsedModules[name] = moduleTree
+            withModule(name, moduleTree)
         }
 
         /**
@@ -157,7 +235,6 @@ class KWasmProgram internal constructor(
          */
         fun withTextFormatModule(name: String, sourceStream: InputStream) = apply {
             val moduleTree = parseTextModule(name, sourceStream, ParseContext(name))
-
             parsedModules[name] = moduleTree
         }
 
@@ -179,6 +256,11 @@ class KWasmProgram internal constructor(
          */
         fun withBinaryModule(name: String, binaryStream: InputStream) = apply {
             TODO("Binary-formatted WebAssembly parsing is not yet supported")
+        }
+
+        private fun withModule(name: String, module: WasmModule) {
+            parsedModules[name] = module
+            modulesInOrder.add(name to module)
         }
 
         private fun parseTextModule(
