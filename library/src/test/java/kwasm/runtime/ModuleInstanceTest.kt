@@ -24,6 +24,8 @@ import kwasm.ast.type.Param
 import kwasm.ast.type.ValueType
 import kwasm.ast.util.toFunctionIndex
 import kwasm.ast.util.toGlobalIndex
+import kwasm.ast.util.toMemoryIndex
+import kwasm.ast.util.toTableIndex
 import kwasm.runtime.memory.ByteBufferMemory
 import kwasm.validation.module.validate
 import org.junit.Rule
@@ -37,6 +39,140 @@ class ModuleInstanceTest {
     val parser = ParseRule()
 
     private val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+    @Test
+    fun allocate_handlesImportedFunctionsCorrectly() = parser.with {
+        val module = """
+            (module
+                (func $1 (import "foo" "bar") (param i32) (result i32))
+                (func $2 (result i32)
+                    i32.const 15
+                    call $1
+                )
+            )
+        """.parseModule()
+
+        val context = module.validate()
+        val externVals = module.collectImportExterns()
+        val (_, moduleAllocation) = module.allocate(context, memoryProvider, externVals)
+
+        assertThat(moduleAllocation.functionAddresses).hasSize(2)
+        assertThat(moduleAllocation.functionAddresses["$1".toFunctionIndex()]).isNotNull()
+        assertThat(moduleAllocation.functionAddresses["$1".toFunctionIndex()]?.needsInit()).isTrue()
+        assertThat(moduleAllocation.functionAddresses["$2".toFunctionIndex()]).isNotNull()
+        assertThat(moduleAllocation.functionAddresses["$2".toFunctionIndex()]?.needsInit())
+            .isFalse()
+    }
+
+    @Test
+    fun allocate_handlesImportedFunctionsCorrectly_invertedOrder() = parser.with {
+        val module = """
+            (module
+                (func $2 (result i32)
+                    i32.const 15
+                    call $1
+                )
+                (func ${'$'}1 (import "foo" "bar") (param i32) (result i32))
+            )
+        """.parseModule()
+
+        val context = module.validate()
+        val externVals = module.collectImportExterns()
+        val (_, moduleAllocation) = module.allocate(context, memoryProvider, externVals)
+
+        assertThat(moduleAllocation.functionAddresses).hasSize(2)
+        assertThat(moduleAllocation.functionAddresses["$1".toFunctionIndex()]).isNotNull()
+        assertThat(moduleAllocation.functionAddresses["$1".toFunctionIndex()]?.needsInit()).isTrue()
+        assertThat(moduleAllocation.functionAddresses["$2".toFunctionIndex()]).isNotNull()
+        assertThat(moduleAllocation.functionAddresses["$2".toFunctionIndex()]?.needsInit())
+            .isFalse()
+
+        assertThat(moduleAllocation.functionAddresses[0])
+            .isSameInstanceAs(moduleAllocation.functionAddresses["$1".toFunctionIndex()])
+        assertThat(moduleAllocation.functionAddresses[1])
+            .isSameInstanceAs(moduleAllocation.functionAddresses["$2".toFunctionIndex()])
+    }
+
+    @Test
+    fun allocate_handlesImportedTablesCorrectly() = parser.with {
+        val module = """
+            (module
+                (table $1 (import "foo" "bar") 0 funcref)
+            )
+        """.parseModule()
+
+        val context = module.validate()
+        val externVals = module.collectImportExterns()
+        val (_, moduleAllocation) = module.allocate(context, memoryProvider, externVals)
+
+        assertThat(moduleAllocation.tableAddresses).hasSize(1)
+        assertThat(moduleAllocation.tableAddresses["$1".toTableIndex()]).isNotNull()
+        assertThat(moduleAllocation.tableAddresses["$1".toTableIndex()]?.needsInit()).isTrue()
+    }
+
+    @Test
+    fun allocate_handlesImportedMemoriesCorrectly() = parser.with {
+        val module = """
+            (module
+                (memory $1 (import "foo" "bar") 0)
+            )
+        """.parseModule()
+
+        val context = module.validate()
+        val externVals = module.collectImportExterns()
+        val (_, moduleAllocation) = module.allocate(context, memoryProvider, externVals)
+
+        assertThat(moduleAllocation.memoryAddresses).hasSize(1)
+        assertThat(moduleAllocation.memoryAddresses["$1".toMemoryIndex()]).isNotNull()
+        assertThat(moduleAllocation.memoryAddresses["$1".toMemoryIndex()]?.needsInit()).isTrue()
+    }
+
+    @Test
+    fun allocate_handlesImportedGlobalsCorrectly() = parser.with {
+        val module = """
+            (module
+                (global $1 (import "foo" "bar") (mut i32))
+                (global $2 (mut i32) i32.const 1)
+            )
+        """.parseModule()
+
+        val context = module.validate()
+        val externVals = module.collectImportExterns()
+        val (_, moduleAllocation) = module.allocate(context, memoryProvider, externVals)
+
+        assertThat(moduleAllocation.globalAddresses).hasSize(2)
+        assertThat(moduleAllocation.globalAddresses["$1".toGlobalIndex()]).isNotNull()
+        assertThat(moduleAllocation.globalAddresses["$1".toGlobalIndex()]?.needsInit()).isTrue()
+        assertThat(moduleAllocation.globalAddresses["$2".toGlobalIndex()]).isNotNull()
+        assertThat(moduleAllocation.globalAddresses["$2".toGlobalIndex()]?.needsInit())
+            .isFalse()
+    }
+
+    @Test
+    fun allocate_handlesImportedGlobalsCorrectly_invertedOrder() = parser.with {
+        val module = """
+            (module
+                (global $2 (mut i32) i32.const 1)
+                (global ${'$'}1 (import "foo" "bar") (mut i32))
+            )
+        """.parseModule()
+
+        val context = module.validate()
+        val externVals = module.collectImportExterns()
+        val (_, moduleAllocation) = module.allocate(context, memoryProvider, externVals)
+
+        assertThat(moduleAllocation.globalAddresses).hasSize(2)
+        assertThat(moduleAllocation.globalAddresses["$1".toGlobalIndex()]).isNotNull()
+        assertThat(moduleAllocation.globalAddresses["$1".toGlobalIndex()]?.needsInit()).isTrue()
+        assertThat(moduleAllocation.globalAddresses["$2".toGlobalIndex()]).isNotNull()
+        assertThat(moduleAllocation.globalAddresses["$2".toGlobalIndex()]?.needsInit())
+            .isFalse()
+
+        assertThat(moduleAllocation.globalAddresses[0])
+            .isSameInstanceAs(moduleAllocation.globalAddresses["$1".toGlobalIndex()])
+        assertThat(moduleAllocation.globalAddresses[1])
+            .isSameInstanceAs(moduleAllocation.globalAddresses["$2".toGlobalIndex()])
+    }
 
     @Test
     fun allocate_allocates_exportedFunctionsCorrectly() = parser.with {

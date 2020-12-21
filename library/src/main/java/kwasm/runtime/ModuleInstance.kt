@@ -123,8 +123,7 @@ data class ModuleAllocationResult(val store: Store, val moduleInstance: ModuleIn
 fun WasmModule.allocate(
     validationContext: ValidationContext.Module,
     memoryProvider: MemoryProvider,
-    // TODO: Use external values correctly for imports....
-    externalValues: List<Address> = emptyList(),
+    externalValues: List<ImportExtern<out Address>> = emptyList(),
     store: Store = Store()
 ): ModuleAllocationResult {
     var resultStore = store
@@ -135,10 +134,10 @@ fun WasmModule.allocate(
     val globalAddrs = AddressIndex<Identifier.Global, Address.Global>()
     val exportVals = mutableListOf<Export>()
 
-    val externalFuncAddrs = externalValues.filterIsInstance<Address.Function>()
-    val externalTableAddrs = externalValues.filterIsInstance<Address.Table>()
-    val externalMemoryAddrs = externalValues.filterIsInstance<Address.Memory>()
-    val externalGlobalAddrs = externalValues.filterIsInstance<Address.Global>()
+    val externalFuncAddrs = externalValues.filterIsInstance<ImportExtern.Function>()
+    val externalTableAddrs = externalValues.filterIsInstance<ImportExtern.Table>()
+    val externalMemoryAddrs = externalValues.filterIsInstance<ImportExtern.Memory>()
+    val externalGlobalAddrs = externalValues.filterIsInstance<ImportExtern.Global>()
 
     val moduleInstance = ModuleInstance(
         TypeIndex(types),
@@ -149,27 +148,28 @@ fun WasmModule.allocate(
         exportVals
     )
 
+    externalFuncAddrs.forEach { funcAddrs.add(it.addressPlaceholder, it.identifier) }
     functions.forEach {
         val (newStore, addr) = resultStore.allocate(moduleInstance, it)
         funcAddrs.add(addr, it.id)
         resultStore = newStore
     }
-    funcAddrs.addAll(externalFuncAddrs)
 
+    externalTableAddrs.forEach { tableAddrs.add(it.addressPlaceholder, it.identifier) }
     tables.forEach {
         val (newStore, addr) = resultStore.allocate(it.tableType)
         tableAddrs.add(addr, it.id)
         resultStore = newStore
     }
-    tableAddrs.addAll(externalTableAddrs)
 
+    externalMemoryAddrs.forEach { memoryAddrs.add(it.addressPlaceholder, it.identifier) }
     memories.forEach {
         val (newStore, addr) = resultStore.allocate(memoryProvider, it.memoryType)
         memoryAddrs.add(addr, it.id)
         resultStore = newStore
     }
-    memoryAddrs.addAll(externalMemoryAddrs)
 
+    externalGlobalAddrs.forEach { globalAddrs.add(it.addressPlaceholder, it.identifier) }
     globals.forEach { global ->
         val executedContext = global.initExpression.execute(EmptyExecutionContext())
         val (newStore, addr) = resultStore.allocate(
@@ -179,7 +179,6 @@ fun WasmModule.allocate(
         globalAddrs.add(addr, global.id)
         resultStore = newStore
     }
-    globalAddrs.addAll(externalGlobalAddrs)
 
     val exportValueAndIndex = mutableListOf<Pair<Export, Int>>()
     exports.forEach {

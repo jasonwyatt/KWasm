@@ -14,6 +14,8 @@
 
 package kwasm.runtime
 
+import kwasm.util.Impossible
+
 /**
  * Addresses for [FunctionInstance]s, [Memory]s, [Table]s, and [Global]s.
  *
@@ -34,9 +36,29 @@ package kwasm.runtime
  * where this identity is not observable from within WebAssembly code itself (such as for function
  * instances or immutable globals).
  */
-sealed class Address(open val value: Int) {
-    data class Function(override val value: Int) : Address(value)
-    data class Table(override val value: Int) : Address(value)
-    data class Memory(override val value: Int) : Address(value)
-    data class Global(override val value: Int) : Address(value)
+sealed class Address(value: Int) {
+    open var value: Int = value
+        set(value) {
+            require(field != -1) { "Cannot re-assign an address value" }
+            field = value
+        }
+
+    /** Whether or not the address needs initialization. */
+    fun needsInit(): Boolean = value == -1
+
+    data class Function(override var value: Int) : Address(value)
+    data class Table(override var value: Int) : Address(value)
+    data class Memory(override var value: Int) : Address(value)
+    data class Global(override var value: Int) : Address(value)
+
+    companion object {
+        /** Creates a placeholder [Address] of type [T]. */
+        inline fun <reified T : Address> needingInit(): T = when (T::class) {
+            Function::class -> Function(-1)
+            Table::class -> Table(-1)
+            Memory::class -> Memory(-1)
+            Global::class -> Global(-1)
+            else -> Impossible("Unsupported type: ${T::class}")
+        } as T
+    }
 }
