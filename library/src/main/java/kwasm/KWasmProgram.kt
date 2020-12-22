@@ -29,7 +29,6 @@ import kwasm.runtime.ImportExtern
 import kwasm.runtime.Memory
 import kwasm.runtime.ModuleInstance
 import kwasm.runtime.Store
-import kwasm.runtime.Value
 import kwasm.runtime.allocate
 import kwasm.runtime.collectImportExterns
 import kwasm.runtime.instruction.execute
@@ -51,7 +50,7 @@ import java.io.InputStreamReader
  * modules to allow them to communicate with the external environment (e.g. i/o).
  */
 class KWasmProgram internal constructor(
-    private val moduleExports: Map<String, Map<String, Address>>,
+    moduleExports: Map<String, Map<String, Address>>,
     private val allocatedModules: MutableMap<String, ModuleInstance>,
     private val store: Store
 ) {
@@ -66,6 +65,9 @@ class KWasmProgram internal constructor(
             moduleExps.filter { (_, expAddress) -> expAddress is Address.Global }
         }
 
+    /**
+     * Gets the [KWasmProgram]'s shared/exported [Memory].
+     */
     val memory: Memory
         get() {
             val address = exportedMemoryAddresses.firstOrNull()
@@ -73,6 +75,10 @@ class KWasmProgram internal constructor(
             return store.memories[address.value]
         }
 
+    /**
+     * Gets the current value of the i32-typed global called [globalName] exported from the module
+     * with name [moduleName].
+     */
     fun getGlobalInt(moduleName: String, globalName: String): Int {
         val globalAddress = exportedGlobalAddresses[moduleName]?.get(globalName)
             ?: throw ExportNotFoundException(
@@ -82,11 +88,34 @@ class KWasmProgram internal constructor(
         val global = store.globals[globalAddress.value] as? Global.Int
             ?: throw ExportNotFoundException(
                 "Global with name \"$globalName\" in module \"$moduleName\" was not of type" +
-                    " Int, instead: ${store.globals[globalAddress.value]::class}"
+                    " Int, instead: ${store.globals[globalAddress.value]::class.simpleName}"
             )
         return global.value
     }
 
+    /**
+     * Sets the current value of the i32-typed global called [globalName] exported from the module
+     * with name [moduleName] to the provided [newValue].
+     */
+    fun setGlobalInt(moduleName: String, globalName: String, newValue: Int) {
+        val globalAddress = exportedGlobalAddresses[moduleName]?.get(globalName)
+            ?: throw ExportNotFoundException(
+                "No global with name \"$globalName\" was found to be " +
+                    "exported from module: $moduleName"
+            )
+        val global = store.globals[globalAddress.value] as? Global.Int
+            ?: throw ExportNotFoundException(
+                "Global with name \"$globalName\" in module \"$moduleName\" was not of type" +
+                    " Int, instead: ${store.globals[globalAddress.value]::class.simpleName}"
+            )
+        if (!global.mutable) throw ImmutableGlobalException(moduleName, globalName)
+        global.value = newValue
+    }
+
+    /**
+     * Gets the current value of the i64-typed global called [globalName] exported from the module
+     * with name [moduleName].
+     */
     fun getGlobalLong(moduleName: String, globalName: String): Long {
         val globalAddress = exportedGlobalAddresses[moduleName]?.get(globalName)
             ?: throw ExportNotFoundException(
@@ -96,11 +125,34 @@ class KWasmProgram internal constructor(
         val global = store.globals[globalAddress.value] as? Global.Long
             ?: throw ExportNotFoundException(
                 "Global with name \"$globalName\" in module \"$moduleName\" was not of type" +
-                    " Long, instead: ${store.globals[globalAddress.value]::class}"
+                    " Long, instead: ${store.globals[globalAddress.value]::class.simpleName}"
             )
         return global.value
     }
 
+    /**
+     * Sets the current value of the i64-typed global called [globalName] exported from the module
+     * with name [moduleName] to the provided [newValue].
+     */
+    fun setGlobalLong(moduleName: String, globalName: String, newValue: Long) {
+        val globalAddress = exportedGlobalAddresses[moduleName]?.get(globalName)
+            ?: throw ExportNotFoundException(
+                "No global with name \"$globalName\" was found to be " +
+                    "exported from module: $moduleName"
+            )
+        val global = store.globals[globalAddress.value] as? Global.Long
+            ?: throw ExportNotFoundException(
+                "Global with name \"$globalName\" in module \"$moduleName\" was not of type" +
+                    " Long, instead: ${store.globals[globalAddress.value]::class.simpleName}"
+            )
+        if (!global.mutable) throw ImmutableGlobalException(moduleName, globalName)
+        global.value = newValue
+    }
+
+    /**
+     * Gets the current value of the f32-typed global called [globalName] exported from the module
+     * with name [moduleName].
+     */
     fun getGlobalFloat(moduleName: String, globalName: String): Float {
         val globalAddress = exportedGlobalAddresses[moduleName]?.get(globalName)
             ?: throw ExportNotFoundException(
@@ -110,11 +162,34 @@ class KWasmProgram internal constructor(
         val global = store.globals[globalAddress.value] as? Global.Float
             ?: throw ExportNotFoundException(
                 "Global with name \"$globalName\" in module \"$moduleName\" was not of type" +
-                    " Float, instead: ${store.globals[globalAddress.value]::class}"
+                    " Float, instead: ${store.globals[globalAddress.value]::class.simpleName}"
             )
         return global.value
     }
 
+    /**
+     * Sets the current value of the f32-typed global called [globalName] exported from the module
+     * with name [moduleName] to the provided [newValue].
+     */
+    fun setGlobalFloat(moduleName: String, globalName: String, newValue: Float) {
+        val globalAddress = exportedGlobalAddresses[moduleName]?.get(globalName)
+            ?: throw ExportNotFoundException(
+                "No global with name \"$globalName\" was found to be " +
+                    "exported from module: $moduleName"
+            )
+        val global = store.globals[globalAddress.value] as? Global.Float
+            ?: throw ExportNotFoundException(
+                "Global with name \"$globalName\" in module \"$moduleName\" was not of type" +
+                    " Float, instead: ${store.globals[globalAddress.value]::class.simpleName}"
+            )
+        if (!global.mutable) throw ImmutableGlobalException(moduleName, globalName)
+        global.value = newValue
+    }
+
+    /**
+     * Gets the current value of the f64-typed global called [globalName] exported from the module
+     * with name [moduleName].
+     */
     fun getGlobalDouble(moduleName: String, globalName: String): Double {
         val globalAddress = exportedGlobalAddresses[moduleName]?.get(globalName)
             ?: throw ExportNotFoundException(
@@ -124,9 +199,28 @@ class KWasmProgram internal constructor(
         val global = store.globals[globalAddress.value] as? Global.Double
             ?: throw ExportNotFoundException(
                 "Global with name \"$globalName\" in module \"$moduleName\" was not of type" +
-                    " Double, instead: ${store.globals[globalAddress.value]::class}"
+                    " Double, instead: ${store.globals[globalAddress.value]::class.simpleName}"
             )
         return global.value
+    }
+
+    /**
+     * Sets the current value of the f64-typed global called [globalName] exported from the module
+     * with name [moduleName] to the provided [newValue].
+     */
+    fun setGlobalDouble(moduleName: String, globalName: String, newValue: Double) {
+        val globalAddress = exportedGlobalAddresses[moduleName]?.get(globalName)
+            ?: throw ExportNotFoundException(
+                "No global with name \"$globalName\" was found to be " +
+                    "exported from module: $moduleName"
+            )
+        val global = store.globals[globalAddress.value] as? Global.Double
+            ?: throw ExportNotFoundException(
+                "Global with name \"$globalName\" in module \"$moduleName\" was not of type" +
+                    " Double, instead: ${store.globals[globalAddress.value]::class.simpleName}"
+            )
+        if (!global.mutable) throw ImmutableGlobalException(moduleName, globalName)
+        global.value = newValue
     }
 
     class Builder internal constructor(
@@ -371,6 +465,11 @@ class KWasmProgram internal constructor(
 
     /** Thrown when an exported value does not exist for a given module. */
     class ExportNotFoundException(message: String) : IllegalStateException(message)
+
+    /** Thrown when an attempt to mutate an immutable global was made. */
+    class ImmutableGlobalException(moduleName: String, globalName: String) : IllegalStateException(
+        "Cannot mutate global: \"$globalName\" exported from module: $moduleName"
+    )
 
     companion object {
         fun builder(memoryProvider: MemoryProvider): Builder = Builder(memoryProvider)

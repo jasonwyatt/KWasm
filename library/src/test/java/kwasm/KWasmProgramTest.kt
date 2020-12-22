@@ -109,7 +109,7 @@ class KWasmProgramTest {
     fun build_importTable() {
         val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
         var hostFunctionCalled = false
-        KWasmProgram.Builder(memoryProvider).apply {
+        KWasmProgram.builder(memoryProvider).apply {
             withModule(
                 name = "provider",
                 source = """
@@ -238,7 +238,7 @@ class KWasmProgramTest {
     @Test
     fun withModule_failsIfModuleCantParse() {
         val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
-        val builder = KWasmProgram.Builder(memoryProvider)
+        val builder = KWasmProgram.builder(memoryProvider)
         try {
             builder.withModule("myModule", "(not a module)")
         } catch (e: ParseException) {
@@ -253,19 +253,19 @@ class KWasmProgramTest {
         val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
         var receivedString: String? = null
 
-        val builder = KWasmProgram.Builder(memoryProvider)
-        builder.withTextFormatModule("blah", File(testFileUrl.file))
-        builder.withHostFunction(
-            namespace = "System",
-            name = "println",
-            hostFunction = HostFunction { offset: IntValue, length: IntValue, context ->
-                val bytes = ByteArray(length.value)
-                context.memory?.readBytes(bytes, offset.value)
-                receivedString = bytes.toString(Charsets.UTF_8)
-                EmptyValue
-            }
-        )
-        builder.build()
+        KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("blah", File(testFileUrl.file))
+            .withHostFunction(
+                namespace = "System",
+                name = "println",
+                hostFunction = HostFunction { offset: IntValue, length: IntValue, context ->
+                    val bytes = ByteArray(length.value)
+                    context.memory?.readBytes(bytes, offset.value)
+                    receivedString = bytes.toString(Charsets.UTF_8)
+                    EmptyValue
+                }
+            )
+            .build()
 
         assertThat(receivedString).isEqualTo("Hello world")
     }
@@ -273,7 +273,6 @@ class KWasmProgramTest {
     @Test
     fun withTextFormatModule_fromStream() {
         val testFileUrl = javaClass.classLoader.getResource("kwasm/helloworld.wat")
-
         val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
         var receivedString: String? = null
 
@@ -292,5 +291,517 @@ class KWasmProgramTest {
         builder.build()
 
         assertThat(receivedString).isEqualTo("Hello world")
+    }
+
+    @Test
+    fun getGlobalInt_notFound() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/globals.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("globals", testFileUrl.openStream())
+            .build()
+
+        try {
+            program.getGlobalInt("globals", "notThere")
+            fail()
+        } catch (e: KWasmProgram.ExportNotFoundException) {
+            assertThat(e).hasMessageThat()
+                .contains(
+                    "No global with name \"notThere\" was found to be exported from module: globals"
+                )
+        }
+    }
+
+    @Test
+    fun getGlobalInt_wrongType() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/globals.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("globals", testFileUrl.openStream())
+            .build()
+
+        try {
+            program.getGlobalInt("globals", "i64")
+            fail()
+        } catch (e: KWasmProgram.ExportNotFoundException) {
+            assertThat(e).hasMessageThat()
+                .contains(
+                    "Global with name \"i64\" in module \"globals\" was not" +
+                        " of type Int, instead: Long"
+                )
+        }
+    }
+
+    @Test
+    fun getGlobalInt() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/globals.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("globals", testFileUrl.openStream())
+            .build()
+
+        assertThat(program.getGlobalInt("globals", "i32")).isEqualTo(1)
+    }
+
+    @Test
+    fun setGlobalInt_notFound() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/globals.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("globals", testFileUrl.openStream())
+            .build()
+
+        try {
+            program.setGlobalInt("globals", "notThere", 42)
+            fail()
+        } catch (e: KWasmProgram.ExportNotFoundException) {
+            assertThat(e).hasMessageThat()
+                .contains(
+                    "No global with name \"notThere\" was found to be exported from module: globals"
+                )
+        }
+    }
+
+    @Test
+    fun setGlobalInt_wrongType() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/globals.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("globals", testFileUrl.openStream())
+            .build()
+
+        try {
+            program.setGlobalInt("globals", "i64", 42)
+            fail()
+        } catch (e: KWasmProgram.ExportNotFoundException) {
+            assertThat(e).hasMessageThat()
+                .contains(
+                    "Global with name \"i64\" in module \"globals\" was not" +
+                        " of type Int, instead: Long"
+                )
+        }
+    }
+
+    @Test
+    fun setGlobalInt_immutable() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/globals.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("globals", testFileUrl.openStream())
+            .build()
+
+        try {
+            program.setGlobalInt("globals", "i32_immut", 42)
+            fail()
+        } catch (e: KWasmProgram.ImmutableGlobalException) {
+            assertThat(e).hasMessageThat()
+                .contains(
+                    "Cannot mutate global: \"i32_immut\" exported from module: globals"
+                )
+        }
+    }
+
+    @Test
+    fun setGlobalInt() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/globals.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("globals", testFileUrl.openStream())
+            .build()
+
+        assertThat(program.getGlobalInt("globals", "i32")).isEqualTo(1)
+        program.setGlobalInt("globals", "i32", 42)
+        assertThat(program.getGlobalInt("globals", "i32")).isEqualTo(42)
+    }
+
+    @Test
+    fun getGlobalLong_notFound() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/globals.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("globals", testFileUrl.openStream())
+            .build()
+
+        try {
+            program.getGlobalLong("globals", "notThere")
+            fail()
+        } catch (e: KWasmProgram.ExportNotFoundException) {
+            assertThat(e).hasMessageThat()
+                .contains(
+                    "No global with name \"notThere\" was found to be exported from module: globals"
+                )
+        }
+    }
+
+    @Test
+    fun getGlobalLong_wrongType() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/globals.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("globals", testFileUrl.openStream())
+            .build()
+
+        try {
+            program.getGlobalLong("globals", "i32")
+            fail()
+        } catch (e: KWasmProgram.ExportNotFoundException) {
+            assertThat(e).hasMessageThat()
+                .contains(
+                    "Global with name \"i32\" in module \"globals\" was not" +
+                        " of type Long, instead: Int"
+                )
+        }
+    }
+
+    @Test
+    fun getGlobalLong() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/globals.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("globals", testFileUrl.openStream())
+            .build()
+
+        assertThat(program.getGlobalLong("globals", "i64")).isEqualTo(2)
+    }
+
+    @Test
+    fun setGlobalLong_notFound() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/globals.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("globals", testFileUrl.openStream())
+            .build()
+
+        try {
+            program.setGlobalLong("globals", "notThere", 42L)
+            fail()
+        } catch (e: KWasmProgram.ExportNotFoundException) {
+            assertThat(e).hasMessageThat()
+                .contains(
+                    "No global with name \"notThere\" was found to be exported from module: globals"
+                )
+        }
+    }
+
+    @Test
+    fun setGlobalLong_wrongType() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/globals.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("globals", testFileUrl.openStream())
+            .build()
+
+        try {
+            program.setGlobalLong("globals", "i32", 42)
+            fail()
+        } catch (e: KWasmProgram.ExportNotFoundException) {
+            assertThat(e).hasMessageThat()
+                .contains(
+                    "Global with name \"i32\" in module \"globals\" was not" +
+                        " of type Long, instead: Int"
+                )
+        }
+    }
+
+    @Test
+    fun setGlobalLong_immutable() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/globals.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("globals", testFileUrl.openStream())
+            .build()
+
+        try {
+            program.setGlobalLong("globals", "i64_immut", 42L)
+            fail()
+        } catch (e: KWasmProgram.ImmutableGlobalException) {
+            assertThat(e).hasMessageThat()
+                .contains(
+                    "Cannot mutate global: \"i64_immut\" exported from module: globals"
+                )
+        }
+    }
+
+    @Test
+    fun setGlobalLong() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/globals.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("globals", testFileUrl.openStream())
+            .build()
+
+        assertThat(program.getGlobalLong("globals", "i64")).isEqualTo(2L)
+        program.setGlobalLong("globals", "i64", 42L)
+        assertThat(program.getGlobalLong("globals", "i64")).isEqualTo(42L)
+    }
+
+    @Test
+    fun getGlobalFloat_notFound() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/globals.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("globals", testFileUrl.openStream())
+            .build()
+
+        try {
+            program.getGlobalFloat("globals", "notThere")
+            fail()
+        } catch (e: KWasmProgram.ExportNotFoundException) {
+            assertThat(e).hasMessageThat()
+                .contains(
+                    "No global with name \"notThere\" was found to be exported from module: globals"
+                )
+        }
+    }
+
+    @Test
+    fun getGlobalFloat_wrongType() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/globals.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("globals", testFileUrl.openStream())
+            .build()
+
+        try {
+            program.getGlobalFloat("globals", "f64")
+            fail()
+        } catch (e: KWasmProgram.ExportNotFoundException) {
+            assertThat(e).hasMessageThat()
+                .contains(
+                    "Global with name \"f64\" in module \"globals\" was not" +
+                        " of type Float, instead: Double"
+                )
+        }
+    }
+
+    @Test
+    fun getGlobalFloat() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/globals.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("globals", testFileUrl.openStream())
+            .build()
+
+        assertThat(program.getGlobalFloat("globals", "f32")).isEqualTo(3.0f)
+    }
+
+    @Test
+    fun setGlobalFloat_notFound() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/globals.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("globals", testFileUrl.openStream())
+            .build()
+
+        try {
+            program.setGlobalFloat("globals", "notThere", 42.0f)
+            fail()
+        } catch (e: KWasmProgram.ExportNotFoundException) {
+            assertThat(e).hasMessageThat()
+                .contains(
+                    "No global with name \"notThere\" was found to be exported from module: globals"
+                )
+        }
+    }
+
+    @Test
+    fun setGlobalFloat_wrongType() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/globals.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("globals", testFileUrl.openStream())
+            .build()
+
+        try {
+            program.setGlobalFloat("globals", "f64", 42.0f)
+            fail()
+        } catch (e: KWasmProgram.ExportNotFoundException) {
+            assertThat(e).hasMessageThat()
+                .contains(
+                    "Global with name \"f64\" in module \"globals\" was not" +
+                        " of type Float, instead: Double"
+                )
+        }
+    }
+
+    @Test
+    fun setGlobalFloat_immutable() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/globals.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("globals", testFileUrl.openStream())
+            .build()
+
+        try {
+            program.setGlobalFloat("globals", "f32_immut", 42.0f)
+            fail()
+        } catch (e: KWasmProgram.ImmutableGlobalException) {
+            assertThat(e).hasMessageThat()
+                .contains(
+                    "Cannot mutate global: \"f32_immut\" exported from module: globals"
+                )
+        }
+    }
+
+    @Test
+    fun setGlobalFloat() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/globals.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("globals", testFileUrl.openStream())
+            .build()
+
+        assertThat(program.getGlobalFloat("globals", "f32")).isEqualTo(3.0f)
+        program.setGlobalFloat("globals", "f32", 42.0f)
+        assertThat(program.getGlobalFloat("globals", "f32")).isEqualTo(42.0f)
+    }
+
+    @Test
+    fun getGlobalDouble_notFound() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/globals.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("globals", testFileUrl.openStream())
+            .build()
+
+        try {
+            program.getGlobalDouble("globals", "notThere")
+            fail()
+        } catch (e: KWasmProgram.ExportNotFoundException) {
+            assertThat(e).hasMessageThat()
+                .contains(
+                    "No global with name \"notThere\" was found to be exported from module: globals"
+                )
+        }
+    }
+
+    @Test
+    fun getGlobalDouble_wrongType() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/globals.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("globals", testFileUrl.openStream())
+            .build()
+
+        try {
+            program.getGlobalDouble("globals", "f32")
+            fail()
+        } catch (e: KWasmProgram.ExportNotFoundException) {
+            assertThat(e).hasMessageThat()
+                .contains(
+                    "Global with name \"f32\" in module \"globals\" was not" +
+                        " of type Double, instead: Float"
+                )
+        }
+    }
+
+    @Test
+    fun getGlobalDouble() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/globals.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("globals", testFileUrl.openStream())
+            .build()
+
+        assertThat(program.getGlobalDouble("globals", "f64")).isEqualTo(4.0)
+    }
+
+    @Test
+    fun setGlobalDouble_notFound() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/globals.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("globals", testFileUrl.openStream())
+            .build()
+
+        try {
+            program.setGlobalDouble("globals", "notThere", 42.0)
+            fail()
+        } catch (e: KWasmProgram.ExportNotFoundException) {
+            assertThat(e).hasMessageThat()
+                .contains(
+                    "No global with name \"notThere\" was found to be exported from module: globals"
+                )
+        }
+    }
+
+    @Test
+    fun setGlobalDouble_wrongType() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/globals.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("globals", testFileUrl.openStream())
+            .build()
+
+        try {
+            program.setGlobalDouble("globals", "f32", 42.0)
+            fail()
+        } catch (e: KWasmProgram.ExportNotFoundException) {
+            assertThat(e).hasMessageThat()
+                .contains(
+                    "Global with name \"f32\" in module \"globals\" was not" +
+                        " of type Double, instead: Float"
+                )
+        }
+    }
+
+    @Test
+    fun setGlobalDouble_immutable() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/globals.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("globals", testFileUrl.openStream())
+            .build()
+
+        try {
+            program.setGlobalDouble("globals", "f64_immut", 42.0)
+            fail()
+        } catch (e: KWasmProgram.ImmutableGlobalException) {
+            assertThat(e).hasMessageThat()
+                .contains(
+                    "Cannot mutate global: \"f64_immut\" exported from module: globals"
+                )
+        }
+    }
+
+    @Test
+    fun setGlobalDouble() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/globals.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("globals", testFileUrl.openStream())
+            .build()
+
+        assertThat(program.getGlobalDouble("globals", "f64")).isEqualTo(4.0)
+        program.setGlobalDouble("globals", "f64", 42.0)
+        assertThat(program.getGlobalDouble("globals", "f64")).isEqualTo(42.0)
     }
 }
