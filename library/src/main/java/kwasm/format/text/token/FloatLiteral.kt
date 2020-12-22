@@ -14,7 +14,6 @@
 
 package kwasm.format.text.token
 
-import kotlin.math.pow
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import kwasm.format.shiftColumnBy
@@ -25,6 +24,7 @@ import kwasm.format.text.token.util.NumberConstants
 import kwasm.format.text.token.util.TokenMatchResult
 import kwasm.format.text.token.util.parseLongSign
 import kwasm.format.text.token.util.significand
+import kotlin.math.pow
 
 /**
  * From [the docs](https://webassembly.github.io/spec/core/text/values.html#floating-point).

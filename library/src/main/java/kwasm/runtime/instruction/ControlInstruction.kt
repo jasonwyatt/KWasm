@@ -22,6 +22,7 @@ import kwasm.ast.module.Index
 import kwasm.ast.type.ValueType
 import kwasm.runtime.EmptyValue
 import kwasm.runtime.ExecutionContext
+import kwasm.runtime.FunctionInstance
 import kwasm.runtime.IntValue
 import kwasm.runtime.popUntil
 import kwasm.runtime.stack.Label
@@ -107,8 +108,10 @@ internal fun executeBlockOrLoop(
     // Strict equality is best, but if not- then at least the string reprs should match.
     return if (
         postContextLabelTop === myLabel ||
-        (myLabel.identifier?.stringRepr != null &&
-            myLabel.identifier.stringRepr == postContextLabelTop?.identifier?.stringRepr)
+        (
+            myLabel.identifier?.stringRepr != null &&
+                myLabel.identifier.stringRepr == postContextLabelTop?.identifier?.stringRepr
+            )
     ) {
         // Check the result type, if we expected one
         expectedValType?.let {
@@ -296,6 +299,9 @@ internal fun ControlInstruction.CallIndirect.execute(context: ExecutionContext):
     if (argument.value >= table.elements.size)
         throw KWasmRuntimeException("Table for module has no element at position ${argument.value}")
     val functionAddress = table.elements[argument.value]
+        ?: throw KWasmRuntimeException(
+            "No function found in the table with location ${argument.value}"
+        )
     val function = context.store.functions.getOrNull(functionAddress.value)
         ?: throw KWasmRuntimeException(
             "No function found in the store at address ${functionAddress.value}"
@@ -308,6 +314,11 @@ internal fun ControlInstruction.CallIndirect.execute(context: ExecutionContext):
                 "Expected $expectedFunctionType."
         )
 
+    if (function is FunctionInstance.Module) {
+        return function.execute(
+            ExecutionContext(context.store, function.moduleInstance, context.stacks)
+        )
+    }
     return function.execute(context)
 }
 

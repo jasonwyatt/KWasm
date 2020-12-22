@@ -74,7 +74,7 @@ private data class AstNodeIndexImpl<T : AstNode>(
     override operator fun set(identifier: Identifier?, node: T) {
         identifier?.stringRepr?.let {
             // TODO: throw an exception with the ParseContext when nodes have context.
-            check(it !in nodesByIdentifier) { "Identifier: \"$it\" is already in use" }
+            check(it !in nodesByIdentifier || nodesByIdentifier[it] == node) { "Identifier: \"$it\" is already in use" }
             nodesByIdentifier[it] = node
         }
         nodes += node

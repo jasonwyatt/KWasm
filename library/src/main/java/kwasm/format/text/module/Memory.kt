@@ -14,7 +14,6 @@
 
 package kwasm.format.text.module
 
-import kotlin.math.ceil
 import kwasm.ast.AstNode
 import kwasm.ast.AstNodeList
 import kwasm.ast.Identifier
@@ -45,6 +44,7 @@ import kwasm.format.text.parseLiteral
 import kwasm.format.text.token.Token
 import kwasm.format.text.tokensUntilParenClosure
 import kwasm.format.text.type.parseMemoryType
+import kotlin.math.ceil
 
 /**
  * Parses a [Memory] from the receiving [List] of [Token]s.

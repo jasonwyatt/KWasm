@@ -35,7 +35,8 @@ class ExpressionTest {
 
     @Test
     fun throws_ifExpressionValue_isEmpty() = parser.with {
-        val expression = """
+        val expression =
+            """
             (global.get 0)
             (global.set 0)
         """.parseExpression()
@@ -56,7 +57,8 @@ class ExpressionTest {
 
     @Test
     fun valid() = parser.with {
-        val expression = """
+        val expression =
+            """
             (global.get 0)
         """.parseExpression()
 

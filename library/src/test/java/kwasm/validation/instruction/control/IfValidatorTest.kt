@@ -130,28 +130,30 @@ class IfValidatorTest {
 
     @Test
     fun valid_noExpectedResult() = parser.with {
-        var result = """
-        (if
-            (then (nop))
-            (else (nop))
-        )
-        """.trimIndent().parseInstructions().validate(STARTER_CONTEXT)
+        var result =
+            """
+            (if
+                (then (nop))
+                (else (nop))
+            )
+            """.trimIndent().parseInstructions().validate(STARTER_CONTEXT)
         assertThat(result.stack).isEmpty()
 
-        result = """
-        (if
-            (then 
-                (i32.add (i32.const 0) (i32.const 1))
-                (drop)
+        result =
+            """
+            (if
+                (then 
+                    (i32.add (i32.const 0) (i32.const 1))
+                    (drop)
+                )
+                (else (nop)
+                    (i32.add (i32.const 2) (i32.const 3))
+                    (drop)
+                )
             )
-            (else (nop)
-                (i32.add (i32.const 2) (i32.const 3))
-                (drop)
-            )
-        )
-        """.trimIndent()
-            .parseInstructions()
-            .validate(STARTER_CONTEXT)
+            """.trimIndent()
+                .parseInstructions()
+                .validate(STARTER_CONTEXT)
         assertThat(result.stack).isEmpty()
     }
 

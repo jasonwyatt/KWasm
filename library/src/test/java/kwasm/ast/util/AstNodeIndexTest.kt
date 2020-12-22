@@ -100,7 +100,7 @@ class AstNodeIndexTest {
 
         assertThrows(IllegalStateException::class.java) {
             index[Identifier.Global("myGlobal1")] =
-                GlobalType(ValueType.I32, false)
+                GlobalType(ValueType.I64, false)
         }
     }
 

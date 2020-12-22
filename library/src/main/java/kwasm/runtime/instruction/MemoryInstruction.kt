@@ -16,7 +16,6 @@
 
 package kwasm.runtime.instruction
 
-import kotlin.IndexOutOfBoundsException
 import kwasm.KWasmRuntimeException
 import kwasm.ast.instruction.MemoryInstruction
 import kwasm.runtime.DoubleValue
@@ -26,6 +25,7 @@ import kwasm.runtime.IntValue
 import kwasm.runtime.LongValue
 import kwasm.runtime.Memory
 import kwasm.runtime.toValue
+import kotlin.IndexOutOfBoundsException
 
 /**
  * From
@@ -80,7 +80,7 @@ internal fun MemoryInstruction.LoadInt.execute(context: ExecutionContext): Execu
         ?: throw KWasmRuntimeException("Memory loading requires i32 on top of the stack")
     val ea = (memAddress.unsignedValue + arg.offset).toInt()
     val resultValue = try {
-            when (byteWidth) {
+        when (byteWidth) {
             // i32 requested.
             4 -> when {
                 signed -> memory.readInt(ea, storageBytes).toValue()

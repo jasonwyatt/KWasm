@@ -51,9 +51,10 @@ class FunctionInstanceTest {
 
     @Test
     fun allocateModuleFunction() = parser.with {
-        val fn = """
+        val fn =
+            """
             (func)
-        """.trimIndent().tokenize().parseWasmFunction(0)!!.astNode
+            """.trimIndent().tokenize().parseWasmFunction(0)!!.astNode
 
         val store = Store()
         val moduleInstance = ModuleInstance(
@@ -130,19 +131,23 @@ class FunctionInstanceTest {
             KWasmRuntimeException::class,
             "Parameter on stack does not match required parameter type for function with " +
                 "type: [i32, i32] => [i32]",
-            1f, 1
+            1f,
+            1
         )
         errorCase(
             KWasmRuntimeException::class,
             "Parameter on stack does not match required parameter type for function with " +
                 "type: [i32, i32] => [i32]",
-            1, 1f
+            1,
+            1f
         )
         errorCase(
             KWasmRuntimeException::class,
             "Parameter on stack does not match required parameter type for function with " +
                 "type: [i32, i32] => [i32]",
-            1, 1, 1f
+            1,
+            1,
+            1f
         )
 
         validCase(2, 1, 1)

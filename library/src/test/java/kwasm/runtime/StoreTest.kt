@@ -44,7 +44,7 @@ class StoreTest {
     @Test
     fun allocateTable() {
         val store = Store()
-        store.allocateTable(Table(emptyList(), 1))
+        store.allocateTable(Table(mutableMapOf(), 1))
             .also { (newStore, address) ->
                 assertThat(newStore).isNotSameInstanceAs(store)
                 assertThat(newStore.tables).hasSize(1)

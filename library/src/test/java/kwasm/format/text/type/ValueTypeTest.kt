@@ -35,7 +35,8 @@ class ValueTypeTest {
     fun parseValidValueType() {
         var expected: ParseResult<ValueType> =
             ParseResult(
-                ValueType.I32, 1
+                ValueType.I32,
+                1
             )
         var actual = tokenizer.tokenize("i32", context).parseValueType(0)
         assertThat(actual).isEqualTo(expected)
@@ -71,7 +72,8 @@ class ValueTypeTest {
     fun parseOptional_withValidValueType() {
         var expected: ParseResult<ValueType> =
             ParseResult(
-                ValueType.I32, 1
+                ValueType.I32,
+                1
             )
         var actual = tokenizer.tokenize("i32", context).parseOptionalValueType(0)
         assertThat(actual).isEqualTo(expected)

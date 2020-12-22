@@ -14,7 +14,6 @@
 
 package kwasm.format.text.token.util
 
-import kotlin.math.pow
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import kwasm.format.shiftColumnBy
@@ -30,6 +29,7 @@ import kwasm.format.text.token.util.StringConstants.SPACE
 import kwasm.format.text.token.util.StringConstants.T
 import kwasm.format.text.token.util.StringConstants.TAB
 import kwasm.format.text.token.util.StringConstants.UNICODE_PATTERN
+import kotlin.math.pow
 
 /**
  * Pattern to check for valid StringChar elements.
@@ -195,7 +195,8 @@ fun IntArray.parseStringChar(
                     val cString = c.toStringAsCodepoint()
                     val escapedString = escaped.toStringAsCodepoint()
                     throw ParseException(
-                        "Invalid escape sequence: $cString$escapedString", context
+                        "Invalid escape sequence: $cString$escapedString",
+                        context
                     )
                 }
             }

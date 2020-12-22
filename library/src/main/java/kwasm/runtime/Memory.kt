@@ -14,9 +14,9 @@
 
 package kwasm.runtime
 
-import kotlin.math.ceil
 import kwasm.api.MemoryProvider
 import kwasm.ast.type.MemoryType
+import kotlin.math.ceil
 
 /**
  * Defines runtime memory for use by a wasm program, along with facilities for accessing and

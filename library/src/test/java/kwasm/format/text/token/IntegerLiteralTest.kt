@@ -15,7 +15,6 @@
 package kwasm.format.text.token
 
 import com.google.common.truth.Truth.assertThat
-import kotlin.math.absoluteValue
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import org.assertj.core.api.Assertions
@@ -23,6 +22,7 @@ import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import kotlin.math.absoluteValue
 
 @Suppress("EXPERIMENTAL_API_USAGE")
 @RunWith(JUnit4::class)

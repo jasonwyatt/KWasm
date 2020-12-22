@@ -76,30 +76,34 @@ object ExportDescriptorValidator : ModuleValidationVisitor<ExportDescriptor<*>> 
         context: ValidationContext.Module
     ): ValidationContext.Module {
         when (node) {
-            is ExportDescriptor.Function -> validateNotNull(
-                context.functions[node.index],
-                parseContext = null
-            ) {
-                "Function with index ${node.index} not found in the module"
-            }
-            is ExportDescriptor.Table -> validateNotNull(
-                context.tables[node.index],
-                parseContext = null
-            ) {
-                "Table with index ${node.index} not found in the module"
-            }
-            is ExportDescriptor.Memory -> validateNotNull(
-                context.memories[node.index],
-                parseContext = null
-            ) {
-                "Memory with index ${node.index} not found in the module"
-            }
-            is ExportDescriptor.Global -> validateNotNull(
-                context.globals[node.index],
-                parseContext = null
-            ) {
-                "Global with index ${node.index} not found in the module"
-            }
+            is ExportDescriptor.Function ->
+                validateNotNull(
+                    context.functions[node.index],
+                    parseContext = null
+                ) {
+                    "Function with index ${node.index} not found in the module"
+                }
+            is ExportDescriptor.Table ->
+                validateNotNull(
+                    context.tables[node.index],
+                    parseContext = null
+                ) {
+                    "Table with index ${node.index} not found in the module"
+                }
+            is ExportDescriptor.Memory ->
+                validateNotNull(
+                    context.memories[node.index],
+                    parseContext = null
+                ) {
+                    "Memory with index ${node.index} not found in the module"
+                }
+            is ExportDescriptor.Global ->
+                validateNotNull(
+                    context.globals[node.index],
+                    parseContext = null
+                ) {
+                    "Global with index ${node.index} not found in the module"
+                }
         }
         return context
     }

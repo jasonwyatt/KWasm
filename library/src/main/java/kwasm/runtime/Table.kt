@@ -39,7 +39,7 @@ import kwasm.ast.type.TableType
  */
 @Suppress("EXPERIMENTAL_API_USAGE")
 data class Table(
-    val elements: List<Address.Function>,
+    val elements: MutableMap<Int, Address.Function>,
     val maxSize: Int = UInt.MAX_VALUE.toInt()
 ) {
     init {
@@ -54,8 +54,8 @@ data class Table(
  * the [Table]'s elements.
  */
 @Suppress("EXPERIMENTAL_API_USAGE", "FunctionName")
-fun Table(tableType: TableType, builder: (MutableList<Address.Function>) -> Unit = {}): Table {
-    val elements = mutableListOf<Address.Function>().also(builder)
+fun Table(tableType: TableType, builder: (MutableMap<Int, Address.Function>) -> Unit = {}): Table {
+    val elements = mutableMapOf<Int, Address.Function>().also(builder)
     return Table(elements, maxSize = tableType.limits.max?.toInt() ?: UInt.MAX_VALUE.toInt())
 }
 
