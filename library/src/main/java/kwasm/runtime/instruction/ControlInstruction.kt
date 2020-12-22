@@ -108,8 +108,10 @@ internal fun executeBlockOrLoop(
     // Strict equality is best, but if not- then at least the string reprs should match.
     return if (
         postContextLabelTop === myLabel ||
-        (myLabel.identifier?.stringRepr != null &&
-            myLabel.identifier.stringRepr == postContextLabelTop?.identifier?.stringRepr)
+        (
+            myLabel.identifier?.stringRepr != null &&
+                myLabel.identifier.stringRepr == postContextLabelTop?.identifier?.stringRepr
+            )
     ) {
         // Check the result type, if we expected one
         expectedValType?.let {

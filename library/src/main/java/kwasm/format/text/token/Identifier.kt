@@ -14,10 +14,10 @@
 
 package kwasm.format.text.token
 
-import kwasm.ast.Identifier as AstIdentifier
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import kwasm.format.text.token.util.TokenMatchResult
+import kwasm.ast.Identifier as AstIdentifier
 
 /**
  * From [the docs](https://webassembly.github.io/spec/core/text/values.html#text-id):

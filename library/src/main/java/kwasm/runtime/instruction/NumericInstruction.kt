@@ -16,14 +16,6 @@
 
 package kwasm.runtime.instruction
 
-import kotlin.math.absoluteValue
-import kotlin.math.ceil
-import kotlin.math.floor
-import kotlin.math.max
-import kotlin.math.min
-import kotlin.math.round
-import kotlin.math.sqrt
-import kotlin.math.truncate
 import kwasm.KWasmRuntimeException
 import kwasm.ast.instruction.NumericInstruction
 import kwasm.runtime.DoubleValue
@@ -33,6 +25,14 @@ import kwasm.runtime.IntValue
 import kwasm.runtime.LongValue
 import kwasm.runtime.Value
 import kwasm.runtime.toValue
+import kotlin.math.absoluteValue
+import kotlin.math.ceil
+import kotlin.math.floor
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.round
+import kotlin.math.sqrt
+import kotlin.math.truncate
 
 /**
  * See

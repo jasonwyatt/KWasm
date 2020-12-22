@@ -16,10 +16,10 @@
 
 package kwasm.runtime
 
-import kotlin.reflect.KClass
 import kwasm.KWasmRuntimeException
 import kwasm.ast.type.ValueType
 import kwasm.util.Impossible
+import kotlin.reflect.KClass
 
 /**
  * Defines a value for use in WebAssembly at runtime.

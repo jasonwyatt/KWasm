@@ -14,7 +14,6 @@
 
 package kwasm.validation.instruction
 
-import java.lang.IllegalStateException
 import kwasm.ParseRule
 import kwasm.ast.instruction.Instruction
 import kwasm.validation.ValidationContext
@@ -23,6 +22,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import java.lang.IllegalStateException
 
 @RunWith(JUnit4::class)
 class InstructionValidatorTest {

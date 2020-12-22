@@ -42,7 +42,8 @@ class ModuleInstanceTest {
 
     @Test
     fun allocate_handlesImportedFunctionsCorrectly() = parser.with {
-        val module = """
+        val module =
+            """
             (module
                 (func $1 (import "foo" "bar") (param i32) (result i32))
                 (func $2 (result i32)
@@ -66,7 +67,8 @@ class ModuleInstanceTest {
 
     @Test
     fun allocate_handlesImportedFunctionsCorrectly_invertedOrder() = parser.with {
-        val module = """
+        val module =
+            """
             (module
                 (func $2 (result i32)
                     i32.const 15
@@ -95,7 +97,8 @@ class ModuleInstanceTest {
 
     @Test
     fun allocate_handlesImportedTablesCorrectly() = parser.with {
-        val module = """
+        val module =
+            """
             (module
                 (table $1 (import "foo" "bar") 0 funcref)
             )
@@ -112,7 +115,8 @@ class ModuleInstanceTest {
 
     @Test
     fun allocate_handlesImportedMemoriesCorrectly() = parser.with {
-        val module = """
+        val module =
+            """
             (module
                 (memory $1 (import "foo" "bar") 0)
             )
@@ -129,7 +133,8 @@ class ModuleInstanceTest {
 
     @Test
     fun allocate_handlesImportedGlobalsCorrectly() = parser.with {
-        val module = """
+        val module =
+            """
             (module
                 (global $1 (import "foo" "bar") (mut i32))
                 (global $2 (mut i32) i32.const 1)
@@ -150,7 +155,8 @@ class ModuleInstanceTest {
 
     @Test
     fun allocate_handlesImportedGlobalsCorrectly_invertedOrder() = parser.with {
-        val module = """
+        val module =
+            """
             (module
                 (global $2 (mut i32) i32.const 1)
                 (global ${'$'}1 (import "foo" "bar") (mut i32))
@@ -176,7 +182,8 @@ class ModuleInstanceTest {
 
     @Test
     fun allocate_allocates_exportedFunctionsCorrectly() = parser.with {
-        val module = """
+        val module =
+            """
             (module
                 (func $1 (export "bar") (param i32))
                 (func $0 (export "foo"))
@@ -233,7 +240,8 @@ class ModuleInstanceTest {
 
     @Test
     fun allocate_allocates_exportedTableCorrectly() = parser.with {
-        val module = """
+        val module =
+            """
             (module
                 (table (export "myTable") 0 1 funcref)
             )
@@ -259,7 +267,8 @@ class ModuleInstanceTest {
 
     @Test
     fun allocate_allocates_exportedMemoryCorrectly() = parser.with {
-        val module = """
+        val module =
+            """
             (module
                 (memory (export "myMem") 1 5)
             )
@@ -284,7 +293,8 @@ class ModuleInstanceTest {
 
     @Test
     fun allocate_allocates_exportedGlobalsCorrectly() = parser.with {
-        val module = """
+        val module =
+            """
             (module
                 (global ${'$'}globalOne (export "globalOne") i32 (i32.const -10))
                 (global ${'$'}globalTwo (export "globalTwo") (mut i64) (i64.const 10))

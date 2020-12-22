@@ -16,8 +16,6 @@ package kwasm.runtime.instruction
 
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
-import kotlin.math.sqrt
-import kotlin.random.Random
 import kwasm.KWasmRuntimeException
 import kwasm.ParseRule
 import kwasm.ast.instruction.Instruction
@@ -33,9 +31,14 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import kotlin.math.sqrt
+import kotlin.random.Random
 
 @ExperimentalStdlibApi
-@Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS", "CanBeVal",
+@Suppress(
+    "EXPERIMENTAL_API_USAGE",
+    "EXPERIMENTAL_UNSIGNED_LITERALS",
+    "CanBeVal",
     "FLOAT_LITERAL_CONFORMS_ZERO"
 )
 @RunWith(JUnit4::class)

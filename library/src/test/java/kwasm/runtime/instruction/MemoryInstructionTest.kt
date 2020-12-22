@@ -702,11 +702,12 @@ class MemoryInstructionTest {
         var module: WasmModule? = null
 
         parser.with {
-            module = """
+            module =
+                """
                 (module
                     (memory $minPages $maxPages)
                 )
-            """.parseModule()
+                """.parseModule()
         }
 
         val validationContext = module!!.validate()

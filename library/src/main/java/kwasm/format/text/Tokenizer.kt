@@ -14,8 +14,6 @@
 
 package kwasm.format.text
 
-import java.io.Reader
-import java.io.StringReader
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import kwasm.format.shiftColumnBy
@@ -45,6 +43,8 @@ import kwasm.format.text.token.toReserved
 import kwasm.format.text.token.toStringLiteral
 import kwasm.format.text.whitespace.Comment
 import kwasm.format.text.whitespace.Format
+import java.io.Reader
+import java.io.StringReader
 
 /**
  * A tokenizer capable of splitting a raw text-format WASM file into its component tokens.

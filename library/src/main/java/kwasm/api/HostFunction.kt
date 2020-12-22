@@ -16,16 +16,16 @@
 
 package kwasm.api
 
-import kotlin.reflect.KClass
 import kwasm.ast.Identifier
 import kwasm.ast.type.FunctionType
 import kwasm.ast.type.Param
-import kwasm.ast.type.Result as AstResult
 import kwasm.ast.type.ValueType
 import kwasm.runtime.EmptyValue
 import kwasm.runtime.Memory
 import kwasm.runtime.Value
 import kwasm.runtime.toValueType
+import kotlin.reflect.KClass
+import kwasm.ast.type.Result as AstResult
 
 /**
  * Base for all host-provided functions exposed to WebAssembly programs via imports.

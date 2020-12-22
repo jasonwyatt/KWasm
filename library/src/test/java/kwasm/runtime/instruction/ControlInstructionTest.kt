@@ -396,7 +396,7 @@ class ControlInstructionTest {
                 (; should also get skipped ;)
                 unreachable
             )
-        """.trimIndent()
+            """.trimIndent()
         ) {
             context = emptyContext
             validCase(1)
@@ -441,7 +441,7 @@ class ControlInstructionTest {
                 (; should get jumped-to ;)
                 i32.const 3
             )
-        """.trimIndent()
+            """.trimIndent()
         ) {
             context = emptyContext
             validCase(3)

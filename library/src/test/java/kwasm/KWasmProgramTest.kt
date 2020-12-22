@@ -35,7 +35,8 @@ class KWasmProgramTest {
         val programBuilder = KWasmProgram.Builder(memoryProvider).apply {
             withModule(
                 name = "testModule",
-                source = """(module (import "other" "module" (memory 1 1)))"""
+                source =
+                    """(module (import "other" "module" (memory 1 1)))"""
             )
         }
 
@@ -54,16 +55,18 @@ class KWasmProgramTest {
         val programBuilder = KWasmProgram.Builder(memoryProvider).apply {
             withModule(
                 name = "other",
-                source = """
+                source =
+                    """
                     (module
                         (func $0)
                         (export "memory" (func $0)))
-                """.trimIndent()
+                    """.trimIndent()
             )
 
             withModule(
                 name = "testModule",
-                source = """(module (import "other" "memory" (memory 1 1)))"""
+                source =
+                    """(module (import "other" "memory" (memory 1 1)))"""
             )
         }
 
@@ -83,13 +86,14 @@ class KWasmProgramTest {
         KWasmProgram.Builder(memoryProvider).apply {
             withModule(
                 name = "testModule",
-                source = """
+                source =
+                    """
                     (module
                         (import "host" "fn" (func ${"$"}fn))
                         (func ${"$"}starter
                             (call ${"$"}fn))
                         (start ${"$"}starter))
-                """.trimIndent()
+                    """.trimIndent()
             )
 
             withHostFunction(
@@ -112,7 +116,8 @@ class KWasmProgramTest {
         KWasmProgram.builder(memoryProvider).apply {
             withModule(
                 name = "provider",
-                source = """
+                source =
+                    """
                     |(module
                     |    (import "host" "fn" (func ${"$"}fn))
                     |    (type (func))
@@ -126,14 +131,15 @@ class KWasmProgramTest {
 
             withModule(
                 name = "testModule",
-                source = """
+                source =
+                    """
                     (module
                         (import "provider" "table" (table $0 1 1 funcref))
                         (type (func))
                         (func ${"$"}starter
                             (call_indirect (i32.const 0)))
                         (start ${"$"}starter))
-                """.trimIndent()
+                    """.trimIndent()
             )
 
             withHostFunction(
@@ -157,12 +163,14 @@ class KWasmProgramTest {
         val program = KWasmProgram.builder(memoryProvider).apply {
             withModule(
                 name = "memProvider",
-                source = """(module (memory (export "mem") 1 1))"""
+                source =
+                    """(module (memory (export "mem") 1 1))"""
             )
 
             withModule(
                 name = "testModule",
-                source = """
+                source =
+                    """
                     (module
                         (import "memProvider" "mem" (memory 1 1))
                         (import "host" "fn" (func $1 (param i32)))
@@ -173,7 +181,7 @@ class KWasmProgramTest {
                         )
                         (start $2)  
                     )
-                """.trimIndent()
+                    """.trimIndent()
             )
 
             withHostFunction(
@@ -200,16 +208,18 @@ class KWasmProgramTest {
         KWasmProgram.builder(memoryProvider).apply {
             withModule(
                 name = "globalProvider",
-                source = """
+                source =
+                    """
                     (module 
                         (global (mut i32) (i32.const 0))
                         (export "flag" (global 0)))
-                """.trimIndent()
+                    """.trimIndent()
             )
 
             withModule(
                 name = "testModule",
-                source = """
+                source =
+                    """
                     (module
                         (import "globalProvider" "flag" (global $1 (mut i32)))
                         (import "host" "fn" (func $1 (param i32)))
@@ -219,7 +229,7 @@ class KWasmProgramTest {
                         )
                         (start $2)  
                     )
-                """.trimIndent()
+                    """.trimIndent()
             )
 
             withHostFunction(

@@ -17,7 +17,6 @@ package kwasm.runtime.utils
 import com.google.common.truth.StandardSubjectBuilder
 import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
-import kotlin.reflect.KClass
 import kwasm.ParseRule
 import kwasm.api.HostFunction
 import kwasm.ast.AstNodeList
@@ -40,6 +39,7 @@ import kwasm.runtime.util.AddressIndex
 import kwasm.runtime.util.LocalIndex
 import kwasm.runtime.util.TypeIndex
 import org.junit.Assert.assertThrows
+import kotlin.reflect.KClass
 
 internal fun instructionCases(
     parser: ParseRule,
@@ -69,22 +69,22 @@ internal class InstructionTestBuilder(
         vararg inputs: Number
     ) = apply {
         ErrorTestCase(
-                parser,
-                context,
-                errorClass,
-                expectedMessage,
-                *inputs
-            )
+            parser,
+            context,
+            errorClass,
+            expectedMessage,
+            *inputs
+        )
             .check(instructionSource)
     }
 
     fun validCase(expectedOutput: Number, vararg inputs: Number) = apply {
         context = TestCase(
-                parser,
-                context,
-                listOf(expectedOutput),
-                *inputs
-            )
+            parser,
+            context,
+            listOf(expectedOutput),
+            *inputs
+        )
             .check(instructionSource)
     }
 

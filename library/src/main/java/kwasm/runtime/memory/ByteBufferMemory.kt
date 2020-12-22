@@ -14,15 +14,15 @@
 
 package kwasm.runtime.memory
 
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-import kotlin.math.ceil
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kwasm.runtime.Memory
 import kwasm.runtime.Memory.Companion.GROW_FAILURE
 import kwasm.runtime.Memory.Companion.PAGE_SIZE
 import kwasm.util.Impossible
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
+import kotlin.math.ceil
 
 @Suppress("EXPERIMENTAL_API_USAGE", "MemberVisibilityCanBePrivate")
 internal class ByteBufferMemory(

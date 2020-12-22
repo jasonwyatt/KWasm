@@ -173,7 +173,8 @@ class ImportTest {
         val descriptor = result.astNode as ImportDescriptor.Global
         assertThat(descriptor.globalType).isEqualTo(
             GlobalType(
-                ValueType.I32, true
+                ValueType.I32,
+                true
             )
         )
     }

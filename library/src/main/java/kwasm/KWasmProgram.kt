@@ -315,7 +315,7 @@ class KWasmProgram internal constructor(
                 // Check the element segments will fit in the tables, then place them there.
                 moduleNode.elements.forEach { elementSegment ->
                     val offsetValue = elementSegment.offset.expression.execute(executionContext)
-                            .stacks.operands.pop()
+                        .stacks.operands.pop()
                     val offsetInt = checkNotNull(offsetValue.value as? Int)
                     val tableAddress =
                         checkNotNull(allocatedModule.tableAddresses[elementSegment.tableIndex])

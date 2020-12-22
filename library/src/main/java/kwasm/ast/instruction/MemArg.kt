@@ -14,10 +14,10 @@
 
 package kwasm.ast.instruction
 
-import kotlin.math.floor
-import kotlin.math.log
 import kwasm.ast.AstNode
 import kwasm.ast.DeDupeableAstNode
+import kotlin.math.floor
+import kotlin.math.log
 
 /**
  * Represents an [Argument] to a memory [Instruction].
