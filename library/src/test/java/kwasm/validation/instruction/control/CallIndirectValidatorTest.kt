@@ -100,7 +100,9 @@ class CallIndirectValidatorTest {
         val result = "call_indirect (type 0)"
             .parseInstruction()
             .validate(
-                CONTEXT_WITH_TABLE_AND_TYPE.pushStack(ValueType.I32)
+                CONTEXT_WITH_TABLE_AND_TYPE
+                    .pushStack(ValueType.I32)
+                    .pushStack(ValueType.I32)
             )
         assertThat(result.stack).containsExactly(ValueType.I64)
     }

@@ -28,7 +28,13 @@ class TableTest {
     @Test
     fun constructor_throws_ifElementsSize_greaterThanMaxSize() {
         assertThrows(IllegalArgumentException::class.java) {
-            Table(mutableListOf(Address.Function(0), Address.Function(1)), maxSize = 1)
+            Table(
+                mutableMapOf(
+                    0 to Address.Function(0),
+                    1 to Address.Function(1)
+                ),
+                maxSize = 1
+            )
         }.also {
             assertThat(it).hasMessageThat()
                 .contains("Elements in table cannot exceed the maximum size: 1")
@@ -38,9 +44,9 @@ class TableTest {
     @Test
     fun pseudoConstructor() {
         val table = Table(TableType(Limits(0L, 10L), ElementType.FunctionReference)) {
-            it += Address.Function(1)
+            it += 0 to Address.Function(1)
         }
-        assertThat(table.elements).containsExactly(Address.Function(1))
+        assertThat(table.elements).containsExactly(0, Address.Function(1))
         assertThat(table.maxSize).isEqualTo(10)
     }
 

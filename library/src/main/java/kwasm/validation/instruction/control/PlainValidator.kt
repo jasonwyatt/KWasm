@@ -258,7 +258,13 @@ internal fun ControlInstruction.CallIndirect.validateCallIndirect(
         ) { "Type with FunctionType $functionType not found" }
     }
 
-    return context.validateStackForFunctionType(functionType)
+    val (stackParams, poppedContext) = context.popStack(1)
+    validate(stackParams.size == 1 && stackParams[0] == ValueType.I32) {
+        "Expected i32 on top of stack for table position of call_indirect but " +
+            "found ${context.stack}"
+    }
+
+    return poppedContext.validateStackForFunctionType(functionType)
 }
 
 internal fun ValidationContext.FunctionBody.validateLabelExists(

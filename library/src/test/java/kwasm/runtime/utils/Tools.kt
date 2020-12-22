@@ -294,7 +294,9 @@ internal fun ExecutionContext.withFrameContainingLocals(
 internal fun ExecutionContext.withTable(vararg functions: FunctionInstance): ExecutionContext {
     val store = store.copy(
         functions = functions.toList(),
-        tables = listOf(Table(functions.mapIndexed { i, _ -> Address.Function(i) }.toMutableList()))
+        tables = listOf(
+            Table(functions.mapIndexed { i, _ -> i to Address.Function(i) }.toMap().toMutableMap())
+        )
     )
     val moduleInstance = moduleInstance.copy(
         types = TypeIndex(functions.map { it.type }),
