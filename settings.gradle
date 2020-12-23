@@ -14,3 +14,4 @@
 
 include ':library', ':docs'
 rootProject.name='KWasm'
+include ':example-android'

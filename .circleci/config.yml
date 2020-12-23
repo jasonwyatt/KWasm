@@ -7,7 +7,7 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/openjdk:jdk
+      - image: circleci/android:api-29
 
     working_directory: ~/repo
 
