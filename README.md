@@ -26,7 +26,7 @@ The primary benefit of interpretation over compilation is the capability for dyn
 The development of KWasm will be done in a series of milestones:
 
 1. ✅ Implement text-based Wasm Parser Capability & AST-generation. (Completed 2020-01-01)
-1. Use the text-based Wasm Parser to develop/test the interpretation of the AST.
+1. ✅ Use the text-based Wasm Parser to develop/test the interpretation of the AST. (Completed 2020-12-23)
 1. Implement a binary wasm parser with AST-generation.
 
 With optional milestones:
