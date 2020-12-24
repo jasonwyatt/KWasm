@@ -136,13 +136,17 @@ val ValueType.zeroValue: Value<*>
 
 /** Checks the receiving [Value] against an expected [ValueType] */
 fun Value<*>.checkType(expected: ValueType) {
-    val isOk = when (expected) {
+    if (!isType(expected)) throw KWasmRuntimeException(
+        "Expected type: $expected, but found ${this::class.toValueType()}"
+    )
+}
+
+/** Checks the receiving [Value] against an expected [ValueType] */
+fun Value<*>.isType(expected: ValueType): Boolean {
+    return when (expected) {
         ValueType.I32 -> this is IntValue
         ValueType.I64 -> this is LongValue
         ValueType.F32 -> this is FloatValue
         ValueType.F64 -> this is DoubleValue
     }
-    if (!isOk) throw KWasmRuntimeException(
-        "Expected type: $expected, but found ${this::class.toValueType()}"
-    )
 }
