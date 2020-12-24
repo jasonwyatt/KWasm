@@ -24,6 +24,7 @@ import kwasm.format.text.Tokenizer
 import kwasm.format.text.module.parseModule
 import kwasm.runtime.Address
 import kwasm.runtime.ExecutionContext
+import kwasm.runtime.FunctionInstance
 import kwasm.runtime.Global
 import kwasm.runtime.ImportExtern
 import kwasm.runtime.Memory
@@ -32,8 +33,11 @@ import kwasm.runtime.Store
 import kwasm.runtime.allocate
 import kwasm.runtime.collectImportExterns
 import kwasm.runtime.instruction.execute
+import kwasm.runtime.isType
+import kwasm.runtime.stack.OperandStack
 import kwasm.runtime.stack.RuntimeStacks
 import kwasm.runtime.toFunctionInstance
+import kwasm.runtime.toValue
 import kwasm.validation.module.validate
 import java.io.BufferedInputStream
 import java.io.File
@@ -221,6 +225,42 @@ class KWasmProgram internal constructor(
             )
         if (!global.mutable) throw ImmutableGlobalException(moduleName, globalName)
         global.value = newValue
+    }
+
+    /**
+     * Gets an [ExportedFunction] by the given [functionName] in the [moduleName]-named module.
+     */
+    fun getFunction(moduleName: String, functionName: String): ExportedFunction {
+        val functionAddress = exportedFunctionAddresses[moduleName]?.get(functionName)
+            ?: throw ExportNotFoundException(
+                "No function with name \"$functionName\" was found to be exported from " +
+                    "module: $moduleName"
+            )
+        val function = store.functions[functionAddress.value] as FunctionInstance.Module
+
+        return object : ExportedFunction {
+            override val signature: String = function.type.toSignature(moduleName, functionName)
+
+            override fun invoke(vararg args: Number): Number? {
+                val parameters = function.type.parameters
+                val argList = args.toList().map(Number::toValue)
+
+                val argException = ExportedFunction.IllegalArgumentException.create(
+                    moduleName,
+                    functionName,
+                    function.type,
+                    argList
+                )
+
+                if (args.size != parameters.size) throw argException
+                if (parameters.zip(argList).any { !it.second.isType(it.first.valType) })
+                    throw argException
+
+                val stacks = RuntimeStacks(operands = OperandStack(argList))
+                val context = ExecutionContext(store, function.moduleInstance, stacks)
+                return function.execute(context).stacks.operands.peek()?.value
+            }
+        }
     }
 
     class Builder internal constructor(

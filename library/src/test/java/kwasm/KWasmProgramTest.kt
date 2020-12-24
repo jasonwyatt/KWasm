@@ -814,4 +814,90 @@ class KWasmProgramTest {
         program.setGlobalDouble("globals", "f64", 42.0)
         assertThat(program.getGlobalDouble("globals", "f64")).isEqualTo(42.0)
     }
+
+    @Test
+    fun getFunction_notFound() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/functions.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("functions", testFileUrl.openStream())
+            .build()
+
+        try {
+            program.getFunction("functions", "notThere")
+            fail()
+        } catch (e: KWasmProgram.ExportNotFoundException) {
+            assertThat(e).hasMessageThat().contains(
+                "No function with name \"notThere\" was found to be exported from module: functions"
+            )
+        }
+    }
+
+    @Test
+    fun getFunction_notEnoughArguments() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/functions.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("functions", testFileUrl.openStream())
+            .build()
+
+        val fn = program.getFunction("functions", "add")
+        try {
+            fn(1)
+            fail()
+        } catch (e: ExportedFunction.IllegalArgumentException) {
+            /* okay.. */
+        }
+    }
+
+    @Test
+    fun getFunction_tooManyArguments() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/functions.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("functions", testFileUrl.openStream())
+            .build()
+
+        val fn = program.getFunction("functions", "add")
+        try {
+            fn(1, 2, 3)
+            fail()
+        } catch (e: ExportedFunction.IllegalArgumentException) {
+            /* okay.. */
+        }
+    }
+
+    @Test
+    fun getFunction_wrongTypeOfArguments() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/functions.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("functions", testFileUrl.openStream())
+            .build()
+
+        val fn = program.getFunction("functions", "add")
+        try {
+            fn(1, 2L)
+            fail()
+        } catch (e: ExportedFunction.IllegalArgumentException) {
+            /* okay.. */
+        }
+    }
+
+    @Test
+    fun getFunction() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/functions.wat")
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+
+        val program = KWasmProgram.builder(memoryProvider)
+            .withTextFormatModule("functions", testFileUrl.openStream())
+            .build()
+
+        val fn = program.getFunction("functions", "add")
+        assertThat(fn(1, 2)).isEqualTo(3)
+    }
 }
