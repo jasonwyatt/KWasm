@@ -57,7 +57,7 @@ interface ExportedFunction {
 
 internal fun FunctionType.toSignature(moduleName: String, functionName: String): String {
     val functionParams = parameters.map {
-        when(it.valType) {
+        when (it.valType) {
             ValueType.I32 -> "Int"
             ValueType.I64 -> "Long"
             ValueType.F32 -> "Float"
