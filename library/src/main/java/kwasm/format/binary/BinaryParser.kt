@@ -16,7 +16,6 @@ package kwasm.format.binary
 
 import kwasm.format.ParseException
 import java.io.InputStream
-import java.io.Reader
 
 /**
  * Tool for reading bytes from a [reader] while supporting position tracking for error reporting
