@@ -24,10 +24,17 @@ import kwasm.format.binary.BinaryParser
  * ```
  *      vec(B)  ::= n:u32 (x:B)n   =>  x^n
  * ```
-*/
-fun BinaryParser.readVector(): List<Byte> {
-    val size = readUInt()
-    val result = mutableListOf<Byte>()
-    repeat(size) { result.add(readByte()) }
-    return result
-}
+ */
+fun BinaryParser.readVector(): List<Byte> = readVector { readByte() }
+
+/**
+ * From [the docs](https://webassembly.github.io/spec/core/binary/conventions.html#vectors):
+ *
+ * Vectors are encoded with their u32 length followed by the encoding of their element sequence.
+ *
+ * ```
+ *      vec(B)  ::= n:u32 (x:B)n   =>  x^n
+ * ```
+ */
+fun <T> BinaryParser.readVector(block: BinaryParser.() -> T): List<T> =
+    (0 until readUInt()).map { block() }
