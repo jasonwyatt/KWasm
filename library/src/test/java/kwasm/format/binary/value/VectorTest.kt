@@ -24,7 +24,7 @@ import java.io.ByteArrayInputStream
 import kotlin.random.Random
 
 @RunWith(JUnit4::class)
-class ByteVectorTest {
+class VectorTest {
     @Test
     fun readVector_empty() {
         val bytes = listOf(0x00, 0x10).toByteArray()
