@@ -24,7 +24,7 @@ import java.io.InputStream
  * purposes.
  */
 class BinaryParser(private val reader: InputStream) {
-    private var position = 0
+    internal var position = 0
     private val byteBuffer = ByteArray(1)
     private val intBuffer = ByteArray(4)
     private val longBuffer = ByteArray(8)
