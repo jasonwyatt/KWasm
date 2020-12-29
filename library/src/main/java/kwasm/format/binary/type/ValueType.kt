@@ -15,8 +15,6 @@
 package kwasm.format.binary.type
 
 import kwasm.ast.type.ValueType
-import kwasm.format.ParseContext
-import kwasm.format.ParseException
 import kwasm.format.binary.BinaryParser
 
 /**
@@ -37,7 +35,7 @@ import kwasm.format.binary.BinaryParser
  * block types. Thus, the binary format for types corresponds to the signed LEB128 encoding of
  * small negative `sN` values, so that they can coexist with (positive) type indices in the future.
  */
-fun BinaryParser.readValueType(parseContext: ParseContext): ValueType {
+fun BinaryParser.readValueType(): ValueType {
     val type = readByte().toUByte().toInt().asValueType()
     if (type == null) throwException("Value type not found", -1)
     return type
