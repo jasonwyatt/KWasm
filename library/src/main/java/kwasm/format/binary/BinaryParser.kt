@@ -16,6 +16,7 @@
 
 package kwasm.format.binary
 
+import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import java.io.InputStream
 
@@ -23,7 +24,10 @@ import java.io.InputStream
  * Tool for reading bytes from a [reader] while supporting position tracking for error reporting
  * purposes.
  */
-class BinaryParser(private val reader: InputStream) {
+class BinaryParser(
+    private val reader: InputStream,
+    private val fileName: String = "unknown.wasm"
+) {
     internal var position = 0
     private val byteBuffer = ByteArray(1)
     private val intBuffer = ByteArray(4)
@@ -32,7 +36,7 @@ class BinaryParser(private val reader: InputStream) {
     /** Reads a single [Byte] from the [reader]. */
     fun readByte(): Byte {
         val read = reader.read(byteBuffer, 0, 1)
-        if (read != 1) throw ParseException("Expected byte at position $position, but none found.")
+        if (read != 1) throwException("Expected byte, but none found")
         position += read
         return byteBuffer[0]
     }
@@ -42,9 +46,7 @@ class BinaryParser(private val reader: InputStream) {
      */
     fun readFourBytes(): Int {
         val read = reader.read(intBuffer, 0, 4)
-        if (read != 4) {
-            throw ParseException("Expected 4 bytes at position $position, but $read found.")
-        }
+        if (read != 4) throwException("Expected 4 bytes, but $read found")
         position += read
         return intBuffer[0].toUByte().toInt() or
             (intBuffer[1].toUByte().toInt() shl 8) or
@@ -57,9 +59,7 @@ class BinaryParser(private val reader: InputStream) {
      */
     fun readEightBytes(): Long {
         val read = reader.read(longBuffer, 0, 8)
-        if (read != 8) {
-            throw ParseException("Expected 8 bytes at position $position, but $read found.")
-        }
+        if (read != 8) throwException("Expected 8 bytes, but $read found")
         position += read
         return longBuffer[0].toUByte().toLong() or
             (longBuffer[1].toUByte().toLong() shl 8) or
@@ -69,5 +69,13 @@ class BinaryParser(private val reader: InputStream) {
             (longBuffer[5].toUByte().toLong() shl 40) or
             (longBuffer[6].toUByte().toLong() shl 48) or
             (longBuffer[7].toUByte().toLong() shl 56)
+    }
+
+    /**
+     * Throws a [ParseException] with the given message at the current [position] plus the provided
+     * [positionOffset].
+     */
+    fun throwException(message: String, positionOffset: Int = 0): Nothing {
+        throw ParseException(message, ParseContext(fileName, position + positionOffset, 0))
     }
 }

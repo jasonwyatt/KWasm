@@ -16,6 +16,7 @@ package kwasm.format.binary.type
 
 import com.google.common.truth.Truth.assertThat
 import kwasm.ast.type.ValueType
+import kwasm.format.ParseException
 import kwasm.format.binary.BinaryParser
 import kwasm.format.binary.toByteArray
 import org.junit.Assert.assertThrows
@@ -41,18 +42,14 @@ class ValueTypeTest {
     fun readValueType_throwsWhenNoByte() {
         val bytes = ByteArray(0)
         val parser = BinaryParser(ByteArrayInputStream(bytes))
-        assertThrows(ParseException::class.java) {
-            parser.readValueType()
-        }
+        assertThrows(ParseException::class.java) { parser.readValueType() }
     }
 
     @Test
     fun readValueType_throwsWhenInvalid() {
         val bytes = listOf(0x11).toByteArray()
         val parser = BinaryParser(ByteArrayInputStream(bytes))
-        assertThrows(ParseException::class.java) {
-            parser.readValueType()
-        }
+        assertThrows(ParseException::class.java) { parser.readValueType() }
     }
 
     @Test
