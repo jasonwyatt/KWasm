@@ -35,20 +35,20 @@ internal const val NUMERIC_SATURATING_TRUNCATION_OPCODE = 0xFC
  * From
  * [the docs](https://webassembly.github.io/spec/core/binary/instructions.html#numeric-instructions)
  * :
- * 
+ *
  * All variants of numeric instructions are represented by separate byte codes.
  *
  * The `const` instructions are followed by the respective literal.
- * 
+ *
  * ```
  *      instr   ::= 0x41 n:i32  =>  i32.const n
  *                  0x42 n:i64  =>  i64.const n
  *                  0x43 z:f32  =>  f32.const z
  *                  0x44 z:f64  =>  f64.const z
  * ```
- * 
+ *
  * All other numeric instructions are plain opcodes without any immediates.
- * 
+ *
  * ```
  *      instr   ::= 0x45    => i32.eqz
  *                  0x46    => i32.eq
