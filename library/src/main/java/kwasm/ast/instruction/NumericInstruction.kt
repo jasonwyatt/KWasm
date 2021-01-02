@@ -277,4 +277,32 @@ sealed class NumericInstruction : Instruction {
     object F64PromoteF32 : NumericInstruction()
     /** f64.reinterpret_i64 */
     object F64ReinterpretI64 : NumericInstruction()
+
+    /** i32.extend8_s */
+    object I32Extend8Signed : NumericInstruction()
+    /** i32.extend16_s */
+    object I32Extend16Signed : NumericInstruction()
+    /** i64.extend8_s */
+    object I64Extend8Signed : NumericInstruction()
+    /** i64.extend16_s */
+    object I64Extend16Signed : NumericInstruction()
+    /** i64.extend32_s */
+    object I64Extend32Signed : NumericInstruction()
+
+    /** i32.trunc_sat_f32_s */
+    object I32TruncateSaturatedF32Signed : NumericInstruction()
+    /** i32.trunc_sat_f32_u */
+    object I32TruncateSaturatedF32Unsigned : NumericInstruction()
+    /** i32.trunc_sat_f64_s */
+    object I32TruncateSaturatedF64Signed : NumericInstruction()
+    /** i32.trunc_sat_f64_u */
+    object I32TruncateSaturatedF64Unsigned : NumericInstruction()
+    /** i64.trunc_sat_f32_s */
+    object I64TruncateSaturatedF32Signed : NumericInstruction()
+    /** i64.trunc_sat_f32_u */
+    object I64TruncateSaturatedF32Unsigned : NumericInstruction()
+    /** i64.trunc_sat_f64_s */
+    object I64TruncateSaturatedF64Signed : NumericInstruction()
+    /** i64.trunc_sat_f64_u */
+    object I64TruncateSaturatedF64Unsigned : NumericInstruction()
 }

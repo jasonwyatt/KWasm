@@ -4016,6 +4016,184 @@ class NumericInstructionTest {
     ).forEach { it.check("f64.reinterpret_i64") }
 
     @Test
+    fun i32Extend8Signed() = listOf(
+        TestCase(0, 0),
+        TestCase(1, 1),
+        TestCase(-1, 0xFF),
+        TestCase(-2, 0xFE),
+        TestCase(Byte.MIN_VALUE.toInt(), 0x80)
+    ).forEach { it.check("i32.extend8_s") }
+
+    @Test
+    fun i32Extend16Signed() = listOf(
+        TestCase(0, 0),
+        TestCase(1, 1),
+        TestCase(0xFF, 0xFF),
+        TestCase(-1, 0xFFFF),
+        TestCase(-2, 0xFFFE),
+        TestCase(Short.MIN_VALUE.toInt(), 0x8000)
+    ).forEach { it.check("i32.extend16_s") }
+
+    @Test
+    fun i64Extend8Signed() = listOf(
+        TestCase(0L, 0L),
+        TestCase(1L, 1L),
+        TestCase(-1L, 0xFFL),
+        TestCase(-2L, 0xFEL),
+        TestCase(Byte.MIN_VALUE.toLong(), 0x80L)
+    ).forEach { it.check("i64.extend8_s") }
+
+    @Test
+    fun i64Extend16Signed() = listOf(
+        TestCase(0L, 0L),
+        TestCase(1L, 1L),
+        TestCase(0xFFL, 0xFFL),
+        TestCase(-1L, 0xFFFFL),
+        TestCase(-2L, 0xFFFEL),
+        TestCase(Short.MIN_VALUE.toLong(), 0x8000L)
+    ).forEach { it.check("i64.extend16_s") }
+
+    @Test
+    fun i64Extend32Signed() = listOf(
+        TestCase(0L, 0L),
+        TestCase(1L, 1L),
+        TestCase(0xFFL, 0xFFL),
+        TestCase(0xFFFFL, 0xFFFFL),
+        TestCase(0xFFFFFFL, 0xFFFFFFL),
+        TestCase(-1L, 0xFFFFFFFFL),
+        TestCase(-2L, 0xFFFFFFFEL),
+        TestCase(Int.MIN_VALUE.toLong(), 0x80000000L)
+    ).forEach { it.check("i64.extend32_s") }
+
+    @Test
+    fun i32TruncateSaturatedF32Signed() = listOf(
+        TestCase(0, Float.NaN),
+        TestCase(0, -Float.NaN),
+        TestCase(Int.MIN_VALUE, Float.NEGATIVE_INFINITY),
+        TestCase(Int.MAX_VALUE, Float.POSITIVE_INFINITY),
+        TestCase(Int.MIN_VALUE, -5e9f),
+        TestCase(Int.MAX_VALUE, 5e9f),
+        TestCase(-1, -1.0f),
+        TestCase(1, 1.0f),
+        TestCase(0, 0.0f),
+        TestCase(0, -0.0f),
+        TestCase(1337, 1337.424333f),
+        TestCase(-1337, -1337.424333f),
+    ).forEach { it.check("i32.trunc_sat_f32_s") }
+
+    @Test
+    fun i32TruncateSaturatedF32Unsigned() = listOf(
+        TestCase(0, Float.NaN),
+        TestCase(0, -Float.NaN),
+        TestCase(0, Float.NEGATIVE_INFINITY),
+        TestCase(UInt.MAX_VALUE.toInt(), Float.POSITIVE_INFINITY),
+        TestCase(0, -5e9f),
+        TestCase(UInt.MAX_VALUE.toInt(), 5e9f),
+        TestCase(0, -1.0f),
+        TestCase(1, 1.0f),
+        TestCase(0, 0.0f),
+        TestCase(0, -0.0f),
+        TestCase(1337, 1337.424333f),
+        TestCase(0, -1337.424333f),
+    ).forEach { it.check("i32.trunc_sat_f32_u") }
+
+    @Test
+    fun i32TruncateSaturatedF64Signed() = listOf(
+        TestCase(0, Double.NaN),
+        TestCase(0, -Double.NaN),
+        TestCase(Int.MIN_VALUE, Double.NEGATIVE_INFINITY),
+        TestCase(Int.MAX_VALUE, Double.POSITIVE_INFINITY),
+        TestCase(Int.MIN_VALUE, -5e9),
+        TestCase(Int.MAX_VALUE, 5e9),
+        TestCase(-1, -1.0),
+        TestCase(1, 1.0),
+        TestCase(0, 0.0),
+        TestCase(0, -0.0),
+        TestCase(1337, 1337.424333),
+        TestCase(-1337, -1337.424333),
+    ).forEach { it.check("i32.trunc_sat_f64_s") }
+
+    @Test
+    fun i32TruncateSaturatedF64Unsigned() = listOf(
+        TestCase(0, Double.NaN),
+        TestCase(0, -Double.NaN),
+        TestCase(0, Double.NEGATIVE_INFINITY),
+        TestCase(UInt.MAX_VALUE.toInt(), Double.POSITIVE_INFINITY),
+        TestCase(0, -5e9),
+        TestCase(UInt.MAX_VALUE.toInt(), 5e9),
+        TestCase(0, -1.0),
+        TestCase(1, 1.0),
+        TestCase(0, 0.0),
+        TestCase(0, -0.0),
+        TestCase(1337, 1337.424333),
+        TestCase(0, -1337.424333),
+    ).forEach { it.check("i32.trunc_sat_f64_u") }
+
+    @Test
+    fun i64TruncateSaturatedF32Signed() = listOf(
+        TestCase(0L, Float.NaN),
+        TestCase(0L, -Float.NaN),
+        TestCase(Long.MIN_VALUE, Float.NEGATIVE_INFINITY),
+        TestCase(Long.MAX_VALUE, Float.POSITIVE_INFINITY),
+        TestCase(Long.MIN_VALUE, -5e90f),
+        TestCase(Long.MAX_VALUE, 5e90f),
+        TestCase(-1L, -1.0f),
+        TestCase(1L, 1.0f),
+        TestCase(0L, 0.0f),
+        TestCase(0L, -0.0f),
+        TestCase(1337L, 1337.424333f),
+        TestCase(-1337L, -1337.424333f),
+    ).forEach { it.check("i64.trunc_sat_f32_s") }
+
+    @Test
+    fun i64TruncateSaturatedF32Unsigned() = listOf(
+        TestCase(0L, Float.NaN),
+        TestCase(0L, -Float.NaN),
+        TestCase(0L, Float.NEGATIVE_INFINITY),
+        TestCase(ULong.MAX_VALUE.toLong(), Float.POSITIVE_INFINITY),
+        TestCase(0L, -5e20f),
+        TestCase(ULong.MAX_VALUE.toLong(), 5e20f),
+        TestCase(0L, -1.0f),
+        TestCase(1L, 1.0f),
+        TestCase(0L, 0.0f),
+        TestCase(0L, -0.0f),
+        TestCase(1337L, 1337.424333f),
+        TestCase(0L, -1337.424333f),
+    ).forEach { it.check("i64.trunc_sat_f32_u") }
+
+    @Test
+    fun i64TruncateSaturatedF64Signed() = listOf(
+        TestCase(0L, Double.NaN),
+        TestCase(0L, -Double.NaN),
+        TestCase(Long.MIN_VALUE, Double.NEGATIVE_INFINITY),
+        TestCase(Long.MAX_VALUE, Double.POSITIVE_INFINITY),
+        TestCase(Long.MIN_VALUE, -5e90),
+        TestCase(Long.MAX_VALUE, 5e90),
+        TestCase(-1L, -1.0),
+        TestCase(1L, 1.0),
+        TestCase(0L, 0.0),
+        TestCase(0L, -0.0),
+        TestCase(1337L, 1337.424333),
+        TestCase(-1337L, -1337.424333),
+    ).forEach { it.check("i64.trunc_sat_f64_s") }
+
+    @Test
+    fun i64TruncateSaturatedF64Unsigned() = listOf(
+        TestCase(0L, Double.NaN),
+        TestCase(0L, -Double.NaN),
+        TestCase(0L, Double.NEGATIVE_INFINITY),
+        TestCase(ULong.MAX_VALUE.toLong(), Double.POSITIVE_INFINITY),
+        TestCase(0L, -5e90),
+        TestCase(ULong.MAX_VALUE.toLong(), 5e90),
+        TestCase(0L, -1.0),
+        TestCase(1L, 1.0),
+        TestCase(0L, 0.0),
+        TestCase(0L, -0.0),
+        TestCase(1337L, 1337.424333),
+        TestCase(0L, -1337.424333),
+    ).forEach { it.check("i64.trunc_sat_f64_u") }
+
+    @Test
     fun unaryOp_throws_ifStackEmpty() {
         assertThrows(IllegalStateException::class.java) {
             unaryOp<IntValue, IntValue>(executionContext) {
