@@ -208,4 +208,20 @@ internal fun NumericInstruction.getExpectedInsAndOuts(): Pair<List<ValueType>, V
         F64ConvertI64Unsigned,
         F64ReinterpretI64 -> listOf(I64) to F64
         F64PromoteF32 -> listOf(F32) to F64
+
+        I32Extend8Signed,
+        I32Extend16Signed -> listOf(I32) to I32
+
+        I64Extend8Signed,
+        I64Extend16Signed,
+        I64Extend32Signed -> listOf(I64) to I64
+
+        I32TruncateSaturatedF32Signed,
+        I32TruncateSaturatedF32Unsigned -> listOf(F32) to I32
+        I32TruncateSaturatedF64Signed,
+        I32TruncateSaturatedF64Unsigned -> listOf(F64) to I32
+        I64TruncateSaturatedF32Signed,
+        I64TruncateSaturatedF32Unsigned -> listOf(F32) to I64
+        I64TruncateSaturatedF64Signed,
+        I64TruncateSaturatedF64Unsigned -> listOf(F64) to I64
     }

@@ -166,5 +166,20 @@ private val NUMERIC_LOOKUP = mapOf<String, NumericInstruction>(
     "f64.convert_i64_s" to NumericInstruction.F64ConvertI64Signed,
     "f64.convert_i64_u" to NumericInstruction.F64ConvertI64Unsigned,
     "f64.promote_f32" to NumericInstruction.F64PromoteF32,
-    "f64.reinterpret_i64" to NumericInstruction.F64ReinterpretI64
+    "f64.reinterpret_i64" to NumericInstruction.F64ReinterpretI64,
+
+    "i32.extend8_s" to NumericInstruction.I32Extend8Signed,
+    "i32.extend16_s" to NumericInstruction.I32Extend16Signed,
+    "i64.extend8_s" to NumericInstruction.I64Extend8Signed,
+    "i64.extend16_s" to NumericInstruction.I64Extend16Signed,
+    "i64.extend32_s" to NumericInstruction.I64Extend32Signed,
+
+    "i32.trunc_sat_f32_s" to NumericInstruction.I32TruncateSaturatedF32Signed,
+    "i32.trunc_sat_f32_u" to NumericInstruction.I32TruncateSaturatedF32Unsigned,
+    "i32.trunc_sat_f64_s" to NumericInstruction.I32TruncateSaturatedF64Signed,
+    "i32.trunc_sat_f64_u" to NumericInstruction.I32TruncateSaturatedF64Unsigned,
+    "i64.trunc_sat_f32_s" to NumericInstruction.I64TruncateSaturatedF32Signed,
+    "i64.trunc_sat_f32_u" to NumericInstruction.I64TruncateSaturatedF32Unsigned,
+    "i64.trunc_sat_f64_s" to NumericInstruction.I64TruncateSaturatedF64Signed,
+    "i64.trunc_sat_f64_u" to NumericInstruction.I64TruncateSaturatedF64Unsigned,
 )

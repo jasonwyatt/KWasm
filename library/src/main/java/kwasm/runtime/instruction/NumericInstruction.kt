@@ -555,6 +555,9 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
                 throw KWasmRuntimeException("Cannot truncate, magnitude too large for i32")
             truncated.toInt().toValue()
         }
+        NumericInstruction.I32TruncateSaturatedF32Signed -> unaryOp(context) { x: FloatValue ->
+            return@unaryOp truncate(x.value).toInt().toValue()
+        }
         NumericInstruction.I32TruncateF32Unsigned -> unaryOp<FloatValue, IntValue>(context) { x ->
             if (x.value.isNaN())
                 throw KWasmRuntimeException("Cannot truncate NaN")
@@ -567,6 +570,9 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
                 throw KWasmRuntimeException("Cannot truncate, magnitude too large for i32")
             truncated.toUInt().toValue()
         }
+        NumericInstruction.I32TruncateSaturatedF32Unsigned -> unaryOp(context) { x: FloatValue ->
+            return@unaryOp truncate(x.value).toUInt().toValue()
+        }
         NumericInstruction.I32TruncateF64Signed -> unaryOp<DoubleValue, IntValue>(context) { x ->
             if (x.value.isNaN())
                 throw KWasmRuntimeException("Cannot truncate NaN")
@@ -576,6 +582,9 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
             if (truncated > Int.MAX_VALUE || truncated < Int.MIN_VALUE)
                 throw KWasmRuntimeException("Cannot truncate, magnitude too large for i32")
             truncated.toInt().toValue()
+        }
+        NumericInstruction.I32TruncateSaturatedF64Signed -> unaryOp(context) { x: DoubleValue ->
+            return@unaryOp truncate(x.value).toInt().toValue()
         }
         NumericInstruction.I32TruncateF64Unsigned -> unaryOp<DoubleValue, IntValue>(context) { x ->
             if (x.value.isNaN())
@@ -588,6 +597,9 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
             if (truncated > UInt.MAX_VALUE.toDouble())
                 throw KWasmRuntimeException("Cannot truncate, magnitude too large for i32")
             truncated.toUInt().toValue()
+        }
+        NumericInstruction.I32TruncateSaturatedF64Unsigned -> unaryOp(context) { x: DoubleValue ->
+            return@unaryOp truncate(x.value).toUInt().toValue()
         }
         NumericInstruction.I32ReinterpretF32 -> unaryOp(context) { x: FloatValue ->
             x.value.toRawBits().toValue()
@@ -608,6 +620,9 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
                 throw KWasmRuntimeException("Cannot truncate, magnitude too large for i64")
             truncated.toLong().toValue()
         }
+        NumericInstruction.I64TruncateSaturatedF32Signed -> unaryOp(context) { x: FloatValue ->
+            return@unaryOp truncate(x.value).toLong().toValue()
+        }
         NumericInstruction.I64TruncateF32Unsigned -> unaryOp<FloatValue, LongValue>(context) { x ->
             if (x.value.isNaN())
                 throw KWasmRuntimeException("Cannot truncate NaN")
@@ -620,6 +635,9 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
                 throw KWasmRuntimeException("Cannot truncate, magnitude too large for i64")
             truncated.toLong().toValue()
         }
+        NumericInstruction.I64TruncateSaturatedF32Unsigned -> unaryOp(context) { x: FloatValue ->
+            return@unaryOp truncate(x.value).toULong().toValue()
+        }
         NumericInstruction.I64TruncateF64Signed -> unaryOp<DoubleValue, LongValue>(context) { x ->
             if (x.value.isNaN())
                 throw KWasmRuntimeException("Cannot truncate NaN")
@@ -629,6 +647,9 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
             if (truncated > Long.MAX_VALUE || truncated < Long.MIN_VALUE)
                 throw KWasmRuntimeException("Cannot truncate, magnitude too large for i64")
             truncated.toLong().toValue()
+        }
+        NumericInstruction.I64TruncateSaturatedF64Signed -> unaryOp(context) { x: DoubleValue ->
+            return@unaryOp truncate(x.value).toLong().toValue()
         }
         NumericInstruction.I64TruncateF64Unsigned -> unaryOp<DoubleValue, LongValue>(context) { x ->
             if (x.value.isNaN())
@@ -641,6 +662,9 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
             if (truncated > ULong.MAX_VALUE.toDouble())
                 throw KWasmRuntimeException("Cannot truncate, magnitude too large for i64")
             truncated.toLong().toValue()
+        }
+        NumericInstruction.I64TruncateSaturatedF64Unsigned -> unaryOp(context) { x: DoubleValue ->
+            return@unaryOp truncate(x.value).toULong().toValue()
         }
         NumericInstruction.I64ReinterpretF64 -> unaryOp(context) { x: DoubleValue ->
             (x.value).toRawBits().toValue()
@@ -680,6 +704,21 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
         }
         NumericInstruction.F64ReinterpretI64 -> unaryOp(context) { x: LongValue ->
             Double.fromBits(x.value).toValue()
+        }
+        NumericInstruction.I32Extend8Signed -> unaryOp(context) { x: IntValue ->
+            x.value.toByte().toInt().toValue()
+        }
+        NumericInstruction.I32Extend16Signed -> unaryOp(context) { x: IntValue ->
+            x.value.toShort().toInt().toValue()
+        }
+        NumericInstruction.I64Extend8Signed -> unaryOp(context) { x: LongValue ->
+            x.value.toByte().toLong().toValue()
+        }
+        NumericInstruction.I64Extend16Signed -> unaryOp(context) { x: LongValue ->
+            x.value.toShort().toLong().toValue()
+        }
+        NumericInstruction.I64Extend32Signed -> unaryOp(context) { x: LongValue ->
+            x.value.toInt().toLong().toValue()
         }
     }
     return context

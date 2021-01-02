@@ -210,7 +210,22 @@ class NumericInstructionValidatorTest(private val source: String) {
             "f64.convert_i64_s",
             "f64.convert_i64_u",
             "f64.promote_f32",
-            "f64.reinterpret_i64"
+            "f64.reinterpret_i64",
+
+            "i32.extend8_s",
+            "i32.extend16_s",
+            "i64.extend8_s",
+            "i64.extend16_s",
+            "i64.extend32_s",
+
+            "i32.trunc_sat_f32_s",
+            "i32.trunc_sat_f32_u",
+            "i32.trunc_sat_f64_s",
+            "i32.trunc_sat_f64_u",
+            "i64.trunc_sat_f32_s",
+            "i64.trunc_sat_f32_u",
+            "i64.trunc_sat_f64_s",
+            "i64.trunc_sat_f64_u",
         )
     }
 }
