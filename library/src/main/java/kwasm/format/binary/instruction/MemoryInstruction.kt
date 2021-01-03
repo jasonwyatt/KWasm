@@ -26,9 +26,9 @@ internal val MEMORY_OPCODE_RANGE = 0x28..0x40
  * From
  * [the docs](https://webassembly.github.io/spec/core/binary/instructions.html#memory-instructions):
  *
- * Each variant of memory instruction is encoded with a different byte code. Loads and stores are 
+ * Each variant of memory instruction is encoded with a different byte code. Loads and stores are
  * followed by the encoding of their `memarg` immediate.
- * 
+ *
  * ```
  *      memarg  ::=     a:u32 o:u32 => {align a, offset o}
  *      instr   ::=     0x28 m:memarg => i32.load m
@@ -57,9 +57,9 @@ internal val MEMORY_OPCODE_RANGE = 0x28..0x40
  *                      0x3F 0x00     => memory.size
  *                      0x40 0x00     => memory.grow
  * ```
- * 
+ *
  * **Note**
- * In future versions of WebAssembly, the additional zero bytes occurring in the encoding of the 
+ * In future versions of WebAssembly, the additional zero bytes occurring in the encoding of the
  * `memory.size` and `memory.grow` instructions may be used to index additional memories.
  */
 fun BinaryParser.readMemoryInstruction(opcode: Int): Instruction = when (opcode) {
