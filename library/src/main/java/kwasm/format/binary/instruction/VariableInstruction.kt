@@ -14,12 +14,9 @@
 
 package kwasm.format.binary.instruction
 
-import kwasm.ast.Identifier
 import kwasm.ast.instruction.VariableInstruction
-import kwasm.ast.module.Index
 import kwasm.format.binary.BinaryParser
 import kwasm.format.binary.module.readIndex
-import kwasm.format.binary.value.readUInt
 
 internal val VARIABLE_OPCODE_RANGE = 0x20..0x24
 

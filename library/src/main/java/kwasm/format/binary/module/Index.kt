@@ -23,7 +23,7 @@ import kwasm.format.binary.value.readUInt
  * From [the docs](https://webassembly.github.io/spec/core/binary/modules.html#indices):
  *
  * All indices are encoded with their respective value.
- * 
+ *
  * ```
  *  typeidx     ::= x:u32 => x
  *  funcidx     ::= x:u32 => x
