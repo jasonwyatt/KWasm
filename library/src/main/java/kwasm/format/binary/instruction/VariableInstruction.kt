@@ -18,6 +18,7 @@ import kwasm.ast.Identifier
 import kwasm.ast.instruction.VariableInstruction
 import kwasm.ast.module.Index
 import kwasm.format.binary.BinaryParser
+import kwasm.format.binary.module.readIndex
 import kwasm.format.binary.value.readUInt
 
 internal val VARIABLE_OPCODE_RANGE = 0x20..0x24
@@ -36,14 +37,11 @@ internal val VARIABLE_OPCODE_RANGE = 0x20..0x24
  * ```
  */
 @Suppress("UNCHECKED_CAST")
-fun BinaryParser.readVariableInstruction(opcode: Int): VariableInstruction {
-    val index = Index.ByInt(readUInt())
-    return when (opcode) {
-        0x20 -> VariableInstruction.LocalGet(index as Index<Identifier.Local>)
-        0x21 -> VariableInstruction.LocalSet(index as Index<Identifier.Local>)
-        0x22 -> VariableInstruction.LocalTee(index as Index<Identifier.Local>)
-        0x23 -> VariableInstruction.GlobalGet(index as Index<Identifier.Global>)
-        0x24 -> VariableInstruction.GlobalSet(index as Index<Identifier.Global>)
-        else -> throwException("Bad opcode for VariableInstruction: 0x${opcode.toString(16)}", -1)
-    }
+fun BinaryParser.readVariableInstruction(opcode: Int): VariableInstruction = when (opcode) {
+    0x20 -> VariableInstruction.LocalGet(readIndex())
+    0x21 -> VariableInstruction.LocalSet(readIndex())
+    0x22 -> VariableInstruction.LocalTee(readIndex())
+    0x23 -> VariableInstruction.GlobalGet(readIndex())
+    0x24 -> VariableInstruction.GlobalSet(readIndex())
+    else -> throwException("Bad opcode for VariableInstruction: 0x${opcode.toString(16)}", -1)
 }
