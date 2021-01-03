@@ -39,6 +39,7 @@ fun BinaryParser.readInstruction(): Instruction? = when (val opcode = readByte()
     in MEMORY_OPCODE_RANGE -> readMemoryInstruction(opcode)
     in NUMERIC_OPCODE_RANGE -> readNumericInstruction(opcode)
     NUMERIC_SATURATING_TRUNCATION_OPCODE -> readNumericInstruction(opcode)
+    in VARIABLE_OPCODE_RANGE -> readVariableInstruction(opcode)
     else -> throwException("No instruction defined for opcode: 0x${opcode.toString(16)}", -1)
 }
 
