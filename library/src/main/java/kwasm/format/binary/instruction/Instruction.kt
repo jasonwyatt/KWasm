@@ -12,6 +12,8 @@
  * limitations under the License.
  */
 
+@file:Suppress("EXPERIMENTAL_API_USAGE")
+
 package kwasm.format.binary.instruction
 
 import kwasm.ast.instruction.Instruction
@@ -34,6 +36,7 @@ import kwasm.format.binary.BinaryParser
  */
 fun BinaryParser.readInstruction(): Instruction? = when (val opcode = readByte().toUByte().toInt()) {
     END_BYTE -> null
+    in MEMORY_OPCODE_RANGE -> readMemoryInstruction(opcode)
     in NUMERIC_OPCODE_RANGE -> readNumericInstruction(opcode)
     NUMERIC_SATURATING_TRUNCATION_OPCODE -> readNumericInstruction(opcode)
     else -> throwException("No instruction defined for opcode: 0x${opcode.toString(16)}", -1)
