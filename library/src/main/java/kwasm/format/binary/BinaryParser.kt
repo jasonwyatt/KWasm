@@ -33,12 +33,16 @@ class BinaryParser(
     private val intBuffer = ByteArray(4)
     private val longBuffer = ByteArray(8)
 
+    /** The last byte value read from the [reader]. */
+    internal var lastByte: Byte = 0x00
+        private set
+
     /** Reads a single [Byte] from the [reader]. */
     fun readByte(): Byte {
         val read = reader.read(byteBuffer, 0, 1)
         if (read != 1) throwException("Expected byte, but none found")
         position += read
-        return byteBuffer[0]
+        return byteBuffer[0].also { lastByte = it }
     }
 
     /**
@@ -51,7 +55,7 @@ class BinaryParser(
         return intBuffer[0].toUByte().toInt() or
             (intBuffer[1].toUByte().toInt() shl 8) or
             (intBuffer[2].toUByte().toInt() shl 16) or
-            (intBuffer[3].toUByte().toInt() shl 24)
+            (intBuffer[3].toUByte().toInt() shl 24).also { lastByte = intBuffer[3] }
     }
 
     /**
@@ -68,7 +72,7 @@ class BinaryParser(
             (longBuffer[4].toUByte().toLong() shl 32) or
             (longBuffer[5].toUByte().toLong() shl 40) or
             (longBuffer[6].toUByte().toLong() shl 48) or
-            (longBuffer[7].toUByte().toLong() shl 56)
+            (longBuffer[7].toUByte().toLong() shl 56).also { lastByte = intBuffer[7] }
     }
 
     /**

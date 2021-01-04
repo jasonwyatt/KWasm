@@ -23,6 +23,7 @@ import kwasm.format.text.ParseResult
 import kwasm.format.text.contextAt
 import kwasm.format.text.getOrThrow
 import kwasm.format.text.isOpenParen
+import kwasm.format.text.module.parseTypeUse
 import kwasm.format.text.token.Keyword
 import kwasm.format.text.token.Paren
 import kwasm.format.text.token.Token
@@ -133,19 +134,27 @@ private fun List<Token>.parseFoldedBlockOrLoop(
     var currentIndex = fromIndex
     val label = parseLabel(currentIndex)
     currentIndex += label.parseLength
-    val resultType = parseResultType(currentIndex)
+    val resultType = parseTypeUse(currentIndex)
     currentIndex += resultType.parseLength
     val instructions = parseInstructions(currentIndex)
     currentIndex += instructions.parseLength
     // Note: The closing paren will be parsed by the caller.
     return if (isLoop) {
         ParseResult(
-            ControlInstruction.Loop(label.astNode, resultType.astNode, instructions.astNode),
+            ControlInstruction.Loop(
+                label.astNode,
+                resultType.astNode.toResultType(),
+                instructions.astNode
+            ),
             currentIndex - fromIndex
         )
     } else {
         ParseResult(
-            ControlInstruction.Block(label.astNode, resultType.astNode, instructions.astNode),
+            ControlInstruction.Block(
+                label.astNode,
+                resultType.astNode.toResultType(),
+                instructions.astNode
+            ),
             currentIndex - fromIndex
         )
     }
@@ -167,7 +176,7 @@ private fun List<Token>.parseFoldedIf(fromIndex: Int): ParseResult<AstNodeList<o
 
     val label = parseLabel(currentIndex)
     currentIndex += label.parseLength
-    val resultType = parseResultType(currentIndex)
+    val resultType = parseTypeUse(currentIndex)
     currentIndex += resultType.parseLength
     val foldedInstructions = parseFoldedInstructions(currentIndex)
     currentIndex += foldedInstructions.parseLength
@@ -203,7 +212,7 @@ private fun List<Token>.parseFoldedIf(fromIndex: Int): ParseResult<AstNodeList<o
         AstNodeList(
             foldedInstructions.astNode + ControlInstruction.If(
                 label.astNode,
-                resultType.astNode,
+                resultType.astNode.toResultType(),
                 thenInstructions.astNode,
                 elseInstructions
             )

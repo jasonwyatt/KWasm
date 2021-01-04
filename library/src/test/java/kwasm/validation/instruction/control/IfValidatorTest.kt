@@ -16,7 +16,13 @@ package kwasm.validation.instruction.control
 
 import com.google.common.truth.Truth.assertThat
 import kwasm.ParseRule
+import kwasm.ast.Identifier
+import kwasm.ast.module.Type
+import kwasm.ast.type.FunctionType
+import kwasm.ast.type.Param
+import kwasm.ast.type.Result
 import kwasm.ast.type.ValueType
+import kwasm.ast.util.MutableAstNodeIndex
 import kwasm.validation.ValidationContext.Companion.EMPTY_FUNCTION_BODY
 import kwasm.validation.ValidationException
 import kwasm.validation.instruction.validate
@@ -74,11 +80,31 @@ class IfValidatorTest {
     }
 
     @Test
+    fun invalid_ifInstructions_finishWithWrongType_ofIndex_noneExpected() = parser.with {
+        assertThrows(ValidationException::class.java) {
+            "(if (type 0) (then (i32.const 1)))"
+                .parseInstructions()
+                .validate(STARTER_CONTEXT)
+        }
+    }
+
+    @Test
     fun invalid_ifInstructions_finishWithWrongType() = parser.with {
         assertThrows(ValidationException::class.java) {
             """
             (if (result i64) 
                 (then (i32.const 1))
+            )
+            """.trimIndent().parseInstructions().validate(STARTER_CONTEXT)
+        }
+    }
+
+    @Test
+    fun invalid_ifInstructions_finishWithWrongType_ofIndex() = parser.with {
+        assertThrows(ValidationException::class.java) {
+            """
+            (if (type 1) 
+                (then (i64.const 1))
             )
             """.trimIndent().parseInstructions().validate(STARTER_CONTEXT)
         }
@@ -96,9 +122,29 @@ class IfValidatorTest {
     }
 
     @Test
+    fun invalid_ifInstructions_finishWithWrongType_ofIndex_expected_nonePresent() = parser.with {
+        assertThrows(ValidationException::class.java) {
+            """
+            (if (type 1) 
+                (then (nop))
+            )
+            """.trimIndent().parseInstructions().validate(STARTER_CONTEXT)
+        }
+    }
+
+    @Test
     fun invalid_elseInstructions_finishWithWrongType_noneExpected() = parser.with {
         assertThrows(ValidationException::class.java) {
             "(if (then (nop)) (else (i32.const 1)))"
+                .parseInstructions()
+                .validate(STARTER_CONTEXT)
+        }
+    }
+
+    @Test
+    fun invalid_elseInstructions_finishWithWrongType_ofIndex_noneExpected() = parser.with {
+        assertThrows(ValidationException::class.java) {
+            "(if (type 0) (then (nop)) (else (i32.const 1)))"
                 .parseInstructions()
                 .validate(STARTER_CONTEXT)
         }
@@ -117,11 +163,35 @@ class IfValidatorTest {
     }
 
     @Test
+    fun invalid_elseInstructions_finishWithWrongType_ofIndex() = parser.with {
+        assertThrows(ValidationException::class.java) {
+            """
+            (if (type 1) 
+                (then (i32.const 1))
+                (else (i64.const 1))
+            )
+            """.trimIndent().parseInstructions().validate(STARTER_CONTEXT)
+        }
+    }
+
+    @Test
     fun invalid_elseInstructions_finishWithWrongType_expected_nonePresent() = parser.with {
         assertThrows(ValidationException::class.java) {
             """
             (if (result i64) 
                 (then (i64.const 1))
+                (else (nop))
+            )
+            """.trimIndent().parseInstructions().validate(STARTER_CONTEXT)
+        }
+    }
+
+    @Test
+    fun invalid_elseInstructions_finishWithWrongType_atIndex_expected_nonePresent() = parser.with {
+        assertThrows(ValidationException::class.java) {
+            """
+            (if (type 1) 
+                (then (i32.const 1))
                 (else (nop))
             )
             """.trimIndent().parseInstructions().validate(STARTER_CONTEXT)
@@ -158,6 +228,35 @@ class IfValidatorTest {
     }
 
     @Test
+    fun valid_noExpectedResult_withIndex() = parser.with {
+        var result =
+            """
+            (if (type 0)
+                (then (nop))
+                (else (nop))
+            )
+            """.trimIndent().parseInstructions().validate(STARTER_CONTEXT)
+        assertThat(result.stack).isEmpty()
+
+        result =
+            """
+            (if (type 0)
+                (then 
+                    (i32.add (i32.const 0) (i32.const 1))
+                    (drop)
+                )
+                (else (nop)
+                    (i32.add (i32.const 2) (i32.const 3))
+                    (drop)
+                )
+            )
+            """.trimIndent()
+                .parseInstructions()
+                .validate(STARTER_CONTEXT)
+        assertThat(result.stack).isEmpty()
+    }
+
+    @Test
     fun valid_expectedResult() = parser.with {
         val result =
             """
@@ -169,6 +268,20 @@ class IfValidatorTest {
                 .parseInstructions()
                 .validate(STARTER_CONTEXT)
         assertThat(result.stack).containsExactly(ValueType.F32)
+    }
+
+    @Test
+    fun valid_expectedResult_withIndex() = parser.with {
+        val result =
+            """
+            (if (type 1) 
+                (then (i32.const 0))
+                (else (i32.const 1))
+            )
+            """.trimIndent()
+                .parseInstructions()
+                .validate(STARTER_CONTEXT)
+        assertThat(result.stack).containsExactly(ValueType.I32)
     }
 
     @Test
@@ -202,5 +315,16 @@ class IfValidatorTest {
 
     companion object {
         private val STARTER_CONTEXT = EMPTY_FUNCTION_BODY.pushStack(ValueType.I32)
+            .copy(types = MutableAstNodeIndex<Type>().also {
+                it += Type(null, FunctionType(emptyList(), emptyList()))
+                it += Type(null, FunctionType(emptyList(), listOf(Result(ValueType.I32))))
+                it += Type(
+                    null,
+                    FunctionType(
+                        listOf(Param(Identifier.Local(null, null), ValueType.I32)),
+                        emptyList()
+                    )
+                )
+            })
     }
 }

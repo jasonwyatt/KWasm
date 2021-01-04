@@ -19,6 +19,7 @@ import kwasm.ast.Identifier
 import kwasm.ast.type.FunctionType
 import kwasm.ast.type.Param
 import kwasm.ast.type.Result
+import kwasm.ast.type.ResultType
 
 /**
  * Represents a reference to a [Type] definition.
@@ -67,4 +68,7 @@ data class TypeUse(
     /** Converts the [TypeUse] into a [Type]. */
     fun toType(): Type =
         Type((index as? Index.ByIdentifier<Identifier.Type>)?.indexVal, functionType)
+
+    /** Converts the [TypeUse] into a [ResultType]. */
+    fun toResultType(): ResultType = ResultType(results.takeIf { it.isNotEmpty() }?.last(), index)
 }
