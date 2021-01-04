@@ -20,9 +20,9 @@ import kwasm.ast.module.Index
 import kwasm.ast.module.TypeUse
 import kwasm.ast.type.Result
 import kwasm.ast.type.ResultType
+import kwasm.ast.type.ValueType
 import kwasm.format.binary.BinaryParser
 import kwasm.format.binary.module.readIndex
-import kwasm.format.binary.type.asValueType
 import kwasm.format.binary.value.readLong
 import kwasm.format.binary.value.readVector
 
@@ -37,7 +37,7 @@ internal val CONTROL_OPCODE_RANGE = 0x00..0x11
  *
  * Block types are encoded in special compressed form, by either the byte `0x40` indicating the
  * empty type, as a single value type, or as a type index encoded as a positive signed integer.
- * 
+ *
  * ```
  *      blocktype   ::= 0x40                                => ϵ
  *                      t:valtype                           => t
@@ -78,22 +78,29 @@ fun BinaryParser.readControlInstruction(opcode: Int): ControlInstruction = when 
     0x0E -> ControlInstruction.BreakTable(readVector { readIndex() }, readIndex())
     0x0F -> ControlInstruction.Return
     0x10 -> ControlInstruction.Call(readIndex())
-    0x11 -> ControlInstruction.CallIndirect(TypeUse(readIndex(), emptyList(), emptyList()))
-        .also {
-            if (readByte() != 0x00.toByte()) {
-                throwException("Invalid table index for call_indirect", -1)
+    0x11 ->
+        ControlInstruction.CallIndirect(TypeUse(readIndex(), emptyList(), emptyList()))
+            .also {
+                if (readByte() != 0x00.toByte()) {
+                    throwException("Invalid table index for call_indirect", -1)
+                }
             }
-        }
     else -> throwException("Invalid opcode for instruction: 0x${opcode.toString(16)}", -1)
 }
 
 @Suppress("UNCHECKED_CAST")
 internal fun BinaryParser.readBlock(opcode: Int): ControlInstruction {
     val blockType = readLong()
-    val blockValueType = blockType.toInt().asValueType()
+    val blockValueType = when (blockType) {
+        -1L -> ValueType.I32
+        -2L -> ValueType.I64
+        -3L -> ValueType.F32
+        -4L -> ValueType.F64
+        else -> null
+    }
     val label = Identifier.Label(null, null)
     val resultType = when {
-        blockType == 0x40L -> ResultType(null)
+        blockType == -64L -> ResultType(null)
         blockValueType != null -> ResultType(Result(blockValueType))
         else -> {
             ResultType(

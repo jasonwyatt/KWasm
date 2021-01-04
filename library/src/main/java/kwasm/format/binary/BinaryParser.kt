@@ -72,7 +72,7 @@ class BinaryParser(
             (longBuffer[4].toUByte().toLong() shl 32) or
             (longBuffer[5].toUByte().toLong() shl 40) or
             (longBuffer[6].toUByte().toLong() shl 48) or
-            (longBuffer[7].toUByte().toLong() shl 56).also { lastByte = intBuffer[7] }
+            (longBuffer[7].toUByte().toLong() shl 56).also { lastByte = longBuffer[7] }
     }
 
     /**

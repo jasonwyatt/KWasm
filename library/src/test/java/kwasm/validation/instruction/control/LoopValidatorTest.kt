@@ -163,16 +163,18 @@ class LoopValidatorTest {
 
     companion object {
         private val STARTER_CONTEXT = EMPTY_FUNCTION_BODY
-            .copy(types = MutableAstNodeIndex<Type>().also {
-                it += Type(null, FunctionType(emptyList(), emptyList()))
-                it += Type(null, FunctionType(emptyList(), listOf(Result(ValueType.I32))))
-                it += Type(
-                    null,
-                    FunctionType(
-                        listOf(Param(Identifier.Local(null, null), ValueType.I32)),
-                        emptyList()
+            .copy(
+                types = MutableAstNodeIndex<Type>().also {
+                    it += Type(null, FunctionType(emptyList(), emptyList()))
+                    it += Type(null, FunctionType(emptyList(), listOf(Result(ValueType.I32))))
+                    it += Type(
+                        null,
+                        FunctionType(
+                            listOf(Param(Identifier.Local(null, null), ValueType.I32)),
+                            emptyList()
+                        )
                     )
-                )
-            })
+                }
+            )
     }
 }

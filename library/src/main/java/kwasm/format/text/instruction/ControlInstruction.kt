@@ -34,7 +34,6 @@ import kwasm.format.text.module.parseIndex
 import kwasm.format.text.module.parseIndices
 import kwasm.format.text.module.parseTypeUse
 import kwasm.format.text.token.Token
-import kwasm.format.text.type.parseResultType
 
 /** This file contains parsing implementations for all of the various [ControlInstruction]s. */
 
