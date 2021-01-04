@@ -35,7 +35,9 @@ import kwasm.format.binary.BinaryParser
  * Gaps in the byte code ranges for encoding instructions are reserved for future extensions.
  */
 fun BinaryParser.readInstruction(): Instruction? = when (val opcode = readByte().toUByte().toInt()) {
-    END_BYTE -> null
+    END_BYTE,
+    ELSE_BRANCH_BYTE -> null
+    in CONTROL_OPCODE_RANGE -> readControlInstruction(opcode)
     in MEMORY_OPCODE_RANGE -> readMemoryInstruction(opcode)
     in NUMERIC_OPCODE_RANGE -> readNumericInstruction(opcode)
     NUMERIC_SATURATING_TRUNCATION_OPCODE -> readNumericInstruction(opcode)
@@ -45,3 +47,4 @@ fun BinaryParser.readInstruction(): Instruction? = when (val opcode = readByte()
 }
 
 private const val END_BYTE = 0x0B
+internal const val ELSE_BRANCH_BYTE = 0x05

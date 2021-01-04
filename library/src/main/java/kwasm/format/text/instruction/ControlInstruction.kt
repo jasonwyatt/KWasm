@@ -34,7 +34,6 @@ import kwasm.format.text.module.parseIndex
 import kwasm.format.text.module.parseIndices
 import kwasm.format.text.module.parseTypeUse
 import kwasm.format.text.token.Token
-import kwasm.format.text.type.parseResultType
 
 /** This file contains parsing implementations for all of the various [ControlInstruction]s. */
 
@@ -88,7 +87,7 @@ private fun List<Token>.parseBlockOrLoopContInstruction(
 
     val label = parseLabel(fromIndex + tokensParsed)
     tokensParsed += label.parseLength
-    val resultType = parseResultType(fromIndex + tokensParsed)
+    val resultType = parseTypeUse(fromIndex + tokensParsed)
     tokensParsed += resultType.parseLength
     val instructions = parseInstructions(fromIndex + tokensParsed)
     tokensParsed += instructions.parseLength
@@ -113,12 +112,20 @@ private fun List<Token>.parseBlockOrLoopContInstruction(
 
     return if (opener.value == "block") {
         ParseResult(
-            ControlInstruction.Block(label.astNode, resultType.astNode, instructions.astNode),
+            ControlInstruction.Block(
+                label.astNode,
+                resultType.astNode.toResultType(),
+                instructions.astNode
+            ),
             tokensParsed
         )
     } else {
         ParseResult(
-            ControlInstruction.Loop(label.astNode, resultType.astNode, instructions.astNode),
+            ControlInstruction.Loop(
+                label.astNode,
+                resultType.astNode.toResultType(),
+                instructions.astNode
+            ),
             tokensParsed
         )
     }
@@ -134,7 +141,7 @@ private fun List<Token>.parseIfContInstruction(
 
     val label = parseLabel(fromIndex + tokensParsed)
     tokensParsed += label.parseLength
-    val resultType = parseResultType(fromIndex + tokensParsed)
+    val resultType = parseTypeUse(fromIndex + tokensParsed)
     tokensParsed += resultType.parseLength
 
     val positiveInstructions = parseInstructions(fromIndex + tokensParsed)
@@ -186,7 +193,7 @@ private fun List<Token>.parseIfContInstruction(
     return ParseResult(
         ControlInstruction.If(
             label.astNode,
-            resultType.astNode,
+            resultType.astNode.toResultType(),
             positiveInstructions.astNode,
             negativeInstructions.astNode
         ),

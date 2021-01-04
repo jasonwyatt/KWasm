@@ -14,6 +14,7 @@
 
 package kwasm.validation.instruction.control
 
+import kwasm.ast.instruction.BlockInstruction
 import kwasm.ast.instruction.ControlInstruction
 import kwasm.ast.type.ValueType
 import kwasm.util.Impossible
@@ -21,6 +22,7 @@ import kwasm.validation.FunctionBodyValidationVisitor
 import kwasm.validation.ValidationContext
 import kwasm.validation.instruction.validate
 import kwasm.validation.validate
+import kwasm.validation.validateNotNull
 
 /**
  * Validator of [kwasm.ast.instruction.BlockInstruction] [ControlInstruction] nodes.
@@ -60,10 +62,10 @@ fun ControlInstruction.Block.validateBlock(
     )
     instructions.validate(
         innerContext,
-        requiredEndStack = result.result?.let { listOf(it.valType) } ?: emptyList(),
+        requiredEndStack = getRequiredEndStack(context),
         strictEndStackMatchRequired = true
     )
-    return result.result?.let { context.pushStack(it.valType) } ?: context
+    return getRequiredEndStack(context).fold(context) { ctx, v -> ctx.pushStack(v) }
 }
 
 /**
@@ -86,10 +88,10 @@ fun ControlInstruction.Loop.validateLoop(
     )
     instructions.validate(
         innerContext,
-        requiredEndStack = result.result?.let { listOf(it.valType) } ?: emptyList(),
+        requiredEndStack = getRequiredEndStack(context),
         strictEndStackMatchRequired = true
     )
-    return result.result?.let { context.pushStack(it.valType) } ?: context
+    return getRequiredEndStack(context).fold(context) { ctx, v -> ctx.pushStack(v) }
 }
 
 /**
@@ -118,15 +120,33 @@ fun ControlInstruction.If.validateIf(
     )
     positiveInstructions.validate(
         innerContext,
-        requiredEndStack = result.result?.let { listOf(it.valType) } ?: emptyList(),
+        requiredEndStack = getRequiredEndStack(context),
         strictEndStackMatchRequired = true
     )
     if (negativeInstructions.isNotEmpty()) {
         negativeInstructions.validate(
             innerContext,
-            requiredEndStack = result.result?.let { listOf(it.valType) } ?: emptyList(),
+            requiredEndStack = getRequiredEndStack(context),
             strictEndStackMatchRequired = true
         )
     }
-    return result.result?.let { updatedContext.pushStack(it.valType) } ?: updatedContext
+    return getRequiredEndStack(context).fold(updatedContext) { ctx, v -> ctx.pushStack(v) }
+}
+
+internal fun BlockInstruction.getRequiredEndStack(
+    context: ValidationContext.FunctionBody
+): List<ValueType> {
+    val resultIndex = result.resultIndex
+    return if (resultIndex == null) {
+        result.result?.let { listOf(it.valType) } ?: emptyList()
+    } else {
+        val typeAtIndex = validateNotNull(
+            context.types[resultIndex]?.functionType,
+            parseContext = null
+        ) { "Block type index specified, but none found at index: ${result.resultIndex}" }
+        validate(typeAtIndex.parameters.isEmpty(), parseContext = null) {
+            "Block type at specified index is not parameter-less: $typeAtIndex"
+        }
+        typeAtIndex.returnValueEnums.map { it.valType }
+    }
 }

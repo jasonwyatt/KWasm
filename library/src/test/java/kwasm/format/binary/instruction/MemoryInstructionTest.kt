@@ -189,7 +189,7 @@ class MemoryInstructionTest(val param: Params) {
                 expectedInstruction = MemoryInstruction.Grow
             ),
             Params(
-                opcode = 0x00,
+                opcode = 0xFF,
                 otherBytes = listOf(0x00),
                 expectedInstruction = null,
                 expectedException = ParseException(

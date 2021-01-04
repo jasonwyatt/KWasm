@@ -15,6 +15,8 @@
 package kwasm.ast.type
 
 import kwasm.ast.AstNode
+import kwasm.ast.Identifier
+import kwasm.ast.module.Index
 
 /**
  * Data class to hold a ResultType's result
@@ -24,6 +26,11 @@ import kwasm.ast.AstNode
  *   resultType   ::=  (t:result)?  => [t?]
  * ```
  */
-data class ResultType(val result: Result?) : AstNode {
-    override fun toString(): String = "(result${ if (result != null) " $result" else ""})"
+data class ResultType(
+    val result: Result?,
+    val resultIndex: Index<Identifier.Type>? = null
+) : AstNode {
+    override fun toString(): String = if (resultIndex == null) {
+        "(result${if (result != null) " $result" else ""})"
+    } else "(result typeidx: $resultIndex)"
 }
