@@ -18,6 +18,8 @@ package kwasm.format.binary
 
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.io.InputStream
 
 /**
@@ -44,6 +46,9 @@ class BinaryParser(
         position += read
         return byteBuffer[0].also { lastByte = it }
     }
+
+    /** Reads a single [Byte] from the [reader], or returns `null` if the [reader] is empty. */
+    fun readByteOrNull(): Byte? = try { readByte() } catch (e: ParseException) { null }
 
     /**
      * Reads the next four bytes from the [reader] as a little-endian-encoded [Int].
@@ -73,6 +78,22 @@ class BinaryParser(
             (longBuffer[5].toUByte().toLong() shl 40) or
             (longBuffer[6].toUByte().toLong() shl 48) or
             (longBuffer[7].toUByte().toLong() shl 56).also { lastByte = longBuffer[7] }
+    }
+
+    /** Reads [size] bytes from the [reader] into a new [ByteArray]. */
+    fun readBytes(size: Int): ByteArray {
+        val bytesOut = ByteArrayOutputStream(size)
+        val buffer = ByteArray(4096)
+        var bytesRead = 0
+        while (bytesRead < size) {
+            val bytes = reader.read(buffer, 0, minOf(size - bytesRead, buffer.size))
+            if (bytes == -1) throwException("EOF before $size bytes read ($bytesRead so far)")
+            bytesOut.write(buffer, 0, bytes)
+            bytesRead += bytes
+        }
+        bytesOut.flush()
+        position += size
+        return bytesOut.toByteArray()
     }
 
     /**

@@ -70,7 +70,7 @@ fun BinaryParser.readUInt(): Int {
         shift += 7
         if (byte and LEADING_ONE == ZERO_BYTE) break
     }
-    return result.toInt()
+    return result
 }
 
 /**
