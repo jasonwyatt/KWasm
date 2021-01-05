@@ -15,7 +15,6 @@
 package kwasm.util
 
 import kotlin.experimental.or
-import kotlin.experimental.xor
 
 /**
  * Encapsulates LEB-128 integer encoding logic.

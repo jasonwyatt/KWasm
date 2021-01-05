@@ -18,7 +18,6 @@ package kwasm.format.binary
 
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
-import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 

@@ -62,4 +62,3 @@ fun BinaryParser.readSection(): Section? {
     }
     return section
 }
-
