@@ -33,4 +33,8 @@ fun BinaryParser.readTableType(): TableType = when (val byte = readByte()) {
     else -> throwException("Illegal element type for Table: $byte", -1)
 }
 
+/** Encodes the [TableType] to a sequence of bytes. */
+internal fun TableType.toBytes(): Sequence<Byte> =
+    sequenceOf<Byte>(0x70) + limits.toBytes()
+
 private const val ELEMTYPE_FUNCREF: Byte = 0x70

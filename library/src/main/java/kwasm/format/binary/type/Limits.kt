@@ -17,6 +17,7 @@ package kwasm.format.binary.type
 import kwasm.ast.type.Limits
 import kwasm.format.binary.BinaryParser
 import kwasm.format.binary.value.readUInt
+import kwasm.util.Leb128
 
 /**
  * From [the docs](https://webassembly.github.io/spec/core/binary/types.html#limits):
@@ -32,4 +33,13 @@ fun BinaryParser.readLimits(): Limits = when (val type = readByte().toInt()) {
     0 -> Limits(readUInt().toLong(), null)
     1 -> Limits(readUInt().toLong(), readUInt().toLong())
     else -> throwException("Invalid header byte for Limits declaration: $type", -1)
+}
+
+/** Encodes a [Limits] object to a sequence of bytes. */
+internal fun Limits.toBytes(): Sequence<Byte> = if (max == null) {
+    sequenceOf<Byte>(0x00) + Leb128.encodeUnsigned(min.toInt())
+} else {
+    sequenceOf<Byte>(0x01) +
+        Leb128.encodeUnsigned(min.toInt()) +
+        Leb128.encodeUnsigned(max.toInt())
 }
