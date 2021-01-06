@@ -48,3 +48,10 @@ internal fun Int.asValueType(): ValueType? = when {
     this == 0x7C -> ValueType.F64
     else -> null
 }
+
+internal fun ValueType.toByte(): Byte = when (this) {
+    ValueType.I32 -> 0x7F
+    ValueType.I64 -> 0x7E
+    ValueType.F32 -> 0x7D
+    ValueType.F64 -> 0x7C
+}

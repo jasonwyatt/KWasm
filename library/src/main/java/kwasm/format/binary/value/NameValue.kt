@@ -27,3 +27,7 @@ import kwasm.format.binary.BinaryParser
  * ```
  */
 fun BinaryParser.readName(): String = readVector().toByteArray().toString(Charsets.UTF_8)
+
+/** Encodes the receiving [String] as a WebAssembly name into a sequence of Bytes. */
+internal fun String.toNameBytes(): Sequence<Byte> =
+    toByteArray(Charsets.UTF_8).toBytesAsVector()

@@ -15,6 +15,7 @@
 package kwasm.format.binary.value
 
 import kwasm.format.binary.BinaryParser
+import kwasm.util.Leb128
 
 /**
  * From [the docs](https://webassembly.github.io/spec/core/binary/conventions.html#vectors):
@@ -38,3 +39,18 @@ fun BinaryParser.readVector(): List<Byte> = readVector { readByte() }
  */
 fun <T> BinaryParser.readVector(block: BinaryParser.() -> T): List<T> =
     (0 until readUInt()).map { block() }
+
+/**
+ * Encodes the receiving [List] into a sequence of bytes, using [transform] to convert each element
+ * into a sub sequence.
+ */
+internal fun <T> List<T>.toBytesAsVector(transform: (T) -> Sequence<Byte>): Sequence<Byte> =
+    Leb128.encodeUnsigned(size) + sequence {
+        forEach { item ->
+            transform(item).forEach { b -> yield(b) }
+        }
+    }
+
+/** Encodes the receiving [ByteArray] into a sequence of bytes. */
+internal fun ByteArray.toBytesAsVector(): Sequence<Byte> =
+    Leb128.encodeUnsigned(size) + sequence { forEach { yield(it) } }

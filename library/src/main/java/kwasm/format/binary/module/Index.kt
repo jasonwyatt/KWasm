@@ -18,6 +18,7 @@ import kwasm.ast.Identifier
 import kwasm.ast.module.Index
 import kwasm.format.binary.BinaryParser
 import kwasm.format.binary.value.readUInt
+import kwasm.util.Leb128
 
 /**
  * From [the docs](https://webassembly.github.io/spec/core/binary/modules.html#indices):
@@ -37,3 +38,7 @@ import kwasm.format.binary.value.readUInt
 @Suppress("UNCHECKED_CAST")
 inline fun <reified T : Identifier> BinaryParser.readIndex(): Index<T> =
     Index.ByInt(readUInt()) as Index<T>
+
+/** Encodes the index (assuming it's an [Index.ByInt]) into a sequence of LEB-128-encoded bytes. */
+internal fun Index<*>.toBytes(): Sequence<Byte> =
+    Leb128.encodeUnsigned(requireNotNull(this as? Index.ByInt).indexVal)

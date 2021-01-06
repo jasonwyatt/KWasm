@@ -36,3 +36,7 @@ fun BinaryParser.readGlobalType(): GlobalType {
         else -> throwException("Invalid mutability flag: $mutability", -1)
     }
 }
+
+/** Encodes the receiving [GlobalType] to a sequence of bytes. */
+internal fun GlobalType.toBytes(): Sequence<Byte> =
+    sequenceOf(valueType.toByte(), if (mutable) 0x01 else 0x00)

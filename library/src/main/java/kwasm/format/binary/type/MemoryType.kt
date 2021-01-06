@@ -27,3 +27,6 @@ import kwasm.format.binary.BinaryParser
  * ```
  */
 fun BinaryParser.readMemoryType(): MemoryType = MemoryType(readLimits())
+
+/** Creates a sequence of bytes from the receiving [MemoryType]. */
+internal fun MemoryType.toBytes(): Sequence<Byte> = limits.toBytes()
