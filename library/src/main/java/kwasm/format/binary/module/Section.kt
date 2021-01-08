@@ -61,6 +61,7 @@ fun BinaryParser.readSection(): Section? {
         8.toByte() -> readStartSection()
         9.toByte() -> readElementSection()
         10.toByte() -> readCodeSection()
+        11.toByte() -> readDataSection()
         else -> throwException("Invalid section ID: $id", -5)
     }
     val consumed = position - positionBefore
