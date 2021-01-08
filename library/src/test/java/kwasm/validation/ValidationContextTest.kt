@@ -75,40 +75,6 @@ class ValidationContextTest {
     }
 
     @Test
-    fun conversion_throws_whenModuleImportsTable_afterDefiningOne() {
-        val module = Tokenizer().tokenize(
-            """
-            (module
-                (table 0 1 funcref)
-                (import "a" "b" (table 0 1 funcref))
-            )
-            """.trimIndent()
-        ).parseModule(0)?.astNode ?: fail("Expected module")
-
-        val e = assertThrows(ValidationException::class.java) { ValidationContext(module) }
-        assertThat(e).hasMessageThat().contains(
-            "Cannot import a table when one is already defined by the module"
-        )
-    }
-
-    @Test
-    fun conversion_throws_whenModuleImportsMemory_afterDefiningOne() {
-        val module = Tokenizer().tokenize(
-            """
-            (module
-                (memory 0 1)
-                (import "a" "b" (memory 0 1))
-            )
-            """.trimIndent()
-        ).parseModule(0)?.astNode ?: fail("Expected module")
-
-        val e = assertThrows(ValidationException::class.java) { ValidationContext(module) }
-        assertThat(e).hasMessageThat().contains(
-            "Cannot import a memory when one is already defined by the module"
-        )
-    }
-
-    @Test
     fun conversion() {
         val module = Tokenizer().tokenize(
             """

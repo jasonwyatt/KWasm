@@ -25,6 +25,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import java.io.File
+import java.io.FileInputStream
 
 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @RunWith(JUnit4::class)
@@ -299,6 +300,54 @@ class KWasmProgramTest {
             }
         )
         builder.build()
+
+        assertThat(receivedString).isEqualTo("Hello world")
+    }
+
+    @Test
+    fun withBinaryModule_fromFile() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/helloworld.wasm")
+
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+        var receivedString: String? = null
+
+        KWasmProgram.builder(memoryProvider)
+            .withBinaryModule("blah", File(testFileUrl.file))
+            .withHostFunction(
+                namespace = "System",
+                name = "println",
+                hostFunction = HostFunction { offset: IntValue, length: IntValue, context ->
+                    val bytes = ByteArray(length.value)
+                    context.memory?.readBytes(bytes, offset.value)
+                    receivedString = bytes.toString(Charsets.UTF_8)
+                    EmptyValue
+                }
+            )
+            .build()
+
+        assertThat(receivedString).isEqualTo("Hello world")
+    }
+
+    @Test
+    fun withBinaryModule_fromInputStream() {
+        val testFileUrl = javaClass.classLoader.getResource("kwasm/helloworld.wasm")
+
+        val memoryProvider = ByteBufferMemoryProvider(1024 * 1024)
+        var receivedString: String? = null
+
+        KWasmProgram.builder(memoryProvider)
+            .withBinaryModule("blah", FileInputStream(testFileUrl.file))
+            .withHostFunction(
+                namespace = "System",
+                name = "println",
+                hostFunction = HostFunction { offset: IntValue, length: IntValue, context ->
+                    val bytes = ByteArray(length.value)
+                    context.memory?.readBytes(bytes, offset.value)
+                    receivedString = bytes.toString(Charsets.UTF_8)
+                    EmptyValue
+                }
+            )
+            .build()
 
         assertThat(receivedString).isEqualTo("Hello world")
     }

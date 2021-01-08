@@ -20,6 +20,8 @@ import kwasm.ast.module.Index
 import kwasm.ast.module.WasmModule
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
+import kwasm.format.binary.BinaryParser
+import kwasm.format.binary.module.readModule
 import kwasm.format.text.Tokenizer
 import kwasm.format.text.module.parseModule
 import kwasm.runtime.Address
@@ -455,7 +457,12 @@ class KWasmProgram internal constructor(
          * The provided [InputStream] will be closed after being parsed-from.
          */
         fun withBinaryModule(name: String, file: File) = apply {
-            TODO("Binary-formatted WebAssembly parsing is not yet supported")
+            val moduleTree = parseBinaryModule(
+                name,
+                BufferedInputStream(FileInputStream(file)),
+                file.path
+            )
+            withModule(name, moduleTree)
         }
 
         /**
@@ -465,7 +472,8 @@ class KWasmProgram internal constructor(
          * The provided [InputStream] will be closed after being parsed-from.
          */
         fun withBinaryModule(name: String, binaryStream: InputStream) = apply {
-            TODO("Binary-formatted WebAssembly parsing is not yet supported")
+            val moduleTree = parseBinaryModule(name, binaryStream, name)
+            withModule(name, moduleTree)
         }
 
         private fun withModule(name: String, module: WasmModule) {
@@ -482,6 +490,12 @@ class KWasmProgram internal constructor(
                 .parseModule(0)?.astNode
                 ?: throw ParseException("No module found in sourceStream for $name")
         }
+
+        private fun parseBinaryModule(
+            name: String,
+            stream: InputStream,
+            fileName: String
+        ): WasmModule = stream.use { BinaryParser(it, fileName).readModule() }
     }
 
     /**

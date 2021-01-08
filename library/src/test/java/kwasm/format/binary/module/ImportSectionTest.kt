@@ -116,24 +116,26 @@ class ImportSectionTest {
         assertThat(parser.readImport()).isEqualTo(import)
     }
 
-    private fun createFunctionImportDescriptor(indexVal: Int) =
-        ImportDescriptor.Function(
-            Identifier.Function(null, null),
-            TypeUse(Index.ByInt(indexVal) as Index<Identifier.Type>, emptyList(), emptyList())
-        )
+    companion object {
+        internal fun createFunctionImportDescriptor(indexVal: Int) =
+            ImportDescriptor.Function(
+                Identifier.Function(null, null),
+                TypeUse(Index.ByInt(indexVal) as Index<Identifier.Type>, emptyList(), emptyList())
+            )
 
-    private fun createTableImportDescriptor(min: Int, max: Int? = null) =
-        ImportDescriptor.Table(
-            Identifier.Table(null, null),
-            TableType(Limits(min.toLong(), max?.toLong()), ElementType.FunctionReference)
-        )
+        internal fun createTableImportDescriptor(min: Int, max: Int? = null) =
+            ImportDescriptor.Table(
+                Identifier.Table(null, null),
+                TableType(Limits(min.toLong(), max?.toLong()), ElementType.FunctionReference)
+            )
 
-    private fun createMemoryImportDescriptor(min: Int, max: Int? = null) =
-        ImportDescriptor.Memory(
-            Identifier.Memory(null, null),
-            MemoryType(Limits(min.toLong(), max?.toLong()))
-        )
+        internal fun createMemoryImportDescriptor(min: Int, max: Int? = null) =
+            ImportDescriptor.Memory(
+                Identifier.Memory(null, null),
+                MemoryType(Limits(min.toLong(), max?.toLong()))
+            )
 
-    private fun createGlobalImportDescriptor(valueType: ValueType, mutable: Boolean) =
-        ImportDescriptor.Global(Identifier.Global(null, null), GlobalType(valueType, mutable))
+        internal fun createGlobalImportDescriptor(valueType: ValueType, mutable: Boolean) =
+            ImportDescriptor.Global(Identifier.Global(null, null), GlobalType(valueType, mutable))
+    }
 }
