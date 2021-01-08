@@ -172,25 +172,6 @@ fun ValidationContext(module: WasmModule): ValidationContext.Module {
     module.types.forEach {
         upcastThrown { types[it.id] = it }
     }
-    module.functions.forEach {
-        val typeUse = it.typeUse ?: TypeUse(
-            null,
-            astNodeListOf(),
-            astNodeListOf()
-        )
-        types.addTypeUse(typeUse)
-
-        upcastThrown { functions[it.id] = typeUse }
-    }
-    module.tables.forEach {
-        upcastThrown { tables[it.id] = it.tableType }
-    }
-    module.memories.forEach {
-        upcastThrown { memories[it.id] = it.memoryType }
-    }
-    module.globals.forEach {
-        upcastThrown { globals[it.id] = it.globalType }
-    }
     module.imports.forEach { import ->
         when (val descriptor = import.descriptor) {
             is ImportDescriptor.Function -> {
@@ -215,6 +196,25 @@ fun ValidationContext(module: WasmModule): ValidationContext.Module {
                 globals[descriptor.id] = descriptor.globalType
             }
         }
+    }
+    module.functions.forEach {
+        val typeUse = it.typeUse ?: TypeUse(
+            null,
+            astNodeListOf(),
+            astNodeListOf()
+        )
+        types.addTypeUse(typeUse)
+
+        upcastThrown { functions[it.id] = typeUse }
+    }
+    module.tables.forEach {
+        upcastThrown { tables[it.id] = it.tableType }
+    }
+    module.memories.forEach {
+        upcastThrown { memories[it.id] = it.memoryType }
+    }
+    module.globals.forEach {
+        upcastThrown { globals[it.id] = it.globalType }
     }
 
     return ValidationContext.Module(types, functions, tables, memories, globals)
