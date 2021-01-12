@@ -237,15 +237,13 @@ internal class ByteBufferMemory(
             val leftInValue = (valueLength + valueOffset) - valuePosition
             valuePosition += if (leftInPage >= leftInValue) {
                 // We're at the last page, so write all the remaining bytes from the value.
-                pages[currentPage]
-                    .position(currentPositionInPage)
+                (pages[currentPage].position(currentPositionInPage) as ByteBuffer)
                     .put(value, valuePosition, leftInValue)
                     .rewind()
                 leftInValue
             } else {
                 // We're still working through the pages, so write as much as we can in this page.
-                pages[currentPage]
-                    .position(currentPositionInPage)
+                (pages[currentPage].position(currentPositionInPage) as ByteBuffer)
                     .put(value, valuePosition, leftInPage)
                     .rewind()
                 leftInPage
@@ -406,14 +404,12 @@ internal class ByteBufferMemory(
             val leftInLength = length - readBytes
             readBytes += if (leftInPage >= leftInLength) {
                 // Last page needed for reading. Read the remaining length.
-                this[currentPage]
-                    .position(currentPageOffset)
+                (this[currentPage].position(currentPageOffset) as ByteBuffer)
                     .get(out, currentOutOffset, leftInLength)
                     .rewind()
                 leftInLength
             } else {
-                this[currentPage]
-                    .position(currentPageOffset)
+                (this[currentPage].position(currentPageOffset) as ByteBuffer)
                     .get(out, currentOutOffset, leftInPage)
                     .rewind()
                 leftInPage
