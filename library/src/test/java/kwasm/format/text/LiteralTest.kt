@@ -103,17 +103,29 @@ class LiteralTest {
     }
 
     @Test
-    fun throws_ifLiteral_isNotFloat_whenDesired() {
+    fun ifLiteral_isNotFloat_butIsInt() {
+        val literal = tokenizer.tokenize("1234").parseLiteral(0, Float::class)
+        assertThat(literal.astNode.value).isEqualTo(1234.0f)
+    }
+
+    @Test
+    fun throws_ifLiteral_isNotFloat_isString() {
         val exception = assertThrows(ParseException::class.java) {
-            tokenizer.tokenize("1234").parseLiteral(0, Float::class)
+            tokenizer.tokenize("\"1234\"").parseLiteral(0, Float::class)
         }
         assertThat(exception).hasMessageThat().contains("Expected f32")
     }
 
     @Test
-    fun throws_ifLiteral_isNotDouble_whenDesired() {
+    fun ifLiteral_isNotDouble_butIsInt() {
+        val literal = tokenizer.tokenize("1234").parseLiteral(0, Double::class)
+        assertThat(literal.astNode.value).isEqualTo(1234.0)
+    }
+
+    @Test
+    fun throws_ifLiteral_isNotDouble_isString() {
         val exception = assertThrows(ParseException::class.java) {
-            tokenizer.tokenize("1234").parseLiteral(0, Double::class)
+            tokenizer.tokenize("\"1234\"").parseLiteral(0, Double::class)
         }
         assertThat(exception).hasMessageThat().contains("Expected f64")
     }

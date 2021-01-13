@@ -83,11 +83,12 @@ class NumericConstantInstructionTest {
     }
 
     @Test
-    fun throws_if_i32Const_followedByInt() {
-        assertThrows(ParseException::class.java) {
-            tokenizer.tokenize("f32.const 1", context)
-                .parseNumericConstant(0)
-        }
+    fun f32Const_followedByInt() {
+        val result = tokenizer.tokenize("f32.const 1", context)
+            .parseNumericConstant(0) ?: fail("Expected an instruction")
+        assertThat(result.parseLength).isEqualTo(2)
+        val instruction = result.astNode as NumericConstantInstruction.F32
+        assertThat(instruction.value.value).isEqualTo(1.0f)
     }
 
     @Test
@@ -127,11 +128,12 @@ class NumericConstantInstructionTest {
     }
 
     @Test
-    fun throws_if_i64Const_followedByInt() {
-        assertThrows(ParseException::class.java) {
-            tokenizer.tokenize("f64.const 1", context)
-                .parseNumericConstant(0)
-        }
+    fun f64Const_followedByInt() {
+        val result = tokenizer.tokenize("f64.const 1", context)
+            .parseNumericConstant(0) ?: fail("Expected an instruction")
+        assertThat(result.parseLength).isEqualTo(2)
+        val instruction = result.astNode as NumericConstantInstruction.F64
+        assertThat(instruction.value.value).isEqualTo(1.0)
     }
 
     @Test
