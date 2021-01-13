@@ -143,7 +143,7 @@ sealed class IntegerLiteral<Type>(
         }
 
         override fun checkMagnitude(value: Long, magnitude: Int): Boolean {
-            if (magnitude == 32) return value in Int.MIN_VALUE..Int.MAX_VALUE
+            if (magnitude == 32) return value.toUInt().toInt() in Int.MIN_VALUE..Int.MAX_VALUE
             if (magnitude == 64) return value in Long.MIN_VALUE..Long.MAX_VALUE
             val doubleValue = value.toDouble()
             val extent = 2.0.pow(magnitude - 1)
