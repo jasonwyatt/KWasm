@@ -138,14 +138,14 @@ private fun Char.isHexDigit(): Boolean = when (this) {
  *                  '∖u{' n:hexnum '}'      => U+(n) (if n < 0xD800 ∨ 0xE000 ≤ n < 0x110000)
  * ```
  */
-@UseExperimental(ExperimentalUnsignedTypes::class)
+@OptIn(ExperimentalUnsignedTypes::class)
 fun CharSequence.parseStringChar(
     index: Int,
     inoutVal: StringChar = StringChar(),
     context: ParseContext? = null
 ): StringChar = codePoints().toArray().parseStringChar(index, inoutVal, context)
 
-@UseExperimental(ExperimentalUnsignedTypes::class)
+@OptIn(ExperimentalUnsignedTypes::class)
 fun IntArray.parseStringChar(
     index: Int,
     inoutVal: StringChar = StringChar(),

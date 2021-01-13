@@ -38,7 +38,7 @@ import kotlin.math.truncate
  * See
  * [the docs](https://webassembly.github.io/spec/core/exec/instructions.html#numeric-instructions):
  */
-@UseExperimental(ExperimentalStdlibApi::class)
+@OptIn(ExperimentalStdlibApi::class)
 internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionContext {
     when (this) {
         NumericInstruction.I32Add -> binaryOp<IntValue>(context) { x, y ->

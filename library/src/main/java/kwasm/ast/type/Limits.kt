@@ -19,5 +19,5 @@ import kwasm.ast.AstNode
 /**
  * This is a data class that represents the limits of a Limits object.
  */
-@UseExperimental(ExperimentalUnsignedTypes::class)
+@OptIn(ExperimentalUnsignedTypes::class)
 data class Limits(val min: Long, val max: Long? = null) : AstNode

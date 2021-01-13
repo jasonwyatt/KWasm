@@ -46,7 +46,7 @@ import kotlin.math.pow
  *                  i:sN => n (if i = signed(n))
  * ```
  */
-@UseExperimental(ExperimentalUnsignedTypes::class)
+@OptIn(ExperimentalUnsignedTypes::class)
 sealed class IntegerLiteral<Type>(
     protected val sequence: CharSequence,
     magnitude: Int = 64,
@@ -167,7 +167,7 @@ sealed class IntegerLiteral<Type>(
 
 fun RawToken.findIntegerLiteral(): TokenMatchResult? {
     val match = IntegerLiteral.PATTERN.get().findAll(sequence)
-        .maxBy { it.value.length } ?: return null
+        .maxByOrNull { it.value.length } ?: return null
     return TokenMatchResult(match.range.first, match.value)
 }
 
