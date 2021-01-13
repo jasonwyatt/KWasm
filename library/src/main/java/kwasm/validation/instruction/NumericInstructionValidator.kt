@@ -126,7 +126,7 @@ internal fun NumericInstruction.getExpectedInsAndOuts(): Pair<List<ValueType>, V
         I64ShiftRightSigned,
         I64ShiftRightUnsigned,
         I64RotateLeft,
-        I64RotateRight,
+        I64RotateRight -> listOf(I64, I64) to I64
         I64Equals,
         I64NotEquals,
         I64LessThanSigned,
@@ -136,7 +136,7 @@ internal fun NumericInstruction.getExpectedInsAndOuts(): Pair<List<ValueType>, V
         I64LessThanEqualToSigned,
         I64LessThanEqualToUnsigned,
         I64GreaterThanEqualToSigned,
-        I64GreaterThanEqualToUnsigned -> listOf(I64, I64) to I64
+        I64GreaterThanEqualToUnsigned -> listOf(I64, I64) to I32
 
         F32AbsoluteValue,
         F32Negative,
@@ -151,13 +151,13 @@ internal fun NumericInstruction.getExpectedInsAndOuts(): Pair<List<ValueType>, V
         F32Divide,
         F32Min,
         F32Max,
-        F32CopySign,
+        F32CopySign -> listOf(F32, F32) to F32
         F32Equals,
         F32NotEquals,
         F32LessThan,
         F32GreaterThan,
         F32LessThanEqualTo,
-        F32GreaterThanEqualTo -> listOf(F32, F32) to F32
+        F32GreaterThanEqualTo -> listOf(F32, F32) to I32
 
         F64AbsoluteValue,
         F64Negative,
@@ -172,13 +172,13 @@ internal fun NumericInstruction.getExpectedInsAndOuts(): Pair<List<ValueType>, V
         F64Divide,
         F64Min,
         F64Max,
-        F64CopySign,
+        F64CopySign -> listOf(F64, F64) to F64
         F64Equals,
         F64NotEquals,
         F64LessThan,
         F64GreaterThan,
         F64LessThanEqualTo,
-        F64GreaterThanEqualTo -> listOf(F64, F64) to F64
+        F64GreaterThanEqualTo -> listOf(F64, F64) to I32
 
         I32WrapI64 -> listOf(I64) to I32
         I32TruncateF32Signed,
