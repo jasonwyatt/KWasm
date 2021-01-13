@@ -113,7 +113,7 @@ private fun List<Token>.parseBlockOrLoopContInstruction(
     return if (opener.value == "block") {
         ParseResult(
             ControlInstruction.Block(
-                label.astNode,
+                if (label.parseLength > 0) label.astNode else null,
                 resultType.astNode.toResultType(),
                 instructions.astNode
             ),
@@ -122,7 +122,7 @@ private fun List<Token>.parseBlockOrLoopContInstruction(
     } else {
         ParseResult(
             ControlInstruction.Loop(
-                label.astNode,
+                if (label.parseLength > 0) label.astNode else null,
                 resultType.astNode.toResultType(),
                 instructions.astNode
             ),
@@ -192,7 +192,7 @@ private fun List<Token>.parseIfContInstruction(
 
     return ParseResult(
         ControlInstruction.If(
-            label.astNode,
+            if (label.parseLength > 0) label.astNode else null,
             resultType.astNode.toResultType(),
             positiveInstructions.astNode,
             negativeInstructions.astNode

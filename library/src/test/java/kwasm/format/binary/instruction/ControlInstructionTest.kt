@@ -59,7 +59,7 @@ class ControlInstructionTest(val params: Params) {
         private val INDEX_LABEL = Index.ByInt(0x2C) as Index<Identifier.Label>
         private val INDEX_FUNCTION = Index.ByInt(0x2C) as Index<Identifier.Function>
         private val INDEX_TYPE_USE = Index.ByInt(0x2C) as Index<Identifier.Type>
-        private val EMPTY_LABEL = Identifier.Label(null, null)
+        private val EMPTY_LABEL: Identifier.Label? = null
         private val EMPTY_RESULTTYPE = ResultType(null, null)
         private val VALUETYPE_RESULTTYPE = ResultType(Result(ValueType.I32))
         private val INDEX_RESULTTYPE =
