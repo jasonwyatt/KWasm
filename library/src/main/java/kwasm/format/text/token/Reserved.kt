@@ -47,7 +47,8 @@ data class Reserved(
 }
 
 fun RawToken.findReserved(): TokenMatchResult? {
-    val match = Reserved.PATTERN.get().findAll(sequence).maxBy { it.value.length } ?: return null
+    val match = Reserved.PATTERN.get().findAll(sequence)
+        .maxByOrNull { it.value.length } ?: return null
     return TokenMatchResult(match.range.first, match.value)
 }
 

@@ -102,7 +102,7 @@ class Tokenizer {
                 token.findIdentifier(),
                 token.findParen(),
                 token.findReserved()
-            ).maxBy { it?.sequence?.length ?: -1 }.takeIf { it != null }
+            ).maxByOrNull { it?.sequence?.length ?: -1 }.takeIf { it != null }
                 ?: throw ParseException(
                     "No valid token found in sequence: \"${token.sequence}\"",
                     token.context

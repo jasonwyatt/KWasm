@@ -26,7 +26,7 @@ abstract class Literal<T> : AstNode {
 }
 
 /** [Literal] Representation of an unsigned [Int] (as [UInt]). */
-@UseExperimental(ExperimentalUnsignedTypes::class)
+@OptIn(ExperimentalUnsignedTypes::class)
 sealed class IntegerLiteral<T> : Literal<T>() {
     /** [Literal] Representation of an unsigned [Int] (as [UInt]). */
     class U32(private val orig: UInt) : IntegerLiteral<UInt>() {

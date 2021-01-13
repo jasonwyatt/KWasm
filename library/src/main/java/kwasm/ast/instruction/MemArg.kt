@@ -29,7 +29,7 @@ import kotlin.math.log
  * its natural alignment.
  */
 @Suppress("DataClassPrivateConstructor")
-@UseExperimental(ExperimentalUnsignedTypes::class)
+@OptIn(ExperimentalUnsignedTypes::class)
 class MemArg(
     offset: Int? = null,
     private val alignment: Int

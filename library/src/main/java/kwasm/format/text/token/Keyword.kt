@@ -48,7 +48,8 @@ data class Keyword(
 }
 
 fun RawToken.findKeyword(): TokenMatchResult? {
-    val match = Keyword.PATTERN.get().findAll(sequence).maxBy { it.value.length } ?: return null
+    val match = Keyword.PATTERN.get().findAll(sequence)
+        .maxByOrNull { it.value.length } ?: return null
     return TokenMatchResult(match.range.first, match.value)
 }
 

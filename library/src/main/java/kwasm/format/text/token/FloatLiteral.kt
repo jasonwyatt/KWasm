@@ -51,7 +51,7 @@ import kotlin.math.pow
  *                'nan:0x' n:hexnum                                   => NaN (if 1 <= n < 2^(sig(N))
  * ```
  */
-@UseExperimental(ExperimentalUnsignedTypes::class)
+@OptIn(ExperimentalUnsignedTypes::class)
 class FloatLiteral(
     private val sequence: CharSequence,
     magnitude: Int = NumberConstants.DEFAULT_FLOAT_MAGNITUDE,
@@ -305,7 +305,7 @@ class FloatLiteral(
 
 fun RawToken.findFloatLiteral(): TokenMatchResult? {
     val match =
-        FloatLiteral.PATTERN.get().findAll(sequence).maxBy { it.value.length } ?: return null
+        FloatLiteral.PATTERN.get().findAll(sequence).maxByOrNull { it.value.length } ?: return null
     return TokenMatchResult(match.range.first, match.value)
 }
 

@@ -73,7 +73,7 @@ open class StringLiteral(
 
 fun RawToken.findStringLiteral(): TokenMatchResult? {
     val match = StringLiteral.PATTERN.get().findAll(sequence)
-        .maxBy { it.value.length } ?: return null
+        .maxByOrNull { it.value.length } ?: return null
     return TokenMatchResult(match.range.first, match.value)
 }
 

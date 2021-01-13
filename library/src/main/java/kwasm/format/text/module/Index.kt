@@ -29,7 +29,7 @@ import kwasm.format.text.type.parseFunctionType
  *
  * For details on the grammar, see [Index].
  */
-@UseExperimental(ExperimentalUnsignedTypes::class)
+@OptIn(ExperimentalUnsignedTypes::class)
 inline fun <reified T : kwasm.ast.Identifier> List<Token>.parseIndex(
     fromIndex: Int
 ): ParseResult<out Index<T>> = when (val token = getOrNull(fromIndex)) {

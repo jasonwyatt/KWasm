@@ -83,7 +83,7 @@ class Identifier(
 
 fun RawToken.findIdentifier(): TokenMatchResult? {
     val match = Identifier.PATTERN.get()
-        .findAll(sequence).maxBy { it.value.length } ?: return null
+        .findAll(sequence).maxByOrNull { it.value.length } ?: return null
     return TokenMatchResult(match.range.first, match.value)
 }
 

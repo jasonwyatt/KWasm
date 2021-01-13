@@ -28,7 +28,7 @@ import kwasm.format.text.token.Token
  *           |   n:u32  m:u32 => {min n, max m}
  * ```
  */
-@UseExperimental(ExperimentalUnsignedTypes::class)
+@OptIn(ExperimentalUnsignedTypes::class)
 fun List<Token>.parseLimits(startingIndex: Int): ParseResult<Limits> {
     var currentIndex = startingIndex
     val min = parseLiteral(currentIndex, UInt::class)

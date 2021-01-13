@@ -23,7 +23,7 @@ import kwasm.format.text.token.Token
 import kotlin.reflect.KClass
 
 /** Parses a [Literal] of type [T] from the receiving [List] of [Token]s at the given position. */
-@UseExperimental(ExperimentalUnsignedTypes::class)
+@OptIn(ExperimentalUnsignedTypes::class)
 fun <T : Any> List<Token>.parseLiteral(
     fromIndex: Int,
     asClass: KClass<T>

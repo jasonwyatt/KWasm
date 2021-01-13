@@ -61,7 +61,7 @@ class KWasmProgram internal constructor(
     private val store: Store
 ) {
     private val exportedMemoryAddresses =
-        moduleExports.flatMap { it.value.values }.filter { it is Address.Memory }.toSet()
+        moduleExports.flatMap { it.value.values }.filterIsInstance<Address.Memory>().toSet()
     private val exportedFunctionAddresses =
         moduleExports.mapValues { (_, moduleExps) ->
             moduleExps.filter { (_, expAddress) -> expAddress is Address.Function }
@@ -458,7 +458,6 @@ class KWasmProgram internal constructor(
          */
         fun withBinaryModule(name: String, file: File) = apply {
             val moduleTree = parseBinaryModule(
-                name,
                 BufferedInputStream(FileInputStream(file)),
                 file.path
             )
@@ -472,7 +471,7 @@ class KWasmProgram internal constructor(
          * The provided [InputStream] will be closed after being parsed-from.
          */
         fun withBinaryModule(name: String, binaryStream: InputStream) = apply {
-            val moduleTree = parseBinaryModule(name, binaryStream, name)
+            val moduleTree = parseBinaryModule(binaryStream, name)
             withModule(name, moduleTree)
         }
 
@@ -492,7 +491,6 @@ class KWasmProgram internal constructor(
         }
 
         private fun parseBinaryModule(
-            name: String,
             stream: InputStream,
             fileName: String
         ): WasmModule = stream.use { BinaryParser(it, fileName).readModule() }
