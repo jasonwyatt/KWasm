@@ -38,7 +38,18 @@ class BinaryParser(
     internal var lastByte: Byte = 0x00
         private set
 
-    /** Reads a single [Byte] from the [reader]. */
+    /**
+     * Reads a single [Byte] from the [reader].
+     *
+     * From [the docs](https://webassembly.github.io/spec/core/binary/values.html#bytes):
+     *
+     * Bytes encode themselves.
+     *
+     * ```
+     *      byte    ::= 0x00    => 0x00
+     *                  0xFF    => 0xFF
+     * ```
+     */
     fun readByte(): Byte {
         val read = reader.read(byteBuffer, 0, 1)
         if (read != 1) throwException("Expected byte, but none found")
