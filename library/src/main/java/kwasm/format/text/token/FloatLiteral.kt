@@ -65,7 +65,12 @@ class FloatLiteral(
 
     val value: Double by lazy {
         when {
-            sequence == INFINITY_LITERAL -> INFINITY_VALUE
+            sequence == INFINITY_LITERAL ->
+                if (magnitude == 32) Float.POSITIVE_INFINITY.toDouble()
+                else Double.POSITIVE_INFINITY
+            sequence == "-$INFINITY_LITERAL" ->
+                if (magnitude == 32) Float.NEGATIVE_INFINITY.toDouble()
+                else Double.NEGATIVE_INFINITY
             sequence == NAN_LITERAL -> if (magnitude == 32) NAN_32_VALUE else NAN_64_VALUE
             sequence.startsWith(HEXNAN_LITERAL_PREFIX) -> {
                 val n = Num(
@@ -97,12 +102,18 @@ class FloatLiteral(
     }
 
     fun isNaN(): Boolean = when (magnitude) {
-        32 -> value == NAN_32_VALUE
-        64 -> value == NAN_64_VALUE
+        32 -> value.isNaN() || value == CanonincalNaN(32).value.toDouble()
+        64 -> value.isNaN() || value == CanonincalNaN(64).value.toDouble()
         else -> throw ParseException("Illegal magnitude for NaN-checking")
     }
 
-    fun isInfinite(): Boolean = value == INFINITY_VALUE
+    fun isInfinite(): Boolean = when (magnitude) {
+        32 ->
+            value == Float.NEGATIVE_INFINITY.toDouble() ||
+                value == Float.POSITIVE_INFINITY.toDouble()
+        64 -> value == Double.NEGATIVE_INFINITY || value == Double.POSITIVE_INFINITY
+        else -> throw ParseException("Illegal magnitude for infinity-checking")
+    }
 
     private fun determineFloatValue(
         sequence: CharSequence,
@@ -288,9 +299,8 @@ class FloatLiteral(
         private const val INFINITY_LITERAL = "inf"
         private const val NAN_LITERAL = "nan"
         private const val HEXNAN_LITERAL_PREFIX = "nan:0x"
-        private val INFINITY_VALUE = Double.POSITIVE_INFINITY
-        private val NAN_64_VALUE = CanonincalNaN(64).value.toDouble()
-        private val NAN_32_VALUE = CanonincalNaN(32).value.toDouble()
+        private const val NAN_64_VALUE = Double.NaN
+        private const val NAN_32_VALUE = Float.NaN.toDouble()
 
         private fun assertNoHexChars(context: ParseContext?, vararg components: Any) {
             val foundHexChars = components.any {

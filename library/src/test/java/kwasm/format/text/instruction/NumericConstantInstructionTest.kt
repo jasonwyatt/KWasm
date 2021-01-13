@@ -91,6 +91,33 @@ class NumericConstantInstructionTest {
     }
 
     @Test
+    fun f32Const_followedByNan() {
+        val result = tokenizer.tokenize("f32.const nan", context)
+            .parseNumericConstant(0) ?: fail("Expected an instruction")
+        assertThat(result.parseLength).isEqualTo(2)
+        val instruction = result.astNode as NumericConstantInstruction.F32
+        assertThat(instruction.value.value).isEqualTo(Float.NaN)
+    }
+
+    @Test
+    fun f32Const_followedByInf() {
+        val result = tokenizer.tokenize("f32.const inf", context)
+            .parseNumericConstant(0) ?: fail("Expected an instruction")
+        assertThat(result.parseLength).isEqualTo(2)
+        val instruction = result.astNode as NumericConstantInstruction.F32
+        assertThat(instruction.value.value).isEqualTo(Float.POSITIVE_INFINITY)
+    }
+
+    @Test
+    fun f32Const_followedByNegativeInf() {
+        val result = tokenizer.tokenize("f32.const -inf", context)
+            .parseNumericConstant(0) ?: fail("Expected an instruction")
+        assertThat(result.parseLength).isEqualTo(2)
+        val instruction = result.astNode as NumericConstantInstruction.F32
+        assertThat(instruction.value.value).isEqualTo(Float.NEGATIVE_INFINITY)
+    }
+
+    @Test
     fun parses_f64Const() {
         val result = tokenizer.tokenize("f64.const -1.5e5", context)
             .parseNumericConstant(0) ?: fail("Expected an instruction")
@@ -105,5 +132,32 @@ class NumericConstantInstructionTest {
             tokenizer.tokenize("f64.const 1", context)
                 .parseNumericConstant(0)
         }
+    }
+
+    @Test
+    fun f64Const_followedByNan() {
+        val result = tokenizer.tokenize("f64.const nan", context)
+            .parseNumericConstant(0) ?: fail("Expected an instruction")
+        assertThat(result.parseLength).isEqualTo(2)
+        val instruction = result.astNode as NumericConstantInstruction.F64
+        assertThat(instruction.value.value).isEqualTo(Double.NaN)
+    }
+
+    @Test
+    fun f64Const_followedByInf() {
+        val result = tokenizer.tokenize("f64.const inf", context)
+            .parseNumericConstant(0) ?: fail("Expected an instruction")
+        assertThat(result.parseLength).isEqualTo(2)
+        val instruction = result.astNode as NumericConstantInstruction.F64
+        assertThat(instruction.value.value).isEqualTo(Double.POSITIVE_INFINITY)
+    }
+
+    @Test
+    fun f64Const_followedByNegativeInf() {
+        val result = tokenizer.tokenize("f64.const -inf", context)
+            .parseNumericConstant(0) ?: fail("Expected an instruction")
+        assertThat(result.parseLength).isEqualTo(2)
+        val instruction = result.astNode as NumericConstantInstruction.F64
+        assertThat(instruction.value.value).isEqualTo(Double.NEGATIVE_INFINITY)
     }
 }

@@ -86,23 +86,23 @@ class Tokenizer {
         token.sequence.isEmpty() -> emptyList()
         // If the entire sequence is whitespace, we can ignore it.
         Format.PATTERN.get().matchEntire(token.sequence) != null -> emptyList()
-        token.isKeyword() -> listOf(token.toKeyword())
         token.isIntegerLiteral() -> listOf(token.toIntegerLiteral())
         token.isFloatLiteral() -> listOf(token.toFloatLiteral())
         token.isStringLiteral() -> listOf(token.toStringLiteral())
         token.isIdentifier() -> listOf(token.toIdentifier())
+        token.isKeyword() -> listOf(token.toKeyword())
         token.isOpenParen() || token.isClosedParen() -> listOf(token.toParen())
         token.isReserved() -> listOf(token.toReserved())
         else -> {
             val maxLengthTokenFind = listOf(
-                token.findKeyword(),
                 token.findStringLiteral(),
                 token.findIntegerLiteral(),
                 token.findFloatLiteral(),
+                token.findKeyword(),
                 token.findIdentifier(),
                 token.findParen(),
                 token.findReserved()
-            ).maxByOrNull { it?.sequence?.length ?: -1 }.takeIf { it != null }
+            ).maxByOrNull { it?.sequence?.length ?: -1 }
                 ?: throw ParseException(
                     "No valid token found in sequence: \"${token.sequence}\"",
                     token.context

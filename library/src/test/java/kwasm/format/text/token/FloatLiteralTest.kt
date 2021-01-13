@@ -33,6 +33,24 @@ class FloatLiteralTest {
     }
 
     @Test
+    fun parsesInf_32() {
+        val actual = FloatLiteral("inf", 32)
+        assertThat(actual.isInfinite()).isTrue()
+    }
+
+    @Test
+    fun parsesNegInf() {
+        val actual = FloatLiteral("-inf")
+        assertThat(actual.isInfinite()).isTrue()
+    }
+
+    @Test
+    fun parsesNegInf_32() {
+        val actual = FloatLiteral("-inf", 32)
+        assertThat(actual.isInfinite()).isTrue()
+    }
+
+    @Test
     fun parsesNaN() {
         val actual = FloatLiteral("nan")
         assertThat(actual.isNaN()).isTrue()
@@ -41,6 +59,18 @@ class FloatLiteralTest {
     @Test
     fun parsesHexNaN() {
         val actual = FloatLiteral("nan:0xF")
+        assertThat(actual.isNaN()).isTrue()
+    }
+
+    @Test
+    fun parsesNaN_32() {
+        val actual = FloatLiteral("nan", 32)
+        assertThat(actual.isNaN()).isTrue()
+    }
+
+    @Test
+    fun parsesHexNaN_32() {
+        val actual = FloatLiteral("nan:0xF", 32)
         assertThat(actual.isNaN()).isTrue()
     }
 
@@ -224,6 +254,18 @@ class FloatLiteralTest {
     @Test
     fun isFloatLiteral_returnsTrue_ifEntireSequenceIsFloat() {
         val input = RawToken("-12345789.01e+34", CONTEXT)
+        assertThat(input.isFloatLiteral()).isTrue()
+    }
+
+    @Test
+    fun isFloatLiteral_returnsTrue_ifEntireSequenceIsFloat_nan() {
+        val input = RawToken("nan", CONTEXT)
+        assertThat(input.isFloatLiteral()).isTrue()
+    }
+
+    @Test
+    fun isFloatLiteral_returnsTrue_ifEntireSequenceIsFloat_inf() {
+        val input = RawToken("inf", CONTEXT)
         assertThat(input.isFloatLiteral()).isTrue()
     }
 
