@@ -70,6 +70,10 @@ fun <T : Any> List<Token>.parseLiteral(
         }
         Float::class -> {
             val literalToken = node as? FloatLiteral
+                ?: (node as? IntegerLiteral.Signed)
+                    ?.let { FloatLiteral("${it.value}", context = it.context) }
+                ?: (node as? IntegerLiteral.Unsigned)
+                    ?.let { FloatLiteral("${it.value}", context = it.context) }
                 ?: throw ParseException("Expected f32", context)
             literalToken.magnitude = 32
 
@@ -77,6 +81,10 @@ fun <T : Any> List<Token>.parseLiteral(
         }
         Double::class -> {
             val literalToken = node as? FloatLiteral
+                ?: (node as? IntegerLiteral.Signed)
+                    ?.let { FloatLiteral("${it.value}", context = it.context) }
+                ?: (node as? IntegerLiteral.Unsigned)
+                    ?.let { FloatLiteral("${it.value}", context = it.context) }
                 ?: throw ParseException("Expected f64", context)
             literalToken.magnitude = 64
 
