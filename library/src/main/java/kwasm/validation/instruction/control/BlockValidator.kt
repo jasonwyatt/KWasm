@@ -20,6 +20,7 @@ import kwasm.ast.type.ValueType
 import kwasm.util.Impossible
 import kwasm.validation.FunctionBodyValidationVisitor
 import kwasm.validation.ValidationContext
+import kwasm.validation.ValidationException
 import kwasm.validation.instruction.validate
 import kwasm.validation.validate
 import kwasm.validation.validateNotNull
@@ -38,6 +39,10 @@ object BlockValidator : FunctionBodyValidationVisitor<ControlInstruction> {
         is ControlInstruction.Block -> node.validateBlock(context)
         is ControlInstruction.Loop -> node.validateLoop(context)
         is ControlInstruction.If -> node.validateIf(context)
+        is ControlInstruction.StartBlock,
+        is ControlInstruction.StartIf,
+        is ControlInstruction.EndBlock ->
+            throw ValidationException("Start/End markers not supported at validation time.")
         else -> Impossible()
     }
 }

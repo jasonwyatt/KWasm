@@ -50,6 +50,9 @@ internal fun ControlInstruction.execute(
         context
     )
     is ControlInstruction.If -> this.execute(context)
+    is ControlInstruction.StartIf,
+    is ControlInstruction.StartBlock,
+    is ControlInstruction.EndBlock -> TODO("Not yet supported")
     // unreachable throws
     ControlInstruction.Unreachable -> throw KWasmRuntimeException("unreachable instruction reached")
     // nop does nothing.
@@ -81,7 +84,7 @@ internal fun ControlInstruction.execute(
  * 1. Enter the block `instr*` with label `L`.
  */
 internal fun executeBlockOrLoop(
-    label: Identifier.Label,
+    label: Identifier.Label?,
     expectedValType: ValueType?,
     isLoop: Boolean,
     blockInstructions: List<Instruction>,
@@ -362,7 +365,7 @@ internal fun executeBreakTo(
             .indexVal.stringRepr
         // Pop labels further up the stack until we reach the one we're looking for
         context.stacks.labels.popUntil {
-            (it.identifier as Identifier.Label).stringRepr == labelIdentifier
+            (it.identifier as? Identifier.Label)?.stringRepr == labelIdentifier
         }
     } ?: throw KWasmRuntimeException("Could not jump to label identified by: $labelIndex")
 

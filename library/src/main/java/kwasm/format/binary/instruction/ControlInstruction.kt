@@ -98,7 +98,6 @@ internal fun BinaryParser.readBlock(opcode: Int): ControlInstruction {
         -4L -> ValueType.F64
         else -> null
     }
-    val label = Identifier.Label(null, null)
     val resultType = when {
         blockType == -64L -> ResultType(null)
         blockValueType != null -> ResultType(Result(blockValueType))
@@ -110,19 +109,16 @@ internal fun BinaryParser.readBlock(opcode: Int): ControlInstruction {
         }
     }
     return when (opcode) {
-        0x02 -> ControlInstruction.Block(label, resultType, readExpression().instructions)
-        0x03 -> ControlInstruction.Loop(label, resultType, readExpression().instructions)
-        0x04 -> readIf(resultType, label)
+        0x02 -> ControlInstruction.Block(null, resultType, readExpression().instructions)
+        0x03 -> ControlInstruction.Loop(null, resultType, readExpression().instructions)
+        0x04 -> readIf(resultType)
         else -> throwException("Invalid control instruction format")
     }
 }
 
-internal fun BinaryParser.readIf(
-    resultType: ResultType,
-    label: Identifier.Label
-): ControlInstruction.If {
+internal fun BinaryParser.readIf(resultType: ResultType): ControlInstruction.If {
     val positiveBranch = readExpression().instructions
     val negativeBranch =
         if (lastByte == 0x05.toByte()) readExpression().instructions else emptyList()
-    return ControlInstruction.If(label, resultType, positiveBranch, negativeBranch)
+    return ControlInstruction.If(null, resultType, positiveBranch, negativeBranch)
 }

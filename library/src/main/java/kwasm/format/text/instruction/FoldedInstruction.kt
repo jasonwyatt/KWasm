@@ -141,7 +141,7 @@ private fun List<Token>.parseFoldedBlockOrLoop(
     return if (isLoop) {
         ParseResult(
             ControlInstruction.Loop(
-                label.astNode,
+                if (label.parseLength > 0) label.astNode else null,
                 resultType.astNode.toResultType(),
                 instructions.astNode
             ),
@@ -150,7 +150,7 @@ private fun List<Token>.parseFoldedBlockOrLoop(
     } else {
         ParseResult(
             ControlInstruction.Block(
-                label.astNode,
+                if (label.parseLength > 0) label.astNode else null,
                 resultType.astNode.toResultType(),
                 instructions.astNode
             ),

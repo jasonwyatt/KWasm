@@ -58,23 +58,101 @@ import kwasm.ast.type.ResultType
  */
 sealed class ControlInstruction : Instruction {
     data class Block(
-        val label: Identifier.Label,
+        val label: Identifier.Label?,
         override val result: ResultType,
         val instructions: List<Instruction>
-    ) : ControlInstruction(), BlockInstruction
+    ) : ControlInstruction(), BlockInstruction {
+        override fun flatten(expressionIndex: Int): List<Instruction> {
+            val flattenedInternals = instructions.flatten(expressionIndex + 1)
+            val endPosition = expressionIndex + flattenedInternals.size + 1
+            return listOf(StartBlock(label, this, endPosition)) +
+                flattenedInternals +
+                EndBlock(label, this, expressionIndex)
+        }
+    }
 
     data class Loop(
-        val label: Identifier.Label,
+        val label: Identifier.Label?,
         override val result: ResultType,
         val instructions: List<Instruction>
-    ) : ControlInstruction(), BlockInstruction
+    ) : ControlInstruction(), BlockInstruction {
+        override fun flatten(expressionIndex: Int): List<Instruction> {
+            val flattenedInternals = instructions.flatten(expressionIndex + 1)
+            val endPosition = expressionIndex + flattenedInternals.size + 1
+            return listOf(StartBlock(label, this, endPosition)) +
+                flattenedInternals +
+                EndBlock(label, this, expressionIndex)
+        }
+    }
 
     data class If(
-        val label: Identifier.Label,
+        val label: Identifier.Label?,
         override val result: ResultType,
         val positiveInstructions: List<Instruction>,
         val negativeInstructions: List<Instruction>
-    ) : ControlInstruction(), BlockInstruction
+    ) : ControlInstruction(), BlockInstruction {
+        override fun flatten(expressionIndex: Int): List<Instruction> {
+            val positiveStartPosition = expressionIndex + 1
+            val flattenedPositive = positiveInstructions.flatten(positiveStartPosition) +
+                EndBlock(label, this, expressionIndex)
+            val negativeStartPosition = positiveStartPosition + flattenedPositive.size
+            val flattenedNegative = negativeInstructions.flatten(negativeStartPosition) +
+                EndBlock(label, this, expressionIndex)
+            val endPosition = expressionIndex + flattenedPositive.size + flattenedNegative.size + 1
+            return listOf(
+                StartIf(label, this, positiveStartPosition, negativeStartPosition, endPosition)
+            ) +
+                flattenedPositive +
+                flattenedNegative +
+                EndBlock(label, this, expressionIndex)
+        }
+    }
+
+    /**
+     * Pseudo-instruction for runtime-only (not used during validation) which marks the start of a
+     * block or a loop.
+     */
+    data class StartBlock(
+        override val identifier: Identifier.Label?,
+        override val original: BlockInstruction,
+        override val endPosition: Int
+    ) : ControlInstruction(), BlockStart
+
+    /**
+     * Pseudo-instruction for runtime-only (not used during validation) which marks the start of an
+     * if-control instruction.
+     *
+     * The structure of a flattened [If] instruction consists of:
+     *
+     * * [StartIf]
+     * * [Instruction]* - The instructions for the positive-case. The position of the first
+     *   instruction in this sequence is given by [positiveStartPosition].
+     * * [EndBlock] - Marker of the end of the positive-case, its [EndBlock.startPosition] points
+     *   to the location of the [StartIf].
+     * * [Instruction]* - THe instructions for the negative-case. The position of the first
+     *   instruction in this sequence is given by [negativeStartPosition].
+     * * [EndBlock] - Marker of the end of the negative-case, its [EndBlock.startPosition] points
+     *   to the location of the [StartIf].
+     * * [EndBlock] - Marker of the end of the [StartIf], this instruction's position is what the
+     *   [StartIf.endPosition] points to.
+     */
+    data class StartIf(
+        override val identifier: Identifier.Label?,
+        override val original: If,
+        val positiveStartPosition: Int,
+        val negativeStartPosition: Int,
+        override val endPosition: Int,
+    ) : ControlInstruction(), BlockStart
+
+    /**
+     * Pseudo-instruction for runtime-only (not used during validation) which marks the end of a
+     * block, loop, or if (as well as the ends of each branch of an if).
+     */
+    data class EndBlock(
+        override val identifier: Identifier.Label?,
+        override val original: BlockInstruction,
+        override val startPosition: Int
+    ) : ControlInstruction(), BlockEnd
 
     object Unreachable : ControlInstruction()
 
