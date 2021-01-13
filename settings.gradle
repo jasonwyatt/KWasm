@@ -12,6 +12,5 @@
  * limitations under the License.
  */
 
-include ':library', ':docs'
+include ':library', ':docs', ':example-android'
 rootProject.name='KWasm'
-include ':example-android'
