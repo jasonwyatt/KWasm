@@ -19,9 +19,9 @@ import com.google.common.truth.Truth.assertThat
 import com.google.common.truth.Truth.assertWithMessage
 import kwasm.ParseRule
 import kwasm.api.HostFunction
-import kwasm.ast.AstNodeList
 import kwasm.ast.Identifier
 import kwasm.ast.instruction.Instruction
+import kwasm.ast.instruction.flatten
 import kwasm.ast.module.Index
 import kwasm.ast.module.WasmFunction
 import kwasm.ast.util.toFunctionIndex
@@ -31,7 +31,7 @@ import kwasm.runtime.ExecutionContext
 import kwasm.runtime.FunctionInstance
 import kwasm.runtime.Table
 import kwasm.runtime.Value
-import kwasm.runtime.instruction.execute
+import kwasm.runtime.instruction.executeFlattened
 import kwasm.runtime.stack.Activation
 import kwasm.runtime.toFunctionInstance
 import kwasm.runtime.toValue
@@ -75,7 +75,7 @@ internal class InstructionTestBuilder(
             expectedMessage,
             *inputs
         )
-            .check(instructionSource)
+            .check(instructionSource).also { it.instructionIndex = 0 }
     }
 
     fun validCase(expectedOutput: Number, vararg inputs: Number) = apply {
@@ -85,7 +85,7 @@ internal class InstructionTestBuilder(
             listOf(expectedOutput),
             *inputs
         )
-            .check(instructionSource)
+            .check(instructionSource).also { it.instructionIndex = 0 }
     }
 
     fun validCase(expectedStack: List<Number>, vararg inputs: Number) = apply {
@@ -94,7 +94,7 @@ internal class InstructionTestBuilder(
             context,
             expectedStack,
             *inputs
-        ).check(instructionSource)
+        ).check(instructionSource).also { it.instructionIndex = 0 }
     }
 
     fun validVoidCase(vararg inputs: Number) = apply {
@@ -103,7 +103,7 @@ internal class InstructionTestBuilder(
             context,
             emptyList(),
             *inputs
-        ).check(instructionSource)
+        ).check(instructionSource).also { it.instructionIndex = 0 }
     }
 }
 
@@ -166,11 +166,13 @@ internal class TestCase(
     vararg val opStack: Number
 ) : InstructionChecker {
     override fun check(source: String): ExecutionContext {
-        var instructions: AstNodeList<out Instruction>? = null
+        var instructions: List<Instruction>? = null
         parser.with { instructions = source.parseInstructions() }
 
-        val resultContext = instructions!!.execute(
-            context.withOpStack(opStack.map { it.toValue() })
+        instructions = instructions!!.flatten(0)
+        val resultContext = instructions!!.executeFlattened(
+            context.copy(flattenedInstructions = instructions!!)
+                .withOpStack(opStack.map { it.toValue() })
         )
 
         checkOutput(source.trimIndent(), resultContext)
@@ -182,9 +184,8 @@ internal class TestCase(
         var wasmFunction: WasmFunction? = null
         parser.with { wasmFunction = source.tokenize().parseWasmFunction(0)!!.astNode }
 
-        val resultContext = FunctionInstance.Module(context.moduleInstance, wasmFunction!!).execute(
-            context.withOpStack(opStack.map { it.toValue() })
-        )
+        val resultContext = FunctionInstance.Module(context.moduleInstance, wasmFunction!!)
+            .execute(context.withOpStack(opStack.map { it.toValue() }))
 
         checkOutput(source.trimIndent(), resultContext)
 
@@ -213,8 +214,10 @@ internal class ErrorTestCase(
         parser.with { instructions = source.parseInstructions() }
 
         assertThrows(expectedThrowable.java) {
-            instructions!!.execute(
-                context.withOpStack(opStack.map { it.toValue() })
+            instructions = instructions!!.flatten(0)
+            instructions!!.executeFlattened(
+                context.copy(flattenedInstructions = instructions!!)
+                    .withOpStack(opStack.map { it.toValue() })
             )
         }.also { assertThat(it).hasMessageThat().contains(expectedMessage) }
         return context

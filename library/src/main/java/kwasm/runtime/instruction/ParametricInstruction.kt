@@ -27,7 +27,7 @@ internal fun ParametricInstruction.execute(
 ): ExecutionContext = when (this) {
     is ParametricInstruction.Drop -> this.execute(context)
     is ParametricInstruction.Select -> this.execute(context)
-}
+}.also { it.instructionIndex++ }
 
 /**
  * From [the docs](https://webassembly.github.io/spec/core/exec/instructions.html#exec-drop):

@@ -21,6 +21,9 @@ internal class OperandStack(
     initialValues: List<Value<*>> = emptyList(),
     maxCapacity: Int = DEFAULT_MAX_CAPACITY
 ) : BaseStack<Value<*>>(NAME, initialValues, maxCapacity) {
+    /** Makes a copy of the stack. */
+    fun copy(): OperandStack = OperandStack(values.toList(), maxCapacity)
+
     companion object {
         private const val NAME = "Op"
     }

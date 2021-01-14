@@ -39,24 +39,19 @@ internal fun Instruction.execute(
 }
 
 /** Executes a sequence of [Instruction]s. */
-internal fun List<Instruction>.execute(context: ExecutionContext): ExecutionContext =
-    fold(context) { soFar, instruction ->
-        // Capture the activation/label stack heights before execution.
-        val activationHeightBefore = soFar.stacks.activations.height
-        val labelHeightBefore = soFar.stacks.labels.height
+internal fun List<Instruction>.executeFlattened(context: ExecutionContext): ExecutionContext {
+    val activationHeight = context.stacks.activations.height
+    var resultContext = context
 
-        // Execute the instruction
-        val resultContext = instruction.execute(soFar)
+    while (resultContext.instructionIndex < size) {
+        val instruction = this[resultContext.instructionIndex]
+        resultContext = instruction.execute(resultContext)
 
-        if (resultContext.stacks.activations.height < activationHeightBefore) {
+        if (resultContext.stacks.activations.height < activationHeight) {
             // No need to continue executing after a return (would've popped from the activation
             // stack)
             return resultContext
         }
-        if (resultContext.stacks.labels.height != labelHeightBefore) {
-            // No need to continue executing after a break (would've popped from the label stack)
-            return resultContext
-        }
-        // Continue execution
-        resultContext
     }
+    return resultContext
+}

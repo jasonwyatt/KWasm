@@ -73,8 +73,8 @@ class CallValidatorTest {
             "call \$myFunc".parseInstruction()
                 .validate(
                     CONTEXT_WITH_FUNCTION_TWO_PARAMS
-                        .pushStack(ValueType.I32)
                         .pushStack(ValueType.I64)
+                        .pushStack(ValueType.I32)
                 )
         }
     }
@@ -102,8 +102,8 @@ class CallValidatorTest {
         val result = "call \$myFunc".parseInstruction()
             .validate(
                 CONTEXT_WITH_FUNCTION_TWO_PARAMS
-                    .pushStack(ValueType.I64)
                     .pushStack(ValueType.I32)
+                    .pushStack(ValueType.I64)
             )
         assertThat(result.stack).isEmpty()
     }

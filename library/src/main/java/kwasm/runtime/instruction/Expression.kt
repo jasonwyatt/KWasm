@@ -16,6 +16,7 @@ package kwasm.runtime.instruction
 
 import kwasm.KWasmRuntimeException
 import kwasm.ast.instruction.Expression
+import kwasm.ast.instruction.flatten
 import kwasm.runtime.ExecutionContext
 import kwasm.runtime.stack.OperandStack
 
@@ -35,9 +36,13 @@ import kwasm.runtime.stack.OperandStack
 internal fun Expression.execute(
     context: ExecutionContext
 ): ExecutionContext {
-    val expressionContext = context.copy(stacks = context.stacks.copy(operands = OperandStack()))
+    val expressionContext = context.copy(
+        stacks = context.stacks.copy(operands = OperandStack()),
+        instructionIndex = 0
+    )
+    val flattened = instructions.flatten(0)
     val executionValue =
-        instructions.execute(expressionContext).let {
+        flattened.executeFlattened(expressionContext).let {
             if (it.stacks.operands.height == 0) throw KWasmRuntimeException(
                 "Expression expected to produce a value, but stack is empty"
             )

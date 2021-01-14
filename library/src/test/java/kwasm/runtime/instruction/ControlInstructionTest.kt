@@ -69,7 +69,9 @@ class ControlInstructionTest {
     ) {
         context = emptyContext
         validCase(1f, 1f)
-        assertThat(context).isEqualTo(emptyContext)
+        assertThat(context.store).isEqualTo(emptyContext.store)
+        assertThat(context.moduleInstance).isEqualTo(emptyContext.moduleInstance)
+        assertThat(context.stacks).isEqualTo(emptyContext.stacks)
     }
 
     @Test
@@ -80,13 +82,16 @@ class ControlInstructionTest {
             i32.const 42
             (block
                 i32.const 2
+                drop
             )
         """
         ) {
             context = emptyContext
             validCase(42)
             validCase(listOf<Number>(1f, 42), 1f)
-            assertThat(context).isEqualTo(emptyContext)
+            assertThat(context.store).isEqualTo(emptyContext.store)
+            assertThat(context.moduleInstance).isEqualTo(emptyContext.moduleInstance)
+            assertThat(context.stacks).isEqualTo(emptyContext.stacks)
         }
 
     @Test
@@ -290,7 +295,9 @@ class ControlInstructionTest {
     fun nop() = instructionCases(parser, "nop") {
         context = emptyContext
         validCase(1f, 1f)
-        assertThat(context).isEqualTo(emptyContext)
+        assertThat(context.store).isEqualTo(emptyContext.store)
+        assertThat(context.moduleInstance).isEqualTo(emptyContext.moduleInstance)
+        assertThat(context.stacks).isEqualTo(emptyContext.stacks)
     }
 
     @Test
@@ -529,9 +536,11 @@ class ControlInstructionTest {
                         i32.const 1 ;; jumping to 0 goes here
                         br 2 ;; exit
                     )
+                    drop
                     i32.const 2 ;; jumping to 1 goes here
                     br 1 ;; exit
                 )
+                drop
                 i32.const 3 ;; jumping to 2 goes here
             )
             ;; jumping to 3 goes here (same as exiting)

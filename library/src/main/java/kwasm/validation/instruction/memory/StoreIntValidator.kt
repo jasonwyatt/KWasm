@@ -62,11 +62,11 @@ object StoreIntValidator : FunctionBodyValidationVisitor<MemoryInstruction.Store
             parseContext = null,
             message = "Store expects at least two stack entries"
         )
-        validate(topTwo[0] == storeType, parseContext = null) {
+        validate(topTwo[1] == storeType, parseContext = null) {
             "Store requires that the top of the stack has the same type as the instruction type"
         }
-        validate(topTwo[1] == ValueType.I32, parseContext = null) {
-            "Store requires an i32 at the second position in the stack, but ${topTwo[1]} is present"
+        validate(topTwo[0] == ValueType.I32, parseContext = null) {
+            "Store requires an i32 at the second position in the stack, but ${topTwo[0]} is present"
         }
 
         return updatedContext

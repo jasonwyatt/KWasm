@@ -72,7 +72,7 @@ class StackForFunctionValidatorTest {
                 .validateStackForFunctionType(functionTypeWithTwo)
         }.also {
             assertThat(it).hasMessageThat()
-                .contains("Expected [i32, i32] at the top of the stack, but found [f32, i32]")
+                .contains("Expected [i32, i32] at the top of the stack, but found [i32, f32]")
         }
 
         assertThrows(ValidationException::class.java) {
@@ -82,7 +82,7 @@ class StackForFunctionValidatorTest {
                 .validateStackForFunctionType(functionTypeWithTwo)
         }.also {
             assertThat(it).hasMessageThat()
-                .contains("Expected [i32, i32] at the top of the stack, but found [i32, f32]")
+                .contains("Expected [i32, i32] at the top of the stack, but found [f32, i32]")
         }
 
         assertThrows(ValidationException::class.java) {

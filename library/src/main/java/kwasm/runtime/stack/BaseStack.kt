@@ -22,7 +22,7 @@ import java.util.LinkedList
 internal abstract class BaseStack<T : StackElement>(
     private val name: String,
     initialValues: List<T> = emptyList(),
-    private val maxCapacity: Int = DEFAULT_MAX_CAPACITY
+    val maxCapacity: Int = DEFAULT_MAX_CAPACITY
 ) : Stack<T> {
     val values = LinkedList<T>()
 

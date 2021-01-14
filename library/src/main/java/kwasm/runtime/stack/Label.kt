@@ -15,7 +15,6 @@
 package kwasm.runtime.stack
 
 import kwasm.ast.Identifier
-import kwasm.ast.instruction.Instruction
 import kwasm.runtime.StackElement
 
 /**
@@ -35,7 +34,16 @@ import kwasm.runtime.StackElement
  */
 internal data class Label(
     val identifier: Identifier?,
-    val continuation: List<Instruction> = emptyList(),
     val arity: Int = 1,
-    val opStackAtEnter: OperandStack
+    val opStackAtEnter: OperandStack,
+    /**
+     * Index within the current instruction list of the [kwasm.ast.instruction.BlockStart]
+     * associated with the label.
+     */
+    val startPosition: Int,
+    /**
+     * Continuation position is the branch target start point for the current instruction list when
+     * a break/jump is used within a block instruction.
+     */
+    val continuationPosition: Int
 ) : StackElement

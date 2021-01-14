@@ -125,7 +125,7 @@ sealed class ValidationContext(
          * those items removed.
          */
         fun popStack(count: Int): Pair<List<ValueType>, FunctionBody> =
-            stack.asReversed().take(count) to copy(stack = stack.dropLast(count))
+            stack.asReversed().take(count).reversed() to copy(stack = stack.dropLast(count))
 
         /** Prepends a [ResultType] onto the [labels] list with the given identifier. */
         fun prependLabel(identifier: Identifier.Label, label: ResultType) =

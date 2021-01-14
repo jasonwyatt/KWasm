@@ -14,6 +14,7 @@
 
 package kwasm.runtime
 
+import kwasm.ast.instruction.Instruction
 import kwasm.runtime.stack.RuntimeStacks
 import kwasm.runtime.util.AddressIndex
 import kwasm.runtime.util.TypeIndex
@@ -22,7 +23,9 @@ import kwasm.runtime.util.TypeIndex
 internal data class ExecutionContext(
     var store: Store,
     val moduleInstance: ModuleInstance,
-    val stacks: RuntimeStacks
+    val stacks: RuntimeStacks,
+    var instructionIndex: Int = 0,
+    val flattenedInstructions: List<Instruction> = emptyList()
 )
 
 /** Creates an empty [ExecutionContext], useful when evaluating constant-[Expression]s. */
@@ -37,5 +40,7 @@ internal fun EmptyExecutionContext(): ExecutionContext = ExecutionContext(
         AddressIndex(),
         emptyList()
     ),
-    RuntimeStacks()
+    RuntimeStacks(),
+    instructionIndex = 0,
+    flattenedInstructions = emptyList()
 )
