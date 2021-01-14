@@ -53,7 +53,7 @@ internal fun MemoryInstruction.execute(context: ExecutionContext): ExecutionCont
     is MemoryInstruction.StoreFloat -> this.execute(context)
     is MemoryInstruction.Size -> this.execute(context)
     is MemoryInstruction.Grow -> this.execute(context)
-}
+}.also { it.instructionIndex++ }
 
 /**
  * From [the docs](https://webassembly.github.io/spec/core/exec/instructions.html#and):

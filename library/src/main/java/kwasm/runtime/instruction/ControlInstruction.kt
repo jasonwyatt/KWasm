@@ -16,8 +16,8 @@ package kwasm.runtime.instruction
 
 import kwasm.KWasmRuntimeException
 import kwasm.ast.Identifier
+import kwasm.ast.instruction.BlockStart
 import kwasm.ast.instruction.ControlInstruction
-import kwasm.ast.instruction.Instruction
 import kwasm.ast.module.Index
 import kwasm.ast.type.ValueType
 import kwasm.runtime.EmptyValue
@@ -26,7 +26,6 @@ import kwasm.runtime.FunctionInstance
 import kwasm.runtime.IntValue
 import kwasm.runtime.popUntil
 import kwasm.runtime.stack.Label
-import kwasm.runtime.stack.OperandStack
 import kwasm.runtime.toValueType
 
 /**
@@ -35,34 +34,62 @@ import kwasm.runtime.toValueType
 internal fun ControlInstruction.execute(
     context: ExecutionContext
 ): ExecutionContext = when (this) {
-    is ControlInstruction.Block -> executeBlockOrLoop(
-        label,
-        result.result?.valType,
-        false,
-        instructions,
-        context
-    )
-    is ControlInstruction.Loop -> executeBlockOrLoop(
-        label,
-        result.result?.valType,
-        true,
-        instructions,
-        context
-    )
-    is ControlInstruction.If -> this.execute(context)
-    is ControlInstruction.StartIf,
-    is ControlInstruction.StartBlock,
-    is ControlInstruction.EndBlock -> TODO("Not yet supported")
+    is ControlInstruction.Block,
+    is ControlInstruction.Loop,
+    is ControlInstruction.If ->
+        throw KWasmRuntimeException("Instruction sequences must be flattened")
+    is ControlInstruction.StartIf -> this.execute(context)
+    is ControlInstruction.StartBlock -> this.execute(context)
+    is ControlInstruction.EndBlock -> this.execute(context)
     // unreachable throws
     ControlInstruction.Unreachable -> throw KWasmRuntimeException("unreachable instruction reached")
     // nop does nothing.
-    ControlInstruction.NoOp -> context
+    ControlInstruction.NoOp -> context.also { it.instructionIndex++ }
     is ControlInstruction.Break -> this.execute(context)
     is ControlInstruction.BreakIf -> this.execute(context)
     is ControlInstruction.BreakTable -> this.execute(context)
     is ControlInstruction.Return -> this.execute(context)
     is ControlInstruction.Call -> this.execute(context)
     is ControlInstruction.CallIndirect -> this.execute(context)
+}
+
+/**
+ * From [the docs](https://webassembly.github.io/spec/core/exec/instructions.html#exec-if):
+ *
+ * ```
+ *   if [t?] instr*1 else instr*2 end
+ * ```
+ *
+ * 1. Assert: due to validation, a value of value type `i32` is on the top of the stack.
+ * 1. Pop the value `i32.const c` from the stack.
+ * 1. Let `n` be the arity `|t?|` of the result type `t?`.
+ * 1. Let `L` be the label whose arity is `n` and whose continuation is the end of the `if`
+ *    instruction.
+ * 1. If `c` is non-zero, then:
+ *    * Enter the block `instr*1` with label `L`. (see [executeBlockOrLoop])
+ * 1. Else:
+ *    * Enter the block `instr*2` with label `L`. (see [executeBlockOrLoop])
+ */
+internal fun ControlInstruction.StartIf.execute(context: ExecutionContext): ExecutionContext {
+    val condition = context.stacks.operands.pop() as? IntValue
+        ?: throw KWasmRuntimeException("if requires i32 at the top of the stack")
+
+    val myLabel = Label(
+        identifier,
+        if (result.result != null) 1 else 0,
+        context.stacks.operands.copy(),
+        context.instructionIndex,
+        endPosition
+    )
+    context.stacks.labels.push(myLabel)
+
+    if (condition.value != 0) {
+        context.instructionIndex = positiveStartPosition
+    } else {
+        context.instructionIndex = negativeStartPosition
+    }
+
+    return context
 }
 
 /**
@@ -83,77 +110,34 @@ internal fun ControlInstruction.execute(
  * 1. Let `L` be the label whose arity is `0` and whose continuation is the start of the loop.
  * 1. Enter the block `instr*` with label `L`.
  */
-internal fun executeBlockOrLoop(
-    label: Identifier.Label?,
-    expectedValType: ValueType?,
-    isLoop: Boolean,
-    blockInstructions: List<Instruction>,
-    context: ExecutionContext
-): ExecutionContext {
+internal fun ControlInstruction.StartBlock.execute(context: ExecutionContext): ExecutionContext {
     val myLabel = Label(
-        label,
-        if (isLoop) blockInstructions else emptyList(), // 'end of the block'
-        if (expectedValType != null) 1 else 0,
-        context.stacks.operands
-    )
-
-    context.stacks.labels.push(myLabel)
-
-    // Enter the block and run the insides with an empty op stack.
-    val postInnerContext = blockInstructions.execute(
-        context.copy(
-            stacks = context.stacks.copy(operands = OperandStack())
-        )
-    )
-    val postContextLabelTop = postInnerContext.stacks.labels.peek()
-
-    // Check if we exited ourselves naturally (if so - our label will be on the top still).
-    // Strict equality is best, but if not- then at least the string reprs should match.
-    return if (
-        postContextLabelTop === myLabel ||
-        (
-            myLabel.identifier?.stringRepr != null &&
-                myLabel.identifier.stringRepr == postContextLabelTop?.identifier?.stringRepr
-            )
-    ) {
-        // Check the result type, if we expected one
-        expectedValType?.let {
-            checkResultType(it, postInnerContext)
-            // push that result onto our stack
-            context.stacks.operands.push(postInnerContext.stacks.operands.pop())
+        identifier,
+        if (result.result != null) 1 else 0,
+        context.stacks.operands.copy(),
+        context.instructionIndex,
+        continuationPosition = when (original) {
+            is ControlInstruction.Loop -> context.instructionIndex + 1
+            else -> endPosition
         }
-        // pop our label
-        context.stacks.labels.pop()
-        context
-    } else postInnerContext // If we were jumped out-of, return the context from the internals.
+    )
+    context.stacks.labels.push(myLabel)
+    context.instructionIndex++
+
+    return context
 }
 
-/**
- * From [the docs](https://webassembly.github.io/spec/core/exec/instructions.html#exec-if):
- *
- * ```
- *   if [t?] instr*1 else instr*2 end
- * ```
- *
- * 1. Assert: due to validation, a value of value type `i32` is on the top of the stack.
- * 1. Pop the value `i32.const c` from the stack.
- * 1. Let `n` be the arity `|t?|` of the result type `t?`.
- * 1. Let `L` be the label whose arity is `n` and whose continuation is the end of the `if`
- *    instruction.
- * 1. If `c` is non-zero, then:
- *    * Enter the block `instr*1` with label `L`. (see [executeBlockOrLoop])
- * 1. Else:
- *    * Enter the block `instr*2` with label `L`. (see [executeBlockOrLoop])
- */
-internal fun ControlInstruction.If.execute(context: ExecutionContext): ExecutionContext {
-    val condition = context.stacks.operands.pop() as? IntValue
-        ?: throw KWasmRuntimeException("if requires i32 at the top of the stack")
+internal fun ControlInstruction.EndBlock.execute(context: ExecutionContext): ExecutionContext {
+    val currentLabel = context.stacks.labels.pop()
+    check(currentLabel.startPosition == startPosition)
 
-    return if (condition.value != 0) {
-        executeBlockOrLoop(label, result.result?.valType, false, positiveInstructions, context)
-    } else {
-        executeBlockOrLoop(label, result.result?.valType, false, negativeInstructions, context)
-    }
+    val start = checkNotNull(context.flattenedInstructions[startPosition] as? BlockStart)
+
+    // Check that the correct results are available.
+    original.result.result?.valType?.let { checkResultType(it, context) }
+
+    context.instructionIndex = start.endPosition + 1
+    return context
 }
 
 /**
@@ -179,7 +163,7 @@ internal fun ControlInstruction.Break.execute(context: ExecutionContext): Execut
 internal fun ControlInstruction.BreakIf.execute(context: ExecutionContext): ExecutionContext {
     val param = context.stacks.operands.pop() as? IntValue
         ?: throw KWasmRuntimeException("br_if requires i32 at the top of the stack")
-    if (param.value == 0) return context
+    if (param.value == 0) return context.also { it.instructionIndex++ }
     return executeBreakTo(labelIndex, context)
 }
 
@@ -225,6 +209,7 @@ internal fun ControlInstruction.BreakTable.execute(context: ExecutionContext): E
  * 1. Push `val^n` to the stack.
  * 1. Jump to the instruction after the original call that pushed the frame.
  */
+@Suppress("unused")
 internal fun ControlInstruction.Return.execute(context: ExecutionContext): ExecutionContext {
     val currentActivation = context.stacks.activations.pop()
     if (context.stacks.operands.height < currentActivation.arity)
@@ -251,7 +236,9 @@ internal fun ControlInstruction.Call.execute(context: ExecutionContext): Executi
         ?: throw KWasmRuntimeException("Can't find function address at index $functionIndex")
     val function = context.store.functions[funcAddr.value]
 
-    return function.execute(context)
+    val updatedContext = function.execute(context)
+    updatedContext.instructionIndex++
+    return updatedContext
 }
 
 /**
@@ -317,12 +304,13 @@ internal fun ControlInstruction.CallIndirect.execute(context: ExecutionContext):
                 "Expected $expectedFunctionType."
         )
 
-    if (function is FunctionInstance.Module) {
-        return function.execute(
-            ExecutionContext(context.store, function.moduleInstance, context.stacks)
-        )
+    val updatedContext = if (function is FunctionInstance.Module) {
+        function.execute(ExecutionContext(context.store, function.moduleInstance, context.stacks))
+    } else {
+        function.execute(context)
     }
-    return function.execute(context)
+    updatedContext.instructionIndex = context.instructionIndex + 1
+    return updatedContext
 }
 
 /**
@@ -371,19 +359,15 @@ internal fun executeBreakTo(
 
     val results = (0 until label.arity).map { context.stacks.operands.pop() }.reversed()
 
-    // Now clear our stack.
+    context.stacks.labels.push(label)
+
     context.stacks.operands.clear()
+    label.opStackAtEnter.values.forEach { context.stacks.operands.push(it) }
+    results.forEach { context.stacks.operands.push(it) }
 
-    // Push the label's op stack at enter stack.
-    results.forEach(label.opStackAtEnter::push)
+    context.instructionIndex = label.continuationPosition
 
-    // If we have a continuation for the label that's non-empty, push the label back onto the stack
-    if (label.continuation.isNotEmpty()) context.stacks.labels.push(label)
-
-    // Jump to the continuation.
-    return label.continuation.execute(
-        context.copy(stacks = context.stacks.copy(operands = label.opStackAtEnter))
-    )
+    return context
 }
 
 private fun checkResultType(expectedValType: ValueType, context: ExecutionContext) {

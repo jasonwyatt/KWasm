@@ -39,32 +39,4 @@ data class WasmModule(
     val start: StartFunction?,
     val elements: List<ElementSegment>,
     val data: List<DataSegment>
-) : AstNode {
-    /** Composes this [WasmModule] with another into a new instance. */
-    fun composeWith(other: WasmModule): WasmModule {
-        check(start == null || other.start == null) {
-            "Only one module may have a defined start function"
-        }
-        if (other.imports.isNotEmpty()) {
-            check(
-                functions.isEmpty() && tables.isEmpty() && globals.isEmpty() && memories.isEmpty()
-            ) {
-                "If the second module contains imports, the first module must not define " +
-                    "functions, tables, globals, or memories"
-            }
-        }
-        return WasmModule(
-            identifier,
-            types + other.types,
-            imports + other.imports,
-            functions + other.functions,
-            tables + other.tables,
-            memories + other.memories,
-            globals + other.globals,
-            exports + other.exports,
-            start ?: other.start,
-            elements + other.elements,
-            data + other.data
-        )
-    }
-}
+) : AstNode

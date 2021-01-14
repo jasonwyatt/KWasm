@@ -721,6 +721,7 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
             x.value.toInt().toLong().toValue()
         }
     }
+    context.instructionIndex++
     return context
 }
 

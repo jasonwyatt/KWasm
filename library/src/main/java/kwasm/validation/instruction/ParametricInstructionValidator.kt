@@ -58,13 +58,13 @@ object ParametricInstructionValidator : FunctionBodyValidationVisitor<Parametric
             parseContext = null,
             message = "Select expects at least three ValueTypes on the stack"
         )
-        validate(types[0] == ValueType.I32, parseContext = null) {
+        validate(types[2] == ValueType.I32, parseContext = null) {
             "Select expects the ValueType at the top of the stack to be i32, " +
-                "but ${types[0]} was found"
+                "but ${types[2]} was found"
         }
-        validate(types[1] == types[2], parseContext = null) {
+        validate(types[0] == types[1], parseContext = null) {
             "Select expects the 2nd and 3rd ValueTypes to be the same, " +
-                "but ${types[1]} != ${types[2]}"
+                "but ${types[2]} != ${types[0]}"
         }
         return updatedContext.pushStack(types[1])
     }

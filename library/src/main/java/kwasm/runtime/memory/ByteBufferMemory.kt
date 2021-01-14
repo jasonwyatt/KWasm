@@ -116,7 +116,7 @@ internal class ByteBufferMemory(
     override fun readFloat(offset: Int, alignment: Int): Float {
         val currentPage = offset / PAGE_SIZE
 
-        return if (offset % PAGE_SIZE < PAGE_SIZE - 4) {
+        return if (offset % PAGE_SIZE < PAGE_SIZE - 4 - 1) {
             // Simple case... use ByteBuffer directly.
             pages[currentPage].getFloat(offset % PAGE_SIZE)
         } else {

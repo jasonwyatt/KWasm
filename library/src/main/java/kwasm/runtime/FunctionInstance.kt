@@ -19,11 +19,12 @@ import kwasm.api.HostFunction
 import kwasm.api.HostFunctionContext
 import kwasm.api.functionType
 import kwasm.ast.Identifier
+import kwasm.ast.instruction.flatten
 import kwasm.ast.module.Index
 import kwasm.ast.module.WasmFunction
 import kwasm.ast.type.FunctionType
 import kwasm.ast.type.ValueType
-import kwasm.runtime.instruction.execute
+import kwasm.runtime.instruction.executeFlattened
 import kwasm.runtime.stack.Activation
 import kwasm.runtime.stack.OperandStack
 import kwasm.runtime.util.LocalIndex
@@ -97,13 +98,14 @@ sealed class FunctionInstance(open val type: FunctionType) {
     ) : FunctionInstance(
         code.typeUse?.functionType ?: FunctionType(emptyList(), emptyList())
     ) {
+        val flattenedInstructions by lazy { code.instructions.flatten(0) }
+
         @Suppress("UNCHECKED_CAST")
         override fun execute(context: ExecutionContext): ExecutionContext {
             val type = code.typeUse?.functionType ?: FunctionType(emptyList(), emptyList())
 
             if (type.returnValueEnums.size > 1)
                 throw KWasmRuntimeException("Function cannot have more than one return value.")
-            val body = code.instructions
 
             if (context.stacks.operands.height < type.parameters.size)
                 throw KWasmRuntimeException(
@@ -145,11 +147,13 @@ sealed class FunctionInstance(open val type: FunctionType) {
             val activationStackHeightAtCallTime = context.stacks.activations.height
             val functionContext = context.copy(
                 // Use a fresh op stack for the function.
-                stacks = context.stacks.copy(operands = OperandStack())
+                stacks = context.stacks.copy(operands = OperandStack()),
+                instructionIndex = 0,
+                flattenedInstructions = flattenedInstructions
             )
 
             // Execute the function.
-            val resultContext = body.execute(functionContext)
+            val resultContext = flattenedInstructions.executeFlattened(functionContext)
 
             if (resultContext.stacks.activations.height == activationStackHeightAtCallTime) {
                 // Function exited without a `return` instruction, so we need to pop our own frame.
@@ -173,8 +177,22 @@ sealed class FunctionInstance(open val type: FunctionType) {
     ) : FunctionInstance(type) {
         override fun execute(context: ExecutionContext): ExecutionContext {
             // Collect the parameters to feed to the host function.
-            val paramTypes = hostFunction.parameterTypes
-            val paramValues = paramTypes.map { context.stacks.operands.pop() }.reversed()
+            if (context.stacks.operands.height < type.parameters.size)
+                throw KWasmRuntimeException(
+                    "Not enough data on the stack to call function with type: $type"
+                )
+            val arguments = type.parameters.reversed().map {
+                val arg = context.stacks.operands.pop()
+                when (it.valType) {
+                    ValueType.I32 -> arg as? IntValue
+                    ValueType.I64 -> arg as? LongValue
+                    ValueType.F32 -> arg as? FloatValue
+                    ValueType.F64 -> arg as? DoubleValue
+                } ?: throw KWasmRuntimeException(
+                    "Parameter on stack does not match required parameter type for function " +
+                        "with type: $type"
+                )
+            }.reversed()
 
             // Get the available memory at our current call location, if we have one.
             val currentMemoryAddress = context.stacks.activations.peek()
@@ -183,7 +201,7 @@ sealed class FunctionInstance(open val type: FunctionType) {
 
             // Call the function.
             val result = hostFunction.invoke(
-                paramValues,
+                arguments,
                 object : HostFunctionContext {
                     override val memory: Memory? = memoryForFunction
                 }

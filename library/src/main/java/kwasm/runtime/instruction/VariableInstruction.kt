@@ -35,7 +35,7 @@ internal fun VariableInstruction.execute(
     is VariableInstruction.LocalGet -> this.execute(context)
     is VariableInstruction.LocalSet -> this.execute(context)
     is VariableInstruction.LocalTee -> this.execute(context)
-}
+}.also { it.instructionIndex++ }
 
 /**
  * From [the docs](https://webassembly.github.io/spec/core/exec/instructions.html#exec-global-get):

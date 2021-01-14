@@ -59,15 +59,6 @@ data class ModuleInstance internal constructor(
     val globalAddresses: AddressIndex<Identifier.Global, Address.Global>,
     val exports: List<Export>
 ) {
-    internal constructor() : this(
-        TypeIndex(),
-        AddressIndex(),
-        AddressIndex(),
-        AddressIndex(),
-        AddressIndex(),
-        emptyList()
-    )
-
     /**
      * Returns a version of this [ModuleInstance] which only consists of the available globals.
      */

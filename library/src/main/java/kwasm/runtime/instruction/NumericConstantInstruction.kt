@@ -36,5 +36,6 @@ internal fun NumericConstantInstruction<*>.execute(
         is NumericConstantInstruction.F64 ->
             context.stacks.operands.push(value.value.toValue())
     }
+    context.instructionIndex++
     return context
 }
