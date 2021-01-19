@@ -17,6 +17,7 @@
 package kwasm.runtime
 
 import kwasm.KWasmRuntimeException
+import kwasm.ast.AstNode
 import kwasm.ast.type.ValueType
 import kwasm.util.Impossible
 import kotlin.reflect.KClass
@@ -41,7 +42,7 @@ import kotlin.reflect.KClass
  *              f64.const f64
  * ```
  */
-interface Value<T : Number> : StackElement {
+interface Value<T : Number> : StackElement, AstNode {
     val value: T
 }
 

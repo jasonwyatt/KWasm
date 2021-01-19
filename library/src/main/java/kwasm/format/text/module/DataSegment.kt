@@ -79,7 +79,7 @@ fun List<Token>.parseDataSegment(fromIndex: Int): ParseResult<DataSegment>? {
     )
 }
 
-private fun List<Token>.parseDataString(fromIndex: Int): Pair<ByteArray, Int> {
+internal fun List<Token>.parseDataString(fromIndex: Int): Pair<ByteArray, Int> {
     var currentIndex = fromIndex
     val strings = StringBuilder()
     while (true) {

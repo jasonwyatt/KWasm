@@ -58,7 +58,7 @@ import java.io.InputStreamReader
 class KWasmProgram internal constructor(
     moduleExports: Map<String, Map<String, Address>>,
     private val allocatedModules: MutableMap<String, ModuleInstance>,
-    private val store: Store
+    internal val store: Store
 ) {
     private val exportedMemoryAddresses =
         moduleExports.flatMap { it.value.values }.filterIsInstance<Address.Memory>().toSet()
@@ -91,7 +91,7 @@ class KWasmProgram internal constructor(
                 "No global with name \"$globalName\" was found to be " +
                     "exported from module: $moduleName"
             )
-        val global = store.globals[globalAddress.value] as? Global.Int
+        val global = getGlobal(moduleName, globalName) as? Global.Int
             ?: throw ExportNotFoundException(
                 "Global with name \"$globalName\" in module \"$moduleName\" was not of type" +
                     " Int, instead: ${store.globals[globalAddress.value]::class.simpleName}"
@@ -263,6 +263,15 @@ class KWasmProgram internal constructor(
                 return function.execute(context).stacks.operands.peek()?.value
             }
         }
+    }
+
+    internal fun getGlobal(moduleName: String, globalName: String): Global<*> {
+        val globalAddress = exportedGlobalAddresses[moduleName]?.get(globalName)
+            ?: throw ExportNotFoundException(
+                "No global with name \"$globalName\" was found to be " +
+                    "exported from module: $moduleName"
+            )
+        return store.globals[globalAddress.value]
     }
 
     class Builder internal constructor(
@@ -475,7 +484,7 @@ class KWasmProgram internal constructor(
             withModule(name, moduleTree)
         }
 
-        private fun withModule(name: String, module: WasmModule) {
+        internal fun withModule(name: String, module: WasmModule) {
             parsedModules[name] = module
             modulesInOrder.add(name to module)
         }
