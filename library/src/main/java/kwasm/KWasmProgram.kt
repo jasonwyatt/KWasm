@@ -243,6 +243,8 @@ class KWasmProgram internal constructor(
         return object : ExportedFunction {
             override val signature: String = function.type.toSignature(moduleName, functionName)
 
+            override val argCount: Int = function.type.parameters.size
+
             override fun invoke(vararg args: Number): Number? {
                 val parameters = function.type.parameters
                 val argList = args.toList().map(Number::toValue)

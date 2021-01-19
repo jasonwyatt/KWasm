@@ -42,15 +42,15 @@ class ScriptContext(
         fnName: String,
         args: List<Expression>
     ): List<Value<*>> {
-        val argValues = args.map { expr ->
-            val context = EmptyExecutionContext()
-            expr.execute(context)
-            context.stacks.operands.pop()
+        val context = args.fold(EmptyExecutionContext()) { acc, expr ->
+            expr.instructions.fold(acc) { accInner, instruction -> instruction.execute(accInner) }
         }
-
         val moduleName = namesByIdentifier[moduleIdentifier] ?: ""
         val fn = program.getFunction(moduleName, fnName)
-        val answer = fn.invoke(*argValues.map { it.value }.toTypedArray())
+        val argValues = context.stacks.operands.values.takeLast(fn.argCount)
+            .map { it.value }
+            .reversed()
+        val answer = fn.invoke(*argValues.toTypedArray())
         return answer?.let { listOf(it.toValue()) } ?: emptyList()
     }
 

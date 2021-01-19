@@ -23,7 +23,7 @@ import java.io.InputStreamReader
 class CoreSpecTest {
     @SpecTest(
         subdir = "core",
-        files = ["binary.wast"],
+        files = ["binary.wast", "traps.wast"],
     )
     fun scriptTest(input: InputStream, file: String) {
         runScript(InputStreamReader(input), ParseContext(file))
