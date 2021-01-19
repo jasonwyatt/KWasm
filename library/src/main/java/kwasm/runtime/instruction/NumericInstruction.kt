@@ -34,6 +34,13 @@ import kotlin.math.round
 import kotlin.math.sqrt
 import kotlin.math.truncate
 
+private const val EXCEPTION_INTEGER_DIVIDE_BY_ZERO =
+    "Cannot divide by zero. (integer divide by zero)"
+private const val EXCEPTION_TRUNCATE_NAN =
+    "Cannot truncate NaN (invalid conversion to integer)"
+private const val EXCEPTION_TRUNCATE_INF =
+    "Cannot truncate Infinity (invalid conversion to integer)"
+
 /**
  * See
  * [the docs](https://webassembly.github.io/spec/core/exec/instructions.html#numeric-instructions):
@@ -102,21 +109,25 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
             (x.value * y.value).toValue()
         }
         NumericInstruction.I32DivideSigned -> binaryOp<IntValue>(context) { x, y ->
-            if (y.value == 0) throw KWasmRuntimeException("Cannot divide by zero.")
-            else if (x.value == Int.MIN_VALUE && y.value == -1)
-                throw KWasmRuntimeException("Quotient unrepresentable as 32bit integer.")
+            if (y.value == 0) {
+                throw KWasmRuntimeException(EXCEPTION_INTEGER_DIVIDE_BY_ZERO)
+            } else if (x.value == Int.MIN_VALUE && y.value == -1) {
+                throw KWasmRuntimeException(
+                    "Quotient unrepresentable as 32bit integer. (integer overflow)"
+                )
+            }
             (x.value / y.value).toValue()
         }
         NumericInstruction.I32DivideUnsigned -> binaryOp<IntValue>(context) { x, y ->
-            if (y.value == 0) throw KWasmRuntimeException("Cannot divide by zero.")
+            if (y.value == 0) throw KWasmRuntimeException(EXCEPTION_INTEGER_DIVIDE_BY_ZERO)
             (x.unsignedValue / y.unsignedValue).toValue()
         }
         NumericInstruction.I32RemainderSigned -> binaryOp<IntValue>(context) { x, y ->
-            if (y.value == 0) throw KWasmRuntimeException("Cannot divide by zero.")
+            if (y.value == 0) throw KWasmRuntimeException(EXCEPTION_INTEGER_DIVIDE_BY_ZERO)
             (x.value % y.value).toValue()
         }
         NumericInstruction.I32RemainderUnsigned -> binaryOp<IntValue>(context) { x, y ->
-            if (y.value == 0) throw KWasmRuntimeException("Cannot divide by zero.")
+            if (y.value == 0) throw KWasmRuntimeException(EXCEPTION_INTEGER_DIVIDE_BY_ZERO)
             (x.unsignedValue % y.unsignedValue).toValue()
         }
         NumericInstruction.I32BitwiseAnd -> binaryOp<IntValue>(context) { x, y ->
@@ -236,21 +247,24 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
             (x.value * y.value).toValue()
         }
         NumericInstruction.I64DivideSigned -> binaryOp<LongValue>(context) { x, y ->
-            if (y.value == 0L) throw KWasmRuntimeException("Cannot divide by zero.")
-            else if (x.value == Long.MIN_VALUE && y.value == -1L)
-                throw KWasmRuntimeException("Quotient unrepresentable as 64bit integer.")
+            if (y.value == 0L) throw KWasmRuntimeException(EXCEPTION_INTEGER_DIVIDE_BY_ZERO)
+            else if (x.value == Long.MIN_VALUE && y.value == -1L) {
+                throw KWasmRuntimeException(
+                    "Quotient unrepresentable as 64bit integer. (integer overflow)"
+                )
+            }
             (x.value / y.value).toValue()
         }
         NumericInstruction.I64DivideUnsigned -> binaryOp<LongValue>(context) { x, y ->
-            if (y.value == 0L) throw KWasmRuntimeException("Cannot divide by zero.")
+            if (y.value == 0L) throw KWasmRuntimeException(EXCEPTION_INTEGER_DIVIDE_BY_ZERO)
             (x.unsignedValue / y.unsignedValue).toValue()
         }
         NumericInstruction.I64RemainderSigned -> binaryOp<LongValue>(context) { x, y ->
-            if (y.value == 0L) throw KWasmRuntimeException("Cannot divide by zero.")
+            if (y.value == 0L) throw KWasmRuntimeException(EXCEPTION_INTEGER_DIVIDE_BY_ZERO)
             (x.value % y.value).toValue()
         }
         NumericInstruction.I64RemainderUnsigned -> binaryOp<LongValue>(context) { x, y ->
-            if (y.value == 0L) throw KWasmRuntimeException("Cannot divide by zero.")
+            if (y.value == 0L) throw KWasmRuntimeException(EXCEPTION_INTEGER_DIVIDE_BY_ZERO)
             (x.unsignedValue % y.unsignedValue).toValue()
         }
         NumericInstruction.I64BitwiseAnd -> binaryOp<LongValue>(context) { x, y ->
@@ -546,10 +560,9 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
             (x.unsignedValue % 0x100000000uL).toUInt().toValue()
         }
         NumericInstruction.I32TruncateF32Signed -> unaryOp<FloatValue, IntValue>(context) { x ->
-            if (x.value.isNaN())
-                throw KWasmRuntimeException("Cannot truncate NaN")
+            if (x.value.isNaN()) throw KWasmRuntimeException(EXCEPTION_TRUNCATE_NAN)
             if (x.value.isInfinite())
-                throw KWasmRuntimeException("Cannot truncate Infinity")
+                throw KWasmRuntimeException(EXCEPTION_TRUNCATE_INF)
             val truncated = truncate(x.value)
             if (truncated > Int.MAX_VALUE || truncated < Int.MIN_VALUE)
                 throw KWasmRuntimeException("Cannot truncate, magnitude too large for i32")
@@ -560,9 +573,9 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
         }
         NumericInstruction.I32TruncateF32Unsigned -> unaryOp<FloatValue, IntValue>(context) { x ->
             if (x.value.isNaN())
-                throw KWasmRuntimeException("Cannot truncate NaN")
+                throw KWasmRuntimeException(EXCEPTION_TRUNCATE_NAN)
             if (x.value.isInfinite())
-                throw KWasmRuntimeException("Cannot truncate Infinity")
+                throw KWasmRuntimeException(EXCEPTION_TRUNCATE_INF)
             val truncated = truncate(x.value)
             if (truncated < 0)
                 throw KWasmRuntimeException("Cannot truncate negative f32 to unsigned i32")
@@ -575,9 +588,9 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
         }
         NumericInstruction.I32TruncateF64Signed -> unaryOp<DoubleValue, IntValue>(context) { x ->
             if (x.value.isNaN())
-                throw KWasmRuntimeException("Cannot truncate NaN")
+                throw KWasmRuntimeException(EXCEPTION_TRUNCATE_NAN)
             if (x.value.isInfinite())
-                throw KWasmRuntimeException("Cannot truncate Infinity")
+                throw KWasmRuntimeException(EXCEPTION_TRUNCATE_INF)
             val truncated = truncate(x.value)
             if (truncated > Int.MAX_VALUE || truncated < Int.MIN_VALUE)
                 throw KWasmRuntimeException("Cannot truncate, magnitude too large for i32")
@@ -588,9 +601,9 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
         }
         NumericInstruction.I32TruncateF64Unsigned -> unaryOp<DoubleValue, IntValue>(context) { x ->
             if (x.value.isNaN())
-                throw KWasmRuntimeException("Cannot truncate NaN")
+                throw KWasmRuntimeException(EXCEPTION_TRUNCATE_NAN)
             if (x.value.isInfinite())
-                throw KWasmRuntimeException("Cannot truncate Infinity")
+                throw KWasmRuntimeException(EXCEPTION_TRUNCATE_INF)
             val truncated = truncate(x.value)
             if (truncated < 0)
                 throw KWasmRuntimeException("Cannot truncate negative f64 to unsigned i32")

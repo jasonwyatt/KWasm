@@ -23,6 +23,9 @@ interface ExportedFunction {
     /** String-representation of the function's arguments and result type. */
     val signature: String
 
+    /** Number of expected arguments. */
+    val argCount: Int
+
     /**
      * Invokes the exported WebAssembly function.
      *
