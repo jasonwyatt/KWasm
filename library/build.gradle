@@ -26,9 +26,9 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
-    testImplementation 'junit:junit:4.13-rc-2'
-    testImplementation "com.google.truth:truth:1.0"
-    testImplementation "org.assertj:assertj-core:3.11.1"
+    testImplementation 'junit:junit:4.13.1'
+    testImplementation "com.google.truth:truth:1.1"
+    testImplementation "org.assertj:assertj-core:3.12.2"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
 }
 
