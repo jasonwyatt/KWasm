@@ -14,6 +14,7 @@
 
 package kwasm.format.binary.module
 
+import kwasm.format.ParseException
 import kwasm.format.binary.BinaryParser
 import kwasm.format.binary.value.readUInt
 
@@ -47,29 +48,37 @@ interface Section
  */
 fun BinaryParser.readSection(): Section? {
     val id = readByteOrNull() ?: return null
-    val size = readUInt()
-    val positionBefore = position
-    val section: Section = when (id) {
-        0.toByte() -> readCustomSection(size)
-        1.toByte() -> readTypeSection()
-        2.toByte() -> readImportSection()
-        3.toByte() -> readFunctionSection()
-        4.toByte() -> readTableSection()
-        5.toByte() -> readMemorySection()
-        6.toByte() -> readGlobalSection()
-        7.toByte() -> readExportSection()
-        8.toByte() -> readStartSection()
-        9.toByte() -> readElementSection()
-        10.toByte() -> readCodeSection()
-        11.toByte() -> readDataSection()
-        else -> throwException("Invalid section ID: $id", -5)
+    try {
+        val size = readUInt()
+        val positionBefore = position
+        val section = when (id) {
+            0.toByte() -> readCustomSection(size)
+            1.toByte() -> readTypeSection()
+            2.toByte() -> readImportSection()
+            3.toByte() -> readFunctionSection()
+            4.toByte() -> readTableSection()
+            5.toByte() -> readMemorySection()
+            6.toByte() -> readGlobalSection()
+            7.toByte() -> readExportSection()
+            8.toByte() -> readStartSection()
+            9.toByte() -> readElementSection()
+            10.toByte() -> readCodeSection()
+            11.toByte() -> readDataSection()
+            else -> throwException("Invalid section ID: $id (malformed section id)", -5)
+        }
+        val consumed = position - positionBefore
+        if (consumed != size) {
+            throwException(
+                "Invalid section size. Expected $size bytes, consumed $consumed " +
+                    "(section size mismatch)",
+                -consumed - 5
+            )
+        }
+        return section
+    } catch (e: ParseException) {
+        if ("Expected byte" in e.message ?: "") {
+            throwException(e.message + ": unexpected end of section or function")
+        }
+        throw e
     }
-    val consumed = position - positionBefore
-    if (consumed != size) {
-        throwException(
-            "Invalid section size. Expected $size bytes, consumed $consumed",
-            -consumed - 5
-        )
-    }
-    return section
 }

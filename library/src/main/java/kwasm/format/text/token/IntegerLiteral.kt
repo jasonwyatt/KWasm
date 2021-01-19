@@ -55,7 +55,11 @@ sealed class IntegerLiteral<Type>(
     val value: Type by lazy {
         val res = parseValue()
         if (!checkMagnitude(res, this.magnitude)) {
-            throw ParseException("Illegal value: $res, for expected magnitude: ${this.magnitude}", context)
+            throw ParseException(
+                "Illegal value: $res, for expected magnitude: " +
+                    "${this.magnitude}: i${this.magnitude} constant",
+                context
+            )
         }
         res
     }

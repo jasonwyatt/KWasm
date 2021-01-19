@@ -31,7 +31,7 @@ import kwasm.ast.type.ValueType
  * provided by the embedder.
  */
 @Suppress("EXPERIMENTAL_API_USAGE")
-sealed class Global<T> {
+sealed class Global<T : Number> {
     abstract var value: T
     abstract val mutable: Boolean
     abstract fun update(value: Number)

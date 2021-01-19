@@ -82,7 +82,11 @@ internal fun BinaryParser.readImportDescriptor(): ImportDescriptor =
             val globalType = readGlobalType()
             ImportDescriptor.Global(Identifier.Global(null, null), globalType)
         }
-        else -> throwException("Invalid import type: 0x${type.toString(16)}", -1)
+        else ->
+            throwException(
+                "Invalid import type: 0x${type.toString(16)} (malformed import kind)",
+                -1
+            )
     }
 
 /** Creates bytes for the receiving [ImportDescriptor]. */

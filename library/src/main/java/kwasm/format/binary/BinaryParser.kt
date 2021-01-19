@@ -27,7 +27,7 @@ import java.io.InputStream
  */
 class BinaryParser(
     private val reader: InputStream,
-    private val fileName: String = "unknown.wasm"
+    private val parseContext: ParseContext = ParseContext("unknown.wasm")
 ) {
     internal var position = 0
     private val byteBuffer = ByteArray(1)
@@ -37,6 +37,8 @@ class BinaryParser(
     /** The last byte value read from the [reader]. */
     internal var lastByte: Byte = 0x00
         private set
+
+    constructor(reader: InputStream, fileName: String) : this(reader, ParseContext(fileName))
 
     /**
      * Reads a single [Byte] from the [reader].
@@ -97,7 +99,9 @@ class BinaryParser(
         var bytesRead = 0
         while (bytesRead < size) {
             val bytes = reader.read(buffer, 0, minOf(size - bytesRead, buffer.size))
-            if (bytes == -1) throwException("EOF before $size bytes read ($bytesRead so far)")
+            if (bytes == -1) {
+                throwException("EOF before $size bytes read ($bytesRead so far) - unexpected end")
+            }
             bytesOut.write(buffer, 0, bytes)
             bytesRead += bytes
         }
@@ -111,6 +115,6 @@ class BinaryParser(
      * [positionOffset].
      */
     fun throwException(message: String, positionOffset: Int = 0): Nothing {
-        throw ParseException(message, ParseContext(fileName, position + positionOffset, 0))
+        throw ParseException(message, parseContext.copy(column = position + positionOffset))
     }
 }

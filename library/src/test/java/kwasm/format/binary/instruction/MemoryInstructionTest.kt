@@ -194,7 +194,7 @@ class MemoryInstructionTest(val param: Params) {
                 expectedInstruction = null,
                 expectedException = ParseException(
                     "No instruction defined",
-                    ParseContext("unknown.wasm", 0, 0)
+                    ParseContext("unknown.wasm", 1, 0)
                 )
             ),
             Params(
@@ -203,7 +203,7 @@ class MemoryInstructionTest(val param: Params) {
                 expectedInstruction = null,
                 expectedException = ParseException(
                     "Invalid index for memory.size",
-                    ParseContext("unknown.wasm", 1, 0)
+                    ParseContext("unknown.wasm", 1, 1)
                 )
             ),
             Params(
@@ -212,7 +212,7 @@ class MemoryInstructionTest(val param: Params) {
                 expectedInstruction = null,
                 expectedException = ParseException(
                     "Invalid index for memory.grow",
-                    ParseContext("unknown.wasm", 1, 0)
+                    ParseContext("unknown.wasm", 1, 1)
                 )
             ),
         )

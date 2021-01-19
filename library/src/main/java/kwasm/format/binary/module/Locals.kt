@@ -23,6 +23,7 @@ import kwasm.format.binary.value.readUInt
 import kwasm.format.binary.value.readVector
 import kwasm.format.binary.value.toBytesAsVector
 import kwasm.util.Leb128
+import kotlin.math.pow
 
 /**
  * From [the code section docs](https://webassembly.github.io/spec/core/binary/modules.html#code-section):
@@ -39,11 +40,19 @@ import kwasm.util.Leb128
  *
  * The meta function `concat((t*)*)` concatenates all sequences `t*_i` in `(t*)*`.
  */
-fun BinaryParser.readFuncLocals(): List<Local> = readVector {
-    val count = readUInt()
-    val type = readValueType()
-    mutableListOf<ValueType>().apply { repeat(count) { add(type) } }
-}.flatten().map { Local(null, it) }
+@Suppress("EXPERIMENTAL_API_USAGE")
+fun BinaryParser.readFuncLocals(): List<Local> {
+    return readVector {
+        val count = readUInt()
+        val type = readValueType()
+        mutableListOf<ValueType>().apply {
+            if (count >= 2.0.pow(29)) {
+                throwException("Cannot parse func locals - too many locals", -2)
+            }
+            repeat(count) { add(type) }
+        }
+    }.flatten().map { Local(null, it) }
+}
 
 /** Encodes a list of [Local]s to a sequence of bytes. */
 fun List<Local>.toBytes(): Sequence<Byte> {

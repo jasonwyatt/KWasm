@@ -82,7 +82,7 @@ fun BinaryParser.readControlInstruction(opcode: Int): ControlInstruction = when 
         ControlInstruction.CallIndirect(TypeUse(readIndex(), emptyList(), emptyList()))
             .also {
                 if (readByte() != 0x00.toByte()) {
-                    throwException("Invalid table index for call_indirect", -1)
+                    throwException("Invalid table index for call_indirect (zero flag expected)", -1)
                 }
             }
     else -> throwException("Invalid opcode for instruction: 0x${opcode.toString(16)}", -1)
