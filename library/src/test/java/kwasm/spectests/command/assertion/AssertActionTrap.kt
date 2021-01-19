@@ -12,71 +12,60 @@
  * limitations under the License.
  */
 
-package kwasm.script.command.assertion
+package kwasm.spectests.command.assertion
 
+import com.google.common.truth.Truth.assertThat
+import kwasm.KWasmRuntimeException
 import kwasm.format.ParseException
 import kwasm.format.text.ParseResult
 import kwasm.format.text.contextAt
 import kwasm.format.text.isClosedParen
 import kwasm.format.text.isKeyword
 import kwasm.format.text.isOpenParen
+import kwasm.format.text.parseLiteral
 import kwasm.format.text.token.Token
-import kwasm.runtime.Value
-import kwasm.script.command.Action
-import kwasm.script.command.Command
-import kwasm.script.command.parseAction
-import kwasm.script.execution.ScriptContext
-import kwasm.script.type.parseScriptResult
+import kwasm.spectests.command.Action
+import kwasm.spectests.command.Command
+import kwasm.spectests.command.parseAction
+import kwasm.spectests.execution.ScriptContext
+import org.junit.Assert.assertThrows
 
 /**
- * (assert_return <action> <result>*)
+ * (assert_trap <action> <string>)
  */
-class AssertReturn(
+class AssertActionTrap(
     val action: Action,
-    val expectedResults: List<Value<*>>
+    val messageContains: String
 ) : Command<Unit> {
     override fun execute(context: ScriptContext) {
-        val results = action.execute(context)
-        if (results.size != expectedResults.size) {
-            throw AssertionError(
-                "Received ${results.size} results, expected ${expectedResults.size}."
-            )
+        val e = assertThrows(KWasmRuntimeException::class.java) {
+            action.execute(context)
         }
-        val allMatch = results.zip(expectedResults).all { (actual, expected) ->
-            actual.value == expected.value
-        }
-        if (!allMatch) {
-            throw AssertionError(
-                "Actual results: $results don't match expected results: $expectedResults"
-            )
-        }
+        assertThat(e).hasMessageThat().contains(messageContains)
     }
 }
 
-fun List<Token>.parseAssertReturn(fromIndex: Int): ParseResult<AssertReturn>? {
+fun List<Token>.parseAssertActionTrap(fromIndex: Int): ParseResult<AssertActionTrap>? {
     var currentIndex = fromIndex
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
-    if (!isKeyword(currentIndex, "assert_return")) return null
+    if (!isKeyword(currentIndex, "assert_trap")) return null
     currentIndex++
 
     val action = parseAction(currentIndex)
         ?: throw ParseException("Expected action", contextAt(currentIndex))
     currentIndex += action.parseLength
 
-    val results = mutableListOf<Value<*>>()
-    do {
-        val result = parseScriptResult(currentIndex)
-        result?.let {
-            currentIndex += it.parseLength
-            results += it.astNode
-        }
-    } while (result != null)
+    val message = parseLiteral(currentIndex, String::class)
+    currentIndex += message.parseLength
 
     if (!isClosedParen(currentIndex)) {
         throw ParseException("Expected close paren", contextAt(currentIndex))
     }
     currentIndex++
 
-    return ParseResult(AssertReturn(action.astNode, results), currentIndex - fromIndex)
+    return ParseResult(
+        AssertActionTrap(action.astNode, message.astNode.value),
+        currentIndex - fromIndex
+    )
 }

@@ -12,12 +12,12 @@
  * limitations under the License.
  */
 
-package kwasm.script.command
+package kwasm.spectests.command
 
 import kwasm.ast.Identifier
 import kwasm.format.text.ParseResult
 import kwasm.format.text.token.Token
-import kwasm.script.execution.ScriptContext
+import kwasm.spectests.execution.ScriptContext
 
 /**
  * Defines meta-commands for the WebAssembly scripting language.

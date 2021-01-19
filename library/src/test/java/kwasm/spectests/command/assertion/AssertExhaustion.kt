@@ -12,8 +12,10 @@
  * limitations under the License.
  */
 
-package kwasm.script.command.assertion
+package kwasm.spectests.command.assertion
 
+import com.google.common.truth.Truth.assertThat
+import kwasm.KWasmRuntimeException
 import kwasm.ast.AstNode
 import kwasm.format.ParseException
 import kwasm.format.text.ParseResult
@@ -23,45 +25,29 @@ import kwasm.format.text.isKeyword
 import kwasm.format.text.isOpenParen
 import kwasm.format.text.parseLiteral
 import kwasm.format.text.token.Token
-import kwasm.script.command.Action
-import kwasm.script.command.Command
-import kwasm.script.command.parseAction
-import kwasm.script.execution.ScriptContext
+import kwasm.spectests.command.Action
+import kwasm.spectests.command.Command
+import kwasm.spectests.command.parseAction
+import kwasm.spectests.execution.ScriptContext
+import org.junit.Assert.assertThrows
 
-/**
- * (assert_trap <action> <string>)
- */
-class AssertActionTrap(
+class AssertExhaustion(
     val action: Action,
     val messageContains: String
-) : Command<Unit> {
+) : AstNode, Command<Unit> {
     override fun execute(context: ScriptContext) {
-        var okay = false
-        try {
+        val e = assertThrows(KWasmRuntimeException::class.java) {
             action.execute(context)
-        } catch (e: Throwable) {
-            if (messageContains !in e.message ?: "") {
-                throw AssertionError(
-                    "Expected exception with message containing: \"$messageContains\"",
-                    e
-                )
-            }
-            okay = true
         }
-        if (!okay) {
-            throw AssertionError(
-                "Expected exception with message containing: " +
-                    "\"$messageContains\", none thrown."
-            )
-        }
+        assertThat(e).hasMessageThat().contains(messageContains)
     }
 }
 
-fun List<Token>.parseAssertActionTrap(fromIndex: Int): ParseResult<AssertActionTrap>? {
+fun List<Token>.parseAssertExhaustion(fromIndex: Int): ParseResult<AssertExhaustion>? {
     var currentIndex = fromIndex
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
-    if (!isKeyword(currentIndex, "assert_trap")) return null
+    if (!isKeyword(currentIndex, "assert_exhaustion")) return null
     currentIndex++
 
     val action = parseAction(currentIndex)
@@ -77,7 +63,7 @@ fun List<Token>.parseAssertActionTrap(fromIndex: Int): ParseResult<AssertActionT
     currentIndex++
 
     return ParseResult(
-        AssertActionTrap(action.astNode, message.astNode.value),
+        AssertExhaustion(action.astNode, message.astNode.value),
         currentIndex - fromIndex
     )
 }

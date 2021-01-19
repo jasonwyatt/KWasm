@@ -37,8 +37,12 @@ fun BinaryParser.readVector(): List<Byte> = readVector { readByte() }
  *      vec(B)  ::= n:u32 (x:B)n   =>  x^n
  * ```
  */
-fun <T> BinaryParser.readVector(block: BinaryParser.() -> T): List<T> =
-    (0 until readUInt()).map { block() }
+@Suppress("EXPERIMENTAL_API_USAGE")
+fun <T> BinaryParser.readVector(block: BinaryParser.() -> T): List<T> {
+    val size = readInt()
+    if (size >= Int.MAX_VALUE.toLong() || size < 0) throwException("vector too long")
+    return (0 until size).map { block() }
+}
 
 /**
  * Encodes the receiving [List] into a sequence of bytes, using [transform] to convert each element

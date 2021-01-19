@@ -12,14 +12,24 @@
  * limitations under the License.
  */
 
-package kwasm.script.command.assertion
+package kwasm.spectests
 
-import kwasm.format.text.ParseResult
+import kwasm.format.ParseContext
+import kwasm.format.text.Tokenizer
 import kwasm.format.text.token.Token
-import kwasm.script.command.Command
+import kwasm.spectests.command.parseAndRunCommand
+import kwasm.spectests.execution.ScriptContext
+import java.io.Reader
 
-fun List<Token>.parseAssertion(fromIndex: Int): ParseResult<out Command<*>>? {
-    return parseAssertReturn(fromIndex)
-        ?: parseAssertActionTrap(fromIndex)
-        ?: parseAssertMalformed(fromIndex)
+fun runScript(input: Reader, parseContext: ParseContext) {
+    runScript(Tokenizer().tokenize(input, parseContext))
+}
+
+fun runScript(tokens: List<Token>) {
+    var position = 0
+    val scriptContext = ScriptContext()
+    while (position < tokens.size) {
+        val result = tokens.parseAndRunCommand(position, scriptContext)
+        position += result.parseLength
+    }
 }

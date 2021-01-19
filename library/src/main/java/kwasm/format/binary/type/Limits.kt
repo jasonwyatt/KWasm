@@ -32,7 +32,12 @@ import kwasm.util.Leb128
 fun BinaryParser.readLimits(): Limits = when (val type = readByte().toInt()) {
     0 -> Limits(readUInt().toLong(), null)
     1 -> Limits(readUInt().toLong(), readUInt().toLong())
-    else -> throwException("Invalid header byte for Limits declaration: $type", -1)
+    else ->
+        throwException(
+            message = "Invalid header byte for Limits declaration: $type " +
+                "(integer too large|integer representation too long)",
+            positionOffset = -1
+        )
 }
 
 /** Encodes a [Limits] object to a sequence of bytes. */

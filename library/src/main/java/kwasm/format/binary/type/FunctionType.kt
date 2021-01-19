@@ -35,7 +35,9 @@ const val FUNCTION_TYPE_MAGIC: Byte = 0x60
  */
 fun BinaryParser.readFunctionType(): FunctionType {
     val byte = readByte()
-    if (byte != FUNCTION_TYPE_MAGIC) throwException("Expected 0x60 for Function Type", -1)
+    if (byte != FUNCTION_TYPE_MAGIC) {
+        throwException("Expected 0x60 for Function Type (integer representation too long)", -1)
+    }
     val params = readVector { readValueType() }.map { Param(Identifier.Local(null, null), it) }
     val results = readVector { readValueType() }.map { Result(it) }
     return FunctionType(params, results)

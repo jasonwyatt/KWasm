@@ -65,11 +65,11 @@ internal val MEMORY_OPCODE_RANGE = 0x28..0x40
 fun BinaryParser.readMemoryInstruction(opcode: Int): Instruction = when (opcode) {
     0x3F -> {
         if (readByte() == 0x00.toByte()) MemoryInstruction.Size
-        else throwException("Invalid index for memory.size", -1)
+        else throwException("Invalid index for memory.size (zero flag expected)", -1)
     }
     0x40 -> {
         if (readByte() == 0x00.toByte()) MemoryInstruction.Grow
-        else throwException("Invalid index for memory.grow", -1)
+        else throwException("Invalid index for memory.grow (zero flag expected)", -1)
     }
     0x28 -> MemoryInstruction.LoadInt.I32_LOAD.copy(arg = readMemoryArg())
     0x29 -> MemoryInstruction.LoadInt.I64_LOAD.copy(arg = readMemoryArg())

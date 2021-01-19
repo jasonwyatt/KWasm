@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package kwasm.script.command
+package kwasm.spectests.command
 
 import kwasm.ast.Identifier
 import kwasm.ast.module.WasmModule
@@ -30,7 +30,7 @@ import kwasm.format.text.module.parseModule
 import kwasm.format.text.parseIdentifier
 import kwasm.format.text.parseLiteral
 import kwasm.format.text.token.Token
-import kwasm.script.execution.ScriptContext
+import kwasm.spectests.execution.ScriptContext
 import java.io.ByteArrayInputStream
 
 /**
@@ -87,7 +87,7 @@ sealed class ScriptModule : Command<Unit> {
 }
 
 fun List<Token>.parseScriptModule(fromIndex: Int): ParseResult<ScriptModule>? {
-    val normalModule = try { parseModule(fromIndex) } catch (e: ParseException) { throw e }
+    val normalModule = try { parseModule(fromIndex) } catch (e: ParseException) { null }
     if (normalModule != null) {
         return ParseResult(ScriptModule.Normal(normalModule.astNode), normalModule.parseLength)
     }

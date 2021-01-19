@@ -212,12 +212,12 @@ class NumericInstructionTest(val params: Params) {
             Params(
                 listOf(0xFC, 0x08),
                 null,
-                ParseException("Invalid mutex value", ParseContext("unknown.wasm", 0, 0))
+                ParseException("Invalid mutex value", ParseContext("unknown.wasm", 1, 0))
             ),
             Params(
                 listOf(0xC5),
                 null,
-                ParseException("", ParseContext("unknown.wasm", 0, 0))
+                ParseException("", ParseContext("unknown.wasm", 1, 0))
             ),
         )
     }

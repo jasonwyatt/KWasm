@@ -12,18 +12,18 @@
  * limitations under the License.
  */
 
-package kwasm.script.command.assertion
+package kwasm.spectests.command.assertion
 
-import kwasm.ast.AstNode
-import kwasm.script.command.Action
-import kwasm.script.command.Command
-import kwasm.script.execution.ScriptContext
+import kwasm.format.text.ParseResult
+import kwasm.format.text.token.Token
+import kwasm.spectests.command.Command
 
-class AssertExhaustion(
-    val action: Action,
-    val messageContains: String
-) : AstNode, Command<Unit> {
-    override fun execute(context: ScriptContext) {
-        TODO("Not yet implemented")
-    }
+fun List<Token>.parseAssertion(fromIndex: Int): ParseResult<out Command<*>>? {
+    return parseAssertReturn(fromIndex)
+        ?: parseAssertExhaustion(fromIndex)
+        ?: parseAssertActionTrap(fromIndex)
+        ?: parseAssertMalformed(fromIndex)
+        ?: parseAssertUnlinkable(fromIndex)
+        ?: parseAssertInvalid(fromIndex)
+        ?: parseAssertInstantiationTrap(fromIndex)
 }

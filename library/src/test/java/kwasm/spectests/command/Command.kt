@@ -12,14 +12,14 @@
  * limitations under the License.
  */
 
-package kwasm.script.command
+package kwasm.spectests.command
 
 import kwasm.ast.AstNode
 import kwasm.format.ParseException
 import kwasm.format.text.ParseResult
 import kwasm.format.text.token.Token
-import kwasm.script.command.assertion.parseAssertion
-import kwasm.script.execution.ScriptContext
+import kwasm.spectests.command.assertion.parseAssertion
+import kwasm.spectests.execution.ScriptContext
 
 /**
  * From [the docs](https://github.com/WebAssembly/spec/tree/master/interpreter#scripts):

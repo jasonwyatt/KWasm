@@ -15,7 +15,6 @@
 package kwasm.spectests
 
 import kwasm.format.ParseContext
-import kwasm.script.runScript
 import org.junit.runner.RunWith
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -24,9 +23,7 @@ import java.io.InputStreamReader
 class CoreSpecTest {
     @SpecTest(
         subdir = "core",
-        files = [
-            "address.wast",
-        ],
+        files = ["binary.wast"],
     )
     fun scriptTest(input: InputStream, file: String) {
         runScript(InputStreamReader(input), ParseContext(file))

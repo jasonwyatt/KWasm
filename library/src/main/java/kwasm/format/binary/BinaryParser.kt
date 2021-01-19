@@ -99,7 +99,9 @@ class BinaryParser(
         var bytesRead = 0
         while (bytesRead < size) {
             val bytes = reader.read(buffer, 0, minOf(size - bytesRead, buffer.size))
-            if (bytes == -1) throwException("EOF before $size bytes read ($bytesRead so far)")
+            if (bytes == -1) {
+                throwException("EOF before $size bytes read ($bytesRead so far) - unexpected end")
+            }
             bytesOut.write(buffer, 0, bytes)
             bytesRead += bytes
         }

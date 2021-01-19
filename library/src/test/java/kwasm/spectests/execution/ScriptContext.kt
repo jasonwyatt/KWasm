@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package kwasm.script.execution
+package kwasm.spectests.execution
 
 import kwasm.KWasmProgram
 import kwasm.api.ByteBufferMemoryProvider

@@ -12,8 +12,11 @@
  * limitations under the License.
  */
 
-package kwasm.script.command.assertion
+package kwasm.spectests.command.assertion
 
+import com.google.common.truth.Truth.assertThat
+import kwasm.KWasmProgram
+import kwasm.ast.AstNode
 import kwasm.format.ParseException
 import kwasm.format.text.ParseResult
 import kwasm.format.text.contextAt
@@ -22,39 +25,26 @@ import kwasm.format.text.isKeyword
 import kwasm.format.text.isOpenParen
 import kwasm.format.text.parseLiteral
 import kwasm.format.text.token.Token
-import kwasm.script.command.Command
-import kwasm.script.command.ScriptModule
-import kwasm.script.command.parseScriptModule
-import kwasm.script.execution.ScriptContext
+import kwasm.spectests.command.Command
+import kwasm.spectests.command.ScriptModule
+import kwasm.spectests.command.parseScriptModule
+import kwasm.spectests.execution.ScriptContext
+import org.junit.Assert.assertThrows
 
-class AssertMalformed(
+class AssertUnlinkable(
     val action: ScriptModule,
-    private val messageContains: String
-) : Command<Unit> {
+    val messageContains: String
+) : AstNode, Command<Unit> {
     override fun execute(context: ScriptContext) {
-        var okay = false
-        try {
-            action.execute(ScriptContext())
-        } catch (e: Exception) {
-            if (messageContains !in e.message ?: "") {
-                throw AssertionError(
-                    "Expected message to contain: \"$messageContains\", but " +
-                        "was \"${e.message}\"",
-                    e
-                )
-            }
-            okay = true
+        val e = assertThrows(KWasmProgram.ImportMismatchException::class.java) {
+            action.execute(context)
         }
-        if (!okay) {
-            throw AssertionError(
-                "Expected exception with message containing: " +
-                    "\"$messageContains\", none thrown."
-            )
-        }
+        assertThat(e).hasMessageThat().contains(messageContains)
     }
 }
 
-fun List<Token>.parseAssertMalformed(fromIndex: Int): ParseResult<AssertMalformed>? {
+// (assert_unlinkable <module> <string>)
+fun List<Token>.parseAssertUnlinkable(fromIndex: Int): ParseResult<AssertUnlinkable>? {
     var currentIndex = fromIndex
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
@@ -74,7 +64,7 @@ fun List<Token>.parseAssertMalformed(fromIndex: Int): ParseResult<AssertMalforme
     currentIndex++
 
     return ParseResult(
-        AssertMalformed(scriptModule.astNode, message.astNode.value),
+        AssertUnlinkable(scriptModule.astNode, message.astNode.value),
         currentIndex - fromIndex
     )
 }

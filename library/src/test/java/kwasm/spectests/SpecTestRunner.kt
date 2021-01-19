@@ -16,6 +16,7 @@ package kwasm.spectests
 
 import org.junit.runner.Description
 import org.junit.runner.Runner
+import org.junit.runner.notification.Failure
 import org.junit.runner.notification.RunNotifier
 
 class SpecTestRunner(private val testClass: Class<*>) : Runner() {
@@ -38,8 +39,12 @@ class SpecTestRunner(private val testClass: Class<*>) : Runner() {
                                 "${method.name}: ${annotation.subdir}/${annotation.files[index]}"
                             )
                         notifier.fireTestStarted(description)
-                        method.invoke(testObject, stream, path)
-                        notifier.fireTestFinished(description)
+                        try {
+                            method.invoke(testObject, stream, path)
+                            notifier.fireTestFinished(description)
+                        } catch (e: Throwable) {
+                            notifier.fireTestFailure(Failure(description, e.cause))
+                        }
                     }
                 }
             }

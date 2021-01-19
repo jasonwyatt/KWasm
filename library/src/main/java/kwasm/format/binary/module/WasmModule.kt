@@ -83,7 +83,8 @@ fun BinaryParser.readModule(): WasmModule {
     val magicBytes = readBytes(4).withIndex()
     if (magicBytes.any { (i, byte) -> MAGIC[i] != byte }) {
         throwException(
-            "File appears to not be a valid binary-formatted WebAssembly module, missing header."
+            "File appears to not be a valid binary-formatted WebAssembly module, missing header." +
+                " (magic header not detected)"
         )
     }
     // Read the version.
@@ -94,7 +95,7 @@ fun BinaryParser.readModule(): WasmModule {
         val expectedString = VERSION.joinToString(" ") { "0x" + it.toString(16).padStart(2, '0') }
         throwException(
             "File appears to be of an unsupported version: $versionString, " +
-                "expected: $expectedString"
+                "expected: $expectedString (unknown binary version)"
         )
     }
 
@@ -120,13 +121,22 @@ fun BinaryParser.readModule(): WasmModule {
             is MemorySection -> memorySection = section
             is GlobalSection -> globalSection = section
             is ExportSection -> exportSection = section
-            is StartSection -> startSection = section
+            is StartSection -> {
+                if (startSection != null) {
+                    throwException("Multiple start sections not allowed (junk after last section)")
+                }
+                startSection = section
+            }
             is ElementSection -> elementSection = section
             is CodeSection -> codeSection = section
             is DataSection -> dataSection = section
             null -> continue
         }
     } while (section != null)
+
+    if (funcSection.functionTypes.size != codeSection.code.size) {
+        throwException("Section mismatch: function and code section have inconsistent lengths")
+    }
 
     return WasmModule(
         identifier = null,

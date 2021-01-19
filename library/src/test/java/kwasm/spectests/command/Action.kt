@@ -12,9 +12,8 @@
  * limitations under the License.
  */
 
-package kwasm.script.command
+package kwasm.spectests.command
 
-import kwasm.ast.AstNode
 import kwasm.ast.Identifier
 import kwasm.ast.instruction.Expression
 import kwasm.format.ParseException
@@ -27,12 +26,8 @@ import kwasm.format.text.isOpenParen
 import kwasm.format.text.parseIdentifier
 import kwasm.format.text.parseLiteral
 import kwasm.format.text.token.Token
-import kwasm.runtime.EmptyExecutionContext
-import kwasm.runtime.ExecutionContext
 import kwasm.runtime.Value
-import kwasm.runtime.instruction.execute
-import kwasm.script.execution.ScriptContext
-import kotlin.math.exp
+import kwasm.spectests.execution.ScriptContext
 
 /**
  * Defines an action allowed to be run during a script.

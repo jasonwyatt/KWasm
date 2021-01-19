@@ -15,6 +15,7 @@
 package kwasm.format.binary.module
 
 import kwasm.ast.type.FunctionType
+import kwasm.format.ParseException
 import kwasm.format.binary.BinaryParser
 import kwasm.format.binary.type.readFunctionType
 import kwasm.format.binary.value.readVector
@@ -29,7 +30,16 @@ import kwasm.format.binary.value.readVector
  *      typesec ::= ft*:section_1(vec(functype)) => ft*
  * ```
  */
-fun BinaryParser.readTypeSection(): TypeSection = TypeSection(readVector { readFunctionType() })
+fun BinaryParser.readTypeSection(): TypeSection {
+    try {
+        return TypeSection(readVector { readFunctionType() })
+    } catch (e: ParseException) {
+        if ("Expected byte, but none found" in e.message ?: "") {
+            throwException("Malformed: unexpected end of section or function")
+        }
+        throw e
+    }
+}
 
 /**
  * Represents a type section in a binary-encoded WASM module.

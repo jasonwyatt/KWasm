@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-package kwasm.script.type
+package kwasm.spectests.type
 
 import kwasm.format.ParseException
 import kwasm.format.text.ParseResult
