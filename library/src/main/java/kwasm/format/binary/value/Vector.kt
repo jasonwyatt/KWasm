@@ -39,7 +39,7 @@ fun BinaryParser.readVector(): List<Byte> = readVector { readByte() }
  */
 @Suppress("EXPERIMENTAL_API_USAGE")
 fun <T> BinaryParser.readVector(block: BinaryParser.() -> T): List<T> {
-    val size = readInt()
+    val size = readUInt()
     if (size >= Int.MAX_VALUE.toLong() || size < 0) throwException("vector too long")
     return (0 until size).map { block() }
 }

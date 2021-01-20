@@ -14,6 +14,7 @@
 
 package kwasm.spectests
 
+import kwasm.KWasmProgram
 import kwasm.format.ParseContext
 import kwasm.format.text.Tokenizer
 import kwasm.format.text.token.Token
@@ -21,13 +22,13 @@ import kwasm.spectests.command.parseAndRunCommand
 import kwasm.spectests.execution.ScriptContext
 import java.io.Reader
 
-fun runScript(input: Reader, parseContext: ParseContext) {
-    runScript(Tokenizer().tokenize(input, parseContext))
+fun runScript(input: Reader, parseContext: ParseContext, programBuilder: KWasmProgram.Builder) {
+    runScript(Tokenizer().tokenize(input, parseContext), programBuilder)
 }
 
-fun runScript(tokens: List<Token>) {
+fun runScript(tokens: List<Token>, programBuilder: KWasmProgram.Builder) {
     var position = 0
-    val scriptContext = ScriptContext()
+    val scriptContext = ScriptContext(programBuilder = programBuilder)
     while (position < tokens.size) {
         val result = tokens.parseAndRunCommand(position, scriptContext)
         position += result.parseLength

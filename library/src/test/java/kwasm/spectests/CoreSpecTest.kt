@@ -14,7 +14,12 @@
 
 package kwasm.spectests
 
+import kwasm.KWasmProgram
+import kwasm.api.ByteBufferMemoryProvider
+import kwasm.api.HostFunction
 import kwasm.format.ParseContext
+import kwasm.runtime.EmptyValue
+import kwasm.runtime.IntValue
 import org.junit.runner.RunWith
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -27,10 +32,18 @@ class CoreSpecTest {
             "address.wast",
             "align.wast",
             "binary.wast",
+            "binary-leb128.wast",
             "traps.wast"
         ],
     )
     fun scriptTest(input: InputStream, file: String) {
-        runScript(InputStreamReader(input), ParseContext(file))
+        val builder = KWasmProgram.builder(ByteBufferMemoryProvider(1024 * 1024))
+        builder.withHostFunction(
+            "spectest",
+            "print_i32",
+            HostFunction { p1: IntValue, _ -> println(p1.value); EmptyValue }
+        )
+
+        runScript(InputStreamReader(input), ParseContext(file), builder)
     }
 }

@@ -15,6 +15,7 @@
 package kwasm.validation.instruction
 
 import kwasm.ast.AstNodeList
+import kwasm.ast.instruction.ControlInstruction
 import kwasm.ast.instruction.Instruction
 import kwasm.ast.type.ValueType
 import kwasm.validation.ValidationContext
@@ -73,7 +74,10 @@ class InstructionSequenceValidator(
         node: AstNodeList<out Instruction>,
         context: ValidationContext.FunctionBody
     ): ValidationContext.FunctionBody {
-        val resultContext = node.fold(context) { ctx, inst -> inst.validate(ctx) }
+        val resultContext = node.fold(context) { ctx, inst ->
+            if (inst == ControlInstruction.Unreachable) return ctx
+            inst.validate(ctx)
+        }
         requiredEndStack?.let {
             val topElements = resultContext.stack.takeLast(it.size)
             validate(topElements == it, parseContext = null) {

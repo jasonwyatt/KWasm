@@ -64,8 +64,16 @@ import kotlin.experimental.and
 fun BinaryParser.readUInt(): Int {
     var result = 0
     var shift = 0
+    var bytesRemaining = 5
     while (true) {
         val byte = readByte()
+        bytesRemaining--
+        if (bytesRemaining < 0) {
+            throwException("Bad LEB-128 encoding: integer representation too long")
+        } else if (bytesRemaining == 0 && (byte and FIRST_SEVEN).toUInt() shr 4 > 0.toUInt()) {
+            throwException("Bad LEB-128 encoding: integer too large")
+        }
+
         result = result or ((byte and FIRST_SEVEN).toInt() shl shift)
         shift += 7
         if (byte and LEADING_ONE == ZERO_BYTE) break
@@ -79,13 +87,26 @@ fun BinaryParser.readUInt(): Int {
 fun BinaryParser.readInt(): Int {
     var result = 0
     var shift = 0
+    var bytesRemaining = 5
     while (true) {
         val byte = readByte()
+        bytesRemaining--
+        if (bytesRemaining < 0) {
+            throwException("Bad LEB-128 encoding: integer representation too long")
+        }
+
         result = result or ((byte and FIRST_SEVEN).toInt() shl shift)
         shift += 7
         if (byte and LEADING_ONE == ZERO_BYTE) {
             if (shift < 32 && (byte and 0x40) != ZERO_BYTE) {
                 result = result or (ONES_INT shl shift)
+            } else if (shift >= 32) {
+                val leftFour = byte.toUInt() shr 4
+                if (leftFour > 0.toUInt() && byte and 0x7.toByte() == 0.toByte()) {
+                    throwException("Bad LEB-128 encoding: integer too large")
+                } else if (leftFour != 0x7.toUInt() && byte and 0x7.toByte() == 0x7.toByte()) {
+                    throwException("Bad LEB-128 encoding: integer too large")
+                }
             }
             break
         }
@@ -99,8 +120,16 @@ fun BinaryParser.readInt(): Int {
 fun BinaryParser.readULong(): Long {
     var result = 0uL
     var shift = 0
+    var bytesRemaining = 10
     while (true) {
         val byte = readByte()
+        bytesRemaining--
+        if (bytesRemaining < 0) {
+            throwException("Bad LEB-128 encoding: integer representation too long")
+        } else if (bytesRemaining == 0 && (byte and FIRST_SEVEN).toULong() shr 1 > 0.toULong()) {
+            throwException("Bad LEB-128 encoding: integer too large")
+        }
+
         result = result or ((byte and FIRST_SEVEN).toULong() shl shift)
         shift += 7
         if (byte and LEADING_ONE == ZERO_BYTE) break
@@ -114,13 +143,26 @@ fun BinaryParser.readULong(): Long {
 fun BinaryParser.readLong(): Long {
     var result = 0L
     var shift = 0
+    var bytesRemaining = 10
     while (true) {
         val byte = readByte()
+        bytesRemaining--
+        if (bytesRemaining < 0) {
+            throwException("Bad LEB-128 encoding: integer representation too long")
+        }
+
         result = result or ((byte and FIRST_SEVEN).toLong() shl shift)
         shift += 7
         if (byte and LEADING_ONE == ZERO_BYTE) {
             if (shift < 64 && (byte and 0x40) != ZERO_BYTE) {
                 result = result or (ONES_LONG shl shift)
+            } else if (shift >= 64) {
+                val leftSeven = byte.toULong() shr 1
+                if (leftSeven > 0.toULong() && byte and 0x1.toByte() == 0.toByte()) {
+                    throwException("Bad LEB-128 encoding: integer too large")
+                } else if (leftSeven != 0x3F.toULong() && byte and 0x1.toByte() == 0x1.toByte()) {
+                    throwException("Bad LEB-128 encoding: integer too large")
+                }
             }
             break
         }

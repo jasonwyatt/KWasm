@@ -15,8 +15,10 @@
 package kwasm.format.binary.value
 
 import com.google.common.truth.Truth.assertThat
+import kwasm.format.ParseException
 import kwasm.format.binary.BinaryParser
 import kwasm.format.binary.toByteArray
+import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -25,6 +27,26 @@ import java.io.ByteArrayInputStream
 @Suppress("EXPERIMENTAL_UNSIGNED_LITERALS")
 @RunWith(JUnit4::class)
 class IntegerValueTest {
+    @Test
+    fun readUInt_throwsOnUnusedOnes() {
+        val bytes = listOf(0x82, 0x80, 0x80, 0x80, 0x10).toByteArray()
+        val parser = BinaryParser(ByteArrayInputStream(bytes))
+
+        val e = assertThrows(ParseException::class.java) {
+            parser.readUInt()
+        }
+    }
+
+    @Test
+    fun readULong_throwsOnUnusedOnes() {
+        val bytes = listOf(0x82, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0x7F).toByteArray()
+        val parser = BinaryParser(ByteArrayInputStream(bytes))
+
+        val e = assertThrows(ParseException::class.java) {
+            parser.readUInt()
+        }
+    }
+
     @Test
     fun readUInt_readsZero() {
         val bytes = ByteArray(1) { 0x00 }
