@@ -40,13 +40,18 @@ class MemArg(
         get() = this
 
     /**
+     * Returns whether or not the value of [alignment] is well-formed at parse time.
+     * It must be a power of 2.
+     */
+    fun isAlignmentWellFormed(): Boolean =
+        alignment != 0 && log(alignment.toFloat(), 2.0f).let { floor(it) == it }
+
+    /**
      * Returns whether or not the value of [alignment] is valid for the given [forByteWidth]
      * upper-bound.
      */
-    fun isAlignmentValid(forByteWidth: Int? = null) =
-        log(alignment.toFloat(), 2.0f)
-            // If it's a power of 2, and it's less than or equal to 2^forN, then it's valid.
-            .let { floor(it) == it && (forByteWidth == null || alignment <= forByteWidth * 8) }
+    fun isAlignmentValid(forByteWidth: Int? = null): Boolean =
+        isAlignmentWellFormed() && (forByteWidth == null || alignment <= forByteWidth)
 
     /** Returns a canonical instance of [MemArg] matching this one, if it exists. */
     override fun deDupe(): MemArg = when (this) {
@@ -78,9 +83,9 @@ class MemArg(
     override fun toString(): String = "MemArg(offset=$offset, alignment=$alignment)"
 
     companion object {
-        internal val ONE = MemArg(0, 8)
-        internal val TWO = MemArg(0, 16)
-        internal val FOUR = MemArg(0, 32)
-        internal val EIGHT = MemArg(0, 64)
+        internal val ONE = MemArg(0, 1)
+        internal val TWO = MemArg(0, 2)
+        internal val FOUR = MemArg(0, 4)
+        internal val EIGHT = MemArg(0, 8)
     }
 }

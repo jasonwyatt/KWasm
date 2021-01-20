@@ -142,9 +142,12 @@ internal class ByteBufferMemory(
         if (byteWidth == 4 && offset % PAGE_SIZE < PAGE_SIZE - 4) {
             // Simple case... use ByteBuffer directly.
             pages[currentPage].putInt(offset % PAGE_SIZE, value)
-        } else {
+        } else if ((offset + byteWidth) / PAGE_SIZE < pages.size) {
             pages.writeInt(value, offset, byteWidth)
-        }
+        } else throw IndexOutOfBoundsException(
+            "Data at $offset with width $byteWidth would overflow into " +
+                "a page that does not exist yet."
+        )
     }
 
     override fun writeUInt(value: UInt, offset: Int, byteWidth: Int, alignment: Int) {
@@ -154,9 +157,12 @@ internal class ByteBufferMemory(
         if (byteWidth == 4 && offset % PAGE_SIZE < PAGE_SIZE - 4) {
             // Simple case... use ByteBuffer directly.
             pages[currentPage].putInt(offset % PAGE_SIZE, value.toInt())
-        } else {
+        } else if ((offset + byteWidth) / PAGE_SIZE < pages.size) {
             pages.writeUInt(value, offset, byteWidth)
-        }
+        } else throw IndexOutOfBoundsException(
+            "Data at $offset with width $byteWidth would overflow into " +
+                "a page that does not exist yet."
+        )
     }
 
     override fun writeLong(value: Long, offset: Int, byteWidth: Int, alignment: Int) {
@@ -166,9 +172,12 @@ internal class ByteBufferMemory(
         if (byteWidth == 8 && offset % PAGE_SIZE < PAGE_SIZE - 8) {
             // Simple case... use ByteBuffer directly.
             pages[currentPage].putLong(offset % PAGE_SIZE, value)
-        } else {
+        } else if ((offset + byteWidth) / PAGE_SIZE < pages.size) {
             pages.writeLong(value, offset, byteWidth)
-        }
+        } else throw IndexOutOfBoundsException(
+            "Data at $offset with width $byteWidth would overflow into " +
+                "a page that does not exist yet."
+        )
     }
 
     override fun writeULong(value: ULong, offset: Int, byteWidth: Int, alignment: Int) {
@@ -178,9 +187,12 @@ internal class ByteBufferMemory(
         if (byteWidth == 8 && offset % PAGE_SIZE < PAGE_SIZE - 8) {
             // Simple case... use ByteBuffer directly.
             pages[currentPage].putLong(offset % PAGE_SIZE, value.toLong())
-        } else {
+        } else if ((offset + byteWidth) / PAGE_SIZE < pages.size) {
             pages.writeULong(value, offset, byteWidth)
-        }
+        } else throw IndexOutOfBoundsException(
+            "Data at $offset with width $byteWidth would overflow into " +
+                "a page that does not exist yet."
+        )
     }
 
     override fun writeFloat(value: Float, offset: Int, alignment: Int) {
@@ -189,9 +201,12 @@ internal class ByteBufferMemory(
         if (offset % PAGE_SIZE < PAGE_SIZE - 4) {
             // Simple case... use ByteBuffer directly.
             pages[currentPage].putFloat(offset % PAGE_SIZE, value)
-        } else {
+        } else if ((offset + 4) / PAGE_SIZE < pages.size) {
             pages.writeFloat(value, offset)
-        }
+        } else throw IndexOutOfBoundsException(
+            "Data at $offset with width 4 would overflow into " +
+                "a page that does not exist yet."
+        )
     }
 
     override fun writeDouble(value: Double, offset: Int, alignment: Int) {
@@ -200,9 +215,12 @@ internal class ByteBufferMemory(
         if (offset % PAGE_SIZE < PAGE_SIZE - 8) {
             // Simple case... use ByteBuffer directly.
             pages[currentPage].putDouble(offset % PAGE_SIZE, value)
-        } else {
+        } else if ((offset + 8) / PAGE_SIZE < pages.size) {
             pages.writeDouble(value, offset)
-        }
+        } else throw IndexOutOfBoundsException(
+            "Data at $offset with width 8 would overflow into " +
+                "a page that does not exist yet."
+        )
     }
 
     override fun readBytes(

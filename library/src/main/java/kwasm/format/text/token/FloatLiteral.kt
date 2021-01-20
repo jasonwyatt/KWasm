@@ -88,7 +88,7 @@ class FloatLiteral(
                     nValue.toLong() >= 2.0.pow(magnitude.significand(context))
                 ) throw ParseException("Illegal hex NaN value.")
 
-                CanonincalNaN(magnitude).value.toDouble()
+                if (magnitude == 32) NAN_32_VALUE else NAN_64_VALUE
             }
             else -> {
                 val (sequenceOffset, sign) = sequence.parseLongSign()

@@ -24,6 +24,7 @@ import kwasm.ast.module.Index
 import kwasm.ast.module.Offset
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
+import kwasm.format.binary.toByteArray
 import kwasm.format.text.TextModuleCounts
 import kwasm.format.text.Tokenizer
 import org.assertj.core.api.Assertions.fail
@@ -32,6 +33,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+@ExperimentalUnsignedTypes
 @Suppress("EXPERIMENTAL_UNSIGNED_LITERALS")
 @RunWith(JUnit4::class)
 class DataSegmentTest {
@@ -174,5 +176,61 @@ class DataSegmentTest {
             )
         )
         assertThat(newCounts).isEqualTo(counts)
+    }
+
+    @Test
+    fun parseDataString_backslashedBytes() {
+        val result = tokenizer.tokenize(""""\00\00\00\00\00\00\a0\7f\01\00\d0\7f"""")
+            .parseDataString(0)
+
+        assertThat(result.first).isEqualTo(
+            ByteArray(12).also {
+                it[0] = 0
+                it[1] = 0
+                it[2] = 0
+                it[3] = 0
+                it[4] = 0
+                it[5] = 0
+                it[6] = 0xa0.toUByte().toByte()
+                it[7] = 0x7f.toUByte().toByte()
+                it[8] = 0x01.toUByte().toByte()
+                it[9] = 0x00.toUByte().toByte()
+                it[10] = 0xd0.toUByte().toByte()
+                it[11] = 0x7f.toUByte().toByte()
+            }
+        )
+        assertThat(result.second).isEqualTo(1)
+    }
+
+    @Test
+    fun parseDataString_multipleLinesOfBackslashedBytes() {
+        val (parsedBytes, parsedTokens) = tokenizer.tokenize(
+            """
+                "\00asm" "\01\00\00\00"
+                "\01\04\01\60\00\00"       ;; Type section
+                "\03\02\01\00"             ;; Function section
+                "\0a\0c\01"                ;; Code section
+
+                ;; function 0
+                "\0a\02"
+                "\ff\ff\ff\ff\0f\7f"       ;; 0xFFFFFFFF i32
+                "\02\7e"                   ;; 0x00000002 i64
+                "\0b"                      ;; end
+            """.trimIndent()
+        ).parseDataString(0)
+
+        assertThat(parsedBytes).isEqualTo(
+            listOf(
+                0x00, 'a'.toInt(), 's'.toInt(), 'm'.toInt(), 0x01, 0x00, 0x00, 0x00,
+                0x01, 0x04, 0x01, 0x60, 0x00, 0x00,
+                0x03, 0x02, 0x01, 0x00,
+                0x0a, 0x0c, 0x01,
+                0x0a, 0x02,
+                0xff, 0xff, 0xff, 0xff, 0x0f, 0x7f,
+                0x02, 0x7e,
+                0x0b
+            ).toByteArray()
+        )
+        assertThat(parsedTokens).isEqualTo(9)
     }
 }

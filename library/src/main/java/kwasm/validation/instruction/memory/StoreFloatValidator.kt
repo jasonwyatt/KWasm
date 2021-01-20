@@ -41,7 +41,7 @@ object StoreFloatValidator : FunctionBodyValidationVisitor<MemoryInstruction.Sto
     ): ValidationContext.FunctionBody {
         context.validateMemoryExists()
         validate(node.arg.isAlignmentValid(node.byteWidth), parseContext = null) {
-            "Invalid alignment for N=${node.byteWidth}"
+            "Invalid alignment for N=${node.byteWidth} (alignment must not be larger than natural)"
         }
         val (topTwo, updatedContext) = context.popStack(2)
         val storeType = when (node.bitWidth) {

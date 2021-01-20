@@ -23,7 +23,6 @@ import kwasm.format.binary.value.readUInt
 import kwasm.format.binary.value.readVector
 import kwasm.format.binary.value.toBytesAsVector
 import kwasm.util.Leb128
-import kotlin.math.pow
 
 /**
  * From [the code section docs](https://webassembly.github.io/spec/core/binary/modules.html#code-section):
@@ -46,8 +45,8 @@ fun BinaryParser.readFuncLocals(): List<Local> {
         val count = readUInt()
         val type = readValueType()
         mutableListOf<ValueType>().apply {
-            if (count >= 2.0.pow(29)) {
-                throwException("Cannot parse func locals - too many locals", -2)
+            if (count.toUInt() > Int.MAX_VALUE.toUInt()) {
+                throwException("Cannot parse func locals (too many locals)", -2)
             }
             repeat(count) { add(type) }
         }

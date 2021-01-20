@@ -39,13 +39,7 @@ import kwasm.format.text.token.Token
 fun List<Token>.parseMemarg(fromIndex: Int, expectedMaxBytes: Int): ParseResult<MemArg> {
     var currentIndex = fromIndex
     val firstKeyword = getOrNull(currentIndex) as? Keyword
-        ?: return ParseResult(
-            MemArg(
-                0,
-                expectedMaxBytes * 8
-            ).deDupe(),
-            0
-        )
+        ?: return ParseResult(MemArg(0, expectedMaxBytes).deDupe(), 0)
 
     val memArg = when {
         firstKeyword.value.startsWith("offset=") -> {
@@ -67,7 +61,7 @@ fun List<Token>.parseMemarg(fromIndex: Int, expectedMaxBytes: Int): ParseResult<
                 }
             MemArg(
                 offset.toInt(),
-                alignment?.toInt() ?: expectedMaxBytes * 8
+                alignment?.toInt() ?: expectedMaxBytes
             )
         }
         firstKeyword.value.startsWith("align=") -> {
@@ -79,11 +73,11 @@ fun List<Token>.parseMemarg(fromIndex: Int, expectedMaxBytes: Int): ParseResult<
             ).value
             MemArg(0, alignment.toInt())
         }
-        else -> MemArg(0, expectedMaxBytes * 8)
+        else -> MemArg(0, expectedMaxBytes)
     }
 
-    parseCheck(contextAt(fromIndex), memArg.isAlignmentValid(expectedMaxBytes)) {
-        "Illegal MemArg value for N=$expectedMaxBytes"
+    parseCheck(contextAt(fromIndex), memArg.isAlignmentWellFormed()) {
+        "Illegal MemArg value for N=$expectedMaxBytes (alignment)"
     }
 
     return ParseResult(

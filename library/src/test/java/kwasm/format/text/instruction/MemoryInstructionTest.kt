@@ -52,7 +52,7 @@ class MemoryInstructionTest {
 
     @Test
     fun parses_i32Load_withMemarg() {
-        val result = parseMemoryInstruction("i32.load offset=0 align=32")
+        val result = parseMemoryInstruction("i32.load offset=0 align=4")
 
         assertThat(result.parseLength).isEqualTo(3)
         assertThat(result.astNode).isEqualTo(
@@ -74,7 +74,7 @@ class MemoryInstructionTest {
 
     @Test
     fun parses_i64Load_withMemarg() {
-        val result = parseMemoryInstruction("i64.load offset=0 align=64")
+        val result = parseMemoryInstruction("i64.load offset=0 align=8")
 
         assertThat(result.parseLength).isEqualTo(3)
         assertThat(result.astNode).isEqualTo(
@@ -96,7 +96,7 @@ class MemoryInstructionTest {
 
     @Test
     fun parses_f32Load_withMemarg() {
-        val result = parseMemoryInstruction("f32.load offset=0 align=32")
+        val result = parseMemoryInstruction("f32.load offset=0 align=4")
 
         assertThat(result.parseLength).isEqualTo(3)
         assertThat(result.astNode).isEqualTo(
@@ -118,7 +118,7 @@ class MemoryInstructionTest {
 
     @Test
     fun parses_f64Load_withMemarg() {
-        val result = parseMemoryInstruction("f64.load offset=0 align=64")
+        val result = parseMemoryInstruction("f64.load offset=0 align=8")
 
         assertThat(result.parseLength).isEqualTo(3)
         assertThat(result.astNode).isEqualTo(
@@ -140,7 +140,7 @@ class MemoryInstructionTest {
 
     @Test
     fun parses_i32Load8_s_withMemarg() {
-        val result = parseMemoryInstruction("i32.load8_s offset=0 align=8")
+        val result = parseMemoryInstruction("i32.load8_s offset=0 align=1")
 
         assertThat(result.parseLength).isEqualTo(3)
         assertThat(result.astNode).isEqualTo(
@@ -162,7 +162,7 @@ class MemoryInstructionTest {
 
     @Test
     fun parses_i32Load8_u_withMemarg() {
-        val result = parseMemoryInstruction("i32.load8_u offset=0 align=8")
+        val result = parseMemoryInstruction("i32.load8_u offset=0 align=1")
 
         assertThat(result.parseLength).isEqualTo(3)
         assertThat(result.astNode).isEqualTo(
@@ -184,7 +184,7 @@ class MemoryInstructionTest {
 
     @Test
     fun parses_i32Load16_s_withMemarg() {
-        val result = parseMemoryInstruction("i32.load16_s offset=0 align=16")
+        val result = parseMemoryInstruction("i32.load16_s offset=0 align=2")
 
         assertThat(result.parseLength).isEqualTo(3)
         assertThat(result.astNode).isEqualTo(
@@ -206,7 +206,7 @@ class MemoryInstructionTest {
 
     @Test
     fun parses_i32Load16_u_withMemarg() {
-        val result = parseMemoryInstruction("i32.load16_u offset=0 align=16")
+        val result = parseMemoryInstruction("i32.load16_u offset=0 align=2")
 
         assertThat(result.parseLength).isEqualTo(3)
         assertThat(result.astNode).isEqualTo(
@@ -228,7 +228,7 @@ class MemoryInstructionTest {
 
     @Test
     fun parses_i64Load8_s_withMemarg() {
-        val result = parseMemoryInstruction("i64.load8_s offset=0 align=8")
+        val result = parseMemoryInstruction("i64.load8_s offset=0 align=1")
 
         assertThat(result.parseLength).isEqualTo(3)
         assertThat(result.astNode).isEqualTo(
@@ -250,7 +250,7 @@ class MemoryInstructionTest {
 
     @Test
     fun parses_i64Load8_u_withMemarg() {
-        val result = parseMemoryInstruction("i64.load8_u offset=0 align=8")
+        val result = parseMemoryInstruction("i64.load8_u offset=0 align=1")
 
         assertThat(result.parseLength).isEqualTo(3)
         assertThat(result.astNode).isEqualTo(
@@ -272,7 +272,7 @@ class MemoryInstructionTest {
 
     @Test
     fun parses_i64Load16_s_withMemarg() {
-        val result = parseMemoryInstruction("i64.load16_s offset=0 align=16")
+        val result = parseMemoryInstruction("i64.load16_s offset=0 align=2")
 
         assertThat(result.parseLength).isEqualTo(3)
         assertThat(result.astNode).isEqualTo(
@@ -294,7 +294,7 @@ class MemoryInstructionTest {
 
     @Test
     fun parses_i64Load16_u_withMemarg() {
-        val result = parseMemoryInstruction("i64.load16_u offset=0 align=16")
+        val result = parseMemoryInstruction("i64.load16_u offset=0 align=2")
 
         assertThat(result.parseLength).isEqualTo(3)
         assertThat(result.astNode).isEqualTo(
@@ -316,7 +316,7 @@ class MemoryInstructionTest {
 
     @Test
     fun parses_i64Load32_s_withMemarg() {
-        val result = parseMemoryInstruction("i64.load32_s offset=0 align=32")
+        val result = parseMemoryInstruction("i64.load32_s offset=0 align=4")
 
         assertThat(result.parseLength).isEqualTo(3)
         assertThat(result.astNode).isEqualTo(
@@ -338,7 +338,7 @@ class MemoryInstructionTest {
 
     @Test
     fun parses_i64Load32_u_withMemarg() {
-        val result = parseMemoryInstruction("i64.load32_u offset=0 align=32")
+        val result = parseMemoryInstruction("i64.load32_u offset=0 align=4")
 
         assertThat(result.parseLength).isEqualTo(3)
         assertThat(result.astNode).isEqualTo(
@@ -360,7 +360,7 @@ class MemoryInstructionTest {
 
     @Test
     fun parses_i32Store_withMemarg() {
-        val result = parseMemoryInstruction("i32.store offset=0 align=32")
+        val result = parseMemoryInstruction("i32.store offset=0 align=4")
 
         assertThat(result.parseLength).isEqualTo(3)
         assertThat(result.astNode).isEqualTo(
@@ -382,7 +382,7 @@ class MemoryInstructionTest {
 
     @Test
     fun parses_i32Store8_withMemarg() {
-        val result = parseMemoryInstruction("i32.store8 offset=0 align=8")
+        val result = parseMemoryInstruction("i32.store8 offset=0 align=1")
 
         assertThat(result.parseLength).isEqualTo(3)
         assertThat(result.astNode).isEqualTo(
@@ -404,7 +404,7 @@ class MemoryInstructionTest {
 
     @Test
     fun parses_i32Store16_withMemarg() {
-        val result = parseMemoryInstruction("i32.store16 offset=0 align=16")
+        val result = parseMemoryInstruction("i32.store16 offset=0 align=2")
 
         assertThat(result.parseLength).isEqualTo(3)
         assertThat(result.astNode).isEqualTo(
@@ -426,7 +426,7 @@ class MemoryInstructionTest {
 
     @Test
     fun parses_i64Store8_withMemarg() {
-        val result = parseMemoryInstruction("i64.store8 offset=0 align=8")
+        val result = parseMemoryInstruction("i64.store8 offset=0 align=1")
 
         assertThat(result.parseLength).isEqualTo(3)
         assertThat(result.astNode).isEqualTo(
@@ -448,7 +448,7 @@ class MemoryInstructionTest {
 
     @Test
     fun parses_i64Store16_withMemarg() {
-        val result = parseMemoryInstruction("i64.store16 offset=0 align=16")
+        val result = parseMemoryInstruction("i64.store16 offset=0 align=2")
 
         assertThat(result.parseLength).isEqualTo(3)
         assertThat(result.astNode).isEqualTo(
@@ -470,7 +470,7 @@ class MemoryInstructionTest {
 
     @Test
     fun parses_i64Store32_withMemarg() {
-        val result = parseMemoryInstruction("i64.store32 offset=0 align=32")
+        val result = parseMemoryInstruction("i64.store32 offset=0 align=4")
 
         assertThat(result.parseLength).isEqualTo(3)
         assertThat(result.astNode).isEqualTo(
@@ -492,7 +492,7 @@ class MemoryInstructionTest {
 
     @Test
     fun parses_f32Store_withMemarg() {
-        val result = parseMemoryInstruction("f32.store offset=0 align=32")
+        val result = parseMemoryInstruction("f32.store offset=0 align=4")
 
         assertThat(result.parseLength).isEqualTo(3)
         assertThat(result.astNode).isEqualTo(
@@ -514,7 +514,7 @@ class MemoryInstructionTest {
 
     @Test
     fun parses_f64Store_withMemarg() {
-        val result = parseMemoryInstruction("f64.store offset=0 align=64")
+        val result = parseMemoryInstruction("f64.store offset=0 align=8")
 
         assertThat(result.parseLength).isEqualTo(3)
         assertThat(result.astNode).isEqualTo(

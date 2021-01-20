@@ -78,7 +78,11 @@ internal fun MemoryInstruction.LoadInt.execute(context: ExecutionContext): Execu
     val memory = context.getMemory()
     val memAddress = (context.stacks.operands.pop() as? IntValue)
         ?: throw KWasmRuntimeException("Memory loading requires i32 on top of the stack")
+    val eaLong = memAddress.unsignedValue.toLong() + arg.offset.toLong()
     val ea = (memAddress.unsignedValue + arg.offset).toInt()
+    if (ea < eaLong) {
+        throw KWasmRuntimeException("Cannot load at position $eaLong (out of bounds memory access)")
+    }
     val resultValue = try {
         when (byteWidth) {
             // i32 requested.
@@ -108,7 +112,11 @@ internal fun MemoryInstruction.LoadFloat.execute(context: ExecutionContext): Exe
     val memory = context.getMemory()
     val memAddress = (context.stacks.operands.pop() as? IntValue)
         ?: throw KWasmRuntimeException("Memory loading requires i32 on top of the stack")
+    val eaLong = memAddress.unsignedValue.toLong() + arg.offset.toLong()
     val ea = (memAddress.unsignedValue + arg.offset).toInt()
+    if (ea < eaLong) {
+        throw KWasmRuntimeException("Cannot load at position $eaLong (out of bounds memory access)")
+    }
     val resultValue = try {
         when (byteWidth) {
             // f32 requested.
@@ -175,7 +183,10 @@ internal fun MemoryInstruction.StoreInt.execute(context: ExecutionContext): Exec
             try {
                 memory.writeULong(longValue.unsignedValue, ea, storageBytes)
             } catch (e: IndexOutOfBoundsException) {
-                throw KWasmRuntimeException("Cannot store at position $ea", e)
+                throw KWasmRuntimeException(
+                    "Cannot store at position $ea (out of bounds memory access)",
+                    e
+                )
             } catch (e: IllegalArgumentException) {
                 throw KWasmRuntimeException("Cannot store at position $ea", e)
             }
