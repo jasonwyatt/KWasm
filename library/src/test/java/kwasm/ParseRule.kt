@@ -40,7 +40,7 @@ import org.junit.runners.model.Statement
  */
 class ParseRule : TestRule {
     val tokenizer = Tokenizer()
-    private val counts = TextModuleCounts( 0, 0, 0, 0, 0)
+    private val counts = TextModuleCounts(0, 0, 0, 0, 0)
     lateinit var context: ParseContext
 
     override fun apply(base: Statement, description: Description): Statement {

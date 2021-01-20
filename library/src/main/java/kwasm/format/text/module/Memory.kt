@@ -40,7 +40,6 @@ import kwasm.format.text.contextAt
 import kwasm.format.text.isClosedParen
 import kwasm.format.text.isKeyword
 import kwasm.format.text.isOpenParen
-import kwasm.format.text.parseIdentifier
 import kwasm.format.text.parseLiteral
 import kwasm.format.text.parseOrCreateIdentifier
 import kwasm.format.text.token.Token

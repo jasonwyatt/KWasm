@@ -21,7 +21,6 @@ import kwasm.format.text.ParseResult
 import kwasm.format.text.TextModuleCounts
 import kwasm.format.text.asKeywordMatching
 import kwasm.format.text.contextAt
-import kwasm.format.text.incrementFor
 import kwasm.format.text.isClosedParen
 import kwasm.format.text.isOpenParen
 import kwasm.format.text.token.Identifier

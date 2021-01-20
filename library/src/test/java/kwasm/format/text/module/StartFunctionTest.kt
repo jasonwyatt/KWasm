@@ -18,7 +18,6 @@ import com.google.common.truth.Truth.assertThat
 import kwasm.ast.Identifier
 import kwasm.ast.module.Index
 import kwasm.ast.module.StartFunction
-import kwasm.format.ParseContext
 import kwasm.format.ParseException
 import kwasm.format.text.TextModuleCounts
 import kwasm.format.text.Tokenizer
