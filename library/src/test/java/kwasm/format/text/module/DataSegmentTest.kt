@@ -24,6 +24,7 @@ import kwasm.ast.module.Index
 import kwasm.ast.module.Offset
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
+import kwasm.format.text.TextModuleCounts
 import kwasm.format.text.Tokenizer
 import org.assertj.core.api.Assertions.fail
 import org.junit.Assert.assertThrows
@@ -34,20 +35,21 @@ import org.junit.runners.JUnit4
 @Suppress("EXPERIMENTAL_UNSIGNED_LITERALS")
 @RunWith(JUnit4::class)
 class DataSegmentTest {
+    private val counts = TextModuleCounts(0, 0, 0, 0, 0)
     private val tokenizer = Tokenizer()
     private val context = ParseContext("DataSegmentTest.wast")
 
     @Test
     fun parse_returnsNull_ifStartToken_isNotOpenParen() {
         val result = tokenizer.tokenize("data $0 (offset i32.const 0x44) \"test\")", context)
-            .parseDataSegment(0)
+            .parseDataSegment(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parse_returnsNull_ifTokenAfterOpeningParen_isNotDataKeyword() {
         val result = tokenizer.tokenize("(notdata $0 (offset i32.const 0x44) \"test\")", context)
-            .parseDataSegment(0)
+            .parseDataSegment(0, counts)
         assertThat(result).isNull()
     }
 
@@ -55,24 +57,25 @@ class DataSegmentTest {
     fun throws_whenMemoryIndex_doesntFollow_dataKeyword() {
         assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(data \"test\" (offset i32.const 0x44) \"test\")")
-                .parseDataSegment(0)
+                .parseDataSegment(0, counts)
         }
     }
 
     @Test
     fun throws_whenOffset_doesntFollow_memIndex() {
         assertThrows(ParseException::class.java) {
-            tokenizer.tokenize("(data offset i32.const 0x44) \"test\")").parseDataSegment(0)
+            tokenizer.tokenize("(data offset i32.const 0x44) \"test\")")
+                .parseDataSegment(0, counts)
         }
 
         assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(data (notoffset i32.const 0x44) \"test\")")
-                .parseDataSegment(0)
+                .parseDataSegment(0, counts)
         }
 
         assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(data \"test\")")
-                .parseDataSegment(0)
+                .parseDataSegment(0, counts)
         }
     }
 
@@ -80,14 +83,14 @@ class DataSegmentTest {
     fun throws_whenNotClosedWithParen() {
         assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(data (offset i32.const 0x44) \"test\"")
-                .parseDataSegment(0)
+                .parseDataSegment(0, counts)
         }
     }
 
     @Test
     fun parses_withEmptyMemIndex() {
-        val result = tokenizer.tokenize("(data (offset i32.const 0) \"test\")")
-            .parseDataSegment(0) ?: fail("Expected data segment")
+        val (result, newCounts) = tokenizer.tokenize("(data (offset i32.const 0) \"test\")")
+            .parseDataSegment(0, counts) ?: fail("Expected data segment")
         assertThat(result.parseLength).isEqualTo(9)
         assertThat(result.astNode.init).isEqualTo("test".toByteArray(Charsets.UTF_8))
         assertThat(result.astNode.memoryIndex).isEqualTo(Index.ByInt(0))
@@ -98,12 +101,13 @@ class DataSegmentTest {
                 )
             )
         )
+        assertThat(newCounts).isEqualTo(counts)
     }
 
     @Test
     fun parses_withoutOffsetKeyword() {
-        val result = tokenizer.tokenize("(data $1 (i32.const 0) \"test\")")
-            .parseDataSegment(0) ?: fail("Expected data segment")
+        val (result, newCounts) = tokenizer.tokenize("(data $1 (i32.const 0) \"test\")")
+            .parseDataSegment(0, counts) ?: fail("Expected data segment")
         assertThat(result.parseLength).isEqualTo(9)
         assertThat(result.astNode.init).isEqualTo("test".toByteArray(Charsets.UTF_8))
         assertThat(result.astNode.memoryIndex)
@@ -115,12 +119,13 @@ class DataSegmentTest {
                 )
             )
         )
+        assertThat(newCounts).isEqualTo(counts)
     }
 
     @Test
     fun parses_withoutInitStrings() {
-        val result = tokenizer.tokenize("(data $1 (i32.const 0))")
-            .parseDataSegment(0) ?: fail("Expected data segment")
+        val (result, newCounts) = tokenizer.tokenize("(data $1 (i32.const 0))")
+            .parseDataSegment(0, counts) ?: fail("Expected data segment")
         assertThat(result.parseLength).isEqualTo(8)
         assertThat(result.astNode.init).isEqualTo(ByteArray(0))
         assertThat(result.astNode.memoryIndex)
@@ -132,12 +137,13 @@ class DataSegmentTest {
                 )
             )
         )
+        assertThat(newCounts).isEqualTo(counts)
     }
 
     @Test
     fun parses_minimal() {
-        val result = tokenizer.tokenize("(data (i32.const 0))")
-            .parseDataSegment(0) ?: fail("Expected data segment")
+        val (result, newCounts) = tokenizer.tokenize("(data (i32.const 0))")
+            .parseDataSegment(0, counts) ?: fail("Expected data segment")
         assertThat(result.parseLength).isEqualTo(7)
         assertThat(result.astNode.init).isEqualTo(ByteArray(0))
         assertThat(result.astNode.memoryIndex)
@@ -149,12 +155,13 @@ class DataSegmentTest {
                 )
             )
         )
+        assertThat(newCounts).isEqualTo(counts)
     }
 
     @Test
     fun parses_multipleStrings() {
-        val result = tokenizer.tokenize("(data (i32.const 0) \"a\" \"b\" \"c\")")
-            .parseDataSegment(0) ?: fail("Expected data segment")
+        val (result, newCounts) = tokenizer.tokenize("(data (i32.const 0) \"a\" \"b\" \"c\")")
+            .parseDataSegment(0, counts) ?: fail("Expected data segment")
         assertThat(result.parseLength).isEqualTo(10)
         assertThat(result.astNode.init).isEqualTo("abc".toByteArray(Charsets.UTF_8))
         assertThat(result.astNode.memoryIndex)
@@ -166,5 +173,6 @@ class DataSegmentTest {
                 )
             )
         )
+        assertThat(newCounts).isEqualTo(counts)
     }
 }

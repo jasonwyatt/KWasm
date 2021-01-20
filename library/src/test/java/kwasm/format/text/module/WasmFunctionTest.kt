@@ -27,6 +27,7 @@ import kwasm.ast.module.TypeUse
 import kwasm.ast.type.ValueType
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
+import kwasm.format.text.TextModuleCounts
 import kwasm.format.text.Tokenizer
 import org.assertj.core.api.Assertions.fail
 import org.junit.Assert.assertThrows
@@ -36,54 +37,50 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class WasmFunctionTest {
+    private val counts = TextModuleCounts(0, 0, 0, 0, 0)
     private val tokenizer = Tokenizer()
     private val context = ParseContext("WasmFunctionTest.wast")
 
     @Test
     fun parse_returnsNull_ifOpeningParenNotFound() {
-        val result = tokenizer.tokenize("func)", context).parseWasmFunction(0)
+        val result = tokenizer.tokenize("func)", context)
+            .parseWasmFunction(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parse_returnsNull_ifFuncKeywordDoesntFollowOpeningParen() {
-        val result = tokenizer.tokenize("(notfunc)", context).parseWasmFunction(0)
+        val result = tokenizer.tokenize("(notfunc)", context)
+            .parseWasmFunction(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun throws_whenNoClosingParenFound() {
         val e = assertThrows(ParseException::class.java) {
-            tokenizer.tokenize("(func", context).parseWasmFunction(0)
+            tokenizer.tokenize("(func", context).parseWasmFunction(0, counts)
         }
         assertThat(e).hasMessageThat().contains("Expected ')'")
     }
 
     @Test
-    fun throws_whenIdentifierIsNegativeInt() {
-        val e = assertThrows(ParseException::class.java) {
-            tokenizer.tokenize("(func -1)", context).parseWasmFunction(0)
-        }
-        assertThat(e).hasMessageThat().contains("Identifier must not be negative")
-    }
-
-    @Test
     fun parse_parsesMinimal() {
-        val result = tokenizer.tokenize("(func)", context).parseWasmFunction(0)
-            ?: fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(func)", context)
+            .parseWasmFunction(0, counts) ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(3)
-        assertThat(result.astNode.id).isNotNull()
+        assertThat(result.astNode.id).isNull()
         assertThat(result.astNode.typeUse).isEqualTo(
             TypeUse(null, astNodeListOf(), astNodeListOf())
         )
         assertThat(result.astNode.locals).isEmpty()
         assertThat(result.astNode.instructions).isEmpty()
+        assertThat(newCounts.functions).isEqualTo(counts.functions + 1)
     }
 
     @Test
     fun parse_parsesIdOnly() {
-        val result = tokenizer.tokenize("(func $0)", context).parseWasmFunction(0)
-            ?: fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(func $0)", context)
+            .parseWasmFunction(0, counts) ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(4)
         assertThat(result.astNode.id).isEqualTo(Identifier.Function("$0"))
         assertThat(result.astNode.typeUse).isEqualTo(
@@ -91,14 +88,15 @@ class WasmFunctionTest {
         )
         assertThat(result.astNode.locals).isEmpty()
         assertThat(result.astNode.instructions).isEmpty()
+        assertThat(newCounts.functions).isEqualTo(counts.functions + 1)
     }
 
     @Test
     fun parse_parsesTypeUseOnly() {
-        val result = tokenizer.tokenize("(func (type $0))", context).parseWasmFunction(0)
-            ?: fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(func (type $0))", context)
+            .parseWasmFunction(0, counts) ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(7)
-        assertThat(result.astNode.id).isNotNull()
+        assertThat(result.astNode.id).isNull()
         assertThat(result.astNode.typeUse).isEqualTo(
             TypeUse(
                 Index.ByIdentifier(Identifier.Type("$0")),
@@ -108,14 +106,15 @@ class WasmFunctionTest {
         )
         assertThat(result.astNode.locals).isEmpty()
         assertThat(result.astNode.instructions).isEmpty()
+        assertThat(newCounts.functions).isEqualTo(counts.functions + 1)
     }
 
     @Test
     fun parse_parsesLocalsOnly() {
-        val result = tokenizer.tokenize("(func (local i32) (local i32))", context)
-            .parseWasmFunction(0) ?: fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(func (local i32) (local i32))", context)
+            .parseWasmFunction(0, counts) ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(11)
-        assertThat(result.astNode.id).isNotNull()
+        assertThat(result.astNode.id).isNull()
         assertThat(result.astNode.typeUse).isEqualTo(
             TypeUse(
                 null,
@@ -128,14 +127,15 @@ class WasmFunctionTest {
             Local(null, ValueType.I32)
         )
         assertThat(result.astNode.instructions).isEmpty()
+        assertThat(newCounts.functions).isEqualTo(counts.functions + 1)
     }
 
     @Test
     fun parse_parsesInstructionsOnly() {
-        val result = tokenizer.tokenize("(func (unreachable))", context).parseWasmFunction(0)
-            ?: fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(func (unreachable))", context)
+            .parseWasmFunction(0, counts) ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(6)
-        assertThat(result.astNode.id).isNotNull()
+        assertThat(result.astNode.id).isNull()
         assertThat(result.astNode.typeUse).isEqualTo(
             TypeUse(
                 null,
@@ -147,11 +147,12 @@ class WasmFunctionTest {
         assertThat(result.astNode.instructions).containsExactly(
             ControlInstruction.Unreachable
         )
+        assertThat(newCounts.functions).isEqualTo(counts.functions + 1)
     }
 
     @Test
     fun parse_parsesTheWholeShebang() {
-        val result = tokenizer.tokenize(
+        val (result, newCounts) = tokenizer.tokenize(
             """
             (func $0 (type $1) (local i32 i32)
                 (i32.add
@@ -161,7 +162,7 @@ class WasmFunctionTest {
             )
             """.trimIndent(),
             context
-        ).parseWasmFunction(0) ?: fail("Expected a result")
+        ).parseWasmFunction(0, counts) ?: fail("Expected a result")
 
         assertThat(result.parseLength).isEqualTo(24)
         assertThat(result.astNode.id).isEqualTo(Identifier.Function("$0"))
@@ -181,5 +182,6 @@ class WasmFunctionTest {
             NumericConstantInstruction.I32(IntegerLiteral.S32(2)),
             NumericInstruction.I32Add
         ).inOrder()
+        assertThat(newCounts.functions).isEqualTo(counts.functions + 1)
     }
 }

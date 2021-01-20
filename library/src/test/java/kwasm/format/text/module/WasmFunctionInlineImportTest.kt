@@ -25,6 +25,7 @@ import kwasm.ast.type.Result
 import kwasm.ast.type.ValueType
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
+import kwasm.format.text.TextModuleCounts
 import kwasm.format.text.Tokenizer
 import org.assertj.core.api.Assertions.fail
 import org.junit.Assert.assertThrows
@@ -34,6 +35,7 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class WasmFunctionInlineImportTest {
+    private val counts = TextModuleCounts(0, 0, 0, 0, 0)
     private val tokenizer = Tokenizer()
     private val context =
         ParseContext("WasmFunctionInlineImportTest.wat")
@@ -41,28 +43,28 @@ class WasmFunctionInlineImportTest {
     @Test
     fun parse_returnsNullIf_openingParenNotFound() {
         val result = tokenizer.tokenize("func $0 (import \"a\" \"b\") (param i32))", context)
-            .parseInlineWasmFunctionImport(0)
+            .parseInlineWasmFunctionImport(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parse_returnsNullIf_funcKeywordNotFound() {
         val result = tokenizer.tokenize("(nonfunc $0 (import \"a\" \"b\") (param i32))", context)
-            .parseInlineWasmFunctionImport(0)
+            .parseInlineWasmFunctionImport(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parse_returnsNullIf_importOpeningParenNotFound() {
         val result = tokenizer.tokenize("(func $0 import \"a\" \"b\") (param i32))", context)
-            .parseInlineWasmFunctionImport(0)
+            .parseInlineWasmFunctionImport(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parse_returnsNullIf_importKeywordNotFound() {
         val result = tokenizer.tokenize("(func $0 (nonimport \"a\" \"b\") (param i32))", context)
-            .parseInlineWasmFunctionImport(0)
+            .parseInlineWasmFunctionImport(0, counts)
         assertThat(result).isNull()
     }
 
@@ -70,7 +72,7 @@ class WasmFunctionInlineImportTest {
     fun parse_throwsIf_moduleNameNotFound() {
         assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(func $0 (import) (param i32))", context)
-                .parseInlineWasmFunctionImport(0)
+                .parseInlineWasmFunctionImport(0, counts)
         }
     }
 
@@ -78,7 +80,7 @@ class WasmFunctionInlineImportTest {
     fun parse_throwsIf_funcNameNotFound() {
         assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(func $0 (import \"a\") (param i32))", context)
-                .parseInlineWasmFunctionImport(0)
+                .parseInlineWasmFunctionImport(0, counts)
         }
     }
 
@@ -86,7 +88,7 @@ class WasmFunctionInlineImportTest {
     fun parse_throwsIf_importNotClosed() {
         val e = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(func $0 (import \"a\" \"b\" (param i32))", context)
-                .parseInlineWasmFunctionImport(0)
+                .parseInlineWasmFunctionImport(0, counts)
         }
         assertThat(e).hasMessageThat().contains("Expected ')'")
     }
@@ -95,22 +97,22 @@ class WasmFunctionInlineImportTest {
     fun parse_throwsIf_notClosed() {
         val e = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(func $0 (import \"a\" \"b\") (param i32)", context)
-                .parseInlineWasmFunctionImport(0)
+                .parseInlineWasmFunctionImport(0, counts)
         }
         assertThat(e).hasMessageThat().contains("Expected ')'")
     }
 
     @Test
     fun parse_minimal() {
-        val result = tokenizer.tokenize("(func (import \"a\" \"b\"))", context)
-            .parseInlineWasmFunctionImport(0)
-            ?: fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(func (import \"a\" \"b\"))", context)
+            .parseInlineWasmFunctionImport(0, counts) ?: fail("Expected a result")
 
         assertThat(result.parseLength).isEqualTo(8)
         assertThat(result.astNode.moduleName).isEqualTo("a")
         assertThat(result.astNode.name).isEqualTo("b")
         val descriptor = result.astNode.descriptor as ImportDescriptor.Function
-        assertThat(descriptor.id.stringRepr).isNotNull()
+        assertThat(descriptor.id.stringRepr).isNull()
+        assertThat(descriptor.id.unique).isEqualTo(0)
         assertThat(descriptor.typeUse).isEqualTo(
             TypeUse(
                 null,
@@ -118,14 +120,15 @@ class WasmFunctionInlineImportTest {
                 astNodeListOf()
             )
         )
+        assertThat(newCounts.functions).isEqualTo(counts.functions + 1)
     }
 
     @Test
     fun parse() {
-        val result = tokenizer.tokenize(
+        val (result, newCounts) = tokenizer.tokenize(
             "(func $0 (import \"a\" \"b\") (param i32) (result i32))",
             context
-        ).parseInlineWasmFunctionImport(0) ?: fail("Expected a result")
+        ).parseInlineWasmFunctionImport(0, counts) ?: fail("Expected a result")
 
         assertThat(result.parseLength).isEqualTo(17)
         assertThat(result.astNode).isEqualTo(
@@ -150,5 +153,6 @@ class WasmFunctionInlineImportTest {
                 )
             )
         )
+        assertThat(newCounts.functions).isEqualTo(counts.functions + 1)
     }
 }

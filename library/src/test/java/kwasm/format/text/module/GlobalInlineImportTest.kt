@@ -22,6 +22,7 @@ import kwasm.ast.type.GlobalType
 import kwasm.ast.type.ValueType
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
+import kwasm.format.text.TextModuleCounts
 import kwasm.format.text.Tokenizer
 import org.assertj.core.api.Assertions
 import org.junit.Assert.assertThrows
@@ -31,34 +32,35 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class GlobalInlineImportTest {
+    private val counts = TextModuleCounts(0, 0, 0, 0, 0)
     private val tokenizer = Tokenizer()
     private val context = ParseContext("GlobalInlineImportTest.wat")
 
     @Test
     fun parse_returnsNullIf_openingParenNotFound() {
         val result = tokenizer.tokenize("global $0 (import \"a\" \"b\") i32)", context)
-            .parseInlineGlobalImport(0)
+            .parseInlineGlobalImport(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parse_returnsNullIf_globalKeywordNotFound() {
         val result = tokenizer.tokenize("(nonglobal $0 (import \"a\" \"b\") i32)", context)
-            .parseInlineGlobalImport(0)
+            .parseInlineGlobalImport(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parse_returnsNullIf_importOpeningParenNotFound() {
         val result = tokenizer.tokenize("(global $0 import \"a\" \"b\") i32)", context)
-            .parseInlineGlobalImport(0)
+            .parseInlineGlobalImport(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parse_returnsNullIf_importKeywordNotFound() {
         val result = tokenizer.tokenize("(global $0 (nonimport \"a\" \"b\") i32)", context)
-            .parseInlineGlobalImport(0)
+            .parseInlineGlobalImport(0, counts)
         assertThat(result).isNull()
     }
 
@@ -66,7 +68,7 @@ class GlobalInlineImportTest {
     fun parse_throwsIf_moduleNameNotFound() {
         assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(global $0 (import) i32)", context)
-                .parseInlineGlobalImport(0)
+                .parseInlineGlobalImport(0, counts)
         }
     }
 
@@ -74,7 +76,7 @@ class GlobalInlineImportTest {
     fun parse_throwsIf_globalNameNotFound() {
         assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(global $0 (import \"a\") i32)", context)
-                .parseInlineGlobalImport(0)
+                .parseInlineGlobalImport(0, counts)
         }
     }
 
@@ -82,7 +84,7 @@ class GlobalInlineImportTest {
     fun parse_throwsIf_importNotClosed() {
         val e = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(global $0 (import \"a\" \"b\" i32)", context)
-                .parseInlineGlobalImport(0)
+                .parseInlineGlobalImport(0, counts)
         }
         assertThat(e).hasMessageThat().contains("Expected ')'")
     }
@@ -91,16 +93,15 @@ class GlobalInlineImportTest {
     fun parse_throwsIf_notClosed() {
         val e = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(global $0 (import \"a\" \"b\") i32", context)
-                .parseInlineGlobalImport(0)
+                .parseInlineGlobalImport(0, counts)
         }
         assertThat(e).hasMessageThat().contains("Expected ')'")
     }
 
     @Test
     fun parse_minimal() {
-        val result = tokenizer.tokenize("(global (import \"a\" \"b\") i32)", context)
-            .parseInlineGlobalImport(0)
-            ?: Assertions.fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(global (import \"a\" \"b\") i32)", context)
+            .parseInlineGlobalImport(0, counts) ?: Assertions.fail("Expected a result")
 
         assertThat(result.parseLength).isEqualTo(9)
         assertThat(result.astNode.moduleName).isEqualTo("a")
@@ -108,14 +109,15 @@ class GlobalInlineImportTest {
         val descriptor = result.astNode.descriptor as ImportDescriptor.Global
         assertThat(descriptor.globalType.valueType).isEqualTo(ValueType.I32)
         assertThat(descriptor.globalType.mutable).isFalse()
+        assertThat(newCounts.globals).isEqualTo(counts.globals + 1)
     }
 
     @Test
     fun parse() {
-        val result = tokenizer.tokenize(
+        val (result, newCounts) = tokenizer.tokenize(
             "(global $0 (import \"a\" \"b\") (mut i32))",
             context
-        ).parseInlineGlobalImport(0) ?: Assertions.fail("Expected a result")
+        ).parseInlineGlobalImport(0, counts) ?: Assertions.fail("Expected a result")
 
         assertThat(result.parseLength).isEqualTo(13)
         assertThat(result.astNode).isEqualTo(
@@ -131,5 +133,6 @@ class GlobalInlineImportTest {
                 )
             )
         )
+        assertThat(newCounts.globals).isEqualTo(counts.globals + 1)
     }
 }

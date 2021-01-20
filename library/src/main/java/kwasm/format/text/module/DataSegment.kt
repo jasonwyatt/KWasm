@@ -19,6 +19,7 @@ import kwasm.ast.module.DataSegment
 import kwasm.ast.module.Index
 import kwasm.format.parseCheck
 import kwasm.format.text.ParseResult
+import kwasm.format.text.TextModuleCounts
 import kwasm.format.text.contextAt
 import kwasm.format.text.isClosedParen
 import kwasm.format.text.isKeyword
@@ -42,7 +43,10 @@ import kwasm.format.text.token.Token
  * symbolic memory identifier resolving to the same value.
  */
 @Suppress("UNCHECKED_CAST", "EXPERIMENTAL_UNSIGNED_LITERALS")
-fun List<Token>.parseDataSegment(fromIndex: Int): ParseResult<DataSegment>? {
+fun List<Token>.parseDataSegment(
+    fromIndex: Int,
+    counts: TextModuleCounts,
+): Pair<ParseResult<DataSegment>, TextModuleCounts>? {
     var currentIndex = fromIndex
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
@@ -76,7 +80,7 @@ fun List<Token>.parseDataSegment(fromIndex: Int): ParseResult<DataSegment>? {
             dataStringBytes
         ),
         currentIndex - fromIndex
-    )
+    ) to counts
 }
 
 internal fun List<Token>.parseDataString(fromIndex: Int): Pair<ByteArray, Int> {

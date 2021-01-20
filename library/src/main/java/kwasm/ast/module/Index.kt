@@ -39,8 +39,7 @@ import kwasm.ast.Identifier
  *                      v:id    => l (if I.labels[l] = v)
  * ```
  */
-sealed class Index<T : Identifier> :
-    AstNode {
+sealed class Index<T : Identifier> : AstNode {
     data class ByInt(val indexVal: Int) : Index<Identifier>() {
         override fun toString(): String = indexVal.toString()
     }

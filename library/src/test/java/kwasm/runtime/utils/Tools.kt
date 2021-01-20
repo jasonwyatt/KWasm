@@ -25,6 +25,7 @@ import kwasm.ast.instruction.flatten
 import kwasm.ast.module.Index
 import kwasm.ast.module.WasmFunction
 import kwasm.ast.util.toFunctionIndex
+import kwasm.format.text.TextModuleCounts
 import kwasm.format.text.module.parseWasmFunction
 import kwasm.runtime.Address
 import kwasm.runtime.ExecutionContext
@@ -182,7 +183,10 @@ internal class TestCase(
 
     override fun checkFunction(source: String): ExecutionContext {
         var wasmFunction: WasmFunction? = null
-        parser.with { wasmFunction = source.tokenize().parseWasmFunction(0)!!.astNode }
+        val counts = TextModuleCounts(0, 0, 0, 0, 0)
+        parser.with {
+            wasmFunction = source.tokenize().parseWasmFunction(0, counts)!!.first.astNode
+        }
 
         val resultContext = FunctionInstance.Module(context.moduleInstance, wasmFunction!!)
             .execute(context.withOpStack(opStack.map { it.toValue() }))
@@ -225,7 +229,10 @@ internal class ErrorTestCase(
 
     override fun checkFunction(source: String): ExecutionContext {
         var wasmFunction: WasmFunction? = null
-        parser.with { wasmFunction = source.tokenize().parseWasmFunction(0)!!.astNode }
+        val counts = TextModuleCounts(0, 0, 0, 0, 0)
+        parser.with {
+            wasmFunction = source.tokenize().parseWasmFunction(0, counts)!!.first.astNode
+        }
 
         assertThrows(expectedThrowable.java) {
             FunctionInstance.Module(context.moduleInstance, wasmFunction!!).execute(

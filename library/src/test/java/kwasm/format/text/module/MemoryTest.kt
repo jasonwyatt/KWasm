@@ -28,6 +28,7 @@ import kwasm.ast.type.Limits
 import kwasm.ast.type.MemoryType
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
+import kwasm.format.text.TextModuleCounts
 import kwasm.format.text.Tokenizer
 import org.assertj.core.api.Assertions
 import org.junit.Assert.assertThrows
@@ -36,44 +37,45 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
-@Suppress("EXPERIMENTAL_UNSIGNED_LITERALS", "EXPERIMENTAL_API_USAGE")
+@Suppress("EXPERIMENTAL_UNSIGNED_LITERALS", "EXPERIMENTAL_API_USAGE", "UNCHECKED_CAST")
 class MemoryTest {
+    private val counts = TextModuleCounts(0, 0, 0, 0, 0)
     private val tokenizer = Tokenizer()
     private val context = ParseContext("MemoryTest.wast")
 
     @Test
     fun parseMemoryBasic_returnsNull_ifOpenParenNotFound() {
         val result = tokenizer.tokenize("memory $0 0 1)", context)
-            .parseMemoryBasic(0)
+            .parseMemoryBasic(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parseMemoryBasic_returnsNull_ifMemoryKeywordNotFound() {
         val result = tokenizer.tokenize("(non-memory $0 0 1)", context)
-            .parseMemoryBasic(0)
+            .parseMemoryBasic(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parseMemoryBasic_returnsNull_ifMemoryTypeCouldntBeFound() {
         val result = tokenizer.tokenize("(memory $0)", context)
-            .parseMemoryBasic(0)
+            .parseMemoryBasic(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parseMemoryBasic_throws_ifNoClosingParenFound() {
         val e = assertThrows(ParseException::class.java) {
-            tokenizer.tokenize("(memory $0 0 1", context).parseMemoryBasic(0)
+            tokenizer.tokenize("(memory $0 0 1", context).parseMemoryBasic(0, counts)
         }
         assertThat(e).hasMessageThat().contains("Expected ')'")
     }
 
     @Test
     fun parseMemoryBasic() {
-        val result = tokenizer.tokenize("(memory $0 0 1)", context)
-            .parseMemoryBasic(0) ?: Assertions.fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(memory $0 0 1)", context)
+            .parseMemoryBasic(0, counts) ?: Assertions.fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(6)
         assertThat(result.astNode.id).isEqualTo(Identifier.Memory("$0"))
         assertThat(result.astNode.memoryType).isEqualTo(
@@ -81,19 +83,20 @@ class MemoryTest {
                 Limits(0, 1)
             )
         )
+        assertThat(newCounts.memories).isEqualTo(counts.memories + 1)
     }
 
     @Test
     fun parseMemoryAndDataSegment_returnsNullIf_openingParen_notFound() {
         val result = tokenizer.tokenize("memory $0 (data \"first\" \"second\"))", context)
-            .parseMemoryAndDataSegment(0)
+            .parseMemoryAndDataSegment(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parseMemoryAndDataSegment_returnsNullIf_memoryKeyword_notFound() {
         val result = tokenizer.tokenize("(non-memory $0 (data \"first\" \"second\"))", context)
-            .parseMemoryAndDataSegment(0)
+            .parseMemoryAndDataSegment(0, counts)
         assertThat(result).isNull()
     }
 
@@ -101,7 +104,7 @@ class MemoryTest {
     fun parseMemoryAndDataSegment_throwsIf_dataOpeningParen_notFound() {
         val e = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(memory $0 data \"first\" \"second\"))", context)
-                .parseMemoryAndDataSegment(0)
+                .parseMemoryAndDataSegment(0, counts)
         }
         assertThat(e).hasMessageThat().contains("Expected inline data segment")
     }
@@ -110,7 +113,7 @@ class MemoryTest {
     fun parseMemoryAndDataSegment_throwsIf_dataKeyword_notFound() {
         val e = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(memory $0 (non-data \"first\" \"second\"))", context)
-                .parseMemoryAndDataSegment(0)
+                .parseMemoryAndDataSegment(0, counts)
         }
         assertThat(e).hasMessageThat().contains("Expected inline data segment")
     }
@@ -119,7 +122,7 @@ class MemoryTest {
     fun parseMemoryAndDataSegment_throwsIf_dataClosingParen_notFound() {
         val e = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(memory $0 (data \"first\" \"second\")", context)
-                .parseMemoryAndDataSegment(0)
+                .parseMemoryAndDataSegment(0, counts)
         }
         assertThat(e).hasMessageThat().contains("Expected ')'")
     }
@@ -128,15 +131,15 @@ class MemoryTest {
     fun parseMemoryAndDataSegment_throwsIf_closingParen_notFound() {
         val e = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(memory $0 (data \"first\" \"second\"", context)
-                .parseMemoryAndDataSegment(0)
+                .parseMemoryAndDataSegment(0, counts)
         }
         assertThat(e).hasMessageThat().contains("Expected ')'")
     }
 
     @Test
     fun parseMemoryAndDataSegment_minimal() {
-        val result = tokenizer.tokenize("(memory (data))", context)
-            .parseMemoryAndDataSegment(0) ?: Assertions.fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(memory (data))", context)
+            .parseMemoryAndDataSegment(0, counts) ?: Assertions.fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(6)
         assertThat(result.astNode.size).isEqualTo(2)
         val memory = result.astNode[0] as Memory
@@ -150,12 +153,14 @@ class MemoryTest {
             )
         )
         assertThat(dataSegment.init).isEqualTo("".toByteArray(Charsets.UTF_8))
+        assertThat(newCounts.memories).isEqualTo(counts.memories + 1)
     }
 
     @Test
     fun parseMemoryAndDataSegment() {
-        val result = tokenizer.tokenize("(memory $0 (data \"first\" \"second\"))", context)
-            .parseMemoryAndDataSegment(0) ?: Assertions.fail("Expected a result")
+        val (result, newCounts) =
+            tokenizer.tokenize("(memory $0 (data \"first\" \"second\"))", context)
+                .parseMemoryAndDataSegment(0, counts) ?: Assertions.fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(9)
         assertThat(result.astNode).containsExactly(
             Memory(
@@ -165,7 +170,7 @@ class MemoryTest {
                 )
             ),
             DataSegment(
-                Index.ByIdentifier(Identifier.Memory("$0")),
+                Index.ByInt(0) as Index<Identifier.Memory>,
                 Offset(
                     Expression(
                         astNodeListOf(NumericConstantInstruction.I32(IntegerLiteral.S32(0)))
@@ -174,12 +179,13 @@ class MemoryTest {
                 "firstsecond".toByteArray(Charsets.UTF_8)
             )
         ).inOrder()
+        assertThat(newCounts.memories).isEqualTo(counts.memories + 1)
     }
 
     @Test
     fun parseMemory_parsesPlain() {
-        val result = tokenizer.tokenize("(memory $0 0 1)", context)
-            .parseMemory(0) ?: Assertions.fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(memory $0 0 1)", context)
+            .parseMemory(0, counts) ?: Assertions.fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(6)
         assertThat(result.astNode.size).isEqualTo(1)
         assertThat((result.astNode.first() as Memory).id).isEqualTo(Identifier.Memory("$0"))
@@ -188,12 +194,14 @@ class MemoryTest {
                 Limits(0, 1)
             )
         )
+        assertThat(newCounts.memories).isEqualTo(counts.memories + 1)
     }
 
     @Test
     fun parseTable_parsesWithElementSegment() {
-        val result = tokenizer.tokenize("(memory $0 (data \"first\" \"second\"))", context)
-            .parseMemory(0) ?: Assertions.fail("Expected a result")
+        val (result, newCounts) =
+            tokenizer.tokenize("(memory $0 (data \"first\" \"second\"))", context)
+                .parseMemory(0, counts) ?: Assertions.fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(9)
         assertThat(result.astNode).containsExactly(
             Memory(
@@ -203,7 +211,7 @@ class MemoryTest {
                 )
             ),
             DataSegment(
-                Index.ByIdentifier(Identifier.Memory("$0")),
+                Index.ByInt(0) as Index<Identifier.Memory>,
                 Offset(
                     Expression(
                         astNodeListOf(NumericConstantInstruction.I32(IntegerLiteral.S32(0)))
@@ -212,5 +220,6 @@ class MemoryTest {
                 "firstsecond".toByteArray(Charsets.UTF_8)
             )
         ).inOrder()
+        assertThat(newCounts.memories).isEqualTo(counts.memories + 1)
     }
 }

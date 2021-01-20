@@ -24,6 +24,7 @@ import kwasm.ast.module.Index
 import kwasm.ast.module.Offset
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
+import kwasm.format.text.TextModuleCounts
 import kwasm.format.text.Tokenizer
 import org.assertj.core.api.Assertions
 import org.junit.Assert.assertThrows
@@ -34,20 +35,21 @@ import org.junit.runners.JUnit4
 @Suppress("EXPERIMENTAL_UNSIGNED_LITERALS")
 @RunWith(JUnit4::class)
 class ElementSegmentTest {
+    private val counts = TextModuleCounts(0, 0, 0, 0, 0)
     private val tokenizer = Tokenizer()
     private val context = ParseContext("ElementSegmentTest.wast")
 
     @Test
     fun parse_returnsNull_ifStartToken_isNotOpenParen() {
         val result = tokenizer.tokenize("elem $0 (offset i32.const 0x44) $1)", context)
-            .parseElementSegment(0)
+            .parseElementSegment(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parse_returnsNull_ifTokenAfterOpeningParen_isNotElemKeyword() {
         val result = tokenizer.tokenize("(notelem $0 (offset i32.const 0x44) $1)", context)
-            .parseElementSegment(0)
+            .parseElementSegment(0, counts)
         assertThat(result).isNull()
     }
 
@@ -55,24 +57,25 @@ class ElementSegmentTest {
     fun throws_whenTableIndex_doesntFollow_dataKeyword() {
         assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(elem \"test\" (offset i32.const 0x44) $1)")
-                .parseElementSegment(0)
+                .parseElementSegment(0, counts)
         }
     }
 
     @Test
     fun throws_whenOffset_doesntFollow_tableIndex() {
         assertThrows(ParseException::class.java) {
-            tokenizer.tokenize("(elem offset i32.const 0x44) $1)").parseElementSegment(0)
+            tokenizer.tokenize("(elem offset i32.const 0x44) $1)")
+                .parseElementSegment(0, counts)
         }
 
         assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(elem (notoffset i32.const 0x44) $1)")
-                .parseElementSegment(0)
+                .parseElementSegment(0, counts)
         }
 
         assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(elem $1)")
-                .parseElementSegment(0)
+                .parseElementSegment(0, counts)
         }
     }
 
@@ -80,14 +83,14 @@ class ElementSegmentTest {
     fun throws_whenNotClosedWithParen() {
         assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(elem (offset i32.const 0x44) $1")
-                .parseElementSegment(0)
+                .parseElementSegment(0, counts)
         }
     }
 
     @Test
     fun parses_withEmptyTableIndex() {
-        val result = tokenizer.tokenize("(elem (offset i32.const 0) $1)")
-            .parseElementSegment(0) ?: Assertions.fail("Expected segment")
+        val (result, newCounts) = tokenizer.tokenize("(elem (offset i32.const 0) $1)")
+            .parseElementSegment(0, counts) ?: Assertions.fail("Expected segment")
         assertThat(result.parseLength).isEqualTo(9)
         assertThat(result.astNode.init).isEqualTo(
             astNodeListOf(
@@ -102,12 +105,13 @@ class ElementSegmentTest {
                 )
             )
         )
+        assertThat(newCounts).isEqualTo(counts)
     }
 
     @Test
     fun parses_withoutOffsetKeyword() {
-        val result = tokenizer.tokenize("(elem $0 (i32.const 0) $1)")
-            .parseElementSegment(0) ?: Assertions.fail("Expected segment")
+        val (result, newCounts) = tokenizer.tokenize("(elem $0 (i32.const 0) $1)")
+            .parseElementSegment(0, counts) ?: Assertions.fail("Expected segment")
         assertThat(result.parseLength).isEqualTo(9)
         assertThat(result.astNode.init).isEqualTo(
             astNodeListOf(
@@ -123,12 +127,13 @@ class ElementSegmentTest {
                 )
             )
         )
+        assertThat(newCounts).isEqualTo(counts)
     }
 
     @Test
     fun parses_withoutInitIndices() {
-        val result = tokenizer.tokenize("(elem $0 (i32.const 0))")
-            .parseElementSegment(0) ?: Assertions.fail("Expected segment")
+        val (result, newCounts) = tokenizer.tokenize("(elem $0 (i32.const 0))")
+            .parseElementSegment(0, counts) ?: Assertions.fail("Expected segment")
         assertThat(result.parseLength).isEqualTo(8)
         assertThat(result.astNode.init).isEmpty()
         assertThat(result.astNode.tableIndex)
@@ -140,12 +145,13 @@ class ElementSegmentTest {
                 )
             )
         )
+        assertThat(newCounts).isEqualTo(counts)
     }
 
     @Test
     fun parses_minimal() {
-        val result = tokenizer.tokenize("(elem (i32.const 0))")
-            .parseElementSegment(0) ?: Assertions.fail("Expected segment")
+        val (result, newCounts) = tokenizer.tokenize("(elem (i32.const 0))")
+            .parseElementSegment(0, counts) ?: Assertions.fail("Expected segment")
         assertThat(result.parseLength).isEqualTo(7)
         assertThat(result.astNode.init).isEmpty()
         assertThat(result.astNode.tableIndex)
@@ -157,12 +163,13 @@ class ElementSegmentTest {
                 )
             )
         )
+        assertThat(newCounts).isEqualTo(counts)
     }
 
     @Test
     fun parses_multipleFunctionIndices() {
-        val result = tokenizer.tokenize("(elem (i32.const 0) $1 $2 $3)")
-            .parseElementSegment(0) ?: Assertions.fail("Expected segment")
+        val (result, newCounts) = tokenizer.tokenize("(elem (i32.const 0) $1 $2 $3)")
+            .parseElementSegment(0, counts) ?: Assertions.fail("Expected segment")
         assertThat(result.parseLength).isEqualTo(10)
         assertThat(result.astNode.init).isEqualTo(
             astNodeListOf(
@@ -180,5 +187,6 @@ class ElementSegmentTest {
                 )
             )
         )
+        assertThat(newCounts).isEqualTo(counts)
     }
 }

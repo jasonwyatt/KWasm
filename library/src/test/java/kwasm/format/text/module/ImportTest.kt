@@ -29,6 +29,7 @@ import kwasm.ast.type.TableType
 import kwasm.ast.type.ValueType
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
+import kwasm.format.text.TextModuleCounts
 import kwasm.format.text.Tokenizer
 import org.assertj.core.api.Assertions.fail
 import org.junit.Assert.assertThrows
@@ -39,13 +40,14 @@ import org.junit.runners.JUnit4
 @Suppress("EXPERIMENTAL_UNSIGNED_LITERALS")
 @RunWith(JUnit4::class)
 class ImportTest {
+    private val counts = TextModuleCounts(0, 0, 0, 0, 0)
     private val tokenizer = Tokenizer()
     private val context = ParseContext("Import.wast")
 
     @Test
     fun parseFuncImportDescriptor() {
-        val result = tokenizer.tokenize("(func $0 (param i32) (result i32))")
-            .parseImportDescriptor(0) ?: fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(func $0 (param i32) (result i32))")
+            .parseImportDescriptor(0, counts) ?: fail("Expected a result")
 
         assertThat(result.parseLength).isEqualTo(12)
         assertThat(result.astNode.id).isEqualTo(Identifier.Function("$0"))
@@ -64,19 +66,20 @@ class ImportTest {
                 )
             )
         )
+        assertThat(newCounts.functions).isEqualTo(counts.functions + 1)
     }
 
     @Test
     fun parseFuncImportDescriptor_returnsNull_ifOpeningParenNotFound() {
         val result = tokenizer.tokenize("func $0 (param i32) (result i32))")
-            .parseFuncImportDescriptor(0)
+            .parseFuncImportDescriptor(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parseFuncImportDescriptor_returnsNull_ifFuncNotFound() {
         val result = tokenizer.tokenize("(nonfunc $0 (param i32) (result i32))")
-            .parseFuncImportDescriptor(0)
+            .parseFuncImportDescriptor(0, counts)
         assertThat(result).isNull()
     }
 
@@ -84,14 +87,14 @@ class ImportTest {
     fun parseFuncImportDescriptor_throws_ifClosingParenNotFound() {
         assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(func $0 (param i32) (result i32)")
-                .parseImportDescriptor(0)
+                .parseImportDescriptor(0, counts)
         }
     }
 
     @Test
     fun parseTableImportDescriptor() {
-        val result = tokenizer.tokenize("(table $0 0 10 funcref)")
-            .parseImportDescriptor(0) ?: fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(table $0 0 10 funcref)")
+            .parseImportDescriptor(0, counts) ?: fail("Expected a result")
 
         assertThat(result.parseLength).isEqualTo(7)
         assertThat(result.astNode.id).isEqualTo(Identifier.Table("$0"))
@@ -102,19 +105,20 @@ class ImportTest {
                 ElementType.FunctionReference
             )
         )
+        assertThat(newCounts.tables).isEqualTo(counts.tables + 1)
     }
 
     @Test
     fun parseTableImportDescriptor_returnsNull_ifOpeningParenNotFound() {
         val result = tokenizer.tokenize("table $0 0 10 funcref)")
-            .parseTableImportDescriptor(0)
+            .parseTableImportDescriptor(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parseTableImportDescriptor_returnsNull_ifTableNotFound() {
         val result = tokenizer.tokenize("(nontable $0 0 10 funcref)")
-            .parseTableImportDescriptor(0)
+            .parseTableImportDescriptor(0, counts)
         assertThat(result).isNull()
     }
 
@@ -122,14 +126,14 @@ class ImportTest {
     fun parseTableImportDescriptor_throws_ifClosingParenNotFound() {
         assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(table $0 0 10 funcref")
-                .parseImportDescriptor(0)
+                .parseImportDescriptor(0, counts)
         }
     }
 
     @Test
     fun parseMemoryImportDescriptor() {
-        val result = tokenizer.tokenize("(memory $0 0 10)")
-            .parseImportDescriptor(0) ?: fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(memory $0 0 10)")
+            .parseImportDescriptor(0, counts) ?: fail("Expected a result")
 
         assertThat(result.parseLength).isEqualTo(6)
         assertThat(result.astNode.id).isEqualTo(Identifier.Memory("$0"))
@@ -139,19 +143,20 @@ class ImportTest {
                 Limits(0, 10)
             )
         )
+        assertThat(newCounts.memories).isEqualTo(counts.memories + 1)
     }
 
     @Test
     fun parseMemoryImportDescriptor_returnsNull_ifOpeningParenNotFound() {
         val result = tokenizer.tokenize("memory $0 0 10)")
-            .parseMemoryImportDescriptor(0)
+            .parseMemoryImportDescriptor(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parseMemoryImportDescriptor_returnsNull_ifMemoryNotFound() {
         val result = tokenizer.tokenize("(nonmemory $0 0)")
-            .parseMemoryImportDescriptor(0)
+            .parseMemoryImportDescriptor(0, counts)
         assertThat(result).isNull()
     }
 
@@ -159,14 +164,14 @@ class ImportTest {
     fun parseMemoryImportDescriptor_throws_ifClosingParenNotFound() {
         assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(memory $0 0 10")
-                .parseImportDescriptor(0)
+                .parseImportDescriptor(0, counts)
         }
     }
 
     @Test
     fun parseGlobalImportDescriptor() {
-        val result = tokenizer.tokenize("(global $0 (mut i32))")
-            .parseImportDescriptor(0) ?: fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(global $0 (mut i32))")
+            .parseImportDescriptor(0, counts) ?: fail("Expected a result")
 
         assertThat(result.parseLength).isEqualTo(8)
         assertThat(result.astNode.id).isEqualTo(Identifier.Global("$0"))
@@ -177,19 +182,20 @@ class ImportTest {
                 true
             )
         )
+        assertThat(newCounts.globals).isEqualTo(counts.globals + 1)
     }
 
     @Test
     fun parseGlobalImportDescriptor_returnsNull_ifOpeningParenNotFound() {
         val result = tokenizer.tokenize("global $0 (mut i32))")
-            .parseGlobalImportDescriptor(0)
+            .parseGlobalImportDescriptor(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parseGlobalImportDescriptor_returnsNull_ifGlobalNotFound() {
         val result = tokenizer.tokenize("(nonglobal $0 i32)")
-            .parseGlobalImportDescriptor(0)
+            .parseGlobalImportDescriptor(0, counts)
         assertThat(result).isNull()
     }
 
@@ -197,31 +203,32 @@ class ImportTest {
     fun parseGlobalImportDescriptor_throws_ifClosingParenNotFound() {
         assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(global $0 i32")
-                .parseImportDescriptor(0)
+                .parseImportDescriptor(0, counts)
         }
     }
 
     @Test
     fun parseImport() {
-        val result = tokenizer.tokenize("(import \"module\" \"name\" (global i32))")
-            .parseImport(0) ?: fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(import \"module\" \"name\" (global i32))")
+            .parseImport(0, counts) ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(9)
         assertThat(result.astNode.moduleName).isEqualTo("module")
         assertThat(result.astNode.name).isEqualTo("name")
         assertThat(result.astNode.descriptor as? ImportDescriptor.Global).isNotNull()
+        assertThat(newCounts.globals).isEqualTo(counts.globals + 1)
     }
 
     @Test
     fun parseImport_returnsNull_ifOpeningParenNotFound() {
         val result = tokenizer.tokenize("import \"module\" \"name\" (global i32))")
-            .parseImport(0)
+            .parseImport(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parseImport_returnsNull_ifImportIsNotFound() {
         val result = tokenizer.tokenize("(nonimport \"module\" \"name\" (global i32))")
-            .parseImport(0)
+            .parseImport(0, counts)
         assertThat(result).isNull()
     }
 
@@ -229,15 +236,15 @@ class ImportTest {
     fun parseImport_throwsIfModuleNameOrImportName_notFound() {
         assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(import \"module\" (global i32))")
-                .parseImport(0)
+                .parseImport(0, counts)
         }
         assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(import \"name\" (global i32))")
-                .parseImport(0)
+                .parseImport(0, counts)
         }
         assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(import (global i32))")
-                .parseImport(0)
+                .parseImport(0, counts)
         }
     }
 
@@ -245,12 +252,12 @@ class ImportTest {
     fun parseImport_throwsIfDescriptorNotFound() {
         var e = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(import \"module\" \"name\")")
-                .parseImport(0)
+                .parseImport(0, counts)
         }
         assertThat(e).hasMessageThat().contains("Expected import descriptor")
         e = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(import \"module\" \"name\" i32)")
-                .parseImport(0)
+                .parseImport(0, counts)
         }
         assertThat(e).hasMessageThat().contains("Expected import descriptor")
     }
@@ -259,7 +266,7 @@ class ImportTest {
     fun parseImport_throwsIfClosingParen_notFound() {
         var e = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(import \"module\" \"name\" (global i32)")
-                .parseImport(0)
+                .parseImport(0, counts)
         }
         assertThat(e).hasMessageThat().contains("Expected ')'")
     }

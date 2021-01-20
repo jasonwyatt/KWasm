@@ -18,8 +18,8 @@ import com.google.common.truth.Truth.assertThat
 import kwasm.ast.Identifier
 import kwasm.ast.module.Index
 import kwasm.ast.module.StartFunction
-import kwasm.format.ParseContext
 import kwasm.format.ParseException
+import kwasm.format.text.TextModuleCounts
 import kwasm.format.text.Tokenizer
 import org.assertj.core.api.Assertions.fail
 import org.junit.Assert.assertThrows
@@ -29,32 +29,32 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class StartFunctionTest {
+    private val counts = TextModuleCounts(0, 0, 0, 0, 0)
     private val tokenizer = Tokenizer()
-    private val context = ParseContext("StartFunctionTest.wast")
 
     @Test
     fun parse_returnsNull_ifDoesntStartWithOpenParen() {
-        val result = tokenizer.tokenize("start $0").parseStartFunction(0)
+        val result = tokenizer.tokenize("start $0").parseStartFunction(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parse_returnsNull_ifKeywordIsNotStart() {
-        val result = tokenizer.tokenize("(end $0)").parseStartFunction(0)
+        val result = tokenizer.tokenize("(end $0)").parseStartFunction(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun throws_ifFunctionIndex_notFound() {
         assertThrows(ParseException::class.java) {
-            tokenizer.tokenize("(start )").parseStartFunction(0)
+            tokenizer.tokenize("(start )").parseStartFunction(0, counts)
         }
     }
 
     @Test
     fun throws_ifClosingParen_notFoundAfterFunctionIndex() {
         val e = assertThrows(ParseException::class.java) {
-            tokenizer.tokenize("(start $0").parseStartFunction(0)
+            tokenizer.tokenize("(start $0").parseStartFunction(0, counts)
         }
 
         assertThat(e).hasMessageThat().contains("Expected ')'")
@@ -62,8 +62,8 @@ class StartFunctionTest {
 
     @Test
     fun parses_startFunction() {
-        val result = tokenizer.tokenize("(start $0)").parseStartFunction(0)
-            ?: fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(start $0)")
+            .parseStartFunction(0, counts) ?: fail("Expected a result")
 
         assertThat(result.parseLength).isEqualTo(4)
         assertThat(result.astNode)
@@ -74,16 +74,18 @@ class StartFunctionTest {
                     )
                 )
             )
+        assertThat(newCounts).isEqualTo(counts)
     }
 
     @Suppress("EXPERIMENTAL_UNSIGNED_LITERALS", "UNCHECKED_CAST")
     @Test
     fun parses_startFunction_withIntIndex() {
-        val result = tokenizer.tokenize("(start 123)").parseStartFunction(0)
-            ?: fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(start 123)")
+            .parseStartFunction(0, counts) ?: fail("Expected a result")
 
         assertThat(result.parseLength).isEqualTo(4)
         assertThat(result.astNode)
             .isEqualTo(StartFunction(Index.ByInt(123) as Index<Identifier.Function>))
+        assertThat(newCounts).isEqualTo(counts)
     }
 }

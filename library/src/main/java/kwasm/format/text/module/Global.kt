@@ -26,13 +26,14 @@ import kwasm.ast.module.Index
 import kwasm.format.parseCheck
 import kwasm.format.parseCheckNotNull
 import kwasm.format.text.ParseResult
+import kwasm.format.text.TextModuleCounts
 import kwasm.format.text.contextAt
 import kwasm.format.text.instruction.parseExpression
 import kwasm.format.text.isClosedParen
 import kwasm.format.text.isKeyword
 import kwasm.format.text.isOpenParen
-import kwasm.format.text.parseIdentifier
 import kwasm.format.text.parseLiteral
+import kwasm.format.text.parseOrCreateIdentifier
 import kwasm.format.text.token.Token
 import kwasm.format.text.tokensUntilParenClosure
 import kwasm.format.text.type.parseGlobalType
@@ -46,14 +47,17 @@ import kwasm.format.text.type.parseGlobalType
  *   global_I   ::= ‘(’ ‘global’ id? gt:globaltype  e:expr_I ‘)’    => {type gt, init e}
  * ```
  */
-fun List<Token>.parseGlobal(fromIndex: Int): ParseResult<Global>? {
+fun List<Token>.parseGlobal(
+    fromIndex: Int,
+    counts: TextModuleCounts,
+): Pair<ParseResult<Global>, TextModuleCounts>? {
     var currentIndex = fromIndex
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
     if (!isKeyword(currentIndex, "global")) return null
     currentIndex++
 
-    val id = parseIdentifier<Identifier.Global>(currentIndex)
+    val (id, updatedCounts) = parseOrCreateIdentifier<Identifier.Global>(currentIndex, counts)
     currentIndex += id.parseLength
 
     val globalType = parseGlobalType(currentIndex)
@@ -72,7 +76,7 @@ fun List<Token>.parseGlobal(fromIndex: Int): ParseResult<Global>? {
             expression.astNode
         ),
         currentIndex - fromIndex
-    )
+    ) to updatedCounts
 }
 
 /**
@@ -85,15 +89,18 @@ fun List<Token>.parseGlobal(fromIndex: Int): ParseResult<Global>? {
  *      == ‘(’ ‘import’ name^1 name^2 ‘(’ ‘global’ id? globaltype ‘)’ ‘)’
  * ```
  */
-fun List<Token>.parseInlineGlobalImport(fromIndex: Int): ParseResult<Import>? {
+fun List<Token>.parseInlineGlobalImport(
+    fromIndex: Int,
+    counts: TextModuleCounts,
+): Pair<ParseResult<Import>, TextModuleCounts>? {
     var currentIndex = fromIndex
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
     if (!isKeyword(currentIndex, "global")) return null
     currentIndex++
 
-    val identifier = parseIdentifier<Identifier.Global>(currentIndex)
-    currentIndex += identifier.parseLength
+    val (id, updatedCounts) = parseOrCreateIdentifier<Identifier.Global>(currentIndex, counts)
+    currentIndex += id.parseLength
 
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
@@ -119,12 +126,12 @@ fun List<Token>.parseInlineGlobalImport(fromIndex: Int): ParseResult<Import>? {
             moduleName.astNode.value,
             tableName.astNode.value,
             ImportDescriptor.Global(
-                identifier.astNode,
+                id.astNode,
                 globalType.astNode
             )
         ),
         currentIndex - fromIndex
-    )
+    ) to updatedCounts
 }
 
 /**
@@ -140,15 +147,19 @@ fun List<Token>.parseInlineGlobalImport(fromIndex: Int): ParseResult<Import>? {
  *
  * Where “...” can contain another import or export.
  */
-fun List<Token>.parseInlineGlobalExport(fromIndex: Int): ParseResult<AstNodeList<*>>? {
+@Suppress("UNCHECKED_CAST")
+fun List<Token>.parseInlineGlobalExport(
+    fromIndex: Int,
+    counts: TextModuleCounts,
+): Pair<ParseResult<AstNodeList<AstNode>>, TextModuleCounts>? {
     var currentIndex = fromIndex
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
     if (!isKeyword(currentIndex, "global")) return null
     currentIndex++
 
-    val identifier = parseIdentifier<Identifier.Global>(currentIndex)
-    currentIndex += identifier.parseLength
+    val (id, updatedCounts) = parseOrCreateIdentifier<Identifier.Global>(currentIndex, counts)
+    currentIndex += id.parseLength
 
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
@@ -165,9 +176,7 @@ fun List<Token>.parseInlineGlobalExport(fromIndex: Int): ParseResult<AstNodeList
         Export(
             exportName.astNode.value,
             ExportDescriptor.Global(
-                Index.ByIdentifier(
-                    identifier.astNode
-                )
+                Index.ByInt(updatedCounts.globals - 1) as Index<Identifier.Global>
             )
         )
     )
@@ -178,7 +187,7 @@ fun List<Token>.parseInlineGlobalExport(fromIndex: Int): ParseResult<AstNodeList
         return ParseResult(
             AstNodeList(result),
             currentIndex - fromIndex
-        )
+        ) to updatedCounts
     }
 
     // Looks like there might be more to handle, so construct a new list of tokens to recurse with.
@@ -189,10 +198,8 @@ fun List<Token>.parseInlineGlobalExport(fromIndex: Int): ParseResult<AstNodeList
     )
 
     // Add the id.
-    if (identifier.parseLength == 0) {
-        withoutFirstExport.add(kwasm.format.text.token.Identifier(identifier.astNode.toString()))
-    } else {
-        (0 until identifier.parseLength).forEach {
+    if (id.parseLength > 0) {
+        (0 until id.parseLength).forEach {
             withoutFirstExport.add(this[fromIndex + 2 + it])
         }
     }
@@ -203,11 +210,11 @@ fun List<Token>.parseInlineGlobalExport(fromIndex: Int): ParseResult<AstNodeList
     withoutFirstExport.addAll(tokensUntilParenClosure(currentIndex, expectedClosures = 1))
 
     // Recurse.
-    val additionalItems = parseCheckNotNull(
+    val (additionalItems, _) = parseCheckNotNull(
         contextAt(currentIndex),
-        withoutFirstExport.parseInlineGlobalExport(0)
-            ?: withoutFirstExport.parseInlineGlobalImport(0)
-            ?: withoutFirstExport.parseGlobal(0),
+        withoutFirstExport.parseInlineGlobalExport(0, counts)
+            ?: withoutFirstExport.parseInlineGlobalImport(0, counts)
+            ?: withoutFirstExport.parseGlobal(0, counts),
         "Expected additional details for global"
     )
     currentIndex += (additionalItems.parseLength - lengthOfPrefix)
@@ -220,5 +227,5 @@ fun List<Token>.parseInlineGlobalExport(fromIndex: Int): ParseResult<AstNodeList
     return ParseResult(
         AstNodeList(result),
         currentIndex - fromIndex
-    )
+    ) to updatedCounts
 }

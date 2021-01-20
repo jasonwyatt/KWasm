@@ -20,12 +20,13 @@ import kwasm.ast.module.ImportDescriptor
 import kwasm.format.parseCheck
 import kwasm.format.parseCheckNotNull
 import kwasm.format.text.ParseResult
+import kwasm.format.text.TextModuleCounts
 import kwasm.format.text.contextAt
 import kwasm.format.text.isClosedParen
 import kwasm.format.text.isKeyword
 import kwasm.format.text.isOpenParen
-import kwasm.format.text.parseIdentifier
 import kwasm.format.text.parseLiteral
+import kwasm.format.text.parseOrCreateIdentifier
 import kwasm.format.text.token.Token
 import kwasm.format.text.type.parseGlobalType
 import kwasm.format.text.type.parseMemoryType
@@ -40,7 +41,10 @@ import kwasm.format.text.type.parseTableType
  *   import_I ::= ‘(’ ‘import’ mod:name nm:name d:importdesc_I ‘)’ => {module mod, name nm, desc d}
  * ```
  */
-fun List<Token>.parseImport(fromIndex: Int): ParseResult<Import>? {
+fun List<Token>.parseImport(
+    fromIndex: Int,
+    counts: TextModuleCounts
+): Pair<ParseResult<Import>, TextModuleCounts>? {
     var currentIndex = fromIndex
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
@@ -50,9 +54,9 @@ fun List<Token>.parseImport(fromIndex: Int): ParseResult<Import>? {
     currentIndex += moduleName.parseLength
     val name = parseLiteral(currentIndex, String::class)
     currentIndex += moduleName.parseLength
-    val importDescriptor = parseCheckNotNull(
+    val (importDescriptor, updatedCounts) = parseCheckNotNull(
         contextAt(currentIndex),
-        parseImportDescriptor(currentIndex),
+        parseImportDescriptor(currentIndex, counts),
         "Expected import descriptor"
     )
     currentIndex += importDescriptor.parseLength
@@ -65,7 +69,7 @@ fun List<Token>.parseImport(fromIndex: Int): ParseResult<Import>? {
             importDescriptor.astNode
         ),
         currentIndex - fromIndex
-    )
+    ) to updatedCounts
 }
 
 /**
@@ -81,21 +85,26 @@ fun List<Token>.parseImport(fromIndex: Int): ParseResult<Import>? {
  * ```
  */
 @Suppress("UNCHECKED_CAST")
-fun List<Token>.parseImportDescriptor(fromIndex: Int): ParseResult<out ImportDescriptor>? =
-    parseFuncImportDescriptor(fromIndex)
-        ?: parseTableImportDescriptor(fromIndex)
-        ?: parseMemoryImportDescriptor(fromIndex)
-        ?: parseGlobalImportDescriptor(fromIndex)
+fun List<Token>.parseImportDescriptor(
+    fromIndex: Int,
+    counts: TextModuleCounts
+): Pair<ParseResult<out ImportDescriptor>, TextModuleCounts>? {
+    return parseFuncImportDescriptor(fromIndex, counts)
+        ?: parseTableImportDescriptor(fromIndex, counts)
+        ?: parseMemoryImportDescriptor(fromIndex, counts)
+        ?: parseGlobalImportDescriptor(fromIndex, counts)
+}
 
 internal fun List<Token>.parseFuncImportDescriptor(
-    fromIndex: Int
-): ParseResult<ImportDescriptor.Function>? {
+    fromIndex: Int,
+    counts: TextModuleCounts
+): Pair<ParseResult<ImportDescriptor.Function>, TextModuleCounts>? {
     var currentIndex = fromIndex
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
     if (!isKeyword(currentIndex, "func")) return null
     currentIndex++
-    val id = parseIdentifier<Identifier.Function>(currentIndex)
+    val (id, updatedCounts) = parseOrCreateIdentifier<Identifier.Function>(currentIndex, counts)
     currentIndex += id.parseLength
     val typeUse = parseTypeUse(currentIndex)
     currentIndex += typeUse.parseLength
@@ -104,18 +113,19 @@ internal fun List<Token>.parseFuncImportDescriptor(
     return ParseResult(
         ImportDescriptor.Function(id.astNode, typeUse.astNode),
         currentIndex - fromIndex
-    )
+    ) to updatedCounts
 }
 
 internal fun List<Token>.parseTableImportDescriptor(
-    fromIndex: Int
-): ParseResult<ImportDescriptor.Table>? {
+    fromIndex: Int,
+    counts: TextModuleCounts
+): Pair<ParseResult<ImportDescriptor.Table>, TextModuleCounts>? {
     var currentIndex = fromIndex
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
     if (!isKeyword(currentIndex, "table")) return null
     currentIndex++
-    val id = parseIdentifier<Identifier.Table>(currentIndex)
+    val (id, updatedCounts) = parseOrCreateIdentifier<Identifier.Table>(currentIndex, counts)
     currentIndex += id.parseLength
     val tableType = parseTableType(currentIndex)
     currentIndex += tableType.parseLength
@@ -124,18 +134,19 @@ internal fun List<Token>.parseTableImportDescriptor(
     return ParseResult(
         ImportDescriptor.Table(id.astNode, tableType.astNode),
         currentIndex - fromIndex
-    )
+    ) to updatedCounts
 }
 
 internal fun List<Token>.parseMemoryImportDescriptor(
-    fromIndex: Int
-): ParseResult<ImportDescriptor.Memory>? {
+    fromIndex: Int,
+    counts: TextModuleCounts
+): Pair<ParseResult<ImportDescriptor.Memory>, TextModuleCounts>? {
     var currentIndex = fromIndex
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
     if (!isKeyword(currentIndex, "memory")) return null
     currentIndex++
-    val id = parseIdentifier<Identifier.Memory>(currentIndex)
+    val (id, updatedCounts) = parseOrCreateIdentifier<Identifier.Memory>(currentIndex, counts)
     currentIndex += id.parseLength
     val memoryType = parseMemoryType(currentIndex)
     currentIndex += memoryType.parseLength
@@ -144,16 +155,19 @@ internal fun List<Token>.parseMemoryImportDescriptor(
     return ParseResult(
         ImportDescriptor.Memory(id.astNode, memoryType.astNode),
         currentIndex - fromIndex
-    )
+    ) to updatedCounts
 }
 
-internal fun List<Token>.parseGlobalImportDescriptor(fromIndex: Int): ParseResult<ImportDescriptor.Global>? {
+internal fun List<Token>.parseGlobalImportDescriptor(
+    fromIndex: Int,
+    counts: TextModuleCounts
+): Pair<ParseResult<ImportDescriptor.Global>, TextModuleCounts>? {
     var currentIndex = fromIndex
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
     if (!isKeyword(currentIndex, "global")) return null
     currentIndex++
-    val id = parseIdentifier<Identifier.Global>(currentIndex)
+    val (id, updatedCounts) = parseOrCreateIdentifier<Identifier.Global>(currentIndex, counts)
     currentIndex += id.parseLength
     val globalType = parseGlobalType(currentIndex)
     currentIndex += globalType.parseLength
@@ -162,5 +176,5 @@ internal fun List<Token>.parseGlobalImportDescriptor(fromIndex: Int): ParseResul
     return ParseResult(
         ImportDescriptor.Global(id.astNode, globalType.astNode),
         currentIndex - fromIndex
-    )
+    ) to updatedCounts
 }

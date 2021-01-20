@@ -41,7 +41,7 @@ fun List<Token>.parseParam(fromIndex: Int): ParseResult<AstNodeList<Param>> {
     parseCheck(contextAt(currentIndex), isKeyword(currentIndex, "param"), "Invalid Param: Expecting \"param\"")
     currentIndex++
     val id = parseIdentifier<Identifier.Local>(currentIndex)
-    currentIndex += id.parseLength
+    currentIndex += id?.parseLength ?: 0
     val valueTypes = parseValueTypes(currentIndex, minRequired = 1)
     currentIndex += valueTypes.parseLength
     parseCheck(contextAt(currentIndex), isClosedParen(currentIndex), "Invalid Param: Expecting ) token")
@@ -50,7 +50,7 @@ fun List<Token>.parseParam(fromIndex: Int): ParseResult<AstNodeList<Param>> {
         AstNodeList(
             valueTypes.astNode.map {
                 Param(
-                    id.astNode,
+                    id?.astNode ?: Identifier.Local(null, null),
                     it
                 )
             }

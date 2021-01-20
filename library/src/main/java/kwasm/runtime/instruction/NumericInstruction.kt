@@ -625,9 +625,9 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
         }
         NumericInstruction.I64TruncateF32Signed -> unaryOp<FloatValue, LongValue>(context) { x ->
             if (x.value.isNaN())
-                throw KWasmRuntimeException("Cannot truncate NaN")
+                throw KWasmRuntimeException(EXCEPTION_TRUNCATE_NAN)
             if (x.value.isInfinite())
-                throw KWasmRuntimeException("Cannot truncate Infinity")
+                throw KWasmRuntimeException(EXCEPTION_TRUNCATE_INF)
             val truncated = truncate(x.value)
             if (truncated > Long.MAX_VALUE || truncated < Long.MIN_VALUE)
                 throw KWasmRuntimeException("Cannot truncate, magnitude too large for i64")
@@ -638,9 +638,9 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
         }
         NumericInstruction.I64TruncateF32Unsigned -> unaryOp<FloatValue, LongValue>(context) { x ->
             if (x.value.isNaN())
-                throw KWasmRuntimeException("Cannot truncate NaN")
+                throw KWasmRuntimeException(EXCEPTION_TRUNCATE_NAN)
             if (x.value.isInfinite())
-                throw KWasmRuntimeException("Cannot truncate Infinity")
+                throw KWasmRuntimeException(EXCEPTION_TRUNCATE_INF)
             val truncated = truncate(x.value)
             if (truncated < 0)
                 throw KWasmRuntimeException("Cannot truncate negative f32 to unsigned i64")
@@ -653,9 +653,9 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
         }
         NumericInstruction.I64TruncateF64Signed -> unaryOp<DoubleValue, LongValue>(context) { x ->
             if (x.value.isNaN())
-                throw KWasmRuntimeException("Cannot truncate NaN")
+                throw KWasmRuntimeException(EXCEPTION_TRUNCATE_NAN)
             if (x.value.isInfinite())
-                throw KWasmRuntimeException("Cannot truncate Infinity")
+                throw KWasmRuntimeException(EXCEPTION_TRUNCATE_INF)
             val truncated = truncate(x.value)
             if (truncated > Long.MAX_VALUE || truncated < Long.MIN_VALUE)
                 throw KWasmRuntimeException("Cannot truncate, magnitude too large for i64")
@@ -666,9 +666,9 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
         }
         NumericInstruction.I64TruncateF64Unsigned -> unaryOp<DoubleValue, LongValue>(context) { x ->
             if (x.value.isNaN())
-                throw KWasmRuntimeException("Cannot truncate NaN")
+                throw KWasmRuntimeException(EXCEPTION_TRUNCATE_NAN)
             if (x.value.isInfinite())
-                throw KWasmRuntimeException("Cannot truncate Infinity")
+                throw KWasmRuntimeException(EXCEPTION_TRUNCATE_INF)
             val truncated = truncate(x.value)
             if (truncated < 0)
                 throw KWasmRuntimeException("Cannot truncate negative f64 to unsigned i64")

@@ -19,6 +19,7 @@ import kwasm.KWasmRuntimeException
 import kwasm.ParseRule
 import kwasm.api.UnitHostFunction
 import kwasm.api.functionType
+import kwasm.format.text.TextModuleCounts
 import kwasm.format.text.module.parseWasmFunction
 import kwasm.runtime.FunctionInstance.Companion.allocate
 import kwasm.runtime.stack.RuntimeStacks
@@ -34,6 +35,7 @@ import org.junit.runners.JUnit4
 class FunctionInstanceTest {
     @get:Rule
     val parser = ParseRule()
+    private val counts = TextModuleCounts(0, 0, 0, 0, 0)
 
     private val emptyContext: ExecutionContext
         get() = ExecutionContext(
@@ -54,7 +56,7 @@ class FunctionInstanceTest {
         val fn =
             """
             (func)
-            """.trimIndent().tokenize().parseWasmFunction(0)!!.astNode
+            """.trimIndent().tokenize().parseWasmFunction(0, counts)!!.first.astNode
 
         val store = Store()
         val moduleInstance = ModuleInstance(

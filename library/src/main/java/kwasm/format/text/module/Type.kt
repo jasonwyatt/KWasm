@@ -18,6 +18,7 @@ import kwasm.ast.module.Type
 import kwasm.ast.type.FunctionType
 import kwasm.format.parseCheck
 import kwasm.format.text.ParseResult
+import kwasm.format.text.TextModuleCounts
 import kwasm.format.text.asKeywordMatching
 import kwasm.format.text.contextAt
 import kwasm.format.text.isClosedParen
@@ -35,7 +36,10 @@ import kwasm.format.text.type.parseFunctionType
  *   type ::= ‘(’ ‘type’ id? ft:functype ‘)’ => ft
  * ```
  */
-fun List<Token>.parseType(fromIndex: Int): ParseResult<Type>? {
+fun List<Token>.parseType(
+    fromIndex: Int,
+    counts: TextModuleCounts,
+): Pair<ParseResult<Type>, TextModuleCounts>? {
     var currentIndex = fromIndex
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
@@ -57,5 +61,5 @@ fun List<Token>.parseType(fromIndex: Int): ParseResult<Type>? {
     return ParseResult(
         Type(astTypeIdentifier, funcType.astNode),
         currentIndex - fromIndex
-    )
+    ) to counts.copy(types = counts.types + 1)
 }
