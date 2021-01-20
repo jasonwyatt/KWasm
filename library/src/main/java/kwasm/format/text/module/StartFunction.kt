@@ -18,6 +18,7 @@ import kwasm.ast.Identifier
 import kwasm.ast.module.StartFunction
 import kwasm.format.parseCheck
 import kwasm.format.text.ParseResult
+import kwasm.format.text.TextModuleCounts
 import kwasm.format.text.contextAt
 import kwasm.format.text.isClosedParen
 import kwasm.format.text.isKeyword
@@ -35,7 +36,10 @@ import kwasm.format.text.token.Token
  *   start_I ::= ‘(’ ‘start’ x:funcidx_I ‘)’ => {func x}
  * ```
  */
-fun List<Token>.parseStartFunction(fromIndex: Int): ParseResult<StartFunction>? {
+fun List<Token>.parseStartFunction(
+    fromIndex: Int,
+    counts: TextModuleCounts,
+): Pair<ParseResult<StartFunction>, TextModuleCounts>? {
     var currentIndex = fromIndex
     if (!isOpenParen(fromIndex)) return null
     currentIndex++
@@ -52,5 +56,5 @@ fun List<Token>.parseStartFunction(fromIndex: Int): ParseResult<StartFunction>? 
     return ParseResult(
         StartFunction(funcIndex.astNode),
         currentIndex - fromIndex
-    )
+    ) to counts
 }

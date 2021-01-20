@@ -31,7 +31,7 @@ import kwasm.format.text.token.Token
 inline fun <reified T : Identifier> List<Token>.parseIdentifier(
     fromIndex: Int,
     intAllowed: Boolean = false
-): ParseResult<T> {
+): ParseResult<T>? {
     var currentIndex = fromIndex
     val maybeId = getOrNull(currentIndex) as? kwasm.format.text.token.Identifier
     val maybeInt = getOrNull(currentIndex) as? IntegerLiteral<*>
@@ -47,9 +47,30 @@ inline fun <reified T : Identifier> List<Token>.parseIdentifier(
                 ?.takeIf { it.unique != null && (it.unique as Int) >= 0 },
             "Identifier must not be negative"
         )
-    } else createIdentifier<T>("\$token-${getOrNull(fromIndex).hashCode()}")
+    } else null
     return id?.let { ParseResult(it, currentIndex - fromIndex) }
-        ?: throw ParseException("Unsupported identifier type: ${T::class}", contextAt(fromIndex))
+}
+
+inline fun <reified T : Identifier> List<Token>.parseOrCreateIdentifier(
+    fromIndex: Int,
+    counts: TextModuleCounts
+): Pair<ParseResult<T>, TextModuleCounts> {
+    val parsed = parseIdentifier<T>(fromIndex, false)
+
+    val value = when (T::class) {
+        Identifier.Global::class -> counts.globals
+        Identifier.Memory::class -> counts.memories
+        Identifier.Table::class -> counts.tables
+        Identifier.Function::class -> counts.functions
+        Identifier.Type::class -> counts.types
+        else -> null
+    }
+    val identifier = createIdentifier<T>(stringValue = null, intValue = value)
+    return if (parsed == null && identifier != null) {
+        ParseResult(identifier, 0) to counts.incrementFor(identifier)
+    } else if (parsed != null) {
+        parsed to counts.incrementFor(parsed.astNode)
+    } else throw ParseException("Unsupported identifier found", contextAt(fromIndex))
 }
 
 /**
@@ -68,5 +89,5 @@ inline fun <reified T : Identifier> createIdentifier(
         Identifier.Local::class -> Identifier.Local(stringValue, intValue)
         Identifier.Label::class -> Identifier.Label(stringValue, intValue)
         else -> null // TypeDef not supported here.
-    } as T
+    } as T?
 }

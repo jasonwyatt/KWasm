@@ -29,6 +29,7 @@ import kwasm.ast.module.WasmFunction
 import kwasm.ast.module.WasmModule
 import kwasm.format.parseCheck
 import kwasm.format.text.ParseResult
+import kwasm.format.text.TextModuleCounts
 import kwasm.format.text.contextAt
 import kwasm.format.text.instruction.parseLabel
 import kwasm.format.text.isClosedParen
@@ -73,31 +74,33 @@ fun List<Token>.parseModule(fromIndex: Int): ParseResult<WasmModule>? {
 
     val allNodes = mutableListOf<AstNode>()
 
+    var counts = TextModuleCounts(0, 0, 0, 0, 0)
     while (true) {
-        val parseResult = parseType(currentIndex)
-            ?: parseImport(currentIndex)
-            ?: parseInlineWasmFunctionImport(currentIndex)
-            ?: parseInlineWasmFunctionExport(currentIndex)
-            ?: parseWasmFunction(currentIndex)
-            ?: parseInlineTableImport(currentIndex)
-            ?: parseInlineTableExport(currentIndex)
-            ?: parseTable(currentIndex)
-            ?: parseInlineMemoryImport(currentIndex)
-            ?: parseInlineMemoryExport(currentIndex)
-            ?: parseMemory(currentIndex)
-            ?: parseInlineGlobalImport(currentIndex)
-            ?: parseInlineGlobalExport(currentIndex)
-            ?: parseGlobal(currentIndex)
-            ?: parseExport(currentIndex)
-            ?: parseStartFunction(currentIndex)
-            ?: parseElementSegment(currentIndex)
-            ?: parseDataSegment(currentIndex)
+        val (parseResult, updatedCounts) = parseType(currentIndex, counts)
+            ?: parseImport(currentIndex, counts)
+            ?: parseInlineWasmFunctionImport(currentIndex, counts)
+            ?: parseInlineWasmFunctionExport(currentIndex, counts)
+            ?: parseWasmFunction(currentIndex, counts)
+            ?: parseInlineTableImport(currentIndex, counts)
+            ?: parseInlineTableExport(currentIndex, counts)
+            ?: parseTable(currentIndex, counts)
+            ?: parseInlineMemoryImport(currentIndex, counts)
+            ?: parseInlineMemoryExport(currentIndex, counts)
+            ?: parseMemory(currentIndex, counts)
+            ?: parseInlineGlobalImport(currentIndex, counts)
+            ?: parseInlineGlobalExport(currentIndex, counts)
+            ?: parseGlobal(currentIndex, counts)
+            ?: parseExport(currentIndex, counts)
+            ?: parseStartFunction(currentIndex, counts)
+            ?: parseElementSegment(currentIndex, counts)
+            ?: parseDataSegment(currentIndex, counts)
             ?: break
         when (val node = parseResult.astNode) {
             is AstNodeList<*> -> allNodes.addAll(node)
             else -> allNodes.add(node)
         }
         currentIndex += parseResult.parseLength
+        counts = updatedCounts
     }
 
     parseCheck(contextAt(currentIndex), isClosedParen(currentIndex), "Expected ')'")

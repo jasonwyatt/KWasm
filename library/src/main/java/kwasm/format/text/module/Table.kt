@@ -36,12 +36,14 @@ import kwasm.format.ParseException
 import kwasm.format.parseCheck
 import kwasm.format.parseCheckNotNull
 import kwasm.format.text.ParseResult
+import kwasm.format.text.TextModuleCounts
 import kwasm.format.text.contextAt
 import kwasm.format.text.isClosedParen
 import kwasm.format.text.isKeyword
 import kwasm.format.text.isOpenParen
 import kwasm.format.text.parseIdentifier
 import kwasm.format.text.parseLiteral
+import kwasm.format.text.parseOrCreateIdentifier
 import kwasm.format.text.token.Keyword
 import kwasm.format.text.token.Token
 import kwasm.format.text.tokensUntilParenClosure
@@ -67,24 +69,30 @@ import kwasm.format.text.type.parseTableType
  *          (if id′ == id? != ϵ ∨ id′ fresh)
  * ```
  */
-fun List<Token>.parseTable(fromIndex: Int): ParseResult<AstNodeList<*>>? {
-    parseTableBasic(fromIndex)?.let {
-        return ParseResult(
-            astNodeListOf(it.astNode),
-            it.parseLength
-        )
+fun List<Token>.parseTable(
+    fromIndex: Int,
+    counts: TextModuleCounts
+): Pair<ParseResult<AstNodeList<AstNode>>, TextModuleCounts>? {
+    parseTableBasic(fromIndex, counts)?.let { (result, updatedCounts) ->
+        return ParseResult<AstNodeList<AstNode>>(
+            astNodeListOf(result.astNode),
+            result.parseLength
+        ) to updatedCounts
     }
-    return parseTableAndElementSegment(fromIndex)
+    return parseTableAndElementSegment(fromIndex, counts)
 }
 
 /** See [parseTable]. */
-internal fun List<Token>.parseTableBasic(fromIndex: Int): ParseResult<Table>? {
+internal fun List<Token>.parseTableBasic(
+    fromIndex: Int,
+    counts: TextModuleCounts
+): Pair<ParseResult<Table>, TextModuleCounts>? {
     var currentIndex = fromIndex
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
     if (!isKeyword(currentIndex, "table")) return null
     currentIndex++
-    val id = parseIdentifier<Identifier.Table>(currentIndex)
+    val (id, updatedCounts) = parseOrCreateIdentifier<Identifier.Table>(currentIndex, counts)
     currentIndex += id.parseLength
     val tableType = try { parseTableType(currentIndex) } catch (e: ParseException) { null }
         ?: return null
@@ -94,17 +102,21 @@ internal fun List<Token>.parseTableBasic(fromIndex: Int): ParseResult<Table>? {
     return ParseResult(
         Table(id.astNode, tableType.astNode),
         currentIndex - fromIndex
-    )
+    ) to updatedCounts
 }
 
 /** See [parseTable]. */
-internal fun List<Token>.parseTableAndElementSegment(fromIndex: Int): ParseResult<AstNodeList<*>>? {
+@Suppress("UNCHECKED_CAST")
+internal fun List<Token>.parseTableAndElementSegment(
+    fromIndex: Int,
+    counts: TextModuleCounts
+): Pair<ParseResult<AstNodeList<AstNode>>, TextModuleCounts>? {
     var currentIndex = fromIndex
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
     if (!isKeyword(currentIndex, "table")) return null
     currentIndex++
-    val id = parseIdentifier<Identifier.Table>(currentIndex)
+    val (id, updatedCounts) = parseOrCreateIdentifier<Identifier.Table>(currentIndex, counts)
     currentIndex += id.parseLength
 
     val keyword = getOrNull(currentIndex) as? Keyword ?: return null
@@ -136,10 +148,17 @@ internal fun List<Token>.parseTableAndElementSegment(fromIndex: Int): ParseResul
     parseCheck(contextAt(currentIndex), isClosedParen(currentIndex), "Expected ')'")
     currentIndex++
 
+    val (identifier, elementSegmentIndex) = if (id.astNode.stringRepr != null) {
+        id.astNode to (Index.ByInt(updatedCounts.tables - 1) as Index<Identifier.Table>)
+    } else {
+        val indexNum = parseCheckNotNull(contextAt(fromIndex), id.astNode.unique)
+        id.astNode to (Index.ByInt(indexNum) as Index<Identifier.Table>)
+    }
+
     return ParseResult(
         astNodeListOf(
             Table(
-                id.astNode,
+                identifier,
                 TableType(
                     Limits(
                         funcIndices.astNode.size.toLong(),
@@ -149,7 +168,7 @@ internal fun List<Token>.parseTableAndElementSegment(fromIndex: Int): ParseResul
                 )
             ),
             ElementSegment(
-                Index.ByIdentifier(id.astNode),
+                elementSegmentIndex,
                 Offset(
                     Expression(
                         astNodeListOf(NumericConstantInstruction.I32(IntegerLiteral.S32(0)))
@@ -159,7 +178,7 @@ internal fun List<Token>.parseTableAndElementSegment(fromIndex: Int): ParseResul
             )
         ),
         currentIndex - fromIndex
-    )
+    ) to updatedCounts
 }
 
 /**
@@ -172,14 +191,18 @@ internal fun List<Token>.parseTableAndElementSegment(fromIndex: Int): ParseResul
  *      == ‘(’ ‘import’ name^1 name^2 ‘(’ ‘table’ id? tabletype ‘)’ ‘)’
  * ```
  */
-fun List<Token>.parseInlineTableImport(fromIndex: Int): ParseResult<Import>? {
+fun List<Token>.parseInlineTableImport(
+    fromIndex: Int,
+    counts: TextModuleCounts
+): Pair<ParseResult<Import>, TextModuleCounts>? {
     var currentIndex = fromIndex
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
     if (!isKeyword(currentIndex, "table")) return null
     currentIndex++
 
-    val identifier = parseIdentifier<Identifier.Table>(currentIndex)
+    val (identifier, updatedCounts) =
+        parseOrCreateIdentifier<Identifier.Table>(currentIndex, counts)
     currentIndex += identifier.parseLength
 
     if (!isOpenParen(currentIndex)) return null
@@ -206,12 +229,13 @@ fun List<Token>.parseInlineTableImport(fromIndex: Int): ParseResult<Import>? {
             moduleName.astNode.value,
             tableName.astNode.value,
             ImportDescriptor.Table(
-                identifier.astNode,
+                identifier.astNode.takeIf { it.stringRepr != null }
+                    ?: Identifier.Table(null, null),
                 tableType.astNode
             )
         ),
         currentIndex - fromIndex
-    )
+    ) to updatedCounts
 }
 
 /**
@@ -227,14 +251,19 @@ fun List<Token>.parseInlineTableImport(fromIndex: Int): ParseResult<Import>? {
  *
  * Where “...” can contain another import or export or an inline elements segment.
  */
-fun List<Token>.parseInlineTableExport(fromIndex: Int): ParseResult<AstNodeList<*>>? {
+@Suppress("UNCHECKED_CAST")
+fun List<Token>.parseInlineTableExport(
+    fromIndex: Int,
+    counts: TextModuleCounts
+): Pair<ParseResult<AstNodeList<AstNode>>, TextModuleCounts>? {
     var currentIndex = fromIndex
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
     if (!isKeyword(currentIndex, "table")) return null
     currentIndex++
 
-    val identifier = parseIdentifier<Identifier.Table>(currentIndex)
+    val (identifier, updatedCounts) =
+        parseOrCreateIdentifier<Identifier.Table>(currentIndex, counts)
     currentIndex += identifier.parseLength
 
     if (!isOpenParen(currentIndex)) return null
@@ -251,7 +280,9 @@ fun List<Token>.parseInlineTableExport(fromIndex: Int): ParseResult<AstNodeList<
     val result = mutableListOf<AstNode>(
         Export(
             exportName.astNode.value,
-            ExportDescriptor.Table(Index.ByIdentifier(identifier.astNode))
+            ExportDescriptor.Table(
+                Index.ByInt(updatedCounts.tables - 1) as Index<Identifier.Table>
+            )
         )
     )
 
@@ -261,7 +292,7 @@ fun List<Token>.parseInlineTableExport(fromIndex: Int): ParseResult<AstNodeList<
         return ParseResult(
             AstNodeList(result),
             currentIndex - fromIndex
-        )
+        ) to updatedCounts
     }
 
     // Looks like there might be more to handle, so construct a new list of tokens to recurse with.
@@ -272,9 +303,7 @@ fun List<Token>.parseInlineTableExport(fromIndex: Int): ParseResult<AstNodeList<
     )
 
     // Add the id.
-    if (identifier.parseLength == 0) {
-        withoutFirstExport.add(kwasm.format.text.token.Identifier(identifier.astNode.toString()))
-    } else {
+    if (identifier.parseLength > 0) {
         (0 until identifier.parseLength).forEach {
             withoutFirstExport.add(this[fromIndex + 2 + it])
         }
@@ -286,11 +315,11 @@ fun List<Token>.parseInlineTableExport(fromIndex: Int): ParseResult<AstNodeList<
     withoutFirstExport.addAll(tokensUntilParenClosure(currentIndex, expectedClosures = 1))
 
     // Recurse.
-    val additionalItems = parseCheckNotNull(
+    val (additionalItems, _) = parseCheckNotNull(
         contextAt(currentIndex),
-        withoutFirstExport.parseInlineTableExport(0)
-            ?: withoutFirstExport.parseInlineTableImport(0)
-            ?: withoutFirstExport.parseTable(0),
+        withoutFirstExport.parseInlineTableExport(0, counts)
+            ?: withoutFirstExport.parseInlineTableImport(0, counts)
+            ?: withoutFirstExport.parseTable(0, counts),
         "Expected additional details for table"
     )
     currentIndex += (additionalItems.parseLength - lengthOfPrefix)
@@ -303,5 +332,5 @@ fun List<Token>.parseInlineTableExport(fromIndex: Int): ParseResult<AstNodeList<
     return ParseResult(
         AstNodeList(result),
         currentIndex - fromIndex
-    )
+    ) to updatedCounts
 }

@@ -30,6 +30,7 @@ import kwasm.ast.type.GlobalType
 import kwasm.ast.type.ValueType
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
+import kwasm.format.text.TextModuleCounts
 import kwasm.format.text.Tokenizer
 import org.assertj.core.api.Assertions
 import org.junit.Assert.assertThrows
@@ -37,36 +38,38 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+@Suppress("UNCHECKED_CAST")
 @RunWith(JUnit4::class)
 class GlobalInlineExportTest {
+    private val counts = TextModuleCounts(0, 0, 0, 0, 0)
     private val tokenizer = Tokenizer()
     private val context = ParseContext("GlobalInlineExportTest.wat")
 
     @Test
     fun parse_returnsNullIf_openingParenNotFound() {
         val result = tokenizer.tokenize("global $0 (export \"a\"))", context)
-            .parseInlineGlobalExport(0)
+            .parseInlineGlobalExport(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parse_returnsNullIf_globalKeywordNotFound() {
         val result = tokenizer.tokenize("(nonglobal $0 (export \"a\"))", context)
-            .parseInlineGlobalExport(0)
+            .parseInlineGlobalExport(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parse_returnsNullIf_exportOpeningParenNotFound() {
         val result = tokenizer.tokenize("(global $0 export \"a\"))", context)
-            .parseInlineGlobalExport(0)
+            .parseInlineGlobalExport(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parse_returnsNullIf_exportKeywordNotFound() {
         val result = tokenizer.tokenize("(global $0 (nonexport \"a\"))", context)
-            .parseInlineGlobalExport(0)
+            .parseInlineGlobalExport(0, counts)
         assertThat(result).isNull()
     }
 
@@ -74,7 +77,7 @@ class GlobalInlineExportTest {
     fun parse_throwsIf_exportNameNotFound() {
         assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(global $0 (export))", context)
-                .parseInlineGlobalExport(0)
+                .parseInlineGlobalExport(0, counts)
         }
     }
 
@@ -82,79 +85,80 @@ class GlobalInlineExportTest {
     fun parse_throwsIf_exportClosureNotFound() {
         val e = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(global $0 (export \"a\"", context)
-                .parseInlineGlobalExport(0)
+                .parseInlineGlobalExport(0, counts)
         }
         assertThat(e).hasMessageThat().contains("Expected ')'")
     }
 
     @Test
     fun parse_minimal() {
-        val result = tokenizer.tokenize("(global (export \"a\"))", context)
-            .parseInlineGlobalExport(0)
-            ?: Assertions.fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(global (export \"a\"))", context)
+            .parseInlineGlobalExport(0, counts) ?: Assertions.fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(7)
         assertThat(result.astNode.size).isEqualTo(1)
         val node = result.astNode[0] as Export
         assertThat(node.name).isEqualTo("a")
+        assertThat(newCounts.globals).isEqualTo(counts.globals + 1)
     }
 
     @Test
     fun parse_simple() {
-        val result = tokenizer.tokenize("(global $0 (export \"a\"))", context)
-            .parseInlineGlobalExport(0)
-            ?: Assertions.fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(global $0 (export \"a\"))", context)
+            .parseInlineGlobalExport(0, counts) ?: Assertions.fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(8)
         assertThat(result.astNode).containsExactly(
             Export(
                 "a",
                 ExportDescriptor.Global(
-                    Index.ByIdentifier(Identifier.Global("$0"))
+                    Index.ByInt(0) as Index<Identifier.Global>
                 )
             )
         ).inOrder()
+        assertThat(newCounts.globals).isEqualTo(counts.globals + 1)
     }
 
     @Test
     fun parse_multipleExports() {
-        val result = tokenizer.tokenize(
+        val (result, newCounts) = tokenizer.tokenize(
             "(global $0 (export \"a\") (export \"b\") (export \"c\"))",
             context
-        ).parseInlineGlobalExport(0) ?: Assertions.fail("Expected a result")
+        ).parseInlineGlobalExport(0, counts) ?: Assertions.fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(16)
         assertThat(result.astNode).containsExactly(
             Export(
                 "a",
                 ExportDescriptor.Global(
-                    Index.ByIdentifier(Identifier.Global("$0"))
+                    Index.ByInt(0) as Index<Identifier.Global>
                 )
             ),
             Export(
                 "b",
                 ExportDescriptor.Global(
-                    Index.ByIdentifier(Identifier.Global("$0"))
+                    Index.ByInt(0) as Index<Identifier.Global>
                 )
             ),
             Export(
                 "c",
                 ExportDescriptor.Global(
-                    Index.ByIdentifier(Identifier.Global("$0"))
+                    Index.ByInt(0) as Index<Identifier.Global>
                 )
             )
         ).inOrder()
+        assertThat(newCounts.globals).isEqualTo(counts.globals + 1)
     }
 
     @Test
     fun parse_exportThenImport() {
-        val result = tokenizer.tokenize(
+        val (result, newCounts) = tokenizer.tokenize(
             "(global $0 (export \"a\") (import \"b\" \"c\") i32)",
             context
-        ).parseInlineGlobalExport(0) ?: Assertions.fail("Expected a result")
+        ).parseInlineGlobalExport(0, counts) ?: Assertions.fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(14)
         assertThat(result.astNode).containsExactly(
             Export(
                 "a",
                 ExportDescriptor.Global(
-                    Index.ByIdentifier(Identifier.Global("$0"))
+                    Index.ByInt(0) as Index<Identifier.Global>
                 )
             ),
             Import(
@@ -166,20 +170,21 @@ class GlobalInlineExportTest {
                 )
             )
         ).inOrder()
+        assertThat(newCounts.globals).isEqualTo(counts.globals + 1)
     }
 
     @Test
     fun parse_exportThenDescriptor() {
-        val result = tokenizer.tokenize(
+        val (result, newCounts) = tokenizer.tokenize(
             "(global $0 (export \"a\") i32 (i32.const 0))",
             context
-        ).parseInlineGlobalExport(0) ?: Assertions.fail("Expected a result")
+        ).parseInlineGlobalExport(0, counts) ?: Assertions.fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(13)
         assertThat(result.astNode).containsExactly(
             Export(
                 "a",
                 ExportDescriptor.Global(
-                    Index.ByIdentifier(Identifier.Global("$0"))
+                    Index.ByInt(0) as Index<Identifier.Global>
                 )
             ),
             Global(
@@ -192,26 +197,27 @@ class GlobalInlineExportTest {
                 )
             )
         ).inOrder()
+        assertThat(newCounts.globals).isEqualTo(counts.globals + 1)
     }
 
     @Test
     fun parse_multipleExportsThenDescriptor() {
-        val result = tokenizer.tokenize(
+        val (result, newCounts) = tokenizer.tokenize(
             "(global $0 (export \"a\") (export \"b\") (mut i32) (i32.const 0))",
             context
-        ).parseInlineGlobalExport(0) ?: Assertions.fail("Expected a result")
+        ).parseInlineGlobalExport(0, counts) ?: Assertions.fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(20)
         assertThat(result.astNode).containsExactly(
             Export(
                 "a",
                 ExportDescriptor.Global(
-                    Index.ByIdentifier(Identifier.Global("$0"))
+                    Index.ByInt(0) as Index<Identifier.Global>
                 )
             ),
             Export(
                 "b",
                 ExportDescriptor.Global(
-                    Index.ByIdentifier(Identifier.Global("$0"))
+                    Index.ByInt(0) as Index<Identifier.Global>
                 )
             ),
             Global(
@@ -224,5 +230,6 @@ class GlobalInlineExportTest {
                 )
             )
         ).inOrder()
+        assertThat(newCounts.globals).isEqualTo(counts.globals + 1)
     }
 }

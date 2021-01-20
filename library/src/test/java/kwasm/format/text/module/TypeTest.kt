@@ -22,6 +22,7 @@ import kwasm.ast.type.Param
 import kwasm.ast.type.ValueType
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
+import kwasm.format.text.TextModuleCounts
 import kwasm.format.text.Tokenizer
 import org.assertj.core.api.Assertions.fail
 import org.junit.Assert.assertThrows
@@ -31,13 +32,14 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class TypeTest {
+    private val counts = TextModuleCounts(0, 0, 0, 0, 0)
     private val tokenizer = Tokenizer()
     private val context = ParseContext("TypeTest.wat")
 
     @Test
     fun parses_type_withoutId() {
-        val result = tokenizer.tokenize("(type (func (param $0 i32)))", context)
-            .parseType(0) ?: fail("Expected a type")
+        val (result, newCounts) = tokenizer.tokenize("(type (func (param $0 i32)))", context)
+            .parseType(0, counts) ?: fail("Expected a type")
 
         assertThat(result.parseLength).isEqualTo(11)
         assertThat(result.astNode.id).isNull()
@@ -53,12 +55,13 @@ class TypeTest {
                     astNodeListOf()
                 )
             )
+        assertThat(newCounts.types).isEqualTo(counts.types + 1)
     }
 
     @Test
     fun parses_type_withId() {
-        val result = tokenizer.tokenize("(type \$myId (func (param $0 i32)))", context)
-            .parseType(0) ?: fail("Expected a type")
+        val (result, newCounts) = tokenizer.tokenize("(type \$myId (func (param $0 i32)))", context)
+            .parseType(0, counts) ?: fail("Expected a type")
 
         assertThat(result.parseLength).isEqualTo(12)
         assertThat(result.astNode.id).isEqualTo(Identifier.Type("\$myId"))
@@ -74,12 +77,13 @@ class TypeTest {
                     astNodeListOf()
                 )
             )
+        assertThat(newCounts.types).isEqualTo(counts.types + 1)
     }
 
     @Test
     fun throws_whenFuncType_notPresent() {
         val e = assertThrows(ParseException::class.java) {
-            tokenizer.tokenize("(type \$myId)").parseType(0)
+            tokenizer.tokenize("(type \$myId)").parseType(0, counts)
         }
         assertThat(e.parseContext?.lineNumber).isEqualTo(1)
         assertThat(e.parseContext?.column).isEqualTo(12)
@@ -88,7 +92,7 @@ class TypeTest {
     @Test
     fun throws_whenClosingParen_notPresent() {
         val e = assertThrows(ParseException::class.java) {
-            tokenizer.tokenize("(type \$myId (func (param \$0 i32))").parseType(0)
+            tokenizer.tokenize("(type \$myId (func (param \$0 i32))").parseType(0, counts)
         }
         assertThat(e).hasMessageThat().contains("Expected ')'")
         assertThat(e.parseContext?.lineNumber).isEqualTo(1)
@@ -98,7 +102,7 @@ class TypeTest {
     @Test
     fun returnsNull_ifOpeningParen_notPresent() {
         val result = tokenizer.tokenize("type \$myId (func (param $0 i32))", context)
-            .parseType(0)
+            .parseType(0, counts)
 
         assertThat(result).isNull()
     }
@@ -106,7 +110,7 @@ class TypeTest {
     @Test
     fun returnsNull_ifTypeKeyword_doesntFollowOpeningParen() {
         val result = tokenizer.tokenize("(nontype \$myId (func (param $0 i32))", context)
-            .parseType(0)
+            .parseType(0, counts)
 
         assertThat(result).isNull()
     }

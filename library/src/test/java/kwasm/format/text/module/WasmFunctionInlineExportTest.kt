@@ -30,6 +30,7 @@ import kwasm.ast.type.Param
 import kwasm.ast.type.ValueType
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
+import kwasm.format.text.TextModuleCounts
 import kwasm.format.text.Tokenizer
 import org.assertj.core.api.Assertions.fail
 import org.junit.Assert.assertThrows
@@ -37,36 +38,38 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
+@Suppress("UNCHECKED_CAST")
 @RunWith(JUnit4::class)
 class WasmFunctionInlineExportTest {
+    private val counts = TextModuleCounts(0, 0, 0, 0, 0)
     private val tokenizer = Tokenizer()
     private val context = ParseContext("WasmFunctionInlineExportTest.wat")
 
     @Test
     fun parse_returnsNullIf_openingParenNotFound() {
         val result = tokenizer.tokenize("func $0 (export \"a\"))", context)
-            .parseInlineWasmFunctionExport(0)
+            .parseInlineWasmFunctionExport(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parse_returnsNullIf_funcKeywordNotFound() {
         val result = tokenizer.tokenize("(nonfunc $0 (export \"a\"))", context)
-            .parseInlineWasmFunctionExport(0)
+            .parseInlineWasmFunctionExport(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parse_returnsNullIf_exportOpeningParenNotFound() {
         val result = tokenizer.tokenize("(func $0 export \"a\"))", context)
-            .parseInlineWasmFunctionExport(0)
+            .parseInlineWasmFunctionExport(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parse_returnsNullIf_exportKeywordNotFound() {
         val result = tokenizer.tokenize("(func $0 (nonexport \"a\"))", context)
-            .parseInlineWasmFunctionExport(0)
+            .parseInlineWasmFunctionExport(0, counts)
         assertThat(result).isNull()
     }
 
@@ -74,7 +77,7 @@ class WasmFunctionInlineExportTest {
     fun parse_throwsIf_exportNameNotFound() {
         assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(func $0 (export))", context)
-                .parseInlineWasmFunctionExport(0)
+                .parseInlineWasmFunctionExport(0, counts)
         }
     }
 
@@ -82,16 +85,15 @@ class WasmFunctionInlineExportTest {
     fun parse_throwsIf_exportClosureNotFound() {
         val e = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(func $0 (export \"a\"", context)
-                .parseInlineWasmFunctionExport(0)
+                .parseInlineWasmFunctionExport(0, counts)
         }
         assertThat(e).hasMessageThat().contains("Expected ')'")
     }
 
     @Test
     fun parse_minimal() {
-        val result = tokenizer.tokenize("(func (export \"a\"))", context)
-            .parseInlineWasmFunctionExport(0)
-            ?: fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(func (export \"a\"))", context)
+            .parseInlineWasmFunctionExport(0, counts) ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(7)
         val func = result.astNode[0] as WasmFunction
         val export = result.astNode[1] as Export
@@ -107,14 +109,14 @@ class WasmFunctionInlineExportTest {
         assertThat(func.instructions).isEmpty()
         assertThat(export.name).isEqualTo("a")
         assertThat(export.descriptor.index)
-            .isEqualTo(Index.ByIdentifier(func.id ?: fail("ID should be non-null")))
+            .isEqualTo(Index.ByInt(0) as Index<Identifier.Function>)
+        assertThat(newCounts.functions).isEqualTo(counts.functions + 1)
     }
 
     @Test
     fun parse_simple() {
-        val result = tokenizer.tokenize("(func $0 (export \"a\"))", context)
-            .parseInlineWasmFunctionExport(0)
-            ?: fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(func $0 (export \"a\"))", context)
+            .parseInlineWasmFunctionExport(0, counts) ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(8)
         assertThat(result.astNode).containsExactly(
             WasmFunction(
@@ -130,18 +132,19 @@ class WasmFunctionInlineExportTest {
             Export(
                 "a",
                 ExportDescriptor.Function(
-                    Index.ByIdentifier(Identifier.Function("$0"))
+                    Index.ByInt(0) as Index<Identifier.Function>
                 )
             )
         ).inOrder()
+        assertThat(newCounts.functions).isEqualTo(counts.functions + 1)
     }
 
     @Test
     fun parse_multipleExports() {
-        val result = tokenizer.tokenize(
+        val (result, newCounts) = tokenizer.tokenize(
             "(func $0 (export \"a\") (export \"b\") (export \"c\"))",
             context
-        ).parseInlineWasmFunctionExport(0) ?: fail("Expected a result")
+        ).parseInlineWasmFunctionExport(0, counts) ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(16)
         assertThat(result.astNode).containsExactly(
             WasmFunction(
@@ -157,36 +160,37 @@ class WasmFunctionInlineExportTest {
             Export(
                 "a",
                 ExportDescriptor.Function(
-                    Index.ByIdentifier(Identifier.Function("$0"))
+                    Index.ByInt(0) as Index<Identifier.Function>
                 )
             ),
             Export(
                 "b",
                 ExportDescriptor.Function(
-                    Index.ByIdentifier(Identifier.Function("$0"))
+                    Index.ByInt(0) as Index<Identifier.Function>
                 )
             ),
             Export(
                 "c",
                 ExportDescriptor.Function(
-                    Index.ByIdentifier(Identifier.Function("$0"))
+                    Index.ByInt(0) as Index<Identifier.Function>
                 )
             )
         )
+        assertThat(newCounts.functions).isEqualTo(counts.functions + 1)
     }
 
     @Test
     fun parse_exportThenImport() {
-        val result = tokenizer.tokenize(
+        val (result, newCounts) = tokenizer.tokenize(
             "(func $0 (export \"a\") (import \"b\" \"c\") (param i32))",
             context
-        ).parseInlineWasmFunctionExport(0) ?: fail("Expected a result")
+        ).parseInlineWasmFunctionExport(0, counts) ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(17)
         assertThat(result.astNode).containsExactly(
             Export(
                 "a",
                 ExportDescriptor.Function(
-                    Index.ByIdentifier(Identifier.Function("$0"))
+                    Index.ByInt(0) as Index<Identifier.Function>
                 )
             ),
             Import(
@@ -207,20 +211,21 @@ class WasmFunctionInlineExportTest {
                 )
             )
         ).inOrder()
+        assertThat(newCounts.functions).isEqualTo(counts.functions + 1)
     }
 
     @Test
     fun parse_exportThenBody() {
-        val result = tokenizer.tokenize(
+        val (result, newCounts) = tokenizer.tokenize(
             "(func $0 (export \"a\") (local i32) (i32.add))",
             context
-        ).parseInlineWasmFunctionExport(0) ?: fail("Expected a result")
+        ).parseInlineWasmFunctionExport(0, counts) ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(15)
         assertThat(result.astNode).containsExactly(
             Export(
                 "a",
                 ExportDescriptor.Function(
-                    Index.ByIdentifier(Identifier.Function("$0"))
+                    Index.ByInt(0) as Index<Identifier.Function>
                 )
             ),
             WasmFunction(
@@ -234,26 +239,27 @@ class WasmFunctionInlineExportTest {
                 )
             )
         ).inOrder()
+        assertThat(newCounts.functions).isEqualTo(counts.functions + 1)
     }
 
     @Test
     fun parse_multipleExportsThenBody() {
-        val result = tokenizer.tokenize(
+        val (result, newCounts) = tokenizer.tokenize(
             "(func $0 (export \"a\") (export \"b\") (local i32) (i32.add))",
             context
-        ).parseInlineWasmFunctionExport(0) ?: fail("Expected a result")
+        ).parseInlineWasmFunctionExport(0, counts) ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(19)
         assertThat(result.astNode).containsExactly(
             Export(
                 "a",
                 ExportDescriptor.Function(
-                    Index.ByIdentifier(Identifier.Function("$0"))
+                    Index.ByInt(0) as Index<Identifier.Function>
                 )
             ),
             Export(
                 "b",
                 ExportDescriptor.Function(
-                    Index.ByIdentifier(Identifier.Function("$0"))
+                    Index.ByInt(0) as Index<Identifier.Function>
                 )
             ),
             WasmFunction(
@@ -267,5 +273,6 @@ class WasmFunctionInlineExportTest {
                 )
             )
         ).inOrder()
+        assertThat(newCounts.functions).isEqualTo(counts.functions + 1)
     }
 }

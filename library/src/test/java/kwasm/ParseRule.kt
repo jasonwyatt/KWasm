@@ -21,6 +21,7 @@ import kwasm.ast.module.Global
 import kwasm.ast.module.Local
 import kwasm.ast.module.WasmModule
 import kwasm.format.ParseContext
+import kwasm.format.text.TextModuleCounts
 import kwasm.format.text.Tokenizer
 import kwasm.format.text.instruction.parseExpression
 import kwasm.format.text.instruction.parseInstruction
@@ -39,6 +40,7 @@ import org.junit.runners.model.Statement
  */
 class ParseRule : TestRule {
     val tokenizer = Tokenizer()
+    private val counts = TextModuleCounts( 0, 0, 0, 0, 0)
     lateinit var context: ParseContext
 
     override fun apply(base: Statement, description: Description): Statement {
@@ -92,7 +94,7 @@ class ParseRule : TestRule {
 
     /** Parse a [Global] from the given wasm source. */
     fun String.parseGlobal(): Global =
-        requireNotNull(tokenize().parseGlobal(0)?.astNode) {
+        requireNotNull(tokenize().parseGlobal(0, counts)?.first?.astNode) {
             "No global found in source:\n$this"
         }
 

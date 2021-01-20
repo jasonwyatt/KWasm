@@ -32,6 +32,7 @@ import kwasm.ast.type.Limits
 import kwasm.ast.type.MemoryType
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
+import kwasm.format.text.TextModuleCounts
 import kwasm.format.text.Tokenizer
 import org.assertj.core.api.Assertions
 import org.junit.Assert.assertThrows
@@ -39,37 +40,38 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
-@Suppress("EXPERIMENTAL_UNSIGNED_LITERALS", "EXPERIMENTAL_API_USAGE")
+@Suppress("EXPERIMENTAL_UNSIGNED_LITERALS", "EXPERIMENTAL_API_USAGE", "UNCHECKED_CAST")
 @RunWith(JUnit4::class)
 class MemoryInlineExportTest {
+    private val counts = TextModuleCounts(0, 0, 0, 0, 0)
     private val tokenizer = Tokenizer()
     private val context = ParseContext("MemoryInlineExportTest.wat")
 
     @Test
     fun parse_returnsNullIf_openingParenNotFound() {
         val result = tokenizer.tokenize("memory $0 (export \"a\"))", context)
-            .parseInlineMemoryExport(0)
+            .parseInlineMemoryExport(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parse_returnsNullIf_memoryKeywordNotFound() {
         val result = tokenizer.tokenize("(nonmemory $0 (export \"a\"))", context)
-            .parseInlineMemoryExport(0)
+            .parseInlineMemoryExport(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parse_returnsNullIf_exportOpeningParenNotFound() {
         val result = tokenizer.tokenize("(memory $0 export \"a\"))", context)
-            .parseInlineMemoryExport(0)
+            .parseInlineMemoryExport(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parse_returnsNullIf_exportKeywordNotFound() {
         val result = tokenizer.tokenize("(memory $0 (nonexport \"a\"))", context)
-            .parseInlineMemoryExport(0)
+            .parseInlineMemoryExport(0, counts)
         assertThat(result).isNull()
     }
 
@@ -77,7 +79,7 @@ class MemoryInlineExportTest {
     fun parse_throwsIf_exportNameNotFound() {
         assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(memory $0 (export))", context)
-                .parseInlineMemoryExport(0)
+                .parseInlineMemoryExport(0, counts)
         }
     }
 
@@ -85,80 +87,81 @@ class MemoryInlineExportTest {
     fun parse_throwsIf_exportClosureNotFound() {
         val e = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(memory $0 (export \"a\"", context)
-                .parseInlineMemoryExport(0)
+                .parseInlineMemoryExport(0, counts)
         }
         assertThat(e).hasMessageThat().contains("Expected ')'")
     }
 
     @Test
     fun parse_minimal() {
-        val result = tokenizer.tokenize("(memory (export \"a\"))", context)
-            .parseInlineMemoryExport(0)
-            ?: Assertions.fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(memory (export \"a\"))", context)
+            .parseInlineMemoryExport(0, counts) ?: Assertions.fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(7)
         assertThat(result.astNode.size).isEqualTo(1)
         val export = result.astNode[0] as Export
         assertThat(export.name).isEqualTo("a")
         assertThat(export.descriptor).isInstanceOf(ExportDescriptor.Memory::class.java)
+        assertThat(newCounts.memories).isEqualTo(counts.memories + 1)
     }
 
     @Test
     fun parse_simple() {
-        val result = tokenizer.tokenize("(memory $0 (export \"a\"))", context)
-            .parseInlineMemoryExport(0)
-            ?: Assertions.fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(memory $0 (export \"a\"))", context)
+            .parseInlineMemoryExport(0, counts) ?: Assertions.fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(8)
         assertThat(result.astNode).containsExactly(
             Export(
                 "a",
                 ExportDescriptor.Memory(
-                    Index.ByIdentifier(Identifier.Memory("$0"))
+                    Index.ByInt(0) as Index<Identifier.Memory>
                 )
             )
         ).inOrder()
+        assertThat(newCounts.memories).isEqualTo(counts.memories + 1)
     }
 
     @Test
     fun parse_multipleExports() {
-        val result = tokenizer.tokenize(
+        val (result, newCounts) = tokenizer.tokenize(
             "(memory $0 (export \"a\") (export \"b\") (export \"c\"))",
             context
-        ).parseInlineMemoryExport(0) ?: Assertions.fail("Expected a result")
+        ).parseInlineMemoryExport(0, counts) ?: Assertions.fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(16)
         assertThat(result.astNode).containsExactly(
             Export(
                 "a",
                 ExportDescriptor.Memory(
-                    Index.ByIdentifier(Identifier.Memory("$0"))
+                    Index.ByInt(0) as Index<Identifier.Memory>,
                 )
             ),
             Export(
                 "b",
                 ExportDescriptor.Memory(
-                    Index.ByIdentifier(Identifier.Memory("$0"))
+                    Index.ByInt(0) as Index<Identifier.Memory>,
                 )
             ),
             Export(
                 "c",
                 ExportDescriptor.Memory(
-                    Index.ByIdentifier(Identifier.Memory("$0"))
+                    Index.ByInt(0) as Index<Identifier.Memory>,
                 )
             )
         ).inOrder()
+        assertThat(newCounts.memories).isEqualTo(counts.memories + 1)
     }
 
     @Test
     fun parse_exportThenImport() {
-        val result = tokenizer.tokenize(
+        val (result, newCounts) = tokenizer.tokenize(
             "(memory $0 (export \"a\") (import \"b\" \"c\") 1)",
             context
-        ).parseInlineMemoryExport(0) ?: Assertions.fail("Expected a result")
+        ).parseInlineMemoryExport(0, counts) ?: Assertions.fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(14)
         assertThat(result.astNode).containsExactly(
             Export(
                 "a",
                 ExportDescriptor.Memory(
-                    Index.ByIdentifier(Identifier.Memory("$0"))
+                    Index.ByInt(0) as Index<Identifier.Memory>
                 )
             ),
             Import(
@@ -170,20 +173,21 @@ class MemoryInlineExportTest {
                 )
             )
         ).inOrder()
+        assertThat(newCounts.memories).isEqualTo(counts.memories + 1)
     }
 
     @Test
     fun parse_exportThenInlineData() {
-        val result = tokenizer.tokenize(
+        val (result, newCounts) = tokenizer.tokenize(
             "(memory $0 (export \"a\") (data \"test\"))",
             context
-        ).parseInlineMemoryExport(0) ?: Assertions.fail("Expected a result")
+        ).parseInlineMemoryExport(0, counts) ?: Assertions.fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(12)
         assertThat(result.astNode).containsExactly(
             Export(
                 "a",
                 ExportDescriptor.Memory(
-                    Index.ByIdentifier(Identifier.Memory("$0"))
+                    Index.ByInt(0) as Index<Identifier.Memory>
                 )
             ),
             Memory(
@@ -193,7 +197,7 @@ class MemoryInlineExportTest {
                 )
             ),
             DataSegment(
-                Index.ByIdentifier(Identifier.Memory("$0")),
+                Index.ByInt(0) as Index<Identifier.Memory>,
                 Offset(
                     Expression(
                         astNodeListOf(NumericConstantInstruction.I32(IntegerLiteral.S32(0)))
@@ -202,26 +206,27 @@ class MemoryInlineExportTest {
                 "test".toByteArray(Charsets.UTF_8)
             )
         ).inOrder()
+        assertThat(newCounts.memories).isEqualTo(counts.memories + 1)
     }
 
     @Test
     fun parse_multipleExportsThenInlineData() {
-        val result = tokenizer.tokenize(
+        val (result, newCounts) = tokenizer.tokenize(
             "(memory $0 (export \"a\") (export \"b\") (data \"test\"))",
             context
-        ).parseInlineMemoryExport(0) ?: Assertions.fail("Expected a result")
+        ).parseInlineMemoryExport(0, counts) ?: Assertions.fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(16)
         assertThat(result.astNode).containsExactly(
             Export(
                 "a",
                 ExportDescriptor.Memory(
-                    Index.ByIdentifier(Identifier.Memory("$0"))
+                    Index.ByInt(0) as Index<Identifier.Memory>
                 )
             ),
             Export(
                 "b",
                 ExportDescriptor.Memory(
-                    Index.ByIdentifier(Identifier.Memory("$0"))
+                    Index.ByInt(0) as Index<Identifier.Memory>
                 )
             ),
             Memory(
@@ -231,7 +236,7 @@ class MemoryInlineExportTest {
                 )
             ),
             DataSegment(
-                Index.ByIdentifier(Identifier.Memory("$0")),
+                Index.ByInt(0) as Index<Identifier.Memory>,
                 Offset(
                     Expression(
                         astNodeListOf(NumericConstantInstruction.I32(IntegerLiteral.S32(0)))
@@ -240,5 +245,6 @@ class MemoryInlineExportTest {
                 "test".toByteArray(Charsets.UTF_8)
             )
         ).inOrder()
+        assertThat(newCounts.memories).isEqualTo(counts.memories + 1)
     }
 }

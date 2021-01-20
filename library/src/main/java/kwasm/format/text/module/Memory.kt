@@ -35,12 +35,14 @@ import kwasm.format.ParseException
 import kwasm.format.parseCheck
 import kwasm.format.parseCheckNotNull
 import kwasm.format.text.ParseResult
+import kwasm.format.text.TextModuleCounts
 import kwasm.format.text.contextAt
 import kwasm.format.text.isClosedParen
 import kwasm.format.text.isKeyword
 import kwasm.format.text.isOpenParen
 import kwasm.format.text.parseIdentifier
 import kwasm.format.text.parseLiteral
+import kwasm.format.text.parseOrCreateIdentifier
 import kwasm.format.text.token.Token
 import kwasm.format.text.tokensUntilParenClosure
 import kwasm.format.text.type.parseMemoryType
@@ -66,24 +68,30 @@ import kotlin.math.ceil
  *          (if id′ = id? != ϵ ∨ id′ fresh, m=ceil(n/64Ki))
  * ```
  */
-fun List<Token>.parseMemory(fromIndex: Int): ParseResult<AstNodeList<*>>? {
-    parseMemoryBasic(fromIndex)?.let {
-        return ParseResult(
-            astNodeListOf(it.astNode),
-            it.parseLength
-        )
+fun List<Token>.parseMemory(
+    fromIndex: Int,
+    counts: TextModuleCounts
+): Pair<ParseResult<AstNodeList<AstNode>>, TextModuleCounts>? {
+    parseMemoryBasic(fromIndex, counts)?.let { (result, updatedCounts) ->
+        return ParseResult<AstNodeList<AstNode>>(
+            astNodeListOf(result.astNode),
+            result.parseLength
+        ) to updatedCounts
     }
-    return parseMemoryAndDataSegment(fromIndex)
+    return parseMemoryAndDataSegment(fromIndex, counts)
 }
 
 /** See [parseMemory]. */
-internal fun List<Token>.parseMemoryBasic(fromIndex: Int): ParseResult<Memory>? {
+internal fun List<Token>.parseMemoryBasic(
+    fromIndex: Int,
+    counts: TextModuleCounts
+): Pair<ParseResult<Memory>, TextModuleCounts>? {
     var currentIndex = fromIndex
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
     if (!isKeyword(currentIndex, "memory")) return null
     currentIndex++
-    val id = parseIdentifier<Identifier.Memory>(currentIndex, false)
+    val (id, updatedCounts) = parseOrCreateIdentifier<Identifier.Memory>(currentIndex, counts)
     currentIndex += id.parseLength
     val memoryType = try { parseMemoryType(currentIndex) } catch (e: ParseException) { null }
         ?: return null
@@ -93,17 +101,21 @@ internal fun List<Token>.parseMemoryBasic(fromIndex: Int): ParseResult<Memory>? 
     return ParseResult(
         Memory(id.astNode, memoryType.astNode),
         currentIndex - fromIndex
-    )
+    ) to updatedCounts
 }
 
 /** See [parseMemory]. */
-internal fun List<Token>.parseMemoryAndDataSegment(fromIndex: Int): ParseResult<AstNodeList<*>>? {
+@Suppress("UNCHECKED_CAST")
+internal fun List<Token>.parseMemoryAndDataSegment(
+    fromIndex: Int,
+    counts: TextModuleCounts
+): Pair<ParseResult<AstNodeList<AstNode>>, TextModuleCounts>? {
     var currentIndex = fromIndex
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
     if (!isKeyword(currentIndex, "memory")) return null
     currentIndex++
-    val id = parseIdentifier<Identifier.Memory>(currentIndex)
+    val (id, updatedCounts) = parseOrCreateIdentifier<Identifier.Memory>(currentIndex, counts)
     currentIndex += id.parseLength
 
     parseCheck(
@@ -139,16 +151,23 @@ internal fun List<Token>.parseMemoryAndDataSegment(fromIndex: Int): ParseResult<
     val dataBytes = dataStringBuilder.toString().toByteArray(Charsets.UTF_8)
     val pageSize = ceil(dataBytes.size.toDouble() / 65536.0).toLong() // (64Ki)
 
+    val (identifier, dataSegmentIndex) = if (id.astNode.stringRepr != null) {
+        id.astNode to (Index.ByInt(0) as Index<Identifier.Memory>)
+    } else {
+        val indexNum = parseCheckNotNull(contextAt(fromIndex), id.astNode.unique)
+        id.astNode to (Index.ByInt(indexNum) as Index<Identifier.Memory>)
+    }
+
     return ParseResult(
         astNodeListOf(
             Memory(
-                id.astNode,
+                identifier,
                 MemoryType(
                     Limits(pageSize, pageSize)
                 )
             ),
             DataSegment(
-                Index.ByIdentifier(id.astNode),
+                dataSegmentIndex,
                 Offset(
                     Expression(
                         astNodeListOf(NumericConstantInstruction.I32(IntegerLiteral.S32(0)))
@@ -158,7 +177,7 @@ internal fun List<Token>.parseMemoryAndDataSegment(fromIndex: Int): ParseResult<
             )
         ),
         currentIndex - fromIndex
-    )
+    ) to updatedCounts
 }
 
 /**
@@ -171,15 +190,18 @@ internal fun List<Token>.parseMemoryAndDataSegment(fromIndex: Int): ParseResult<
  *      == ‘(’ ‘import’ name^1 name^2 ‘(’ ‘memory’ id? memtype ‘)’ ‘)’
  * ```
  */
-fun List<Token>.parseInlineMemoryImport(fromIndex: Int): ParseResult<Import>? {
+fun List<Token>.parseInlineMemoryImport(
+    fromIndex: Int,
+    counts: TextModuleCounts
+): Pair<ParseResult<Import>, TextModuleCounts>? {
     var currentIndex = fromIndex
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
     if (!isKeyword(currentIndex, "memory")) return null
     currentIndex++
 
-    val identifier = parseIdentifier<Identifier.Memory>(currentIndex)
-    currentIndex += identifier.parseLength
+    val (id, updatedCounts) = parseOrCreateIdentifier<Identifier.Memory>(currentIndex, counts)
+    currentIndex += id.parseLength
 
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
@@ -205,12 +227,12 @@ fun List<Token>.parseInlineMemoryImport(fromIndex: Int): ParseResult<Import>? {
             moduleName.astNode.value,
             tableName.astNode.value,
             ImportDescriptor.Memory(
-                identifier.astNode,
+                id.astNode,
                 memType.astNode
             )
         ),
         currentIndex - fromIndex
-    )
+    ) to updatedCounts
 }
 
 /**
@@ -226,15 +248,19 @@ fun List<Token>.parseInlineMemoryImport(fromIndex: Int): ParseResult<Import>? {
  *
  * Where “...” can contain another import or export or an inline data segment.
  */
-fun List<Token>.parseInlineMemoryExport(fromIndex: Int): ParseResult<AstNodeList<*>>? {
+@Suppress("UNCHECKED_CAST")
+fun List<Token>.parseInlineMemoryExport(
+    fromIndex: Int,
+    counts: TextModuleCounts
+): Pair<ParseResult<AstNodeList<AstNode>>, TextModuleCounts>? {
     var currentIndex = fromIndex
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
     if (!isKeyword(currentIndex, "memory")) return null
     currentIndex++
 
-    val identifier = parseIdentifier<Identifier.Memory>(currentIndex)
-    currentIndex += identifier.parseLength
+    val (id, updatedCounts) = parseOrCreateIdentifier<Identifier.Memory>(currentIndex, counts)
+    currentIndex += id.parseLength
 
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
@@ -251,9 +277,7 @@ fun List<Token>.parseInlineMemoryExport(fromIndex: Int): ParseResult<AstNodeList
         Export(
             exportName.astNode.value,
             ExportDescriptor.Memory(
-                Index.ByIdentifier(
-                    identifier.astNode
-                )
+                Index.ByInt(updatedCounts.memories - 1) as Index<Identifier.Memory>
             )
         )
     )
@@ -264,7 +288,7 @@ fun List<Token>.parseInlineMemoryExport(fromIndex: Int): ParseResult<AstNodeList
         return ParseResult(
             AstNodeList(result),
             currentIndex - fromIndex
-        )
+        ) to updatedCounts
     }
 
     // Looks like there might be more to handle, so construct a new list of tokens to recurse with.
@@ -275,10 +299,8 @@ fun List<Token>.parseInlineMemoryExport(fromIndex: Int): ParseResult<AstNodeList
     )
 
     // Add the id.
-    if (identifier.parseLength == 0) {
-        withoutFirstExport.add(kwasm.format.text.token.Identifier(identifier.astNode.toString()))
-    } else {
-        (0 until identifier.parseLength).forEach {
+    if (id.parseLength > 0) {
+        (0 until id.parseLength).forEach {
             withoutFirstExport.add(this[fromIndex + 2 + it])
         }
     }
@@ -289,11 +311,11 @@ fun List<Token>.parseInlineMemoryExport(fromIndex: Int): ParseResult<AstNodeList
     withoutFirstExport.addAll(tokensUntilParenClosure(currentIndex, expectedClosures = 1))
 
     // Recurse.
-    val additionalItems = parseCheckNotNull(
+    val (additionalItems, _) = parseCheckNotNull(
         contextAt(currentIndex),
-        withoutFirstExport.parseInlineMemoryExport(0)
-            ?: withoutFirstExport.parseInlineMemoryImport(0)
-            ?: withoutFirstExport.parseMemory(0),
+        withoutFirstExport.parseInlineMemoryExport(0, counts)
+            ?: withoutFirstExport.parseInlineMemoryImport(0, counts)
+            ?: withoutFirstExport.parseMemory(0, counts),
         "Expected additional details for memory"
     )
     currentIndex += (additionalItems.parseLength - lengthOfPrefix)
@@ -306,5 +328,5 @@ fun List<Token>.parseInlineMemoryExport(fromIndex: Int): ParseResult<AstNodeList
     return ParseResult(
         AstNodeList(result),
         currentIndex - fromIndex
-    )
+    ) to updatedCounts
 }

@@ -26,6 +26,7 @@ import kwasm.ast.module.WasmFunction
 import kwasm.format.parseCheck
 import kwasm.format.parseCheckNotNull
 import kwasm.format.text.ParseResult
+import kwasm.format.text.TextModuleCounts
 import kwasm.format.text.contextAt
 import kwasm.format.text.instruction.parseInstructions
 import kwasm.format.text.isClosedParen
@@ -33,6 +34,7 @@ import kwasm.format.text.isKeyword
 import kwasm.format.text.isOpenParen
 import kwasm.format.text.parseIdentifier
 import kwasm.format.text.parseLiteral
+import kwasm.format.text.parseOrCreateIdentifier
 import kwasm.format.text.token.Token
 import kwasm.format.text.tokensUntilParenClosure
 
@@ -46,14 +48,17 @@ import kwasm.format.text.tokensUntilParenClosure
  *              => {type x, locals t*, body in* end}
  * ```
  */
-fun List<Token>.parseWasmFunction(fromIndex: Int): ParseResult<WasmFunction>? {
+fun List<Token>.parseWasmFunction(
+    fromIndex: Int,
+    counts: TextModuleCounts
+): Pair<ParseResult<WasmFunction>, TextModuleCounts>? {
     var currentIndex = fromIndex
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
     if (!isKeyword(currentIndex, "func")) return null
     currentIndex++
 
-    val id = parseIdentifier<Identifier.Function>(currentIndex, true)
+    val (id, updatedCounts) = parseOrCreateIdentifier<Identifier.Function>(currentIndex, counts)
     currentIndex += id.parseLength
     val typeUse = parseTypeUse(currentIndex)
     currentIndex += typeUse.parseLength
@@ -66,13 +71,13 @@ fun List<Token>.parseWasmFunction(fromIndex: Int): ParseResult<WasmFunction>? {
 
     return ParseResult(
         WasmFunction(
-            id.astNode,
+            id.astNode.takeIf { it.stringRepr != null },
             typeUse.astNode,
             locals.astNode,
             instructions.astNode
         ),
         currentIndex - fromIndex
-    )
+    ) to updatedCounts
 }
 
 /**
@@ -85,14 +90,17 @@ fun List<Token>.parseWasmFunction(fromIndex: Int): ParseResult<WasmFunction>? {
  *      == ‘(’ ‘import’ name^1 name^2 ‘(’ ‘func’ id? typeuse ‘)’ ‘)’
  * ```
  */
-fun List<Token>.parseInlineWasmFunctionImport(fromIndex: Int): ParseResult<Import>? {
+fun List<Token>.parseInlineWasmFunctionImport(
+    fromIndex: Int,
+    counts: TextModuleCounts
+): Pair<ParseResult<Import>, TextModuleCounts>? {
     var currentIndex = fromIndex
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
     if (!isKeyword(currentIndex, "func")) return null
     currentIndex++
 
-    val id = parseIdentifier<Identifier.Function>(currentIndex)
+    val (id, updatedCounts) = parseOrCreateIdentifier<Identifier.Function>(currentIndex, counts)
     currentIndex += id.parseLength
 
     if (!isOpenParen(currentIndex)) return null
@@ -119,12 +127,13 @@ fun List<Token>.parseInlineWasmFunctionImport(fromIndex: Int): ParseResult<Impor
             moduleName.astNode.value,
             funcName.astNode.value,
             ImportDescriptor.Function(
-                id.astNode,
+                id.astNode.takeIf { it.stringRepr != null }
+                    ?: Identifier.Function(null, updatedCounts.functions - 1),
                 typeUse.astNode
             )
         ),
         currentIndex - fromIndex
-    )
+    ) to updatedCounts
 }
 
 /**
@@ -138,14 +147,18 @@ fun List<Token>.parseInlineWasmFunctionImport(fromIndex: Int): ParseResult<Impor
  *              (if id′ == id? != ϵ ∨ id′ fresh)
  * ```
  */
-fun List<Token>.parseInlineWasmFunctionExport(fromIndex: Int): ParseResult<AstNodeList<*>>? {
+@Suppress("UNCHECKED_CAST")
+fun List<Token>.parseInlineWasmFunctionExport(
+    fromIndex: Int,
+    counts: TextModuleCounts
+): Pair<ParseResult<AstNodeList<AstNode>>, TextModuleCounts>? {
     var currentIndex = fromIndex
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
     if (!isKeyword(currentIndex, "func")) return null
     currentIndex++
 
-    val id = parseIdentifier<Identifier.Function>(currentIndex)
+    val (id, updatedCounts) = parseOrCreateIdentifier<Identifier.Function>(currentIndex, counts)
     currentIndex += id.parseLength
 
     if (!isOpenParen(currentIndex)) return null
@@ -159,10 +172,16 @@ fun List<Token>.parseInlineWasmFunctionExport(fromIndex: Int): ParseResult<AstNo
     parseCheck(contextAt(currentIndex), isClosedParen(currentIndex), "Expected ')'")
     currentIndex++
 
+    val exportIndex = if (id.astNode.stringRepr != null) {
+        Index.ByInt(updatedCounts.functions - 1) as Index<Identifier.Function>
+    } else {
+        val indexVal = parseCheckNotNull(contextAt(fromIndex), id.astNode.unique)
+        Index.ByInt(indexVal) as Index<Identifier.Function>
+    }
     val result = mutableListOf<AstNode>(
         Export(
             exportName.astNode.value,
-            ExportDescriptor.Function(Index.ByIdentifier(id.astNode))
+            ExportDescriptor.Function(exportIndex)
         )
     )
 
@@ -174,9 +193,7 @@ fun List<Token>.parseInlineWasmFunctionExport(fromIndex: Int): ParseResult<AstNo
     )
 
     // Add the id.
-    if (id.parseLength == 0) {
-        withoutFirstExport.add(kwasm.format.text.token.Identifier(id.astNode.toString()))
-    } else {
+    if (id.parseLength > 0) {
         (0 until id.parseLength).forEach {
             withoutFirstExport.add(this[fromIndex + 2 + it])
         }
@@ -189,9 +206,9 @@ fun List<Token>.parseInlineWasmFunctionExport(fromIndex: Int): ParseResult<AstNo
 
     if (isClosedParen(currentIndex)) {
         // No `...` case, so we can return here.
-        val function = parseCheckNotNull(
+        val (function, countsToUse) = parseCheckNotNull(
             contextAt(currentIndex),
-            withoutFirstExport.parseWasmFunction(0)
+            withoutFirstExport.parseWasmFunction(0, counts)
         )
         currentIndex += (function.parseLength - lengthOfPrefix)
         return ParseResult(
@@ -201,15 +218,15 @@ fun List<Token>.parseInlineWasmFunctionExport(fromIndex: Int): ParseResult<AstNo
                 }
             ),
             currentIndex - fromIndex
-        )
+        ) to countsToUse
     }
 
     // Recurse.
-    val additionalItems = parseCheckNotNull(
+    val (additionalItems, _) = parseCheckNotNull(
         contextAt(currentIndex),
-        withoutFirstExport.parseInlineWasmFunctionExport(0)
-            ?: withoutFirstExport.parseInlineWasmFunctionImport(0)
-            ?: withoutFirstExport.parseWasmFunction(0),
+        withoutFirstExport.parseInlineWasmFunctionExport(0, counts)
+            ?: withoutFirstExport.parseInlineWasmFunctionImport(0, counts)
+            ?: withoutFirstExport.parseWasmFunction(0, counts),
         "Expected additional details for func"
     )
     currentIndex += (additionalItems.parseLength - lengthOfPrefix)
@@ -222,5 +239,5 @@ fun List<Token>.parseInlineWasmFunctionExport(fromIndex: Int): ParseResult<AstNo
     return ParseResult(
         AstNodeList(result),
         currentIndex - fromIndex
-    )
+    ) to updatedCounts
 }

@@ -29,6 +29,7 @@ import kwasm.ast.type.Limits
 import kwasm.ast.type.TableType
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
+import kwasm.format.text.TextModuleCounts
 import kwasm.format.text.Tokenizer
 import org.assertj.core.api.Assertions.fail
 import org.junit.Assert.assertThrows
@@ -36,52 +37,53 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
-@Suppress("EXPERIMENTAL_UNSIGNED_LITERALS", "EXPERIMENTAL_API_USAGE")
+@Suppress("EXPERIMENTAL_UNSIGNED_LITERALS", "EXPERIMENTAL_API_USAGE", "UNCHECKED_CAST")
 @RunWith(JUnit4::class)
 class TableTest {
+    private val counts = TextModuleCounts(0, 0, 0, 0, 0)
     private val tokenizer = Tokenizer()
     private val context = ParseContext("TableTest.wast")
 
     @Test
     fun parseTableBasic_returnsNull_ifOpenParenNotFound() {
         val result = tokenizer.tokenize("table $0 0 1 funcref)", context)
-            .parseTableBasic(0)
+            .parseTableBasic(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parseTableBasic_returnsNull_ifTableKeywordNotFound() {
         val result = tokenizer.tokenize("(non-table $0 0 1 funcref)", context)
-            .parseTableBasic(0)
+            .parseTableBasic(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parseTableBasic_returnsNull_ifTableTypeCouldntBeFound() {
         val result = tokenizer.tokenize("(table $0)", context)
-            .parseTableBasic(0)
+            .parseTableBasic(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parseTableBasic_returnsNull_ifTableTypeInvalid() {
         val result = tokenizer.tokenize("(table $0 0 1 nonfuncref)", context)
-            .parseTableBasic(0)
+            .parseTableBasic(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parseTableBasic_throws_ifNoClosingParenFound() {
         val e = assertThrows(ParseException::class.java) {
-            tokenizer.tokenize("(table $0 0 1 funcref", context).parseTableBasic(0)
+            tokenizer.tokenize("(table $0 0 1 funcref", context).parseTableBasic(0, counts)
         }
         assertThat(e).hasMessageThat().contains("Expected ')'")
     }
 
     @Test
     fun parseTableBasic() {
-        val result = tokenizer.tokenize("(table $0 0 1 funcref)", context)
-            .parseTableBasic(0) ?: fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(table $0 0 1 funcref)", context)
+            .parseTableBasic(0, counts) ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(7)
         assertThat(result.astNode.id).isEqualTo(Identifier.Table("$0"))
         assertThat(result.astNode.tableType).isEqualTo(
@@ -90,26 +92,27 @@ class TableTest {
                 ElementType.FunctionReference
             )
         )
+        assertThat(newCounts.tables).isEqualTo(counts.tables + 1)
     }
 
     @Test
     fun parseTableAndElementSegment_returnsNullIf_openingParen_notFound() {
         val result = tokenizer.tokenize("table $0 funcref (elem $1 $2))", context)
-            .parseTableAndElementSegment(0)
+            .parseTableAndElementSegment(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parseTableAndElementSegment_returnsNullIf_tableKeyword_notFound() {
         val result = tokenizer.tokenize("(non-table $0 funcref (elem $1 $2))", context)
-            .parseTableAndElementSegment(0)
+            .parseTableAndElementSegment(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parseTableAndElementSegment_returnsNullIf_funcrefKeyword_notFound() {
         val result = tokenizer.tokenize("(table $0 nonfuncref (elem $1 $2))", context)
-            .parseTableAndElementSegment(0)
+            .parseTableAndElementSegment(0, counts)
         assertThat(result).isNull()
     }
 
@@ -117,7 +120,7 @@ class TableTest {
     fun parseTableAndElementSegment_throwsIf_elemOpeningParen_notFound() {
         val e = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(table $0 funcref elem $1 $2))", context)
-                .parseTableAndElementSegment(0)
+                .parseTableAndElementSegment(0, counts)
         }
         assertThat(e).hasMessageThat().contains("Expected inline element segment")
     }
@@ -126,7 +129,7 @@ class TableTest {
     fun parseTableAndElementSegment_throwsIf_elemKeyword_notFound() {
         val e = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(table $0 funcref (non-elem $1 $2))", context)
-                .parseTableAndElementSegment(0)
+                .parseTableAndElementSegment(0, counts)
         }
         assertThat(e).hasMessageThat().contains("Expected inline element segment")
     }
@@ -135,7 +138,7 @@ class TableTest {
     fun parseTableAndElementSegment_throwsIf_elemClosingParen_notFound() {
         val e = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(table $0 funcref (elem $1 $2)", context)
-                .parseTableAndElementSegment(0)
+                .parseTableAndElementSegment(0, counts)
         }
         assertThat(e).hasMessageThat().contains("Expected ')'")
     }
@@ -144,15 +147,15 @@ class TableTest {
     fun parseTableAndElementSegment_throwsIf_closingParen_notFound() {
         val e = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(table $0 funcref (elem $1 $2", context)
-                .parseTableAndElementSegment(0)
+                .parseTableAndElementSegment(0, counts)
         }
         assertThat(e).hasMessageThat().contains("Expected ')'")
     }
 
     @Test
     fun parseTableAndElementSegment_minimal() {
-        val result = tokenizer.tokenize("(table funcref (elem))", context)
-            .parseTableAndElementSegment(0) ?: fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(table funcref (elem))", context)
+            .parseTableAndElementSegment(0, counts) ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(7)
         val table = result.astNode[0] as Table
         assertThat(table.tableType).isEqualTo(
@@ -162,7 +165,9 @@ class TableTest {
             )
         )
         val elementSegment = result.astNode[1] as ElementSegment
-        assertThat(elementSegment.tableIndex).isEqualTo(Index.ByIdentifier(table.id))
+        assertThat(elementSegment.tableIndex).isEqualTo(
+            Index.ByInt(0) as Index<Identifier.Table>,
+        )
         assertThat(elementSegment.offset).isEqualTo(
             Offset(
                 Expression(
@@ -171,12 +176,13 @@ class TableTest {
             )
         )
         assertThat(elementSegment.init).isEmpty()
+        assertThat(newCounts.tables).isEqualTo(counts.tables + 1)
     }
 
     @Test
     fun parseTableAndElementSegment() {
-        val result = tokenizer.tokenize("(table $0 funcref (elem $1 $2))", context)
-            .parseTableAndElementSegment(0) ?: fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(table $0 funcref (elem $1 $2))", context)
+            .parseTableAndElementSegment(0, counts) ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(10)
         assertThat(result.astNode).containsExactly(
             Table(
@@ -187,7 +193,7 @@ class TableTest {
                 )
             ),
             ElementSegment(
-                Index.ByIdentifier(Identifier.Table("$0")),
+                Index.ByInt(0) as Index<Identifier.Table>,
                 Offset(
                     Expression(
                         astNodeListOf(NumericConstantInstruction.I32(IntegerLiteral.S32(0)))
@@ -199,12 +205,13 @@ class TableTest {
                 )
             )
         ).inOrder()
+        assertThat(newCounts.tables).isEqualTo(counts.tables + 1)
     }
 
     @Test
     fun parseTable_parsesPlain() {
-        val result = tokenizer.tokenize("(table $0 0 1 funcref)", context)
-            .parseTable(0) ?: fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(table $0 0 1 funcref)", context)
+            .parseTable(0, counts) ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(7)
         assertThat(result.astNode.size).isEqualTo(1)
         assertThat((result.astNode.first() as Table).id).isEqualTo(Identifier.Table("$0"))
@@ -214,12 +221,13 @@ class TableTest {
                 ElementType.FunctionReference
             )
         )
+        assertThat(newCounts.tables).isEqualTo(counts.tables + 1)
     }
 
     @Test
     fun parseTable_parsesWithElementSegment() {
-        val result = tokenizer.tokenize("(table $0 funcref (elem $1 $2))", context)
-            .parseTable(0) ?: fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(table $0 funcref (elem $1 $2))", context)
+            .parseTable(0, counts) ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(10)
         assertThat(result.astNode).containsExactly(
             Table(
@@ -230,7 +238,7 @@ class TableTest {
                 )
             ),
             ElementSegment(
-                Index.ByIdentifier(Identifier.Table("$0")),
+                Index.ByInt(0) as Index<Identifier.Table>,
                 Offset(
                     Expression(
                         astNodeListOf(NumericConstantInstruction.I32(IntegerLiteral.S32(0)))
@@ -242,5 +250,6 @@ class TableTest {
                 )
             )
         ).inOrder()
+        assertThat(newCounts.tables).isEqualTo(counts.tables + 1)
     }
 }

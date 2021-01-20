@@ -21,6 +21,7 @@ import kwasm.ast.module.ExportDescriptor
 import kwasm.ast.module.Index
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
+import kwasm.format.text.TextModuleCounts
 import kwasm.format.text.Tokenizer
 import org.assertj.core.api.Assertions.fail
 import org.junit.Assert.assertThrows
@@ -30,6 +31,7 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class ExportTest {
+    private val counts = TextModuleCounts(0, 0, 0, 0, 0)
     private val tokenizer = Tokenizer()
     private val context = ParseContext("ExportTest.wast")
 
@@ -108,14 +110,14 @@ class ExportTest {
     @Test
     fun parseExport_returnsNullIfOpeningParen_isMissing() {
         val result = tokenizer.tokenize("export \"name\" (global $0))", context)
-            .parseExport(0)
+            .parseExport(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parseExport_returnsNullIf_exportNotPresent() {
         val result = tokenizer.tokenize("(\"name\" (global $0))", context)
-            .parseExport(0)
+            .parseExport(0, counts)
         assertThat(result).isNull()
     }
 
@@ -123,7 +125,7 @@ class ExportTest {
     fun parseExport_throws_ifNameIsNotPresent() {
         assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(export (global $0))", context)
-                .parseExport(0)
+                .parseExport(0, counts)
         }
     }
 
@@ -131,7 +133,7 @@ class ExportTest {
     fun parseExport_throws_ifDescriptorIsNotPresent() {
         assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(export \"name\")", context)
-                .parseExport(0)
+                .parseExport(0, counts)
         }
     }
 
@@ -139,15 +141,15 @@ class ExportTest {
     fun parseExport_throws_ifClosingParen_isNotPresent() {
         val e = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(export \"name\" (global $0)", context)
-                .parseExport(0)
+                .parseExport(0, counts)
         }
         assertThat(e).hasMessageThat().contains("Expected ')'")
     }
 
     @Test
     fun parseExport() {
-        val result = tokenizer.tokenize("(export \"name\" (global $0))", context)
-            .parseExport(0) ?: fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(export \"name\" (global $0))", context)
+            .parseExport(0, counts) ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(8)
         assertThat(result.astNode).isEqualTo(
             Export(
@@ -157,5 +159,6 @@ class ExportTest {
                 )
             )
         )
+        assertThat(newCounts).isEqualTo(counts)
     }
 }

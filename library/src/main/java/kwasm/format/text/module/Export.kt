@@ -21,6 +21,7 @@ import kwasm.format.ParseException
 import kwasm.format.parseCheck
 import kwasm.format.parseCheckNotNull
 import kwasm.format.text.ParseResult
+import kwasm.format.text.TextModuleCounts
 import kwasm.format.text.contextAt
 import kwasm.format.text.isClosedParen
 import kwasm.format.text.isKeyword
@@ -38,7 +39,10 @@ import kwasm.format.text.token.Token
  *   export_I ::= ‘(’ ‘export’ nm:name d:exportdesc_I ‘)’ => {name nm, desc d}
  * ```
  */
-fun List<Token>.parseExport(fromIndex: Int): ParseResult<Export>? {
+fun List<Token>.parseExport(
+    fromIndex: Int,
+    counts: TextModuleCounts,
+): Pair<ParseResult<Export>, TextModuleCounts>? {
     var currentIndex = fromIndex
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
@@ -56,7 +60,7 @@ fun List<Token>.parseExport(fromIndex: Int): ParseResult<Export>? {
             descriptor.astNode
         ),
         currentIndex - fromIndex
-    )
+    ) to counts
 }
 
 /**

@@ -33,6 +33,7 @@ import kwasm.ast.type.Limits
 import kwasm.ast.type.TableType
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
+import kwasm.format.text.TextModuleCounts
 import kwasm.format.text.Tokenizer
 import org.assertj.core.api.Assertions
 import org.junit.Assert.assertThrows
@@ -40,37 +41,38 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
-@Suppress("EXPERIMENTAL_UNSIGNED_LITERALS", "EXPERIMENTAL_API_USAGE")
+@Suppress("EXPERIMENTAL_UNSIGNED_LITERALS", "EXPERIMENTAL_API_USAGE", "UNCHECKED_CAST")
 @RunWith(JUnit4::class)
 class TableInlineExportTest {
+    private val counts = TextModuleCounts(0, 0, 0, 0, 0)
     private val tokenizer = Tokenizer()
     private val context = ParseContext("TableInlineExportTest.wat")
 
     @Test
     fun parse_returnsNullIf_openingParenNotFound() {
         val result = tokenizer.tokenize("table $0 (export \"a\"))", context)
-            .parseInlineTableExport(0)
+            .parseInlineTableExport(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parse_returnsNullIf_tableKeywordNotFound() {
         val result = tokenizer.tokenize("(nontable $0 (export \"a\"))", context)
-            .parseInlineTableExport(0)
+            .parseInlineTableExport(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parse_returnsNullIf_exportOpeningParenNotFound() {
         val result = tokenizer.tokenize("(table $0 export \"a\"))", context)
-            .parseInlineTableExport(0)
+            .parseInlineTableExport(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parse_returnsNullIf_exportKeywordNotFound() {
         val result = tokenizer.tokenize("(table $0 (nonexport \"a\"))", context)
-            .parseInlineTableExport(0)
+            .parseInlineTableExport(0, counts)
         assertThat(result).isNull()
     }
 
@@ -78,7 +80,7 @@ class TableInlineExportTest {
     fun parse_throwsIf_exportNameNotFound() {
         assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(table $0 (export))", context)
-                .parseInlineTableExport(0)
+                .parseInlineTableExport(0, counts)
         }
     }
 
@@ -86,79 +88,80 @@ class TableInlineExportTest {
     fun parse_throwsIf_exportClosureNotFound() {
         val e = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(table $0 (export \"a\"", context)
-                .parseInlineTableExport(0)
+                .parseInlineTableExport(0, counts)
         }
         assertThat(e).hasMessageThat().contains("Expected ')'")
     }
 
     @Test
     fun parse_minimal() {
-        val result = tokenizer.tokenize("(table (export \"a\"))", context)
-            .parseInlineTableExport(0)
-            ?: Assertions.fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(table (export \"a\"))", context)
+            .parseInlineTableExport(0, counts) ?: Assertions.fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(7)
         val export = result.astNode[0] as Export
         assertThat(export.descriptor as? ExportDescriptor.Table).isNotNull()
         assertThat(export.name).isEqualTo("a")
+        assertThat(newCounts.tables).isEqualTo(counts.tables + 1)
     }
 
     @Test
     fun parse_simple() {
-        val result = tokenizer.tokenize("(table $0 (export \"a\"))", context)
-            .parseInlineTableExport(0)
-            ?: Assertions.fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(table $0 (export \"a\"))", context)
+            .parseInlineTableExport(0, counts) ?: Assertions.fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(8)
         assertThat(result.astNode).containsExactly(
             Export(
                 "a",
                 ExportDescriptor.Table(
-                    Index.ByIdentifier(Identifier.Table("$0"))
+                    Index.ByInt(0) as Index<Identifier.Table>
                 )
             )
         ).inOrder()
+        assertThat(newCounts.tables).isEqualTo(counts.tables + 1)
     }
 
     @Test
     fun parse_multipleExports() {
-        val result = tokenizer.tokenize(
+        val (result, newCounts) = tokenizer.tokenize(
             "(table $0 (export \"a\") (export \"b\") (export \"c\"))",
             context
-        ).parseInlineTableExport(0) ?: Assertions.fail("Expected a result")
+        ).parseInlineTableExport(0, counts) ?: Assertions.fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(16)
         assertThat(result.astNode).containsExactly(
             Export(
                 "a",
                 ExportDescriptor.Table(
-                    Index.ByIdentifier(Identifier.Table("$0"))
+                    Index.ByInt(0) as Index<Identifier.Table>
                 )
             ),
             Export(
                 "b",
                 ExportDescriptor.Table(
-                    Index.ByIdentifier(Identifier.Table("$0"))
+                    Index.ByInt(0) as Index<Identifier.Table>
                 )
             ),
             Export(
                 "c",
                 ExportDescriptor.Table(
-                    Index.ByIdentifier(Identifier.Table("$0"))
+                    Index.ByInt(0) as Index<Identifier.Table>
                 )
             )
         ).inOrder()
+        assertThat(newCounts.tables).isEqualTo(counts.tables + 1)
     }
 
     @Test
     fun parse_exportThenImport() {
-        val result = tokenizer.tokenize(
+        val (result, newCounts) = tokenizer.tokenize(
             "(table $0 (export \"a\") (import \"b\" \"c\") 1 funcref)",
             context
-        ).parseInlineTableExport(0) ?: Assertions.fail("Expected a result")
+        ).parseInlineTableExport(0, counts) ?: Assertions.fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(15)
         assertThat(result.astNode).containsExactly(
             Export(
                 "a",
                 ExportDescriptor.Table(
-                    Index.ByIdentifier(Identifier.Table("$0"))
+                    Index.ByInt(0) as Index<Identifier.Table>
                 )
             ),
             Import(
@@ -173,20 +176,21 @@ class TableInlineExportTest {
                 )
             )
         ).inOrder()
+        assertThat(newCounts.tables).isEqualTo(counts.tables + 1)
     }
 
     @Test
     fun parse_exportThenInlineElements() {
-        val result = tokenizer.tokenize(
+        val (result, newCounts) = tokenizer.tokenize(
             "(table $0 (export \"a\") funcref (elem $1 $2))",
             context
-        ).parseInlineTableExport(0) ?: Assertions.fail("Expected a result")
+        ).parseInlineTableExport(0, counts) ?: Assertions.fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(14)
         assertThat(result.astNode).containsExactly(
             Export(
                 "a",
                 ExportDescriptor.Table(
-                    Index.ByIdentifier(Identifier.Table("$0"))
+                    Index.ByInt(0) as Index<Identifier.Table>
                 )
             ),
             Table(
@@ -197,7 +201,7 @@ class TableInlineExportTest {
                 )
             ),
             ElementSegment(
-                Index.ByIdentifier(Identifier.Table("$0")),
+                Index.ByInt(0) as Index<Identifier.Table>,
                 Offset(
                     Expression(
                         astNodeListOf(NumericConstantInstruction.I32(IntegerLiteral.S32(0)))
@@ -209,26 +213,27 @@ class TableInlineExportTest {
                 )
             )
         ).inOrder()
+        assertThat(newCounts.tables).isEqualTo(counts.tables + 1)
     }
 
     @Test
     fun parse_multipleExportsThenInlineElements() {
-        val result = tokenizer.tokenize(
+        val (result, newCounts) = tokenizer.tokenize(
             "(table $0 (export \"a\") (export \"b\") funcref (elem $1 $2))",
             context
-        ).parseInlineTableExport(0) ?: Assertions.fail("Expected a result")
+        ).parseInlineTableExport(0, counts) ?: Assertions.fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(18)
         assertThat(result.astNode).containsExactly(
             Export(
                 "a",
                 ExportDescriptor.Table(
-                    Index.ByIdentifier(Identifier.Table("$0"))
+                    Index.ByInt(0) as Index<Identifier.Table>
                 )
             ),
             Export(
                 "b",
                 ExportDescriptor.Table(
-                    Index.ByIdentifier(Identifier.Table("$0"))
+                    Index.ByInt(0) as Index<Identifier.Table>
                 )
             ),
             Table(
@@ -239,7 +244,7 @@ class TableInlineExportTest {
                 )
             ),
             ElementSegment(
-                Index.ByIdentifier(Identifier.Table("$0")),
+                Index.ByInt(0) as Index<Identifier.Table>,
                 Offset(
                     Expression(
                         astNodeListOf(NumericConstantInstruction.I32(IntegerLiteral.S32(0)))
@@ -251,5 +256,6 @@ class TableInlineExportTest {
                 )
             )
         ).inOrder()
+        assertThat(newCounts.tables).isEqualTo(counts.tables + 1)
     }
 }

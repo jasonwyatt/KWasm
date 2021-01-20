@@ -55,7 +55,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
-@Suppress("EXPERIMENTAL_UNSIGNED_LITERALS", "EXPERIMENTAL_API_USAGE")
+@Suppress("EXPERIMENTAL_UNSIGNED_LITERALS", "EXPERIMENTAL_API_USAGE", "UNCHECKED_CAST")
 @RunWith(JUnit4::class)
 class WasmModuleTest {
     private val tokenizer = Tokenizer()
@@ -297,25 +297,25 @@ class WasmModuleTest {
                 Export(
                     "a",
                     ExportDescriptor.Function(
-                        Index.ByIdentifier(Identifier.Function("$7"))
+                        Index.ByInt(3) as Index<Identifier.Function>
                     )
                 ),
                 Export(
                     "a",
                     ExportDescriptor.Table(
-                        Index.ByIdentifier(Identifier.Table("$9"))
+                        Index.ByInt(2) as Index<Identifier.Table>
                     )
                 ),
                 Export(
                     "a",
                     ExportDescriptor.Memory(
-                        Index.ByIdentifier(Identifier.Memory("$11"))
+                        Index.ByInt(2) as Index<Identifier.Memory>
                     )
                 ),
                 Export(
                     "a",
                     ExportDescriptor.Global(
-                        Index.ByIdentifier(Identifier.Global("$13"))
+                        Index.ByInt(2) as Index<Identifier.Global>
                     )
                 )
             ).inOrder()

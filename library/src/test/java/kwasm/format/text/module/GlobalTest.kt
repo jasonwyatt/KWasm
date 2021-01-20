@@ -26,6 +26,7 @@ import kwasm.ast.type.GlobalType
 import kwasm.ast.type.ValueType
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
+import kwasm.format.text.TextModuleCounts
 import kwasm.format.text.Tokenizer
 import org.assertj.core.api.Assertions.fail
 import org.junit.Assert.assertThrows
@@ -35,20 +36,21 @@ import org.junit.runners.JUnit4
 
 @RunWith(JUnit4::class)
 class GlobalTest {
+    private val counts = TextModuleCounts(0, 0, 0, 0, 0)
     private val tokenizer = Tokenizer()
     private val context = ParseContext("GlobalTest.wast")
 
     @Test
     fun parseGlobal_returnsNullIf_openingParen_notFound() {
         val result = tokenizer.tokenize("global $0 i32 i32.const 0)", context)
-            .parseGlobal(0)
+            .parseGlobal(0, counts)
         assertThat(result).isNull()
     }
 
     @Test
     fun parseGlobal_returnsNullIf_globalKeyword_notFound() {
         val result = tokenizer.tokenize("(nonglobal $0 i32 i32.const 0)", context)
-            .parseGlobal(0)
+            .parseGlobal(0, counts)
         assertThat(result).isNull()
     }
 
@@ -56,7 +58,7 @@ class GlobalTest {
     fun parseGlobal_throwsIf_globalType_notFound() {
         assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(global $0 i32.const 0)", context)
-                .parseGlobal(0)
+                .parseGlobal(0, counts)
         }
     }
 
@@ -64,15 +66,15 @@ class GlobalTest {
     fun parseGlobal_throwsIf_closingParen_notFound() {
         val e = assertThrows(ParseException::class.java) {
             tokenizer.tokenize("(global $0 i32 i32.const 0", context)
-                .parseGlobal(0)
+                .parseGlobal(0, counts)
         }
         assertThat(e).hasMessageThat().contains("Expected ')'")
     }
 
     @Test
     fun parseGlobal_minimal() {
-        val result = tokenizer.tokenize("(global i32)", context).parseGlobal(0)
-            ?: fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(global i32)", context)
+            .parseGlobal(0, counts) ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(4)
         assertThat(result.astNode.globalType).isEqualTo(
             GlobalType(ValueType.I32, false)
@@ -80,12 +82,13 @@ class GlobalTest {
         assertThat(result.astNode.initExpression).isEqualTo(
             Expression(astNodeListOf())
         )
+        assertThat(newCounts.globals).isEqualTo(counts.globals + 1)
     }
 
     @Test
     fun parseGlobal_mutable() {
-        val result = tokenizer.tokenize("(global (mut i32))", context).parseGlobal(0)
-            ?: fail("Expected a result")
+        val (result, newCounts) = tokenizer.tokenize("(global (mut i32))", context)
+            .parseGlobal(0, counts) ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(7)
         assertThat(result.astNode.globalType).isEqualTo(
             GlobalType(ValueType.I32, true)
@@ -93,14 +96,15 @@ class GlobalTest {
         assertThat(result.astNode.initExpression).isEqualTo(
             Expression(astNodeListOf())
         )
+        assertThat(newCounts.globals).isEqualTo(counts.globals + 1)
     }
 
     @Test
     fun parseGlobal() {
-        val result = tokenizer.tokenize(
+        val (result, newCounts) = tokenizer.tokenize(
             "(global $0 (mut i32) (i32.add (i32.const 0) (i32.const 1)))",
             context
-        ).parseGlobal(0) ?: fail("Expected a result")
+        ).parseGlobal(0, counts) ?: fail("Expected a result")
         assertThat(result.parseLength).isEqualTo(19)
         assertThat(result.astNode).isEqualTo(
             Global(
@@ -115,5 +119,6 @@ class GlobalTest {
                 )
             )
         )
+        assertThat(newCounts.globals).isEqualTo(counts.globals + 1)
     }
 }

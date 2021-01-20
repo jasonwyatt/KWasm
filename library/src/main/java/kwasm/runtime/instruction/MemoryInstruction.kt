@@ -119,7 +119,7 @@ internal fun MemoryInstruction.LoadFloat.execute(context: ExecutionContext): Exe
                 throw KWasmRuntimeException("Illegal byte width: $byteWidth for load instruction")
         }
     } catch (e: IndexOutOfBoundsException) {
-        throw KWasmRuntimeException("Cannot load at position $ea", e)
+        throw KWasmRuntimeException("Cannot load at position $ea (out of bounds memory access)", e)
     }
     context.stacks.operands.push(resultValue)
     return context
