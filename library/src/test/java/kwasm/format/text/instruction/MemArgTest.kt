@@ -54,21 +54,11 @@ class MemArgTest {
     fun parse_offsetOnly() {
         var result = tokenizer.tokenize("offset=50", context).parseMemarg(0, 4)
         assertThat(result.parseLength).isEqualTo(1)
-        assertThat(result.astNode).isEqualTo(
-            MemArg(
-                50,
-                32
-            )
-        )
+        assertThat(result.astNode).isEqualTo(MemArg(50, 4))
 
         result = tokenizer.tokenize("offset=50 call", context).parseMemarg(0, 4)
         assertThat(result.parseLength).isEqualTo(1)
-        assertThat(result.astNode).isEqualTo(
-            MemArg(
-                50,
-                32
-            )
-        )
+        assertThat(result.astNode).isEqualTo(MemArg(50, 4))
     }
 
     @Test
@@ -93,12 +83,12 @@ class MemArgTest {
     @Test
     fun throws_whenAlignIsIllegal() {
         var e = assertThrows(ParseException::class.java) {
-            tokenizer.tokenize("offset=50 align=64", context).parseMemarg(0, 4)
+            tokenizer.tokenize("offset=50 align=5", context).parseMemarg(0, 4)
         }
         assertThat(e).hasMessageThat().contains("Illegal MemArg value for N=4")
 
         e = assertThrows(ParseException::class.java) {
-            tokenizer.tokenize("align=64", context).parseMemarg(0, 4)
+            tokenizer.tokenize("align=35", context).parseMemarg(0, 4)
         }
         assertThat(e).hasMessageThat().contains("Illegal MemArg value for N=4")
     }

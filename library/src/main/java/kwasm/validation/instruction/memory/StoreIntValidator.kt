@@ -48,7 +48,8 @@ object StoreIntValidator : FunctionBodyValidationVisitor<MemoryInstruction.Store
     ): ValidationContext.FunctionBody {
         context.validateMemoryExists()
         validate(node.arg.isAlignmentValid(node.storageBytes), parseContext = null) {
-            "Invalid alignment for N=${node.storageBytes}"
+            "Invalid alignment for N=${node.storageBytes} (alignment must not be " +
+                "larger than natural)"
         }
         val (topTwo, updatedContext) = context.popStack(2)
         val storeType = when (node.bitWidth) {

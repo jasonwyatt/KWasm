@@ -42,7 +42,7 @@ object LoadFloatValidator : FunctionBodyValidationVisitor<MemoryInstruction.Load
     ): ValidationContext.FunctionBody {
         context.validateMemoryExists()
         validate(node.arg.isAlignmentValid(node.byteWidth), parseContext = null) {
-            "Invalid alignment for N=${node.byteWidth}"
+            "Invalid alignment for N=${node.byteWidth} (alignment must not be larger than natural)"
         }
         val (top, updatedContext) = context.popStack()
         validateNotNull(

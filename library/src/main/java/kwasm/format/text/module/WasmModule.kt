@@ -141,7 +141,7 @@ fun List<Token>.parseModule(fromIndex: Int): ParseResult<WasmModule>? {
 
     return ParseResult(
         WasmModule(
-            label.astNode,
+            label.astNode.takeIf { it.stringRepr != null },
             types,
             imports,
             functions,

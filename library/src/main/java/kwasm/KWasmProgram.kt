@@ -488,6 +488,7 @@ class KWasmProgram internal constructor(
 
         internal fun withModule(name: String, module: WasmModule) {
             parsedModules[name] = module
+            modulesInOrder.removeIf { it.first == name }
             modulesInOrder.add(name to module)
         }
 

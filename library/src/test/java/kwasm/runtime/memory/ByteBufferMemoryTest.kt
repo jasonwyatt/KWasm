@@ -563,7 +563,8 @@ class ByteBufferMemoryTest {
                 .toList()
                 .shuffled(Random(System.nanoTime()))
                 .take(3)
-        val expectedFinalValue = values[beforeLockDelays.withIndex().maxBy { it.value }!!.index]
+        val expectedFinalValue =
+            values[beforeLockDelays.withIndex().maxByOrNull { it.value }!!.index]
 
         val jobOne = launch {
             delay(beforeLockDelays[0])

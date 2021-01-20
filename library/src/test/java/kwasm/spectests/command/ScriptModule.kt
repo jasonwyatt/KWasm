@@ -58,13 +58,14 @@ sealed class ScriptModule : Command<Unit> {
         val source: String
     ) : ScriptModule() {
         override fun execute(context: ScriptContext) {
+            val moduleSource = if (source.startsWith("(module")) source else "(module $source)"
             val module = Tokenizer().tokenize(
-                "(module $source)",
+                moduleSource,
                 parseContext
             ).parseModule(0)!!.astNode
 
             context.modules[identifier] = module
-            context.programBuilder.withModule("", "(module $source)")
+            context.programBuilder.withModule("", moduleSource)
             context.build()
         }
     }

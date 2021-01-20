@@ -26,6 +26,7 @@ import kwasm.format.text.isKeyword
 import kwasm.format.text.isOpenParen
 import kwasm.format.text.token.StringLiteral
 import kwasm.format.text.token.Token
+import java.util.stream.Collectors
 
 /**
  * Parses a [DataSegment] from the receiving [List] of [Token]s.
@@ -93,5 +94,8 @@ internal fun List<Token>.parseDataString(fromIndex: Int): Pair<ByteArray, Int> {
             currentIndex++
         } else break
     }
-    return strings.toString().toByteArray(Charsets.UTF_8) to (currentIndex - fromIndex)
+    val bytes = strings.codePoints().mapToObj { it.toByte() }
+        .collect(Collectors.toList())
+    val byteArray = ByteArray(bytes.size) { bytes[it] }
+    return byteArray to (currentIndex - fromIndex)
 }
