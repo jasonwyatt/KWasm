@@ -29,7 +29,6 @@ import kwasm.spectests.command.Action
 import kwasm.spectests.command.Command
 import kwasm.spectests.command.ScriptModule
 import kwasm.spectests.command.parseAction
-import kwasm.spectests.command.parseAndRunCommand
 import kwasm.spectests.execution.ScriptContext
 import org.junit.Assert.assertThrows
 
