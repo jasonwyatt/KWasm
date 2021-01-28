@@ -39,11 +39,12 @@ object StartFunctionValidator : ModuleValidationVisitor<StartFunction> {
         context: ValidationContext.Module
     ): ValidationContext.Module {
         val func = validateNotNull(context.functions[node.funcIndex], parseContext = null) {
-            "Function with index ${node.funcIndex} not found in the module"
+            "Function with index ${node.funcIndex} not found in the module (unknown function)"
         }
 
         validate(func.params.isEmpty() && func.results.isEmpty(), parseContext = null) {
-            "Start function type expected to be [] => [], but is ${func.functionType}"
+            "Start function type expected to be [] => [], but is ${func.functionType} " +
+                "(start function)"
         }
 
         return context

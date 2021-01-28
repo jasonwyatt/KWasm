@@ -89,7 +89,7 @@ fun List<Token>.parseFoldedInstruction(fromIndex: Int): ParseResult<AstNodeList<
         else -> {
             val plainInstruction = parseInstruction(currentIndex)?.takeIf { it.astNode.isPlain }
                 ?: throw ParseException(
-                    "Expected `if`, `block`, `loop`, or a \"plain\" instruction",
+                    "Expected `if`, `block`, `loop`, or a \"plain\" instruction (unknown operator)",
                     contextAt(currentIndex)
                 )
             /*

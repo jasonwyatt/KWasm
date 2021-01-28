@@ -66,7 +66,7 @@ inline fun <reified T : kwasm.ast.Identifier> List<Token>.parseIndex(
             )
         } catch (e: ParseException) {
             if (T::class == kwasm.ast.Identifier.TypeDef::class) throw e
-            throw ParseException("Expected an index", contextAt(fromIndex))
+            throw ParseException("Expected an index (unknown operator)", contextAt(fromIndex))
         }
     }
 }

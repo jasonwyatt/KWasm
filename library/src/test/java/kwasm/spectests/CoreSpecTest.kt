@@ -48,7 +48,11 @@ class CoreSpecTest {
             "int_exprs.wast",
             "int_literals.wast",
             "memory.wast",
-            "traps.wast"
+            "memory_redundancy.wast",
+            "return.wast",
+            "token.wast",
+            "traps.wast",
+            "unreachable.wast",
         ],
     )
     fun scriptTest(input: InputStream, file: String) {
@@ -58,6 +62,11 @@ class CoreSpecTest {
             "spectest",
             "print_i32",
             HostFunction { p1: IntValue, _ -> println(p1.value); EmptyValue }
+        )
+        builder.withHostFunction(
+            "spectest",
+            "print",
+            HostFunction { _ -> println("Print called"); EmptyValue }
         )
         builder.withHostMemory(
             "spectest",
