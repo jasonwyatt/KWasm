@@ -35,7 +35,7 @@ import kwasm.format.ParseException
  * ```
  */
 @OptIn(ExperimentalUnsignedTypes::class)
-class Num(private val sequence: CharSequence, context: ParseContext? = null) {
+class Num(val sequence: CharSequence, context: ParseContext? = null) {
     var forceHex: Boolean = false
 
     val foundHexChars: Boolean by lazy { digits.any { it >= 10 } }
@@ -50,7 +50,11 @@ class Num(private val sequence: CharSequence, context: ParseContext? = null) {
                 powerVal *= multiplier
             }
             power++
-            acc + byteVal.toULong() * powerVal
+            val next = acc + byteVal.toULong() * powerVal
+            if (byteVal != 0.toByte() && next < acc) {
+                throw ParseException("Invalid constant (constant out of range)", context)
+            }
+            next
         }
     }
 

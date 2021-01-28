@@ -27,6 +27,14 @@ import kotlin.math.pow
 @RunWith(JUnit4::class)
 class FloatLiteralTest {
     @Test
+    fun throws_when32Bit_andExponentValueIsTooLarge_hex() {
+        val literal = FloatLiteral("0x1p128", 32)
+        assertThrows(ParseException::class.java) {
+            literal.value
+        }
+    }
+
+    @Test
     fun parsesInf() {
         val actual = FloatLiteral("inf")
         assertThat(actual.isInfinite()).isTrue()
@@ -204,13 +212,6 @@ class FloatLiteralTest {
     @Test
     fun decimalThrows_whenDotIsFirstElement() {
         val actual = FloatLiteral(".5")
-        val exception = assertThrows(ParseException::class.java) { actual.value }
-        assertThat(exception).hasMessageThat().contains("Invalid placement for decimal")
-    }
-
-    @Test
-    fun hexThrows_whenDotIsFirstElement() {
-        val actual = FloatLiteral("0x.5")
         val exception = assertThrows(ParseException::class.java) { actual.value }
         assertThat(exception).hasMessageThat().contains("Invalid placement for decimal")
     }

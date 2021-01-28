@@ -28,6 +28,22 @@ import kotlin.math.absoluteValue
 @RunWith(JUnit4::class)
 class IntegerLiteralTest {
     @Test
+    fun parseSigned_throwsWhenOutOfRange_i64Dec() {
+        assertThrows(ParseException::class.java) {
+            val literal = IntegerLiteral.Signed("18446744073709551616")
+            literal.value
+        }
+    }
+
+    @Test
+    fun parseSigned_throwsWhenOutOfRange_i64Hex() {
+        assertThrows(ParseException::class.java) {
+            val literal = IntegerLiteral.Signed("-0x8000000000000001")
+            literal.value
+        }
+    }
+
+    @Test
     fun parsesUnsigned_base10() {
         val expected = 1234567890.toULong()
         val actual = IntegerLiteral.Unsigned("1234567890")
@@ -37,8 +53,7 @@ class IntegerLiteralTest {
     @Test
     fun throwsOnUnsigned_whenBase10_containsHexChars() {
         val literal = IntegerLiteral.Unsigned("1234aa")
-        val exception = assertThrows(ParseException::class.java) { literal.value }
-        assertThat(exception).hasMessageThat().contains("Unexpected hex integer")
+        assertThrows(ParseException::class.java) { literal.value }
     }
 
     @Test
@@ -52,7 +67,7 @@ class IntegerLiteralTest {
     fun throwsOnUnsigned_outsideMagnitude() {
         val literal = IntegerLiteral.Unsigned("256", 8)
         val exception = assertThrows(ParseException::class.java) { literal.value }
-        assertThat(exception).hasMessageThat().contains("Illegal value")
+        assertThat(exception).hasMessageThat().contains("Integer constant out of range")
     }
 
     @Test
@@ -88,8 +103,7 @@ class IntegerLiteralTest {
     @Test
     fun throwsOnSigned_whenBase10_containsHexChars() {
         val literal = IntegerLiteral.Signed("-1234aa")
-        val exception = assertThrows(ParseException::class.java) { literal.value }
-        assertThat(exception).hasMessageThat().contains("Unexpected hex integer")
+        assertThrows(ParseException::class.java) { literal.value }
     }
 
     @Test

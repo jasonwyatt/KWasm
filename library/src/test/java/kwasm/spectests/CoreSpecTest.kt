@@ -33,6 +33,8 @@ class CoreSpecTest {
             "align.wast",
             "binary.wast",
             "binary-leb128.wast",
+            "comments.wast",
+            "const.wast",
             "traps.wast"
         ],
     )

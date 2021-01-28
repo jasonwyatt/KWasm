@@ -16,10 +16,10 @@ package kwasm.format.text.token
 
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
-import kwasm.format.shiftColumnBy
 import kwasm.format.text.token.util.Num
 import kwasm.format.text.token.util.TokenMatchResult
 import kwasm.format.text.token.util.parseLongSign
+import java.lang.NumberFormatException
 import kotlin.math.pow
 
 /**
@@ -48,16 +48,24 @@ import kotlin.math.pow
  */
 @OptIn(ExperimentalUnsignedTypes::class)
 sealed class IntegerLiteral<Type>(
-    protected val sequence: CharSequence,
+    val sequence: CharSequence,
     magnitude: Int = 64,
     override val context: ParseContext? = null
 ) : Token {
     val value: Type by lazy {
-        val res = parseValue()
+        val res = try {
+            parseValue()
+        } catch (e: NumberFormatException) {
+            throw ParseException(
+                errorMsg = "Illegal value: $sequence (i$magnitude constant|constant out of range)",
+                parseContext = context,
+                origin = e
+            )
+        }
         if (!checkMagnitude(res, this.magnitude)) {
             throw ParseException(
                 "Illegal value: $res, for expected magnitude: " +
-                    "${this.magnitude}: i${this.magnitude} constant",
+                    "${this.magnitude}: i${this.magnitude} constant (constant out of range)",
                 context
             )
         }
@@ -80,25 +88,22 @@ sealed class IntegerLiteral<Type>(
         magnitude: Int = 64,
         context: ParseContext? = null
     ) : IntegerLiteral<ULong>(sequence, magnitude, context) {
-        override fun parseValue(): ULong {
-            val expectHex: Boolean
-            val num: Num
-            if (sequence.length > 2 && sequence[0] == '0' && sequence[1] == 'x') {
-                expectHex = true
-                num = Num(
-                    sequence.subSequence(2, sequence.length),
-                    context.shiftColumnBy(2)
-                )
-            } else {
-                expectHex = false
-                num = Num(sequence, context)
-            }
+        private val bounds = 0uL..(2.0.pow(magnitude) - 1).toULong()
 
-            if (!expectHex && num.foundHexChars) {
-                throw ParseException("Unexpected hex integer", context)
+        override fun parseValue(): ULong {
+            var strToUse = sequence.toString().replace("_", "").toLowerCase()
+            var radix = 10
+            if (strToUse.startsWith("0x")) {
+                strToUse = strToUse.substring(2)
+                radix = 16
             }
-            num.forceHex = expectHex
-            return num.value
+            val result = if (magnitude <= 32) {
+                Integer.parseUnsignedInt(strToUse, radix).toUInt().toULong()
+            } else {
+                java.lang.Long.parseUnsignedLong(strToUse, radix).toULong()
+            }
+            return result.takeIf { it in bounds }
+                ?: throw ParseException("Integer constant out of range", context)
         }
 
         override fun checkMagnitude(value: ULong, magnitude: Int): Boolean = when (magnitude) {
@@ -118,36 +123,40 @@ sealed class IntegerLiteral<Type>(
         context: ParseContext? = null
     ) : IntegerLiteral<Long>(sequence, magnitude, context) {
         override fun parseValue(): Long {
-            val (sequenceOffset, sign) = sequence.parseLongSign()
-            val expectHex: Boolean
-            val num: Num
-            if (
-                sequence.length > 2 + sequenceOffset &&
-                sequence[sequenceOffset] == '0' &&
-                sequence[sequenceOffset + 1] == 'x'
-            ) {
-                expectHex = true
-                num = Num(
-                    sequence.subSequence(sequenceOffset + 2, sequence.length),
-                    context.shiftColumnBy(2 + sequenceOffset)
-                )
+            var strToUse = sequence.toString().replace("_", "").toLowerCase()
+            var radix = 10
+            if (strToUse.startsWith("0x")) {
+                strToUse = strToUse.substring(2)
+                radix = 16
+            } else if (strToUse.startsWith("-0x")) {
+                strToUse = "-" + strToUse.substring(3)
+                radix = 16
+            } else if (strToUse.startsWith("+0x")) {
+                strToUse = strToUse.substring(3)
+                radix = 16
+            }
+            return if (magnitude <= 32) {
+                if (strToUse.startsWith("-")) {
+                    java.lang.Long.parseLong(strToUse, radix)
+                } else {
+                    Integer.parseUnsignedInt(strToUse, radix).toLong()
+                }
+            } else if (strToUse.startsWith("-")) {
+                java.lang.Long.parseLong(strToUse, radix)
             } else {
-                expectHex = false
-                num = Num(
-                    sequence.subSequence(sequenceOffset, sequence.length),
-                    context.shiftColumnBy(sequenceOffset)
-                )
+                java.lang.Long.parseUnsignedLong(strToUse, radix)
             }
-
-            if (!expectHex && num.foundHexChars) {
-                throw ParseException("Unexpected hex integer", context)
-            }
-            num.forceHex = expectHex
-            return sign * num.value.toLong()
         }
 
         override fun checkMagnitude(value: Long, magnitude: Int): Boolean {
-            if (magnitude == 32) return value.toUInt().toInt() in Int.MIN_VALUE..Int.MAX_VALUE
+            val (_, sign) = sequence.parseLongSign()
+            if (magnitude == 32) {
+                return value.toUInt().toInt() in Int.MIN_VALUE..Int.MAX_VALUE &&
+                    (
+                        (sign == 1L && value <= UInt.MAX_VALUE.toLong()) ||
+                            (sign == -1L && value >= Int.MIN_VALUE.toLong())
+                        )
+            }
             if (magnitude == 64) return value in Long.MIN_VALUE..Long.MAX_VALUE
             val doubleValue = value.toDouble()
             val extent = 2.0.pow(magnitude - 1)
