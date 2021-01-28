@@ -15,9 +15,9 @@
 package kwasm.format.text.type
 
 import kwasm.ast.type.Limits
-import kwasm.format.ParseException
 import kwasm.format.text.ParseResult
 import kwasm.format.text.parseLiteral
+import kwasm.format.text.token.IntegerLiteral
 import kwasm.format.text.token.Token
 
 /**
@@ -33,9 +33,9 @@ fun List<Token>.parseLimits(startingIndex: Int): ParseResult<Limits> {
     var currentIndex = startingIndex
     val min = parseLiteral(currentIndex, UInt::class)
     currentIndex += min.parseLength
-    val max = try {
+    val max = if (currentIndex < size && this[currentIndex] is IntegerLiteral<*>) {
         parseLiteral(currentIndex, UInt::class)
-    } catch (e: ParseException) {
+    } else {
         null
     }
     currentIndex += max?.parseLength ?: 0

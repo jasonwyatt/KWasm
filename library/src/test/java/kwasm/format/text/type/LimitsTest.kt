@@ -115,11 +115,11 @@ class LimitsTest {
     }
 
     @Test
-    fun parseTwoValuesWithMaxALotLargerThanMaxVal_returnsLimitsWithOnlyMin() {
+    fun parseTwoValuesWithMaxALotLargerThanMaxVal_throws() {
         val tokens = tokenizer.tokenize("1234567 100000000000", context)
-        val limits = tokens.parseLimits(0)
-        assertThat(limits.astNode.min).isEqualTo(1234567)
-        assertThat(limits.astNode.max).isEqualTo(null)
+        assertThrows(ParseException::class.java) {
+            tokens.parseLimits(0)
+        }
     }
 
     @Test

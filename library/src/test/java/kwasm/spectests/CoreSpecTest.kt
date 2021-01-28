@@ -17,9 +17,13 @@ package kwasm.spectests
 import kwasm.KWasmProgram
 import kwasm.api.ByteBufferMemoryProvider
 import kwasm.api.HostFunction
+import kwasm.ast.type.ElementType
+import kwasm.ast.type.Limits
+import kwasm.ast.type.TableType
 import kwasm.format.ParseContext
 import kwasm.runtime.EmptyValue
 import kwasm.runtime.IntValue
+import kwasm.runtime.Table
 import org.junit.runner.RunWith
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -35,16 +39,33 @@ class CoreSpecTest {
             "binary-leb128.wast",
             "comments.wast",
             "const.wast",
+            "custom.wast",
+            "data.wast",
+            "elem.wast",
+            "endianness.wast",
+            "exports.wast",
+            "forward.wast",
+            "int_exprs.wast",
+            "int_literals.wast",
+            "memory.wast",
             "traps.wast"
         ],
     )
     fun scriptTest(input: InputStream, file: String) {
-        val builder = KWasmProgram.builder(ByteBufferMemoryProvider(1024 * 1024))
+        val memProvider = ByteBufferMemoryProvider(4L * 1024 * 1024 * 1024)
+        val builder = KWasmProgram.builder(memProvider)
         builder.withHostFunction(
             "spectest",
             "print_i32",
             HostFunction { p1: IntValue, _ -> println(p1.value); EmptyValue }
         )
+        builder.withHostMemory(
+            "spectest",
+            "memory",
+            memProvider.buildMemory(1, 10)
+        )
+        builder.withHostTable("spectest", "table", Table(TableType(Limits(10, 20), ElementType.FunctionReference)))
+        builder.withHostGlobal("spectest", "global_i32", 0)
 
         runScript(InputStreamReader(input), ParseContext(file), builder)
     }

@@ -47,35 +47,45 @@ import kotlin.math.pow
  * ```
  */
 @OptIn(ExperimentalUnsignedTypes::class)
-sealed class IntegerLiteral<Type>(
+sealed class IntegerLiteral<Type : Any>(
     val sequence: CharSequence,
     magnitude: Int = 64,
     override val context: ParseContext? = null
 ) : Token {
-    val value: Type by lazy {
-        val res = try {
-            parseValue()
-        } catch (e: NumberFormatException) {
-            throw ParseException(
-                errorMsg = "Illegal value: $sequence (i$magnitude constant|constant out of range)",
-                parseContext = context,
-                origin = e
-            )
+    private lateinit var calculatedValue: Type
+    private var calculated = false
+
+    val value: Type
+        get() {
+            if (calculated) return calculatedValue
+            val res = try {
+                parseValue()
+            } catch (e: NumberFormatException) {
+                throw ParseException(
+                    errorMsg = "Illegal value: $sequence (i$magnitude constant out of range)",
+                    parseContext = context,
+                    origin = e
+                )
+            }
+            if (!checkMagnitude(res, this.magnitude)) {
+                throw ParseException(
+                    "Illegal value: $res, for expected magnitude: " +
+                        "${this.magnitude}: (i${this.magnitude} constant constant out of range)",
+                    context
+                )
+            }
+            return res.also {
+                calculatedValue = res
+                calculated = true
+            }
         }
-        if (!checkMagnitude(res, this.magnitude)) {
-            throw ParseException(
-                "Illegal value: $res, for expected magnitude: " +
-                    "${this.magnitude}: i${this.magnitude} constant (constant out of range)",
-                context
-            )
-        }
-        res
-    }
+
     var magnitude: Int = magnitude
         set(value) {
             check(value >= 0) { "Negative magnitudes are not allowed" }
             check(value <= 64) { "Magnitudes above 64 are not allowed" }
             field = value
+            calculated = false
         }
 
     protected abstract fun parseValue(): Type

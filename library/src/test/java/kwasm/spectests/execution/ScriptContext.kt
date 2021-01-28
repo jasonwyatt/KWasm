@@ -30,7 +30,6 @@ class ScriptContext(
     var programBuilder: KWasmProgram.Builder =
         KWasmProgram.Builder(ByteBufferMemoryProvider(4000000))
 ) {
-    private val namesByIdentifier = mutableMapOf<Identifier.Label, String>()
     lateinit var program: KWasmProgram
 
     fun build() {
@@ -45,7 +44,13 @@ class ScriptContext(
         val context = args.fold(EmptyExecutionContext()) { acc, expr ->
             expr.instructions.fold(acc) { accInner, instruction -> instruction.execute(accInner) }
         }
-        val moduleName = namesByIdentifier[moduleIdentifier] ?: ""
+        val moduleName = if (moduleIdentifier != null) {
+            programBuilder.modulesInOrder.find { it.second.identifier == moduleIdentifier }?.first
+                ?: ""
+        } else {
+            // If no identifier was used, use the most-recently declared module.
+            programBuilder.modulesInOrder.last().first
+        }
         val fn = program.getFunction(moduleName, fnName)
         val argValues = context.stacks.operands.values.takeLast(fn.argCount)
             .map { it.value }
@@ -55,7 +60,13 @@ class ScriptContext(
     }
 
     fun getGlobal(moduleIdentifier: Identifier.Label?, globalName: String): Value<*> {
-        val moduleName = namesByIdentifier[moduleIdentifier] ?: ""
+        val moduleName = if (moduleIdentifier != null) {
+            programBuilder.modulesInOrder.find { it.second.identifier == moduleIdentifier }?.first
+                ?: ""
+        } else {
+            // If no identifier was used, use the most-recently declared module.
+            programBuilder.modulesInOrder.last().first
+        }
         return program.getGlobal(moduleName, globalName).value.toValue()
     }
 }

@@ -14,6 +14,7 @@
 
 package kwasm.validation.module
 
+import kwasm.ast.module.ImportDescriptor
 import kwasm.ast.module.WasmModule
 import kwasm.ast.util.AstNodeIndex
 import kwasm.validation.ModuleValidationVisitor
@@ -124,21 +125,24 @@ object ModuleValidator : ModuleValidationVisitor<WasmModule> {
         resultContext = node.imports.fold(resultContext) { lastContext, import ->
             import.validate(lastContext)
         }
+        val importedTables = node.imports.count { it.descriptor is ImportDescriptor.Table }
+        val importedMemories = node.imports.count { it.descriptor is ImportDescriptor.Memory }
 
         validate(
-            node.tables.size <= 1,
+            node.tables.size + importedTables <= 1,
             parseContext = null,
-            message = "Modules are not allowed to include more than one table"
+            message = "Modules are not allowed to include more than one table (multiple tables)"
         )
         validate(
-            node.memories.size <= 1,
+            node.memories.size + importedMemories <= 1,
             parseContext = null,
-            message = "Modules are not allowed to include more than one memory"
+            message = "Modules are not allowed to include more than one memory (multiple memories)"
         )
         val exportsByName = node.exports.groupBy { it.name }
         val duplicateExports = exportsByName.filter { it.value.size > 1 }
         validate(duplicateExports.isEmpty(), parseContext = null) {
-            "The following export names are used more than once: ${duplicateExports.keys}"
+            "The following export names are used more than once: ${duplicateExports.keys} " +
+                "(duplicate export name)"
         }
 
         return resultContext

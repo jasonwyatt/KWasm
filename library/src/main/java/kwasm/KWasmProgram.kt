@@ -32,6 +32,7 @@ import kwasm.runtime.ImportExtern
 import kwasm.runtime.Memory
 import kwasm.runtime.ModuleInstance
 import kwasm.runtime.Store
+import kwasm.runtime.Table
 import kwasm.runtime.allocate
 import kwasm.runtime.collectImportExterns
 import kwasm.runtime.instruction.execute
@@ -280,10 +281,12 @@ class KWasmProgram internal constructor(
         private var memoryProvider: MemoryProvider
     ) {
         private val tokenizer = Tokenizer()
-        private val hostExports = mutableMapOf<String, MutableMap<String, Address>>()
-        private val parsedModules = mutableMapOf<String, WasmModule>()
-        private val modulesInOrder = mutableListOf<Pair<String, WasmModule>>()
-        private var store = Store()
+        private val hostFunctions = mutableMapOf<Pair<String, String>, HostFunction<*>>()
+        private val hostMemories = mutableMapOf<Pair<String, String>, Memory>()
+        private val hostTables = mutableMapOf<Pair<String, String>, Table>()
+        private val hostGlobals = mutableMapOf<Pair<String, String>, Global<*>>()
+        internal val parsedModules = mutableMapOf<String, WasmModule>()
+        internal val modulesInOrder = mutableListOf<Pair<String, WasmModule>>()
 
         /**
          * Returns a [KWasmProgram] ready-to-use.
@@ -294,6 +297,36 @@ class KWasmProgram internal constructor(
             val allocatedModules = mutableMapOf<String, ModuleInstance>()
             val moduleImports = mutableMapOf<String, List<ImportExtern<out Address>>>()
             val moduleExports = mutableMapOf<String, MutableMap<String, Address>>()
+            var store = Store()
+
+            val hostExports = mutableMapOf<String, MutableMap<String, Address>>()
+            fun updateHostExports(namespace: String, name: String, address: Address) {
+                hostExports.compute(namespace) { _, map ->
+                    val result = map ?: mutableMapOf()
+                    result[name] = address
+                    result
+                }
+            }
+            hostFunctions.forEach { (namespace, name), fn ->
+                val allocation = store.allocateFunction(fn.toFunctionInstance())
+                updateHostExports(namespace, name, allocation.allocatedAddress)
+                store = allocation.updatedStore
+            }
+            hostMemories.forEach { (namespace, name), mem ->
+                val allocation = store.allocateMemory(mem)
+                updateHostExports(namespace, name, allocation.allocatedAddress)
+                store = allocation.updatedStore
+            }
+            hostTables.forEach { (namespace, name), table ->
+                val allocation = store.allocateTable(table)
+                updateHostExports(namespace, name, allocation.allocatedAddress)
+                store = allocation.updatedStore
+            }
+            hostGlobals.forEach { (namespace, name), global ->
+                val allocation = store.allocateGlobal(global)
+                updateHostExports(namespace, name, allocation.allocatedAddress)
+                store = allocation.updatedStore
+            }
 
             // Allocate the modules, and gather their exports.
             // Currently this is done strictly in the order in which the modules were added to the
@@ -374,9 +407,19 @@ class KWasmProgram internal constructor(
                         checkNotNull(allocatedModule.tableAddresses[elementSegment.tableIndex])
                     val table = store.tables[tableAddress.value]
 
+                    if (
+                        offsetInt < 0 || offsetInt + elementSegment.init.size > table.elements.size
+                    ) {
+                        throw KWasmRuntimeException(
+                            "Can't fit element segment with size ${elementSegment.init.size} " +
+                                "into table with current size = ${table.elements.size} at " +
+                                " offset = $offsetInt. (elements segment does not fit)"
+                        )
+                    }
+
                     elementSegment.init.forEachIndexed { loc, fnIndex ->
                         val addr = checkNotNull(allocatedModule.functionAddresses[fnIndex])
-                        table.elements[offsetInt + loc] = addr
+                        table.addFunction(offsetInt + loc, addr)
                     }
                 }
 
@@ -389,7 +432,20 @@ class KWasmProgram internal constructor(
                         checkNotNull(allocatedModule.memoryAddresses[dataSegment.memoryIndex])
                     val memory = store.memories[memoryAddress.value]
 
-                    memory.writeBytes(dataSegment.init, offsetInt)
+                    try {
+                        memory.writeBytes(dataSegment.init, offsetInt)
+                    } catch (e: IllegalArgumentException) {
+                        if (
+                            e.message?.contains("cannot fit") == true ||
+                            e.message?.contains("newPosition < 0") == true
+                        ) {
+                            throw KWasmRuntimeException(
+                                message = "${e.message}: (data segment does not fit)",
+                                cause = e
+                            )
+                        }
+                        throw e
+                    }
                 }
             }
 
@@ -414,14 +470,36 @@ class KWasmProgram internal constructor(
             namespace: String,
             name: String,
             hostFunction: HostFunction<*>
-        ) = apply {
-            val allocation = store.allocateFunction(hostFunction.toFunctionInstance())
-            hostExports.compute(namespace) { _, map ->
-                val result = map ?: mutableMapOf()
-                result[name] = allocation.allocatedAddress
-                result
+        ) = apply { hostFunctions[namespace to name] = hostFunction }
+
+        /**
+         * Provides a [Memory] for access by [WasmModule]s in the [KWasmProgram].
+         */
+        fun withHostMemory(namespace: String, name: String, memory: Memory) = apply {
+            hostMemories[namespace to name] = memory
+        }
+
+        /**
+         * Provides an immutable [Global] for access by [WasmModule]s in the [KWasmProgram].
+         */
+        fun withHostGlobal(namespace: String, name: String, value: Number) = apply {
+            val global = when (value) {
+                is Int -> Global.Int(value, false)
+                is Long -> Global.Long(value, false)
+                is Float -> Global.Float(value, false)
+                is Double -> Global.Double(value, false)
+                else -> {
+                    throw IllegalArgumentException("Unsupported global type: ${value::class}")
+                }
             }
-            store = allocation.updatedStore
+            hostGlobals[namespace to name] = global
+        }
+
+        /**
+         * Provides a function [Table] for use by [WasmModule]s in the [KWasmProgram].
+         */
+        fun withHostTable(namespace: String, name: String, table: Table) = apply {
+            hostTables[namespace to name] = table
         }
 
         /**

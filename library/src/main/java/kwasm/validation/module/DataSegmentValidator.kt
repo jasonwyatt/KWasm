@@ -43,7 +43,8 @@ object DataSegmentValidator : ModuleValidationVisitor<DataSegment> {
         context: ValidationContext.Module
     ): ValidationContext.Module {
         validateNotNull(context.memories[node.memoryIndex], parseContext = null) {
-            "No memory found with index ${node.memoryIndex} in module"
+            "No memory found with index ${node.memoryIndex} in module " +
+                "(unknown memory ${node.memoryIndex})"
         }
 
         node.offset.expression

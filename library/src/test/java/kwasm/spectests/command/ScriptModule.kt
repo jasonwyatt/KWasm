@@ -44,7 +44,7 @@ sealed class ScriptModule : Command<Unit> {
 
         override fun execute(context: ScriptContext) {
             context.modules[identifier] = module
-            context.programBuilder.withModule("", module)
+            context.programBuilder.withModule(identifier?.stringRepr ?: "", module)
             context.build()
         }
     }

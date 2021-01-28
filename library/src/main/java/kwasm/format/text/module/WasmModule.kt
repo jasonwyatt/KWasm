@@ -21,6 +21,7 @@ import kwasm.ast.module.ElementSegment
 import kwasm.ast.module.Export
 import kwasm.ast.module.Global
 import kwasm.ast.module.Import
+import kwasm.ast.module.ImportDescriptor
 import kwasm.ast.module.Memory
 import kwasm.ast.module.StartFunction
 import kwasm.ast.module.Table
@@ -120,10 +121,31 @@ fun List<Token>.parseModule(fromIndex: Int): ParseResult<WasmModule>? {
     allNodes.forEach {
         when (it) {
             is Type -> types.add(it)
-            is Import -> imports.add(it)
+            is Import -> {
+                if (it.descriptor is ImportDescriptor.Memory) {
+                    parseCheck(
+                        contextAt(fromIndex),
+                        memories.find { prior -> prior.id == it.descriptor.id } == null &&
+                            imports.filter { import ->
+                            import.descriptor is ImportDescriptor.Memory
+                        }.find { des -> des.descriptor.id == it.descriptor.id } == null,
+                        "Modules may only define one memory for each id (duplicate memory)"
+                    )
+                }
+                imports.add(it)
+            }
             is WasmFunction -> functions.add(it)
             is Table -> tables.add(it)
-            is Memory -> memories.add(it)
+            is Memory -> {
+                parseCheck(
+                    contextAt(fromIndex),
+                    memories.find { prior -> prior.id == it.id } == null &&
+                        imports.filter { import -> import.descriptor is ImportDescriptor.Memory }
+                        .find { des -> des.descriptor.id == it.id } == null,
+                    "Modules may only define one memory for each id (duplicate memory)"
+                )
+                memories.add(it)
+            }
             is Global -> globals.add(it)
             is Export -> exports.add(it)
             is StartFunction -> {

@@ -38,6 +38,9 @@ fun BinaryParser.readCustomSection(totalSize: Int): CustomSection {
     val name = readName()
     val nameLen = position - beforePos
     val expectedBytesSize = totalSize - nameLen
+    if (expectedBytesSize < 0) {
+        throwException("Custom section has invalid size, can't contain name (unexpected end)")
+    }
     return CustomSection(name, readBytes(expectedBytesSize))
 }
 

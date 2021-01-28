@@ -81,28 +81,28 @@ object ExportDescriptorValidator : ModuleValidationVisitor<ExportDescriptor<*>> 
                     context.functions[node.index],
                     parseContext = null
                 ) {
-                    "Function with index ${node.index} not found in the module"
+                    "Function with index ${node.index} not found in the module (unknown function)"
                 }
             is ExportDescriptor.Table ->
                 validateNotNull(
                     context.tables[node.index],
                     parseContext = null
                 ) {
-                    "Table with index ${node.index} not found in the module"
+                    "Table with index ${node.index} not found in the module (unknown table)"
                 }
             is ExportDescriptor.Memory ->
                 validateNotNull(
                     context.memories[node.index],
                     parseContext = null
                 ) {
-                    "Memory with index ${node.index} not found in the module"
+                    "Memory with index ${node.index} not found in the module (unknown memory)"
                 }
             is ExportDescriptor.Global ->
                 validateNotNull(
                     context.globals[node.index],
                     parseContext = null
                 ) {
-                    "Global with index ${node.index} not found in the module"
+                    "Global with index ${node.index} not found in the module (unknown global)"
                 }
         }
         return context

@@ -96,13 +96,15 @@ sealed class FunctionInstance(open val type: FunctionType) {
         val moduleInstance: ModuleInstance,
         val code: WasmFunction
     ) : FunctionInstance(
-        code.typeUse?.functionType ?: FunctionType(emptyList(), emptyList())
+        code.typeUse?.index?.let { moduleInstance.types[it] }
+            ?: code.typeUse?.functionType
+            ?: FunctionType(emptyList(), emptyList())
     ) {
         val flattenedInstructions by lazy { code.instructions.flatten(0) }
 
         @Suppress("UNCHECKED_CAST")
         override fun execute(context: ExecutionContext): ExecutionContext {
-            val type = code.typeUse?.functionType ?: FunctionType(emptyList(), emptyList())
+            val type = type
 
             if (type.returnValueEnums.size > 1)
                 throw KWasmRuntimeException("Function cannot have more than one return value.")

@@ -53,8 +53,8 @@ fun List<Token>.parseOffset(
     val expression = parseExpression(currentIndex)
     parseCheck(
         contextAt(currentIndex),
-        expression.astNode.instructions.size == 1,
-        "Expected 1 instruction for abbreviated offset expression"
+        expression.astNode.instructions.isNotEmpty(),
+        "Expected offset expression"
     )
     currentIndex += expression.parseLength
 

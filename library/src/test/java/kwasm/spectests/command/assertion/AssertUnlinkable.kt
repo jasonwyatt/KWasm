@@ -15,7 +15,6 @@
 package kwasm.spectests.command.assertion
 
 import com.google.common.truth.Truth.assertThat
-import kwasm.KWasmProgram
 import kwasm.ast.AstNode
 import kwasm.format.ParseException
 import kwasm.format.text.ParseResult
@@ -36,7 +35,7 @@ class AssertUnlinkable(
     val messageContains: String
 ) : AstNode, Command<Unit> {
     override fun execute(context: ScriptContext) {
-        val e = assertThrows(KWasmProgram.ImportMismatchException::class.java) {
+        val e = assertThrows(Exception::class.java) {
             action.execute(context)
         }
         assertThat(e).hasMessageThat().contains(messageContains)
@@ -48,7 +47,7 @@ fun List<Token>.parseAssertUnlinkable(fromIndex: Int): ParseResult<AssertUnlinka
     var currentIndex = fromIndex
     if (!isOpenParen(currentIndex)) return null
     currentIndex++
-    if (!isKeyword(currentIndex, "assert_malformed")) return null
+    if (!isKeyword(currentIndex, "assert_unlinkable")) return null
     currentIndex++
 
     val scriptModule = parseScriptModule(currentIndex)

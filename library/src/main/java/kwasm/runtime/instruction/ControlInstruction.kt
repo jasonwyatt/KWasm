@@ -286,8 +286,11 @@ internal fun ControlInstruction.CallIndirect.execute(context: ExecutionContext):
     val argument = context.stacks.operands.pop() as? IntValue
         ?: throw KWasmRuntimeException("Expected an i32 on the top of the stack")
 
-    if (argument.value >= table.elements.size)
-        throw KWasmRuntimeException("Table for module has no element at position ${argument.value}")
+    if (table.elements[argument.value] == null) {
+        throw KWasmRuntimeException(
+            "Table for module has no element at position ${argument.value} (uninitialized element)"
+        )
+    }
     val functionAddress = table.elements[argument.value]
         ?: throw KWasmRuntimeException(
             "No function found in the table with location ${argument.value}"
