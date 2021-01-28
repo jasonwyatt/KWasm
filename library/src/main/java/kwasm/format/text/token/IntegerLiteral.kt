@@ -151,11 +151,11 @@ sealed class IntegerLiteral<Type>(
         override fun checkMagnitude(value: Long, magnitude: Int): Boolean {
             val (_, sign) = sequence.parseLongSign()
             if (magnitude == 32) {
-                return value.toUInt().toInt() in Int.MIN_VALUE..Int.MAX_VALUE
-                    && (
-                    (sign == 1L && value <= UInt.MAX_VALUE.toLong()) ||
-                    (sign == -1L && value >= Int.MIN_VALUE.toLong())
-                    )
+                return value.toUInt().toInt() in Int.MIN_VALUE..Int.MAX_VALUE &&
+                    (
+                        (sign == 1L && value <= UInt.MAX_VALUE.toLong()) ||
+                            (sign == -1L && value >= Int.MIN_VALUE.toLong())
+                        )
             }
             if (magnitude == 64) return value in Long.MIN_VALUE..Long.MAX_VALUE
             val doubleValue = value.toDouble()

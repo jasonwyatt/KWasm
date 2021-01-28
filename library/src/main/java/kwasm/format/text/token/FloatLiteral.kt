@@ -16,7 +16,6 @@ package kwasm.format.text.token
 
 import kwasm.format.ParseContext
 import kwasm.format.ParseException
-import kwasm.format.shiftColumnBy
 import kwasm.format.text.token.util.CanonincalNaN
 import kwasm.format.text.token.util.Frac
 import kwasm.format.text.token.util.Num
@@ -130,7 +129,7 @@ class FloatLiteral(
                 determineDecimalFloatValue(sequence, context)
             }
         } catch (e: NumberFormatException) {
-            throw ParseException("Invalid f${magnitude} format (unknown operator)", context, e)
+            throw ParseException("Invalid f$magnitude format (unknown operator)", context, e)
         }
     }
 
