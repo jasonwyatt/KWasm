@@ -48,7 +48,7 @@ object ElementSegmentValidator : ModuleValidationVisitor<ElementSegment> {
         context: ValidationContext.Module
     ): ValidationContext.Module {
         val table = validateNotNull(context.tables[node.tableIndex], parseContext = null) {
-            "Table with index ${node.tableIndex} not found in the module"
+            "Table with index ${node.tableIndex} not found in the module (unknown table)"
         }
 
         validate(table.elemType == ElementType.FunctionReference, parseContext = null) {

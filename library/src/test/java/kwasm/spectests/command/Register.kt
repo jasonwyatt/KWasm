@@ -37,7 +37,15 @@ data class Register(
     val moduleId: Identifier.Label?
 ) : Command<Unit> {
     override fun execute(context: ScriptContext) {
-        TODO("Not yet implemented")
+        val moduleToRegister = if (moduleId != null) {
+            context.programBuilder.modulesInOrder.removeLast()
+            requireNotNull(context.modules[moduleId])
+        } else {
+            context.programBuilder.modulesInOrder.removeLast().second
+        }
+        context.programBuilder.parsedModules.remove(moduleToRegister.identifier?.stringRepr ?: "")
+        context.programBuilder.withModule(importableName, moduleToRegister)
+        context.build()
     }
 }
 

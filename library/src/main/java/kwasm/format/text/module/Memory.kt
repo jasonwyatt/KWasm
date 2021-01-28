@@ -92,8 +92,8 @@ internal fun List<Token>.parseMemoryBasic(
     currentIndex++
     val (id, updatedCounts) = parseOrCreateIdentifier<Identifier.Memory>(currentIndex, counts)
     currentIndex += id.parseLength
-    val memoryType = try { parseMemoryType(currentIndex) } catch (e: ParseException) { null }
-        ?: return null
+    if (isOpenParen(currentIndex)) return null
+    val memoryType = parseMemoryType(currentIndex)
     currentIndex += memoryType.parseLength
     parseCheck(contextAt(currentIndex), isClosedParen(currentIndex), "Expected ')'")
     currentIndex++

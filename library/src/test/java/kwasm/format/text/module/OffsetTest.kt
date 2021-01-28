@@ -37,16 +37,7 @@ class OffsetTest {
             tokenizer.tokenize("notAnInstruction", context).parseOffset(0)
         }
         assertThat(e).hasMessageThat()
-            .contains("Expected 1 instruction for abbreviated offset expression")
-    }
-
-    @Test
-    fun throws_ifAbbreviated_containsMoreThanOneExpression() {
-        val e = assertThrows(ParseException::class.java) {
-            tokenizer.tokenize("i32.const 1 i32.const 2", context).parseOffset(0)
-        }
-        assertThat(e).hasMessageThat()
-            .contains("Expected 1 instruction for abbreviated offset expression")
+            .contains("Expected offset expression")
     }
 
     @Test

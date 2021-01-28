@@ -25,6 +25,6 @@ internal fun ValidationContext.validateMemoryExists() {
     validateNotNull(
         memories[Index.ByInt(0)],
         parseContext = null,
-        message = "A memory must be included in the module"
+        message = "A memory must be included in the module (unknown memory)"
     )
 }

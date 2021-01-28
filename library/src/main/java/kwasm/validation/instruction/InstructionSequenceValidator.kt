@@ -20,6 +20,7 @@ import kwasm.ast.instruction.Instruction
 import kwasm.ast.type.ValueType
 import kwasm.validation.ValidationContext
 import kwasm.validation.ValidationVisitor
+import kwasm.validation.instruction.control.validateReturn
 import kwasm.validation.validate
 
 /**
@@ -76,12 +77,14 @@ class InstructionSequenceValidator(
     ): ValidationContext.FunctionBody {
         val resultContext = node.fold(context) { ctx, inst ->
             if (inst == ControlInstruction.Unreachable) return ctx
+            if (inst == ControlInstruction.Return) return validateReturn(ctx)
             inst.validate(ctx)
         }
         requiredEndStack?.let {
             val topElements = resultContext.stack.takeLast(it.size)
             validate(topElements == it, parseContext = null) {
-                "Required end stack is: $it, but instruction sequence results in: $topElements"
+                "Required end stack is: $it, but instruction sequence results in: $topElements " +
+                    "(type mismatch)"
             }
             validate(!strictEndStackMatchRequired || topElements.size == resultContext.stack.size) {
                 "Strictly required end stack is: $it, but instruction sequence results in: " +

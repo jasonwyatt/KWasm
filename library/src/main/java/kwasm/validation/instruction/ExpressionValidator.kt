@@ -67,7 +67,8 @@ class ExpressionValidator(
             !isConstant || node.instructions.all { it.isConstant(context) },
             parseContext = null,
             message = "Constant expressions may only contain ((i|f)(32|64)).const and " +
-                "global.get instructions operating on non-mutable global values"
+                "global.get instructions operating on non-mutable global values. " +
+                "(constant expression required)"
         )
 
         return node.instructions.validate(

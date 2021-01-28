@@ -43,15 +43,18 @@ fun Limits.validate(range: Long, context: ValidationContext) =
 class LimitsValidator(private val range: Long) : ValidationVisitor<Limits, ValidationContext> {
     override fun visit(node: Limits, context: ValidationContext): ValidationContext {
         validate(node.min <= range, parseContext = null) {
-            "Limits' min value of ${node.min} must not be greater than $range"
+            "Limits' min value of ${node.min} must not be greater than $range (memory size " +
+                "must be at most 65536 pages (4GiB))"
         }
         node.max?.let {
             validate(it <= range, parseContext = null) {
-                "Limits' max value of $it must not be greater than $range"
+                "Limits' max value of $it must not be greater than $range (memory size must " +
+                    "be at most 65536 pages (4GiB))"
             }
             validate(it >= node.min, parseContext = null) {
                 "Limits' max value must be greater-than or equal to its " +
-                    "min (min= ${node.min}, max= ${node.max})"
+                    "min (min= ${node.min}, max= ${node.max}|size minimum must not be greater " +
+                    "than maximum)"
             }
         }
         return context

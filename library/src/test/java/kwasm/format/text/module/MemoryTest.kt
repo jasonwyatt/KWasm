@@ -58,10 +58,10 @@ class MemoryTest {
     }
 
     @Test
-    fun parseMemoryBasic_returnsNull_ifMemoryTypeCouldntBeFound() {
-        val result = tokenizer.tokenize("(memory $0)", context)
-            .parseMemoryBasic(0, counts)
-        assertThat(result).isNull()
+    fun parseMemoryBasic_throws_ifMemoryTypeCouldntBeFound() {
+        assertThrows(ParseException::class.java) {
+            tokenizer.tokenize("(memory $0)", context).parseMemoryBasic(0, counts)
+        }
     }
 
     @Test

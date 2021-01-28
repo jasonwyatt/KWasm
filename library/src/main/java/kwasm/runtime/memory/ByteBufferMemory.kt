@@ -36,9 +36,6 @@ internal class ByteBufferMemory(
     private val tempBuffer = ByteBuffer.allocate(8).order(ByteOrder.LITTLE_ENDIAN)
 
     init {
-        require(maximumPages > 0) {
-            "Maximum size must be > 0 pages"
-        }
         require(maximumPages >= initialPages) {
             "Maximum size specified as $maximumPages page(s), but initialPages = $initialPages"
         }
