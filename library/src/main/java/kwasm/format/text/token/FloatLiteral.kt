@@ -22,8 +22,8 @@ import kwasm.format.text.token.util.Frac
 import kwasm.format.text.token.util.Num
 import kwasm.format.text.token.util.NumberConstants
 import kwasm.format.text.token.util.TokenMatchResult
-import kwasm.format.text.token.util.parseLongSign
 import kwasm.format.text.token.util.significand
+import kotlin.NumberFormatException
 import kotlin.math.pow
 
 /**
@@ -60,46 +60,50 @@ class FloatLiteral(
     var magnitude: Int = magnitude
         set(value) {
             check(value == 32 || value == 64) { "Magnitude must be either 32 or 64" }
+            isInitialized = false
             field = value
         }
 
-    val value: Double by lazy {
-        when {
-            sequence == INFINITY_LITERAL ->
-                if (magnitude == 32) Float.POSITIVE_INFINITY.toDouble()
-                else Double.POSITIVE_INFINITY
-            sequence == "-$INFINITY_LITERAL" ->
-                if (magnitude == 32) Float.NEGATIVE_INFINITY.toDouble()
-                else Double.NEGATIVE_INFINITY
-            sequence == NAN_LITERAL -> if (magnitude == 32) NAN_32_VALUE else NAN_64_VALUE
-            sequence.startsWith(HEXNAN_LITERAL_PREFIX) -> {
-                val n = Num(
-                    sequence.subSequence(
-                        HEXNAN_LITERAL_PREFIX.length,
-                        sequence.length
-                    ),
-                    context
-                )
-                n.forceHex = true
-                val nValue = n.value
+    private var isInitialized = false
+    private var cachedValue = 0.0
 
-                if (
-                    nValue.toLong() != 0L &&
-                    nValue.toLong() >= 2.0.pow(magnitude.significand(context))
-                ) throw ParseException("Illegal hex NaN value.")
+    val value: Double
+        get() {
+            if (isInitialized) return cachedValue
+            return when {
+                sequence == INFINITY_LITERAL ->
+                    if (magnitude == 32) Float.POSITIVE_INFINITY.toDouble()
+                    else Double.POSITIVE_INFINITY
+                sequence == "-$INFINITY_LITERAL" ->
+                    if (magnitude == 32) Float.NEGATIVE_INFINITY.toDouble()
+                    else Double.NEGATIVE_INFINITY
+                sequence == NAN_LITERAL -> if (magnitude == 32) NAN_32_VALUE else NAN_64_VALUE
+                sequence.startsWith(HEXNAN_LITERAL_PREFIX) -> {
+                    val n = java.lang.Long.parseUnsignedLong(
+                        sequence.substring(
+                            HEXNAN_LITERAL_PREFIX.length,
+                            sequence.length
+                        ).replace("_", ""),
+                        16
+                    )
 
-                if (magnitude == 32) NAN_32_VALUE else NAN_64_VALUE
-            }
-            else -> {
-                val (sequenceOffset, sign) = sequence.parseLongSign()
-                val floatValue = determineFloatValue(
-                    sequence.subSequence(sequenceOffset, sequence.length),
-                    context.shiftColumnBy(sequenceOffset)
-                )
-                sign * floatValue
+                    if (n < 1L || n >= 2.0.pow(magnitude.significand(context))) {
+                        throw ParseException(
+                            errorMsg = "Illegal hex NaN value (constant out of range).",
+                            parseContext = context
+                        )
+                    }
+
+                    if (magnitude == 32) NAN_32_VALUE else NAN_64_VALUE
+                }
+                else -> {
+                    determineFloatValue(sequence, context)
+                }
+            }.also {
+                cachedValue = it
+                isInitialized = true
             }
         }
-    }
 
     fun isNaN(): Boolean = when (magnitude) {
         32 -> value.isNaN() || value == CanonincalNaN(32).value.toDouble()
@@ -118,13 +122,16 @@ class FloatLiteral(
     private fun determineFloatValue(
         sequence: CharSequence,
         context: ParseContext? = this.context
-    ): Double = if (sequence.startsWith("0x")) {
-        determineHexFloatValue(
-            sequence.subSequence(2, sequence.length),
-            context.shiftColumnBy(2)
-        )
-    } else {
-        determineDecimalFloatValue(sequence, context)
+    ): Double {
+        try {
+            return if (sequence.indexOf("0x") > -1) {
+                determineHexFloatValue(sequence, context)
+            } else {
+                determineDecimalFloatValue(sequence, context)
+            }
+        } catch (e: NumberFormatException) {
+            throw ParseException("Invalid f${magnitude} format (unknown operator)", context, e)
+        }
     }
 
     /**
@@ -147,38 +154,11 @@ class FloatLiteral(
             throw ParseException("Invalid exponent for float (no contents)", context)
         }
 
-        return if (dotIndex == -1 && eIndex == -1) {
-            // Case 1.
-            val p = case1(sequence, context)
-            assertNoHexChars(
-                context,
-                p
-            )
-            p.value.toDouble()
-        } else if (dotIndex != -1 && eIndex == -1) {
-            val (p, q) = case2(sequence, dotIndex, context)
-            assertNoHexChars(
-                context,
-                p,
-                q
-            )
-            p.value.toDouble() + q.value
-        } else if (dotIndex == -1 && eIndex != -1) {
-            val (p, exponent) = case3(sequence, eIndex, context)
-            assertNoHexChars(
-                context,
-                p
-            )
-            p.value.toDouble() * 10.0.pow(exponent.value.toInt())
-        } else {
-            val (p, q, exponent) = case4(sequence, dotIndex, eIndex, context)
-            assertNoHexChars(
-                context,
-                p,
-                q
-            )
-            (p.value.toDouble() + q.value) * 10.0.pow(exponent.value.toInt())
-        }
+        var strToUse = sequence.toString().replace("_", "")
+        strToUse = if (dotIndex == strToUse.length - 1) {
+            strToUse + "0"
+        } else strToUse
+        return parseValue(strToUse, context)
     }
 
     /**
@@ -188,8 +168,6 @@ class FloatLiteral(
      *                '0x' p:hexnum ('P' | 'p') s:sign e:num                => p * 2^(s * e)
      *                '0x' p:hexnum '.' q:hexfrac ('P' | 'p') s:sign e:num  => (p + q) * 2^(s * e)
      * ```
-     *
-     * **Note:** The '0x' prefix has already been stripped.
      */
     private fun determineHexFloatValue(
         sequence: CharSequence,
@@ -202,89 +180,41 @@ class FloatLiteral(
         if (eIndex == sequence.length - 1) {
             throw ParseException("Invalid exponent for float (no contents)", context)
         }
-        return if (dotIndex == -1 && eIndex == -1) {
-            // Case 1.
-            val p = case1(sequence, context)
-            p.forceHex = true
-            p.value.toDouble()
-        } else if (dotIndex != -1 && eIndex == -1) {
-            val (p, q) = case2(sequence, dotIndex, context)
-            p.forceHex = true
-            q.forceHex = true
-            p.value.toDouble() + q.value
-        } else if (dotIndex == -1 && eIndex != -1) {
-            val (p, exponent) = case3(sequence, eIndex, context)
-            p.forceHex = true
-            p.value.toDouble() * 2.0.pow(exponent.value.toInt())
+        var strToUse = sequence.toString()
+        strToUse = if (dotIndex == sequence.length - 1) {
+            sequence.toString() + "0p0"
+        } else sequence.toString()
+
+        strToUse = strToUse.replace("_", "")
+        strToUse = if (strToUse.contains('p', ignoreCase = true)) {
+            strToUse
         } else {
-            val (p, q, exponent) = case4(sequence, dotIndex, eIndex, context)
-            p.forceHex = true
-            q.forceHex = true
-            (p.value.toDouble() + q.value) * 2.0.pow(exponent.value.toInt())
+            strToUse + "p0"
         }
+        return parseValue(strToUse, context)
     }
 
-    private fun case1(sequence: CharSequence, context: ParseContext?): Num =
-        Num(sequence, context)
-
-    private fun case2(
-        sequence: CharSequence,
-        dotIndex: Int,
-        context: ParseContext?
-    ): Pair<Num, Frac> {
-        val p = Num(
-            sequence.subSequence(0, dotIndex),
-            context
-        )
-        val q = Frac(
-            sequence.subSequence(dotIndex + 1, sequence.length),
-            context.shiftColumnBy(dotIndex + 1)
-        )
-        return p to q
-    }
-
-    private fun case3(
-        sequence: CharSequence,
-        eIndex: Int,
-        context: ParseContext?
-    ): Pair<Num, IntegerLiteral.Signed> {
-        val p = Num(
-            sequence.subSequence(0, eIndex),
-            context
-        )
-        val exponent = IntegerLiteral.Signed(
-            sequence.subSequence(eIndex + 1, sequence.length),
-            context = context.shiftColumnBy(eIndex + 1)
-        )
-        return p to exponent
-    }
-
-    private fun case4(
-        sequence: CharSequence,
-        dotIndex: Int,
-        eIndex: Int,
-        context: ParseContext?
-    ): Triple<Num, Frac, IntegerLiteral.Signed> {
-        val p = Num(
-            sequence.subSequence(0, dotIndex),
-            context
-        )
-        val frac = Frac(
-            sequence.subSequence(dotIndex + 1, eIndex),
-            context.shiftColumnBy(dotIndex + 1)
-        )
-        val exponent = IntegerLiteral.Signed(
-            sequence.subSequence(eIndex + 1, sequence.length),
-            context = context.shiftColumnBy(eIndex + 1)
-        )
-        return Triple(p, frac, exponent)
+    private fun parseValue(str: String, context: ParseContext?): Double {
+        return if (magnitude == 32) {
+            val floatValue = java.lang.Float.parseFloat(str)
+            if (floatValue.isNaN() || floatValue.isInfinite()) {
+                throw ParseException("Illegal f32 (constant out of range)", context)
+            }
+            floatValue.toDouble()
+        } else {
+            val result = java.lang.Double.parseDouble(str)
+            if (result.isNaN() || result.isInfinite()) {
+                throw ParseException("Illegal f32 (constant out of range)", context)
+            }
+            result
+        }
     }
 
     companion object {
         private val DECIMAL_FLOAT_PATTERN =
-            "((${Num.DECIMAL_PATTERN})(\\.${Frac.DECIMAL_PATTERN})?([Ee][+-]?${Num.DECIMAL_PATTERN})?)"
+            "((${Num.DECIMAL_PATTERN})(\\.(${Frac.DECIMAL_PATTERN})?)?([Ee][+-]?${Num.DECIMAL_PATTERN})?)"
         private val HEX_FLOAT_PATTERN =
-            "(0x(${Num.HEX_PATTERN})(\\.${Frac.HEX_PATTERN})?([Pp][+-]?${Num.HEX_PATTERN})?)"
+            "(0x(${Num.HEX_PATTERN})(\\.(${Frac.HEX_PATTERN})?)?([Pp][+-]?${Num.HEX_PATTERN})?)"
 
         private val FLOAT_PATTERN = object : ThreadLocal<Regex>() {
             override fun initialValue(): Regex =

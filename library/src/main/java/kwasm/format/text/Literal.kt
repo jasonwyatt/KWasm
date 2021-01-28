@@ -36,7 +36,7 @@ fun <T : Any> List<Token>.parseLiteral(
         UInt::class -> {
             var literalToken = node as? IntegerLiteral.Signed
                 ?: node as? IntegerLiteral.Unsigned
-                ?: throw ParseException("Expected i32", context)
+                ?: throw ParseException("Expected i32 (unexpected token|unknown operator)", context)
             literalToken = literalToken.toUnsigned()
             literalToken.magnitude = 32
 
@@ -45,7 +45,7 @@ fun <T : Any> List<Token>.parseLiteral(
         Int::class -> {
             var literalToken = node as? IntegerLiteral.Signed
                 ?: node as? IntegerLiteral.Unsigned
-                ?: throw ParseException("Expected i32", context)
+                ?: throw ParseException("Expected i32 (unexpected token|unknown operator)", context)
             literalToken = literalToken.toSigned()
             literalToken.magnitude = 32
 
@@ -54,7 +54,7 @@ fun <T : Any> List<Token>.parseLiteral(
         ULong::class -> {
             var literalToken = node as? IntegerLiteral.Signed
                 ?: node as? IntegerLiteral.Unsigned
-                ?: throw ParseException("Expected i64", context)
+                ?: throw ParseException("Expected i64 (unexpected token|unknown operator)", context)
             literalToken = literalToken.toUnsigned()
 
             kwasm.ast.IntegerLiteral.U64(literalToken.value)
@@ -62,7 +62,7 @@ fun <T : Any> List<Token>.parseLiteral(
         Long::class -> {
             var literalToken = node as? IntegerLiteral.Signed
                 ?: node as? IntegerLiteral.Unsigned
-                ?: throw ParseException("Expected i64", context)
+                ?: throw ParseException("Expected i64 (unexpected token|unknown operator)", context)
             literalToken = literalToken.toSigned()
             literalToken.magnitude = 64
 
@@ -71,10 +71,10 @@ fun <T : Any> List<Token>.parseLiteral(
         Float::class -> {
             val literalToken = node as? FloatLiteral
                 ?: (node as? IntegerLiteral.Signed)
-                    ?.let { FloatLiteral("${it.value}", context = it.context) }
+                    ?.let { FloatLiteral("${it.sequence}", context = it.context) }
                 ?: (node as? IntegerLiteral.Unsigned)
-                    ?.let { FloatLiteral("${it.value}", context = it.context) }
-                ?: throw ParseException("Expected f32", context)
+                    ?.let { FloatLiteral("${it.sequence}", context = it.context) }
+                ?: throw ParseException("Expected f32 (unexpected token|unknown operator)", context)
             literalToken.magnitude = 32
 
             kwasm.ast.FloatLiteral.SinglePrecision(literalToken.value.toFloat())
@@ -82,17 +82,17 @@ fun <T : Any> List<Token>.parseLiteral(
         Double::class -> {
             val literalToken = node as? FloatLiteral
                 ?: (node as? IntegerLiteral.Signed)
-                    ?.let { FloatLiteral("${it.value}", context = it.context) }
+                    ?.let { FloatLiteral("${it.sequence}", context = it.context) }
                 ?: (node as? IntegerLiteral.Unsigned)
-                    ?.let { FloatLiteral("${it.value}", context = it.context) }
-                ?: throw ParseException("Expected f64", context)
+                    ?.let { FloatLiteral("${it.sequence}", context = it.context) }
+                ?: throw ParseException("Expected f64 (unexpected token|unknown operator)", context)
             literalToken.magnitude = 64
 
             kwasm.ast.FloatLiteral.DoublePrecision(literalToken.value)
         }
         String::class -> {
             val literalToken = node as? StringLiteral
-                ?: throw ParseException("Expected String", context)
+                ?: throw ParseException("Expected String (unexpected token)", context)
 
             kwasm.ast.StringLiteral(literalToken.value)
         }

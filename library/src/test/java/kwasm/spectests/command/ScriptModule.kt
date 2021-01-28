@@ -88,7 +88,11 @@ sealed class ScriptModule : Command<Unit> {
 }
 
 fun List<Token>.parseScriptModule(fromIndex: Int): ParseResult<ScriptModule>? {
-    val normalModule = try { parseModule(fromIndex) } catch (e: ParseException) { null }
+    var parseException: ParseException? = null
+    val normalModule = try { parseModule(fromIndex) } catch (e: ParseException) {
+        parseException = e
+        null
+    }
     if (normalModule != null) {
         return ParseResult(ScriptModule.Normal(normalModule.astNode), normalModule.parseLength)
     }
@@ -121,7 +125,10 @@ fun List<Token>.parseScriptModule(fromIndex: Int): ParseResult<ScriptModule>? {
         val (bytes, length) = parseDataString(currentIndex)
         currentIndex += length
         ScriptModule.Binary(identifier?.astNode, this[indexOfStart].context!!, bytes)
-    } else throw ParseException("Unsupported module declaration", this[currentIndex].context)
+    } else {
+        throw parseException
+            ?: ParseException("Unsupported module declaration", this[currentIndex].context)
+    }
     if (!isClosedParen(currentIndex)) {
         throw ParseException("Expected closing paren", this[currentIndex].context)
     }

@@ -20,8 +20,9 @@ package kwasm.format
  */
 data class ParseException(
     private val errorMsg: String,
-    val parseContext: ParseContext? = null
-) : Exception("(${parseContext ?: "Unknown Context"}) $errorMsg")
+    val parseContext: ParseContext? = null,
+    val origin: Throwable? = null
+) : Exception("(${parseContext ?: "Unknown Context"}) $errorMsg", origin)
 
 /** Throws a [ParseException] if the [condition] is not met. */
 inline fun parseCheck(
