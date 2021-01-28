@@ -3631,6 +3631,12 @@ class NumericInstructionTest {
             assertThat(it).hasMessageThat().contains("Cannot truncate, magnitude too large for i32")
         }
 
+        assertThrows(KWasmRuntimeException::class.java) {
+            instruction.execute(executionContextWithOpStack((Int.MAX_VALUE.toFloat() + 1.0f).toValue()))
+        }.also {
+            assertThat(it).hasMessageThat().contains("Cannot truncate, magnitude too large for i32")
+        }
+
         // Okay
 
         resultContext = instruction.execute(executionContextWithOpStack(42.2f.toValue()))

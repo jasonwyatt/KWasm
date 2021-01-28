@@ -30,6 +30,7 @@ import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.math.pow
 import kotlin.math.round
 import kotlin.math.sqrt
 import kotlin.math.truncate
@@ -39,7 +40,7 @@ private const val EXCEPTION_INTEGER_DIVIDE_BY_ZERO =
 private const val EXCEPTION_TRUNCATE_NAN =
     "Cannot truncate NaN (invalid conversion to integer)"
 private const val EXCEPTION_TRUNCATE_INF =
-    "Cannot truncate Infinity (invalid conversion to integer)"
+    "Cannot truncate Infinity (invalid conversion to integer|integer overflow)"
 
 /**
  * See
@@ -564,8 +565,11 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
             if (x.value.isInfinite())
                 throw KWasmRuntimeException(EXCEPTION_TRUNCATE_INF)
             val truncated = truncate(x.value)
-            if (truncated > Int.MAX_VALUE || truncated < Int.MIN_VALUE)
-                throw KWasmRuntimeException("Cannot truncate, magnitude too large for i32")
+            if (truncated.toLong() > Int.MAX_VALUE || truncated.toLong() < Int.MIN_VALUE) {
+                throw KWasmRuntimeException(
+                    "Cannot truncate, magnitude too large for i32 (integer overflow)"
+                )
+            }
             truncated.toInt().toValue()
         }
         NumericInstruction.I32TruncateSaturatedF32Signed -> unaryOp(context) { x: FloatValue ->
@@ -577,10 +581,16 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
             if (x.value.isInfinite())
                 throw KWasmRuntimeException(EXCEPTION_TRUNCATE_INF)
             val truncated = truncate(x.value)
-            if (truncated < 0)
-                throw KWasmRuntimeException("Cannot truncate negative f32 to unsigned i32")
-            if (truncated > UInt.MAX_VALUE.toFloat())
-                throw KWasmRuntimeException("Cannot truncate, magnitude too large for i32")
+            if (truncated < 0) {
+                throw KWasmRuntimeException(
+                    "Cannot truncate negative f32 to unsigned i32 (integer overflow)"
+                )
+            }
+            if (truncated.toLong() > UInt.MAX_VALUE.toLong()) {
+                throw KWasmRuntimeException(
+                    "Cannot truncate, magnitude too large for i32 (integer overflow)"
+                )
+            }
             truncated.toUInt().toValue()
         }
         NumericInstruction.I32TruncateSaturatedF32Unsigned -> unaryOp(context) { x: FloatValue ->
@@ -592,8 +602,11 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
             if (x.value.isInfinite())
                 throw KWasmRuntimeException(EXCEPTION_TRUNCATE_INF)
             val truncated = truncate(x.value)
-            if (truncated > Int.MAX_VALUE || truncated < Int.MIN_VALUE)
-                throw KWasmRuntimeException("Cannot truncate, magnitude too large for i32")
+            if (truncated.toLong() > Int.MAX_VALUE || truncated.toLong() < Int.MIN_VALUE) {
+                throw KWasmRuntimeException(
+                    "Cannot truncate, magnitude too large for i32 (integer overflow)"
+                )
+            }
             truncated.toInt().toValue()
         }
         NumericInstruction.I32TruncateSaturatedF64Signed -> unaryOp(context) { x: DoubleValue ->
@@ -605,10 +618,16 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
             if (x.value.isInfinite())
                 throw KWasmRuntimeException(EXCEPTION_TRUNCATE_INF)
             val truncated = truncate(x.value)
-            if (truncated < 0)
-                throw KWasmRuntimeException("Cannot truncate negative f64 to unsigned i32")
-            if (truncated > UInt.MAX_VALUE.toDouble())
-                throw KWasmRuntimeException("Cannot truncate, magnitude too large for i32")
+            if (truncated < 0) {
+                throw KWasmRuntimeException(
+                    "Cannot truncate negative f64 to unsigned i32 (integer overflow)"
+                )
+            }
+            if (truncated.toLong() > UInt.MAX_VALUE.toLong()) {
+                throw KWasmRuntimeException(
+                    "Cannot truncate, magnitude too large for i32 (integer overflow)"
+                )
+            }
             truncated.toUInt().toValue()
         }
         NumericInstruction.I32TruncateSaturatedF64Unsigned -> unaryOp(context) { x: DoubleValue ->
@@ -629,8 +648,11 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
             if (x.value.isInfinite())
                 throw KWasmRuntimeException(EXCEPTION_TRUNCATE_INF)
             val truncated = truncate(x.value)
-            if (truncated > Long.MAX_VALUE || truncated < Long.MIN_VALUE)
-                throw KWasmRuntimeException("Cannot truncate, magnitude too large for i64")
+            if (truncated.toULong() > Long.MAX_VALUE.toULong() || truncated < Long.MIN_VALUE) {
+                throw KWasmRuntimeException(
+                    "Cannot truncate, magnitude too large for i64 (integer overflow)"
+                )
+            }
             truncated.toLong().toValue()
         }
         NumericInstruction.I64TruncateSaturatedF32Signed -> unaryOp(context) { x: FloatValue ->
@@ -641,12 +663,18 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
                 throw KWasmRuntimeException(EXCEPTION_TRUNCATE_NAN)
             if (x.value.isInfinite())
                 throw KWasmRuntimeException(EXCEPTION_TRUNCATE_INF)
-            val truncated = truncate(x.value)
-            if (truncated < 0)
-                throw KWasmRuntimeException("Cannot truncate negative f32 to unsigned i64")
-            if (truncated > ULong.MAX_VALUE.toFloat())
-                throw KWasmRuntimeException("Cannot truncate, magnitude too large for i64")
-            truncated.toLong().toValue()
+            val truncated = truncate(x.value.toDouble())
+            if (truncated < 0) {
+                throw KWasmRuntimeException(
+                    "Cannot truncate negative f32 to unsigned i64 (integer overflow)"
+                )
+            }
+            if (truncated >= ULong.MAX_VALUE.toDouble()) {
+                throw KWasmRuntimeException(
+                    "Cannot truncate, magnitude too large for i64 (integer overflow)"
+                )
+            }
+            truncated.toULong().toValue()
         }
         NumericInstruction.I64TruncateSaturatedF32Unsigned -> unaryOp(context) { x: FloatValue ->
             return@unaryOp truncate(x.value).toULong().toValue()
@@ -657,8 +685,11 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
             if (x.value.isInfinite())
                 throw KWasmRuntimeException(EXCEPTION_TRUNCATE_INF)
             val truncated = truncate(x.value)
-            if (truncated > Long.MAX_VALUE || truncated < Long.MIN_VALUE)
-                throw KWasmRuntimeException("Cannot truncate, magnitude too large for i64")
+            if (truncated.toULong() > Long.MAX_VALUE.toULong() || truncated < Long.MIN_VALUE) {
+                throw KWasmRuntimeException(
+                    "Cannot truncate, magnitude too large for i64 (integer overflow)"
+                )
+            }
             truncated.toLong().toValue()
         }
         NumericInstruction.I64TruncateSaturatedF64Signed -> unaryOp(context) { x: DoubleValue ->
@@ -670,11 +701,17 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
             if (x.value.isInfinite())
                 throw KWasmRuntimeException(EXCEPTION_TRUNCATE_INF)
             val truncated = truncate(x.value)
-            if (truncated < 0)
-                throw KWasmRuntimeException("Cannot truncate negative f64 to unsigned i64")
-            if (truncated > ULong.MAX_VALUE.toDouble())
-                throw KWasmRuntimeException("Cannot truncate, magnitude too large for i64")
-            truncated.toLong().toValue()
+            if (truncated < 0) {
+                throw KWasmRuntimeException(
+                    "Cannot truncate negative f64 to unsigned i64 (integer overflow)"
+                )
+            }
+            if (truncated >= ULong.MAX_VALUE.toDouble()) {
+                throw KWasmRuntimeException(
+                    "Cannot truncate, magnitude too large for i64 (integer overflow)"
+                )
+            }
+            truncated.toULong().toValue()
         }
         NumericInstruction.I64TruncateSaturatedF64Unsigned -> unaryOp(context) { x: DoubleValue ->
             return@unaryOp truncate(x.value).toULong().toValue()
@@ -689,10 +726,24 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
             x.unsignedValue.toFloat().toValue()
         }
         NumericInstruction.F32ConvertI64Signed -> unaryOp(context) { x: LongValue ->
-            x.value.toFloat().toValue()
+            // See https://github.com/WebAssembly/spec/pull/1021
+            if (x.value.absoluteValue < 0x10_0000_0000_0000L) {
+                x.value.toFloat().toValue()
+            } else {
+                val r = if (x.value and 0xfffL == 0L) 0L else 1L
+                val result = (x.value shr 12) or r
+                (result.toFloat() * 2.0f.pow(12)).toValue()
+            }
         }
         NumericInstruction.F32ConvertI64Unsigned -> unaryOp(context) { x: LongValue ->
-            x.unsignedValue.toFloat().toValue()
+            // See https://github.com/WebAssembly/spec/pull/1021
+            if (x.unsignedValue < 0x10_0000_0000_0000uL) {
+                x.unsignedValue.toFloat().toValue()
+            } else {
+                val r = if (x.unsignedValue and 0xfffuL == 0uL) 0uL else 1uL
+                val result = (x.unsignedValue shr 12) or r
+                (result.toFloat() * 2.0f.pow(12)).toValue()
+            }
         }
         NumericInstruction.F32DemoteF64 -> unaryOp(context) { x: DoubleValue ->
             x.value.toFloat().toValue()

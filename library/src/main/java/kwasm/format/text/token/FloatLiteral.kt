@@ -76,7 +76,14 @@ class FloatLiteral(
                 sequence == "-$INFINITY_LITERAL" ->
                     if (magnitude == 32) Float.NEGATIVE_INFINITY.toDouble()
                     else Double.NEGATIVE_INFINITY
-                sequence == NAN_LITERAL -> if (magnitude == 32) NAN_32_VALUE else NAN_64_VALUE
+                sequence == NAN_LITERAL ||
+                sequence == CANONICAL_NAN_LITERAL ||
+                sequence == ARITHMETIC_NAN_LITERAL -> {
+                    if (magnitude == 32) NAN_32_VALUE else NAN_64_VALUE
+                }
+                sequence == "-$NAN_LITERAL" -> if (magnitude == 32) NAN_32_VALUE else NAN_64_VALUE
+                sequence.startsWith("-$HEXNAN_LITERAL_PREFIX") ->
+                    FloatLiteral(sequence.subSequence(1, sequence.length), magnitude, context).value
                 sequence.startsWith(HEXNAN_LITERAL_PREFIX) -> {
                     val n = java.lang.Long.parseUnsignedLong(
                         sequence.substring(
@@ -222,11 +229,13 @@ class FloatLiteral(
 
         internal val PATTERN = object : ThreadLocal<Regex>() {
             override fun initialValue(): Regex =
-                "([+-]?((${FLOAT_PATTERN.get()})|(inf|nan(:0x${Num.HEX_PATTERN})?)))".toRegex()
+                "([+-]?((${FLOAT_PATTERN.get()})|(inf|nan(:0x${Num.HEX_PATTERN})?|nan:canonical|nan:arithmetic)))".toRegex()
         }
 
         private const val INFINITY_LITERAL = "inf"
         private const val NAN_LITERAL = "nan"
+        private const val CANONICAL_NAN_LITERAL = "nan:canonical"
+        private const val ARITHMETIC_NAN_LITERAL = "nan:arithmetic"
         private const val HEXNAN_LITERAL_PREFIX = "nan:0x"
         private const val NAN_64_VALUE = Double.NaN
         private const val NAN_32_VALUE = Float.NaN.toDouble()
