@@ -22,11 +22,14 @@ import kwasm.format.text.contextAt
 import kwasm.format.text.isClosedParen
 import kwasm.format.text.isKeyword
 import kwasm.format.text.isOpenParen
+import kwasm.format.text.module.parseModule
 import kwasm.format.text.parseLiteral
 import kwasm.format.text.token.Token
 import kwasm.spectests.command.Action
 import kwasm.spectests.command.Command
+import kwasm.spectests.command.ScriptModule
 import kwasm.spectests.command.parseAction
+import kwasm.spectests.command.parseAndRunCommand
 import kwasm.spectests.execution.ScriptContext
 import org.junit.Assert.assertThrows
 
@@ -34,12 +37,13 @@ import org.junit.Assert.assertThrows
  * (assert_trap <action> <string>)
  */
 class AssertActionTrap(
-    val action: Action,
+    val action: Action?,
+    val module: ScriptModule?,
     val messageContains: String
 ) : Command<Unit> {
     override fun execute(context: ScriptContext) {
         val e = assertThrows(KWasmRuntimeException::class.java) {
-            action.execute(context)
+            (action ?: module)?.execute(context)
         }
         assertThat(e).hasMessageThat().contains(messageContains)
     }
@@ -53,6 +57,7 @@ fun List<Token>.parseAssertActionTrap(fromIndex: Int): ParseResult<AssertActionT
     currentIndex++
 
     val action = parseAction(currentIndex)
+        ?: parseModule(currentIndex)
         ?: throw ParseException("Expected action", contextAt(currentIndex))
     currentIndex += action.parseLength
 
@@ -65,7 +70,11 @@ fun List<Token>.parseAssertActionTrap(fromIndex: Int): ParseResult<AssertActionT
     currentIndex++
 
     return ParseResult(
-        AssertActionTrap(action.astNode, message.astNode.value),
+        AssertActionTrap(
+            action.astNode as? Action,
+            action.astNode as? ScriptModule,
+            message.astNode.value
+        ),
         currentIndex - fromIndex
     )
 }

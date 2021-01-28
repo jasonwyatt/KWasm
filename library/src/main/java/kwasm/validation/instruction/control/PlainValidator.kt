@@ -194,7 +194,7 @@ internal fun validateReturn(
     return returnType.result?.valType?.let {
         val top = context.peekStack()
         validate(top == it, parseContext = null) {
-            "Expected $it at the top of the stack"
+            "Expected $it at the top of the stack (type mismatch)"
         }
         context
     } ?: context
