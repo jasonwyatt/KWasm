@@ -64,19 +64,37 @@ class FloatLiteral(
         }
 
     private var isInitialized = false
-    private var cachedValue = 0.0
+    private var cachedValue: Number = 0.0
 
-    val value: Double
+    val value: Number
         get() {
             if (isInitialized) return cachedValue
             return when {
                 sequence == INFINITY_LITERAL ->
-                    if (magnitude == 32) Float.POSITIVE_INFINITY.toDouble()
+                    if (magnitude == 32) Float.POSITIVE_INFINITY
                     else Double.POSITIVE_INFINITY
                 sequence == "-$INFINITY_LITERAL" ->
-                    if (magnitude == 32) Float.NEGATIVE_INFINITY.toDouble()
+                    if (magnitude == 32) Float.NEGATIVE_INFINITY
                     else Double.NEGATIVE_INFINITY
-                sequence == NAN_LITERAL -> if (magnitude == 32) NAN_32_VALUE else NAN_64_VALUE
+                sequence == NAN_LITERAL ||
+                    sequence == CANONICAL_NAN_LITERAL ||
+                    sequence == ARITHMETIC_NAN_LITERAL -> {
+                    if (magnitude == 32) NAN_32_VALUE else NAN_64_VALUE
+                }
+                sequence == "-$NAN_LITERAL" -> if (magnitude == 32) -NAN_32_VALUE else -NAN_64_VALUE
+                sequence.startsWith("-$HEXNAN_LITERAL_PREFIX") -> {
+                    val posValue =
+                        FloatLiteral(
+                            sequence.subSequence(1, sequence.length),
+                            magnitude,
+                            context
+                        ).value
+                    if (magnitude == 32) {
+                        -posValue.toFloat()
+                    } else {
+                        -posValue.toDouble()
+                    }
+                }
                 sequence.startsWith(HEXNAN_LITERAL_PREFIX) -> {
                     val n = java.lang.Long.parseUnsignedLong(
                         sequence.substring(
@@ -93,11 +111,13 @@ class FloatLiteral(
                         )
                     }
 
-                    if (magnitude == 32) NAN_32_VALUE else NAN_64_VALUE
+                    if (magnitude == 32) {
+                        Float.fromBits(bits = 0x7F800000 or n.toInt())
+                    } else {
+                        Double.fromBits(bits = 0x7FF0000000000000L or n)
+                    }
                 }
-                else -> {
-                    determineFloatValue(sequence, context)
-                }
+                else -> determineFloatValue(sequence, context)
             }.also {
                 cachedValue = it
                 isInitialized = true
@@ -105,15 +125,13 @@ class FloatLiteral(
         }
 
     fun isNaN(): Boolean = when (magnitude) {
-        32 -> value.isNaN() || value == CanonincalNaN(32).value.toDouble()
-        64 -> value.isNaN() || value == CanonincalNaN(64).value.toDouble()
+        32 -> value.toFloat().isNaN() || value == CanonincalNaN(32).value
+        64 -> value.toDouble().isNaN() || value == CanonincalNaN(64).value.toDouble()
         else -> throw ParseException("Illegal magnitude for NaN-checking")
     }
 
     fun isInfinite(): Boolean = when (magnitude) {
-        32 ->
-            value == Float.NEGATIVE_INFINITY.toDouble() ||
-                value == Float.POSITIVE_INFINITY.toDouble()
+        32 -> value == Float.NEGATIVE_INFINITY || value == Float.POSITIVE_INFINITY
         64 -> value == Double.NEGATIVE_INFINITY || value == Double.POSITIVE_INFINITY
         else -> throw ParseException("Illegal magnitude for infinity-checking")
     }
@@ -121,7 +139,7 @@ class FloatLiteral(
     private fun determineFloatValue(
         sequence: CharSequence,
         context: ParseContext? = this.context
-    ): Double {
+    ): Number {
         try {
             return if (sequence.indexOf("0x") > -1) {
                 determineHexFloatValue(sequence, context)
@@ -144,7 +162,7 @@ class FloatLiteral(
     private fun determineDecimalFloatValue(
         sequence: CharSequence,
         context: ParseContext?
-    ): Double {
+    ): Number {
         val dotIndex = sequence.indexOf('.')
         val eIndex = sequence.indexOf('e', ignoreCase = true)
 
@@ -171,7 +189,7 @@ class FloatLiteral(
     private fun determineHexFloatValue(
         sequence: CharSequence,
         context: ParseContext?
-    ): Double {
+    ): Number {
         val dotIndex = sequence.indexOf('.')
         val eIndex = sequence.indexOf('p', ignoreCase = true)
 
@@ -193,13 +211,13 @@ class FloatLiteral(
         return parseValue(strToUse, context)
     }
 
-    private fun parseValue(str: String, context: ParseContext?): Double {
+    private fun parseValue(str: String, context: ParseContext?): Number {
         return if (magnitude == 32) {
             val floatValue = java.lang.Float.parseFloat(str)
             if (floatValue.isNaN() || floatValue.isInfinite()) {
                 throw ParseException("Illegal f32 (constant out of range)", context)
             }
-            floatValue.toDouble()
+            floatValue
         } else {
             val result = java.lang.Double.parseDouble(str)
             if (result.isNaN() || result.isInfinite()) {
@@ -222,14 +240,16 @@ class FloatLiteral(
 
         internal val PATTERN = object : ThreadLocal<Regex>() {
             override fun initialValue(): Regex =
-                "([+-]?((${FLOAT_PATTERN.get()})|(inf|nan(:0x${Num.HEX_PATTERN})?)))".toRegex()
+                "([+-]?((${FLOAT_PATTERN.get()})|(inf|nan(:0x${Num.HEX_PATTERN})?|nan:canonical|nan:arithmetic)))".toRegex()
         }
 
         private const val INFINITY_LITERAL = "inf"
         private const val NAN_LITERAL = "nan"
+        private const val CANONICAL_NAN_LITERAL = "nan:canonical"
+        private const val ARITHMETIC_NAN_LITERAL = "nan:arithmetic"
         private const val HEXNAN_LITERAL_PREFIX = "nan:0x"
         private const val NAN_64_VALUE = Double.NaN
-        private const val NAN_32_VALUE = Float.NaN.toDouble()
+        private const val NAN_32_VALUE = Float.NaN
 
         private fun assertNoHexChars(context: ParseContext?, vararg components: Any) {
             val foundHexChars = components.any {

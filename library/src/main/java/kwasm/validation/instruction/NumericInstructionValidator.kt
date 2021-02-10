@@ -69,7 +69,7 @@ object NumericInstructionValidator : FunctionBodyValidationVisitor<NumericInstru
 
         validate(inputs == stackArgs, parseContext = null) {
             "Instruction requires top of stack to have args: $inputs, but at this point the " +
-                "stack has $stackArgs"
+                "stack has $stackArgs (type mismatch)"
         }
 
         return poppedContext.pushStack(output)

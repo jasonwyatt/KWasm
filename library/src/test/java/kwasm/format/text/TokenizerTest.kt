@@ -122,16 +122,17 @@ class TokenizerTest {
         assertThat(actual).hasSize(4)
 
         val first = requireNotNull(actual[0] as? FloatLiteral)
-        assertThat(first.value).isWithin(TOLERANCE).of(1.5e10)
+        assertThat(first.value.toDouble()).isWithin(TOLERANCE).of(1.5e10)
 
         val second = requireNotNull(actual[1] as? FloatLiteral)
-        assertThat(second.value).isWithin(TOLERANCE).of(-1.0)
+        assertThat(second.value.toDouble()).isWithin(TOLERANCE).of(-1.0)
 
         val third = requireNotNull(actual[2] as? FloatLiteral)
-        assertThat(third.value).isWithin(TOLERANCE).of(0.0000001)
+        assertThat(third.value.toDouble()).isWithin(TOLERANCE).of(0.0000001)
 
         val fourth = requireNotNull(actual[3] as? FloatLiteral)
-        assertThat(fourth.value).isWithin(TOLERANCE).of(FloatLiteral("+0x54aP-15").value)
+        assertThat(fourth.value.toDouble()).isWithin(TOLERANCE)
+            .of(FloatLiteral("+0x54aP-15").value.toDouble())
     }
 
     @Test

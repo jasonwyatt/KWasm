@@ -39,6 +39,7 @@ class CoreSpecTest {
             "binary-leb128.wast",
             "comments.wast",
             "const.wast",
+            "conversions.wast",
             "custom.wast",
             "data.wast",
             "elem.wast",
