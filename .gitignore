@@ -89,3 +89,4 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+/library/src/test/java/kwasm/spectests/OneOffTest.kt

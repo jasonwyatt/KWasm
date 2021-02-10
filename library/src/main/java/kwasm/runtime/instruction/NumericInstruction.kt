@@ -561,7 +561,7 @@ internal fun NumericInstruction.execute(context: ExecutionContext): ExecutionCon
             (x.unsignedValue % 0x100000000uL).toUInt().toValue()
         }
         NumericInstruction.I32TruncateF32Signed -> unaryOp<FloatValue, IntValue>(context) { x ->
-            if (x.value.isNaN()) throw KWasmRuntimeException(EXCEPTION_TRUNCATE_NAN)
+            if (x.value.isNaN()) throw KWasmRuntimeException(EXCEPTION_TRUNCATE_NAN + " ${x.value.toRawBits().toString(2)}")
             if (x.value.isInfinite())
                 throw KWasmRuntimeException(EXCEPTION_TRUNCATE_INF)
             val truncated = truncate(x.value)

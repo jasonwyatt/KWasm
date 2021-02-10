@@ -88,7 +88,7 @@ fun <T : Any> List<Token>.parseLiteral(
                 ?: throw ParseException("Expected f64 (unexpected token|unknown operator)", context)
             literalToken.magnitude = 64
 
-            kwasm.ast.FloatLiteral.DoublePrecision(literalToken.value)
+            kwasm.ast.FloatLiteral.DoublePrecision(literalToken.value.toDouble())
         }
         String::class -> {
             val literalToken = node as? StringLiteral
