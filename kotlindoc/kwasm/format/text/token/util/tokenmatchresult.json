@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/format/text/token/util/tokenmatchresult",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/util/tokenmatchresult"
+  },
+  "data": {},
+  "description": "",
+  "title": "TokenMatchResult",
+  "content": "<p>CommentComponent(kind=text, text=Return value of <a href=\"#\">RawToken<\/a>'s <code>find[Token]<\/code> extension methods., value=null)<\/p>\n"
+}

@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/type/resulttype",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/resulttype"
+  },
+  "data": {},
+  "description": "",
+  "title": "ResultType",
+  "content": "<p>CommentComponent(kind=text, text=Data class to hold a ResultType's result\nfrom <a href=\"https://webassembly.github.io/spec/core/text/types.html#result-types\">the docs<\/a>:<pre><code class=\"language-\">\nresultType   ::=  (t:result)?  =&gt; [t?]<\/p>\n<\/code><\/pre>, value=null)\n"
+}

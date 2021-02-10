@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/format/binary/module",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/binary/module"
+  },
+  "data": {},
+  "description": "",
+  "title": "kwasm.format.binary.module",
+  "content": "<p>CommentComponent(kind=text, text=, value=null)<\/p>\n"
+}

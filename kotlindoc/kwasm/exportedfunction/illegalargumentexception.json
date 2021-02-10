@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/exportedfunction/illegalargumentexception",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/exportedfunction/illegalargumentexception"
+  },
+  "data": {},
+  "description": "",
+  "title": "IllegalArgumentException",
+  "content": "<p>CommentComponent(kind=text, text=, value=null)<\/p>\n"
+}

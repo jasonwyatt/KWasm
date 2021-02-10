@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/module/index",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/index"
+  },
+  "data": {},
+  "description": "",
+  "title": "Index",
+  "content": "<p>CommentComponent(kind=text, text=Reference to an indexed , value=) CommentComponent(kind=typeName, text=AstNode, value=kwasm.ast.AstNode) CommentComponent(kind=text, text= in the AST.<p>From <a href=\"https://webassembly.github.io/spec/core/text/modules.html#indices\">the docs<\/a>:<\/p><pre><code class=\"language-\">\ntypeidx(I)     ::= x:u32   =&gt; x\nv:id    =&gt; x (if I.types[x] = v)\nfuncidx(I)     ::= x:u32   =&gt; x\nv:id    =&gt; x (if I.funcs[x] = v)\ntableidx(I)    ::= x:u32   =&gt; x\nv:id    =&gt; x (if I.tables[x] = v)\nmemidx(I)      ::= x:u32   =&gt; x\nv:id    =&gt; x (if I.mems[x] = v)\nglobalidx(I)   ::= x:u32   =&gt; x\nv:id    =&gt; x (if I.globals[x] = v)\nlacalidx(I)    ::= x:u32   =&gt; x\nv:id    =&gt; x (if I.locals[x] = v)\nlabelidx(I)    ::= l:u32   =&gt; l\nv:id    =&gt; l (if I.labels[l] = v)<\/p>\n<\/code><\/pre>, value=null)\n"
+}

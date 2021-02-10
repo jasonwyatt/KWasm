@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/validation/validationcontext",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext"
+  },
+  "data": {},
+  "description": "",
+  "title": "ValidationContext",
+  "content": "<p>CommentComponent(kind=text, text=Represents the context accrued throughout the validation process.<p>, value=) CommentComponent(kind=typeName, text=ValidationContext, value=kwasm.validation.ValidationContext) CommentComponent(kind=text, text= objects contain the current <a href=\"#\">AstNode<\/a> being validated, as well as additional\ncontext as specified in the WebAssembly Spec.<\/p><p>From <a href=\"https://webassembly.github.io/spec/core/valid/conventions.html#contexts\">the docs<\/a>:<\/p><p>Validity of an individual definition is specified relative to a context, which collects relevant\ninformation about the surrounding module and the definitions in scope:<\/p><ul><li>Types: the list of types defined in the current module.<\/li><li>Functions: the list of functions declared in the current module, represented by their function\ntype.<\/li><li>Tables: the list of tables declared in the current module, represented by their table type.<\/li><li>Memories: the list of memories declared in the current module, represented by their memory\ntype.<\/li><li>Globals: the list of globals declared in the current module, represented by their global type.<\/li><li>Locals: the list of locals declared in the current function (including parameters), represented\nby their value type.<\/li><li>Labels: the stack of labels accessible from the current position, represented by their result\ntype.<\/li><li>Return: (the return type of the current function, represented as an optional result type that is\nabsent when no return is allowed, as in free-standing expressions.<\/li><\/ul><p>In other words, a context contains a sequence of suitable types for each index space, describing\neach defined entry in that space. Locals, labels and return type are only used for validating\ninstructions in function bodies, and are left empty elsewhere. The label stack is the only part\nof the context that changes as validation of an instruction sequence proceeds.<\/p>, value=null)<\/p>\n"
+}

@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/validation/instruction/control/controlinstructionvalidator",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/instruction/control/controlinstructionvalidator"
+  },
+  "data": {},
+  "description": "",
+  "title": "ControlInstructionValidator",
+  "content": "<p>CommentComponent(kind=text, text=Validator of , value=) CommentComponent(kind=typeName, text=ControlInstruction, value=kwasm.ast.instruction.ControlInstruction) CommentComponent(kind=text, text= nodes.<p>See: , value=) CommentComponent(kind=typeName, text=PlainValidator, value=kwasm.validation.instruction.control.PlainValidator) CommentComponent(kind=text, text= and , value=) CommentComponent(kind=typeName, text=BlockValidator, value=kwasm.validation.instruction.control.BlockValidator) CommentComponent(kind=text, text= for more information.<\/p>, value=null)<\/p>\n"
+}

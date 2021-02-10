@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/validation/module/exportdescriptorvalidator",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/module/exportdescriptorvalidator"
+  },
+  "data": {},
+  "description": "",
+  "title": "ExportDescriptorValidator",
+  "content": "<p>CommentComponent(kind=text, text=Validator of , value=) CommentComponent(kind=typeName, text=ExportDescriptor, value=kwasm.ast.module.ExportDescriptor) CommentComponent(kind=text, text= nodes.<p>From <a href=\"https://webassembly.github.io/spec/core/valid/modules.html#exports\">the docs<\/a>:<\/p><pre><code class=\"language-\">\nfunc x\n<\/code><\/pre><ul><li>The function <code>C.funcs[x]<\/code> must be defined in the context.<\/li><li>Then the export description is valid with external type <code>func C.funcs[x]<\/code>.<\/li><\/ul><pre><code class=\"language-\">\ntable x\n<\/code><\/pre><ul><li>The table <code>C.tables[x]<\/code> must be defined in the context.<\/li><li>Then the export description is valid with external type <code>table C.tables[x]<\/code>.<\/li><\/ul><pre><code class=\"language-\">\nmem x\n<\/code><\/pre><ul><li>The memory <code>C.mems[x]<\/code> must be defined in the context.<\/li><li>Then the export description is valid with external type <code>mem C.mems[x]<\/code>.<\/li><\/ul><pre><code class=\"language-\">\nglobal x<\/p>\n<\/code><\/pre><ul><li>The global <code>C.globals\\[x]<\/code> must be defined in the context.<\/li><li>Then the export description is valid with external type <code>global C.globals\\[x]<\/code>.<\/li><\/ul>, value=null)\n"
+}

@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/runtime/functioninstance/host",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/functioninstance/host"
+  },
+  "data": {},
+  "description": "",
+  "title": "Host",
+  "content": "<p>CommentComponent(kind=text, text=A function supplied by the host., value=null)<\/p>\n"
+}

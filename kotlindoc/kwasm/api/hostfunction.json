@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/api/hostfunction",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/api/hostfunction"
+  },
+  "data": {},
+  "description": "",
+  "title": "HostFunction",
+  "content": "<p>CommentComponent(kind=text, text=Base for all host-provided functions exposed to WebAssembly programs via imports., value=null)<\/p>\n"
+}

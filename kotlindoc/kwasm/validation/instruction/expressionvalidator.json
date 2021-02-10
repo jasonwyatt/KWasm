@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/validation/instruction/expressionvalidator",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/instruction/expressionvalidator"
+  },
+  "data": {},
+  "description": "",
+  "title": "ExpressionValidator",
+  "content": "<p>CommentComponent(kind=text, text=Validator of , value=) CommentComponent(kind=typeName, text=Expression, value=kwasm.ast.instruction.Expression) CommentComponent(kind=text, text= nodes.<p>From <a href=\"https://webassembly.github.io/spec/core/valid/instructions.html#expressions\">the docs<\/a>:<\/p><p>Expressions <code>expr<\/code> are classified by result types of the form <code>[t?]<\/code>.<\/p><pre><code class=\"language-\">\ninstr* end<\/p>\n<\/code><\/pre><ul><li>The instruction sequence <code>instr*<\/code> must be valid with type <code>[] => [t?]<\/code>, for some optional\nvalue type <code>t?<\/code>.<\/li><li>Then the expression is valid with result type <code>[t?]<\/code>.<\/li><\/ul><h3>Constant Expressions<\/h3><ul><li>In a constant expression <code>instr* end<\/code> all instructions in <code>instr*<\/code> must be constant.<\/li><li><p>A constant instruction <code>instr<\/code> must be:<\/p>  <ul><li>either of the form <code>t.const c<\/code>,<\/li>  <li>or of the form <code>global.get x<\/code>, in which case <code>C.globals\\[x]<\/code> must be a global type of the\n      form <code>const t<\/code>.<\/li><\/ul><\/li><\/ul>, value=null)\n"
+}

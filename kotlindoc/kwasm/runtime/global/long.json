@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/runtime/global/long",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/global/long"
+  },
+  "data": {},
+  "description": "",
+  "title": "Long",
+  "content": "<p>CommentComponent(kind=text, text=, value=null)<\/p>\n"
+}

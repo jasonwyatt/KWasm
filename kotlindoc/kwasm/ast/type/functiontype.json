@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/type/functiontype",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/functiontype"
+  },
+  "data": {},
+  "description": "",
+  "title": "FunctionType",
+  "content": "<p>CommentComponent(kind=text, text=Data class to hold the parameters and results of a FunctionType\nfrom <a href=\"https://webassembly.github.io/spec/core/text/types.html#function-types\">the docs<\/a>:<pre><code class=\"language-\">\nfunctype ::=  \u2018(\u2019 \u2018func\u2019  t<em>1:vec(param)  t<\/em>2:vec(result) \u2018)\u2019 =&gt; [t<em>1]→[t<\/em>2]\nparam    ::=  \u2018(\u2019 \u2018param\u2019  id?  t:valtype \u2018)\u2019                 =&gt; t\nresult   ::=  \u2018(\u2019 \u2018result\u2019  t:valtype \u2018)\u2019                     =&gt; t<\/p>\n<\/code><\/pre>, value=null)\n"
+}

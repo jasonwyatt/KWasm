@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/validation/module/wasmfunctionvalidator",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/module/wasmfunctionvalidator"
+  },
+  "data": {},
+  "description": "",
+  "title": "WasmFunctionValidator",
+  "content": "<p>CommentComponent(kind=text, text=Validator of , value=) CommentComponent(kind=typeName, text=WasmFunction, value=kwasm.ast.module.WasmFunction) CommentComponent(kind=text, text= nodes.<p>From <a href=\"https://webassembly.github.io/spec/core/valid/modules.html#functions\">the docs<\/a>:<\/p><ul><li>The type <code>C.types[x]<\/code> must be defined in the context.<\/li><li>Let <code>[t*^1] =&gt; [t?^2]<\/code> be the function type <code>C.types[x]<\/code>.<\/li><li><p>Let <code>C\u2032<\/code> be the same context as <code>C<\/code>, but with:<\/p>  <ul><li><code>locals<\/code> set to the sequence of value types <code>t*^1 t*<\/code>, concatenating parameters and locals,<\/li>  <li><code>labels<\/code> set to the singular sequence containing only result type <code>[t?^2]<\/code>.<\/li>  <li><code>return<\/code> set to the result type <code>[t?^2]<\/code>.<\/li><\/ul><\/li><li>Under the context <code>C\u2032<\/code>, the expression <code>expr<\/code> must be valid with type <code>t?^2<\/code>.<\/li><li>Then the function definition is valid with type <code>[t*^1] =&gt; [t?^2]<\/code>.<\/li><\/ul>, value=null)<\/p>\n"
+}

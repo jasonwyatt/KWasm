@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/module/startfunction",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/startfunction"
+  },
+  "data": {},
+  "description": "",
+  "title": "StartFunction",
+  "content": "<p>CommentComponent(kind=text, text=Identifies the entry point for a , value=) CommentComponent(kind=typeName, text=WasmModule, value=kwasm.ast.module.WasmModule) CommentComponent(kind=text, text=.<p><b>Note:<\/b> At most one start function may occur in a module<\/p>, value=null)<\/p>\n"
+}

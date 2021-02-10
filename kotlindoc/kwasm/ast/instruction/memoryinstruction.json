@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/instruction/memoryinstruction",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/memoryinstruction"
+  },
+  "data": {},
+  "description": "",
+  "title": "MemoryInstruction",
+  "content": "<p>CommentComponent(kind=text, text=Base class for all , value=) CommentComponent(kind=typeName, text=Instruction, value=kwasm.ast.instruction.Instruction) CommentComponent(kind=text, text=s dealing with memory.<p>From<\/p>\n<a href=\"https://webassembly.github.io/spec/core/syntax/instructions.html#memory-instructions\">the docs<\/a>:<\/p><p>Instructions in this group are concerned with linear memory.<\/p><p>Memory is accessed with <code>load<\/code> and <code>store<\/code> instructions for the different value types. They all\ntake a memory immediate , value=) CommentComponent(kind=typeName, text=MemArg, value=kwasm.ast.instruction.MemArg) CommentComponent(kind=text, text= that contains an address offset and the expected alignment\n(expressed as the exponent of a power of 2). Integer loads and stores can optionally specify a\nstorage size that is smaller than the bit width of the respective value type. In the case of\nloads, a sign extension mode <code>sx<\/code> is then required to select appropriate behavior.<\/p><p>The static address offset is added to the dynamic address operand, yielding a 33 bit effective\naddress that is the zero-based index at which the memory is accessed. All values are read and\nwritten in little endian byte order. A trap results if any of the accessed memory bytes lies\noutside the address range implied by the memory\u2019s current size.<\/p><pre><code class=\"language-\">\ninstr  ::= inn.load memarg\n           fnn.load memarg\n           inn.store memarg\n           fnn.store memarg\n           inn.load8_sx memarg\n           inn.load16_sx memarg\n           i64.load32_sx memarg\n           inn.store8 memarg\n           inn.store16 memarg\n           i64.store32 memarg\n           memory.size\n           memory.grow\n<\/code><\/pre>, value=null)\n"
+}

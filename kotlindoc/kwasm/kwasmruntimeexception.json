@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/kwasmruntimeexception",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/kwasmruntimeexception"
+  },
+  "data": {},
+  "description": "",
+  "title": "KWasmRuntimeException",
+  "content": "<p>CommentComponent(kind=text, text=An error encountered while running a wasm program., value=null)<\/p>\n"
+}

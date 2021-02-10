@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/module/memory",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/memory"
+  },
+  "data": {},
+  "description": "",
+  "title": "Memory",
+  "content": "<p type=\"\" memtype=\"\">CommentComponent(kind=text, text=Represents a memory instance in a , value=) CommentComponent(kind=typeName, text=WasmModule, value=kwasm.ast.module.WasmModule) CommentComponent(kind=text, text=.<p>From <a href=\"https://webassembly.github.io/spec/core/syntax/modules.html#memories\">the docs<\/a>:<\/p><p>The <code>mems<\/code> component of a module defines a vector of linear memories (or memories for short) as\ndescribed by their memory type:<\/p><pre><code class=\"language-\">\nmem    ::=<\/p>\n<\/code><\/pre><p>A memory is a vector of raw uninterpreted bytes. The <code>min<\/code> size in the limits of the memory type\nspecifies the initial size of that memory, while its <code>max<\/code>, if present, restricts the size to\nwhich it can grow later. Both are in units of page size.<\/p><p>Memories can be initialized through data segments.<\/p><p>Memories are referenced through memory indices, starting with the smallest index not referencing\na memory import. Most constructs implicitly reference memory index <code>0<\/code>.<\/p><p><b>Note:<\/b> In the current version of WebAssembly, at most one memory may be defined or imported in\na single module, and all constructs implicitly reference this memory <code>0<\/code>. This restriction may\nbe lifted in future versions.<\/p>, value=null)\n"
+}

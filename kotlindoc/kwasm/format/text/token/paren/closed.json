@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/format/text/token/paren/closed",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/paren/closed"
+  },
+  "data": {},
+  "description": "",
+  "title": "Closed",
+  "content": "<p>CommentComponent(kind=text, text=Representation of <code>)<\/code>, and its location within the source., value=null)<\/p>\n"
+}

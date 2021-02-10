@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/instruction/variableinstruction/globalget",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/variableinstruction/globalget"
+  },
+  "data": {},
+  "description": "",
+  "title": "GlobalGet",
+  "content": "<p>CommentComponent(kind=text, text=Represents the global.get instruction., value=null)<\/p>\n"
+}

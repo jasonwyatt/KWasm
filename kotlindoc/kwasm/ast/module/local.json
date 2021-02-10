@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/module/local",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/local"
+  },
+  "data": {},
+  "description": "",
+  "title": "Local",
+  "content": "<p>CommentComponent(kind=text, text=Represents a mutable local value for a , value=) CommentComponent(kind=typeName, text=WasmFunction, value=kwasm.ast.module.WasmFunction) CommentComponent(kind=text, text=.<p>From <a href=\"https://webassembly.github.io/spec/core/syntax/modules.html#syntax-func\">the docs<\/a>:<\/p><p>The <code>locals<\/code> declare a vector of mutable local variables and their types. These variables are\nreferenced through local indices in the function\u2019s body. The index of the first local is the\nsmallest index not referencing a parameter.<\/p>, value=null)<\/p>\n"
+}

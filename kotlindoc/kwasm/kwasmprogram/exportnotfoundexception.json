@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/kwasmprogram/exportnotfoundexception",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/kwasmprogram/exportnotfoundexception"
+  },
+  "data": {},
+  "description": "",
+  "title": "ExportNotFoundException",
+  "content": "<p>CommentComponent(kind=text, text=Thrown when an exported value does not exist for a given module., value=null)<\/p>\n"
+}

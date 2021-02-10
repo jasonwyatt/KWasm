@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/runtime/export",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/export"
+  },
+  "data": {},
+  "description": "",
+  "title": "Export",
+  "content": "<p>CommentComponent(kind=text, text=Represents a runtime exported value.<p>From <a href=\"https://webassembly.github.io/spec/core/exec/runtime.html#export-instances\">the docs<\/a>:<\/p><p>An export instance is the runtime representation of an export. It defines the export\u2019s name and\nthe associated external value.<\/p><pre><code class=\"language-\">\nexportinst ::= {name name, value externval}<\/p>\n<\/code><\/pre>, value=null)\n"
+}

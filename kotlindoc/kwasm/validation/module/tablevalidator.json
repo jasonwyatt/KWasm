@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/validation/module/tablevalidator",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/module/tablevalidator"
+  },
+  "data": {},
+  "description": "",
+  "title": "TableValidator",
+  "content": "<p>CommentComponent(kind=text, text=Validator of , value=) CommentComponent(kind=typeName, text=Table, value=kwasm.ast.module.Table) CommentComponent(kind=text, text= nodes.<p>From <a href=\"https://webassembly.github.io/spec/core/valid/modules.html#tables\">the docs<\/a>:<\/p><ul><li>The table type <code>tabletype<\/code> must be valid.<\/li><li>Then the table definition is valid with type <code>tabletype<\/code>.<\/li><\/ul>, value=null)<\/p>\n"
+}

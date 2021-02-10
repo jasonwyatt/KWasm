@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/format/text/token/floatliteral",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/floatliteral"
+  },
+  "data": {},
+  "description": "",
+  "title": "FloatLiteral",
+  "content": "<p>CommentComponent(kind=text, text=From <a href=\"https://webassembly.github.io/spec/core/text/values.html#floating-point\">the docs<\/a>.<pre><code class=\"language-\">\nfloat    ::= p:num                                                 =&gt; p\np:num '.' q:frac                                      =&gt; p + q\np:num ('E' | 'e') s:sign e:num                        =&gt; p * 10^(s * e)\np:num '.' q:frac ('E' | 'e') s:sign e:num             =&gt; (p + q) * 10^(s * e)\nhexfloat ::= '0x' p:hexnum                                         =&gt; p\n'0x' p:hexnum '.' q:hexfrac                           =&gt; p + q\n'0x' p:hexnum  ('P' | 'p') s:sign e:num               =&gt; p * 2^(s * e)\n'0x' p:hexnum '.' q:hexfrac ('P' | 'p') s:sign e:num  =&gt; (p + q) * 2^(s * e)\n<\/code><\/pre><p>And:<\/p><pre><code class=\"language-\">\nfN       ::= s:sign z:fNMag                                      =&gt; s * z\nfNMag    ::= z:float                                             =&gt; float_N(z) (if != inf)\nz:hexfloat                                          =&gt; float_N(z) (if != inf)\n'inf'                                               =&gt; inf\n'nan'                                               =&gt; NaN\n'nan:0x' n:hexnum                                   =&gt; NaN (if 1 &lt;= n &lt; 2^(sig(N))<\/p>\n<\/code><\/pre>, value=null)\n"
+}

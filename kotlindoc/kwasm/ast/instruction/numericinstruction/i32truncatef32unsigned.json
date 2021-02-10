@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/instruction/numericinstruction/i32truncatef32unsigned",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/numericinstruction/i32truncatef32unsigned"
+  },
+  "data": {},
+  "description": "",
+  "title": "I32TruncateF32Unsigned",
+  "content": "<p>CommentComponent(kind=text, text=i32.trunc_f32_u, value=null)<\/p>\n"
+}

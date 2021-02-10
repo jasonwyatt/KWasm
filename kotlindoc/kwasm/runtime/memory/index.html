@@ -1,0 +1,2548 @@
+<!DOCTYPE HTML>
+<!--
+    Editorial by HTML5 UP
+    html5up.net | @ajlkn
+    Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<head>
+
+
+
+
+<meta charset="utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+<meta name="generator" content="Orchid 0.18.0-SNAPSHOT"/>
+<link rel="icon" href="https://jasonwyatt.github.io/KWasm/favicon.ico">
+
+
+<meta name="robots" content="index, follow">
+
+
+
+<title>Memory</title>
+
+
+<meta name="description" content="An Embeddable WebAssembly Interpreter for the JVM">
+
+
+
+
+
+<script>
+    window.site = {"orchidVersion":"0.18.0-SNAPSHOT","baseUrl":"https://jasonwyatt.github.io/KWasm","environment":"debug","version":"unspecified"};
+</script>
+
+
+
+
+
+<!-- start:debug info -->
+
+<!-- THEME -->
+<!-- Type: Editorial -->
+<!-- Class: com.eden.orchid.editorial.EditorialTheme -->
+
+<!-- PAGE -->
+<!-- Type: classes -->
+<!-- Class: com.eden.orchid.sourcedoc.page.SourceDocPage -->
+<!-- Layout: index -->
+<!-- Resolved Layout: templates/layouts/index.peb -->
+<!-- Page Template: kotlindocInterface, sourceDocPage, classes, page -->
+<!-- Resolved Page Template: templates/pages/sourceDocPage.peb -->
+
+<!-- RESOURCE -->
+<!-- Class: com.eden.orchid.sourcedoc.page.SourceDocResource -->
+<!-- Source Filename:  -->
+
+<!-- COMPLETE PAGE CONFIGURATION -->
+<script>
+    window.allData = {"reference":{"path":"kotlindoc","baseUrl":"https://jasonwyatt.github.io/KWasm","fileName":"kwasm/runtime/memory","extension":"html","usePrettyUrl":true,"link":"https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/memory"},"description":"","title":"Memory"};
+</script>
+
+<!-- end:debug info -->
+
+
+
+
+    <!-- start:inject components -->
+    
+        
+            
+        
+    
+    <!-- end:inject components -->
+
+
+
+    <!-- start:inject components -->
+    
+    <!-- end:inject components -->
+
+
+
+
+
+<!-- start:inject styles -->
+<link rel="stylesheet" type="text/css" href="https://jasonwyatt.github.io/KWasm/Editorial/9eb52517/assets/css/editorial_main.css"  />
+<link rel="stylesheet" type="text/css" href="https://jasonwyatt.github.io/KWasm/Editorial/9eb52517/assets/css/editorial_orchidCustomizations.css"  />
+<link rel="stylesheet" type="text/css" href="https://jasonwyatt.github.io/KWasm/Editorial/9eb52517/assets/css/orchidSearch.css"  />
+<link rel="stylesheet" type="text/css" href="https://jasonwyatt.github.io/KWasm/assets/css/orchidSearch.css"  />
+<link rel="stylesheet" type="text/css" href="https://jasonwyatt.github.io/KWasm/assets/css/orchidSourceDoc.css"  />
+<!-- end:inject styles -->
+
+</head>
+<body class="is-loading">
+
+
+<!-- Wrapper -->
+<div id="wrapper">
+
+    <!-- Main -->
+    <div id="main">
+        <div class="inner">
+
+            <!-- Header -->
+            
+                <header id="header">
+    <a href="https://jasonwyatt.github.io/KWasm" class="logo">KWasm</a>
+    <ul class="icons">
+    
+    
+        <li>
+            <a href="https://github.com/jasonwyatt/KWasm" class="icon fa-github">
+                <span class="label">github</span>
+            </a>
+        </li>
+    
+    
+    </ul>
+</header>
+            
+            
+            
+            
+                <section id="pageContent">
+                    <header class="major"><h2>Memory</h2></header>
+                    <article>
+                        
+    <!-- start:inject components -->
+    
+        
+            
+                
+                    
+                        <div class="sourcedoc-page orchid-sourcedoc content">
+  
+<div class="sourcedoc-section section-root section-level-1" id="Memory">
+
+
+  <h1 class="sourcedoc-section section-name">Memory</h1>
+  
+    <div class="sourcedoc-section section-element" id="e0a9324a923812c52937c8e7506cc68b6709da87">
+      
+      <p class="sourcedoc-section section-signature">
+        <code>interface <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/memory">Memory</a></code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Defines runtime memory for use by a wasm program, along with facilities for accessing and
+mutating memory by the host JVM application.<p>From <a href="https://webassembly.github.io/spec/core/exec/runtime.html#memory-instances">the docs</a>:</p><p>A memory instance is the runtime representation of a linear memory. It holds a vector of bytes
+and an optional maximum size, if one was specified at the definition site of the memory.</p><pre><code class="language-">
+meminst ::= {data vec(byte), max u32?}
+</code></pre><p>The length of the vector always is a multiple of the WebAssembly page size, which is defined to
+be the constant <code>65536</code> – abbreviated <code>64Ki</code>. Like in a memory type, the maximum size in a memory
+instance is given in units of this page size.</p><p>The bytes can be mutated through memory instructions, the execution of a data segment, or by
+external means provided by the embedder.</p><p>It is an invariant of the semantics that the length of the byte vector, divided by page size,
+never exceeds the maximum size, if present.</p></p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-2" id="fields">
+
+
+  <p class="sourcedoc-section section-name"><strong>Fields</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="a32de0ac48f9478e7ad7331546f8e975409e6da5">
+        <td class="sourcedoc-section section-signature">
+          <code>abstract sizePages: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        <p>The size of the <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/memory">Memory</a> as a number of pages, where each page is PAGE_SIZE bytes.</p>
+
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="d01ef0d3073bc42b23d83134b4b59c5b944a7226">
+        <td class="sourcedoc-section section-signature">
+          <code>open sizeBytes: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        <p>Returns the size of the <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/memory">Memory</a> as the total number of bytes available.<p><b>Note:</b> this is equivalent to sizePages * PAGE_SIZE.</p></p>
+
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-2" id="methods">
+
+
+  <h2 class="sourcedoc-section section-name">Methods</h2>
+  
+    <div class="sourcedoc-section section-element" id="90c1e69ff1827aba85eceb96c951ecab0aa408b0">
+      
+      <h3 class="sourcedoc-section element-name">lock</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>abstract suspend fun &lt;T&gt; lock(block: suspend <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/memory">Memory</a>.()-&gt;T): T</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Runs the block within a thread-safe mutual exclusion.</p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="22124b3a25e88ab727657ef5012eae511b3b96c2">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="9d125f6f203301f9e1cbbca5f5985d30eb42033e">
+        <td class="sourcedoc-section section-signature">
+          <code>block: suspend <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/memory">Memory</a>.()-&gt;T</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="60533d598f4009285605f1c487a0e0349e809922">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="c2c53d66948214258a26ca9ca845d7ac0c17f8e7">
+        <td class="sourcedoc-section section-signature">
+          <code>T</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="bf04c9b27340f470425cdaa45ccc38aa1ebb97d4">
+      
+      <h3 class="sourcedoc-section element-name">readInt</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>abstract fun readInt(offset: Int, byteWidth: Int, alignment: Int): Int</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Reads an Int from the <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/memory">Memory</a> at the given offset.</p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="3023deeea81b80abfb3cf1ede3b47c29446b1e3c">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="086d83603c39cfe13cac126a639ea59670cde420">
+        <td class="sourcedoc-section section-signature">
+          <code>offset: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="f0d2a4e6f82f0e6cba517a8d38e30635da073322">
+        <td class="sourcedoc-section section-signature">
+          <code>byteWidth: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="a30e805ed3b9c05822b20f8a82562df2718ee0d6">
+        <td class="sourcedoc-section section-signature">
+          <code>alignment: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="7677cfbead01a331f50ae1af776488d941131ce3">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="5c89edcac2811a6a9e8072517cae7f3cbfd5049d">
+        <td class="sourcedoc-section section-signature">
+          <code>Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="62fcdbd7d74e6164e720d5b3a75398230df38341">
+      
+      <h3 class="sourcedoc-section element-name">readUInt</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>abstract fun readUInt(offset: Int, byteWidth: Int, alignment: Int): UInt</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Reads a <a href="#">UInt</a> from the <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/memory">Memory</a> at the given offset.</p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="b0646f7a14a24c3f298ef59cc1c5e1ed286bb96f">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="086d83603c39cfe13cac126a639ea59670cde420">
+        <td class="sourcedoc-section section-signature">
+          <code>offset: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="f0d2a4e6f82f0e6cba517a8d38e30635da073322">
+        <td class="sourcedoc-section section-signature">
+          <code>byteWidth: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="a30e805ed3b9c05822b20f8a82562df2718ee0d6">
+        <td class="sourcedoc-section section-signature">
+          <code>alignment: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="b4fa06b53d9facf231170f65236b81816935a097">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="9b81a5f58a08d125439c4fe920735e6f93f6c26f">
+        <td class="sourcedoc-section section-signature">
+          <code>UInt</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="5db1e4b7c1717834c12add285637513f5655a6cc">
+      
+      <h3 class="sourcedoc-section element-name">readLong</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>abstract fun readLong(offset: Int, byteWidth: Int, alignment: Int): Long</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Reads a Long from the <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/memory">Memory</a> at the given offset.</p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="35901ade3d22f9e09bc53cc5bee4cca6a9759cf9">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="086d83603c39cfe13cac126a639ea59670cde420">
+        <td class="sourcedoc-section section-signature">
+          <code>offset: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="f0d2a4e6f82f0e6cba517a8d38e30635da073322">
+        <td class="sourcedoc-section section-signature">
+          <code>byteWidth: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="a30e805ed3b9c05822b20f8a82562df2718ee0d6">
+        <td class="sourcedoc-section section-signature">
+          <code>alignment: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="769eddff61c3f0ce6d46c90878a4379c6b8cfede">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="11eda67f9b15a760342f8e98a3fc78d8d3ea9945">
+        <td class="sourcedoc-section section-signature">
+          <code>Long</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="77b6f7bc73a95c8003e931ca785a3d23d9c13b05">
+      
+      <h3 class="sourcedoc-section element-name">readULong</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>abstract fun readULong(offset: Int, byteWidth: Int, alignment: Int): ULong</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Reads a <a href="#">ULong</a> from the <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/memory">Memory</a> at the given offset.</p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="ecc236491763fa558e2a714f0bf77e9f1e027428">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="086d83603c39cfe13cac126a639ea59670cde420">
+        <td class="sourcedoc-section section-signature">
+          <code>offset: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="f0d2a4e6f82f0e6cba517a8d38e30635da073322">
+        <td class="sourcedoc-section section-signature">
+          <code>byteWidth: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="a30e805ed3b9c05822b20f8a82562df2718ee0d6">
+        <td class="sourcedoc-section section-signature">
+          <code>alignment: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="bf73dd6fb307751306a20f1f5c2e4a15b95a5933">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="89e5acbaebf4cf3fe914f8e97ce3365330718921">
+        <td class="sourcedoc-section section-signature">
+          <code>ULong</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="1b51aeeb8d15ceabd10d81304edcdc4ff37c1b56">
+      
+      <h3 class="sourcedoc-section element-name">readFloat</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>abstract fun readFloat(offset: Int, alignment: Int): Float</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Reads a Float from the <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/memory">Memory</a> at the given offset.</p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="56aaa9546b34416741a47902f7fc0af094192d0c">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="086d83603c39cfe13cac126a639ea59670cde420">
+        <td class="sourcedoc-section section-signature">
+          <code>offset: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="a30e805ed3b9c05822b20f8a82562df2718ee0d6">
+        <td class="sourcedoc-section section-signature">
+          <code>alignment: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="96c10a646c620c10973a0b99e8d9a2f4a068ed52">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="64435fd82de7b1d614dfb9844848a48b14c6cd2c">
+        <td class="sourcedoc-section section-signature">
+          <code>Float</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="9476b298bf964f27e132fdf8a92ea886cbb4eac2">
+      
+      <h3 class="sourcedoc-section element-name">readDouble</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>abstract fun readDouble(offset: Int, alignment: Int): Double</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Reads a Double from the <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/memory">Memory</a> at the given offset.</p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="ee8914a8fee888375b65c26c4daf94e61a1e2738">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="086d83603c39cfe13cac126a639ea59670cde420">
+        <td class="sourcedoc-section section-signature">
+          <code>offset: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="a30e805ed3b9c05822b20f8a82562df2718ee0d6">
+        <td class="sourcedoc-section section-signature">
+          <code>alignment: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="8024f5fe03e34b828b7a7e545186c9687c2f1093">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="81581597044514bf54d4f97266022fc991f3915e">
+        <td class="sourcedoc-section section-signature">
+          <code>Double</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="7bcd244fc38acaaadd844b7bc96904232c0d7ae2">
+      
+      <h3 class="sourcedoc-section element-name">writeInt</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>abstract fun writeInt(value: Int, offset: Int, byteWidth: Int, alignment: Int)</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Writes an Int to the <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/memory">Memory</a> at the given offset.</p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="d742db16799207ee2a10e4a7644fc4a9351a6a5c">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="8beb4e49cd33d40dd38e2136899ac448607634ae">
+        <td class="sourcedoc-section section-signature">
+          <code>value: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="086d83603c39cfe13cac126a639ea59670cde420">
+        <td class="sourcedoc-section section-signature">
+          <code>offset: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="f0d2a4e6f82f0e6cba517a8d38e30635da073322">
+        <td class="sourcedoc-section section-signature">
+          <code>byteWidth: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="a30e805ed3b9c05822b20f8a82562df2718ee0d6">
+        <td class="sourcedoc-section section-signature">
+          <code>alignment: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="f8f95725ba5c7d7a9a0b6bf25f2d9314c07f50c0">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="f6b935ab337145efdeadda28cae18aa89a845e36">
+        <td class="sourcedoc-section section-signature">
+          <code>Unit</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="a9662b1dc625d910ab2e184b27768fd1f9748123">
+      
+      <h3 class="sourcedoc-section element-name">writeUInt</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>abstract fun writeUInt(value: UInt, offset: Int, byteWidth: Int, alignment: Int)</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Writes a <a href="#">UInt</a> to the <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/memory">Memory</a> at the given offset.</p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="781557eb61a1b7bae360d816fc35a5d3f0f9126d">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="69b57777b988179347078d192a5f3470de9742b0">
+        <td class="sourcedoc-section section-signature">
+          <code>value: UInt</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="086d83603c39cfe13cac126a639ea59670cde420">
+        <td class="sourcedoc-section section-signature">
+          <code>offset: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="f0d2a4e6f82f0e6cba517a8d38e30635da073322">
+        <td class="sourcedoc-section section-signature">
+          <code>byteWidth: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="a30e805ed3b9c05822b20f8a82562df2718ee0d6">
+        <td class="sourcedoc-section section-signature">
+          <code>alignment: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="6e40af96097d713269cc27ee41656e2d9076cd03">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="f6b935ab337145efdeadda28cae18aa89a845e36">
+        <td class="sourcedoc-section section-signature">
+          <code>Unit</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="0d0d99a213757066b2005563106e881f7f7f60ca">
+      
+      <h3 class="sourcedoc-section element-name">writeLong</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>abstract fun writeLong(value: Long, offset: Int, byteWidth: Int, alignment: Int)</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Writes a Long to the <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/memory">Memory</a> at the given offset.</p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="7e5b5e0194297652a8dfec007be824e1914101ad">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="36faaeee46f890e025c3435dee0ab9676ceb6cad">
+        <td class="sourcedoc-section section-signature">
+          <code>value: Long</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="086d83603c39cfe13cac126a639ea59670cde420">
+        <td class="sourcedoc-section section-signature">
+          <code>offset: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="f0d2a4e6f82f0e6cba517a8d38e30635da073322">
+        <td class="sourcedoc-section section-signature">
+          <code>byteWidth: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="a30e805ed3b9c05822b20f8a82562df2718ee0d6">
+        <td class="sourcedoc-section section-signature">
+          <code>alignment: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="2c3908129ecfc71e0b8fadcb02b2ccd3ed91e225">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="f6b935ab337145efdeadda28cae18aa89a845e36">
+        <td class="sourcedoc-section section-signature">
+          <code>Unit</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="4e428929fc19da94105b2f753dd04001baee9f02">
+      
+      <h3 class="sourcedoc-section element-name">writeULong</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>abstract fun writeULong(value: ULong, offset: Int, byteWidth: Int, alignment: Int)</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Writes a <a href="#">ULong</a> to the <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/memory">Memory</a> at the given offset.</p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="0fb5e66938c20edf8df26aee5acf3504e64a21db">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="71c8a7994a4ff93f537e2a5a29247121821d45fd">
+        <td class="sourcedoc-section section-signature">
+          <code>value: ULong</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="086d83603c39cfe13cac126a639ea59670cde420">
+        <td class="sourcedoc-section section-signature">
+          <code>offset: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="f0d2a4e6f82f0e6cba517a8d38e30635da073322">
+        <td class="sourcedoc-section section-signature">
+          <code>byteWidth: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="a30e805ed3b9c05822b20f8a82562df2718ee0d6">
+        <td class="sourcedoc-section section-signature">
+          <code>alignment: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="74095319d965b74f75735b30eb87f8da6adb858e">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="f6b935ab337145efdeadda28cae18aa89a845e36">
+        <td class="sourcedoc-section section-signature">
+          <code>Unit</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="594c4719422f76452c08f3aa287141971b1798cb">
+      
+      <h3 class="sourcedoc-section element-name">writeFloat</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>abstract fun writeFloat(value: Float, offset: Int, alignment: Int)</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Writes a Float to the <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/memory">Memory</a> at the given offset.</p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="562c42a54eeb9a2a2728693a9708e9e406fe398b">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="ba908d81ae43455ad73a092ecbff5c3ef4a3125a">
+        <td class="sourcedoc-section section-signature">
+          <code>value: Float</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="086d83603c39cfe13cac126a639ea59670cde420">
+        <td class="sourcedoc-section section-signature">
+          <code>offset: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="a30e805ed3b9c05822b20f8a82562df2718ee0d6">
+        <td class="sourcedoc-section section-signature">
+          <code>alignment: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="b0afd094fcd92c00ca884de283cd8597e87d2cb8">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="f6b935ab337145efdeadda28cae18aa89a845e36">
+        <td class="sourcedoc-section section-signature">
+          <code>Unit</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="1f9cd330e0d13ef9baddd2115a3638ad5fb5dbd4">
+      
+      <h3 class="sourcedoc-section element-name">writeDouble</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>abstract fun writeDouble(value: Double, offset: Int, alignment: Int)</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Writes a Double to the <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/memory">Memory</a> at the given offset.</p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="3cd98b46ce5cf133f2518e54d200f6eb7e7c0e49">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="7e024fa4cab06e3685af4bdfee89654fe7cd9de6">
+        <td class="sourcedoc-section section-signature">
+          <code>value: Double</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="086d83603c39cfe13cac126a639ea59670cde420">
+        <td class="sourcedoc-section section-signature">
+          <code>offset: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="a30e805ed3b9c05822b20f8a82562df2718ee0d6">
+        <td class="sourcedoc-section section-signature">
+          <code>alignment: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="e450d0d04e8bec8ddfdbcf6bb2f002fbd03b5211">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="f6b935ab337145efdeadda28cae18aa89a845e36">
+        <td class="sourcedoc-section section-signature">
+          <code>Unit</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="5a02788c432b463b921fa263ad520bd4f25c3ef0">
+      
+      <h3 class="sourcedoc-section element-name">readBytes</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>abstract fun readBytes(out: ByteArray, memoryOffset: Int, outOffset: Int, length: Int): Int</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Reads length bytes starting at the given memoryOffset from the <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/memory">Memory</a> into the supplied
+ByteArray, starting at outOffset and returns the number of bytes which were able to be
+read.</p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="c0d39ec00b10f12117bacf6a8a85796232a857f9">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="b5cc986260821c0c587d02646915dd86209617ef">
+        <td class="sourcedoc-section section-signature">
+          <code>out: ByteArray</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="6ca6d43a15732d0b4d4a5ab6a31362d257196a32">
+        <td class="sourcedoc-section section-signature">
+          <code>memoryOffset: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="b219b247d1c608ae49d57030e287a3e92f5b02fe">
+        <td class="sourcedoc-section section-signature">
+          <code>outOffset: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="f0162867e8d5054b87f468151dda45f0e95f7ba6">
+        <td class="sourcedoc-section section-signature">
+          <code>length: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="2e628417e3137e32c481347e676a78105af05606">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="5c89edcac2811a6a9e8072517cae7f3cbfd5049d">
+        <td class="sourcedoc-section section-signature">
+          <code>Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="4f094cd1522fd126952e38aa899cd4c96031823e">
+      
+      <h3 class="sourcedoc-section element-name">writeBytes</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>abstract fun writeBytes(value: ByteArray, offset: Int, valueOffset: Int, valueLength: Int)</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Writes a ByteArray into the <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/memory">Memory</a> at the given offset.<p>Optional arguments valueOffset and valueLength allow the caller to specify a subsequence
+of bytes from the value to write. Defaults for these arguments result in the entirety of
+the value being written.</p></p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="55c3496187a7caa271b6b4ff90184d6cdc827835">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="454ceb4682a6baa864f082943ad8c6ffee52b928">
+        <td class="sourcedoc-section section-signature">
+          <code>value: ByteArray</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="086d83603c39cfe13cac126a639ea59670cde420">
+        <td class="sourcedoc-section section-signature">
+          <code>offset: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="0aa5da98f9935bb85638aed62da0db5090a69bab">
+        <td class="sourcedoc-section section-signature">
+          <code>valueOffset: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="be3327c8ffd573935c3cab49476f2afac6d15e62">
+        <td class="sourcedoc-section section-signature">
+          <code>valueLength: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="a978e849da5a35f528cdcd09c158fcfda42a52ad">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="f6b935ab337145efdeadda28cae18aa89a845e36">
+        <td class="sourcedoc-section section-signature">
+          <code>Unit</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="0fd89c41be777c8d04a0c071d0de3eb180017b26">
+      
+      <h3 class="sourcedoc-section element-name">growBy</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>abstract fun growBy(newPages: Int): Int</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Grows the <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/memory">Memory</a> by the specified number of newPages (each page's size = PAGE_SIZE).</p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="2357cf75d07117e01f85ddf24456c3efd1e97fca">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="3dab02633edaeb043475e44ca2305fe0e2c5b513">
+        <td class="sourcedoc-section section-signature">
+          <code>newPages: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="1c705ea56c0a00ae98815f96b6a6905b241c8304">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="5c89edcac2811a6a9e8072517cae7f3cbfd5049d">
+        <td class="sourcedoc-section section-signature">
+          <code>Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        <p>the size of the <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/memory">Memory</a> before the grow operation if the grow was successful, else
+GROW_FAILURE.</p>
+
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-2" id="companionObject">
+
+
+  <h2 class="sourcedoc-section section-name">CompanionObject</h2>
+  
+    <div class="sourcedoc-section section-element" id="e0a9324a923812c52937c8e7506cc68b6709da87">
+      
+      <h3 class="sourcedoc-section element-name">Memory</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>interface <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/memory">Memory</a></code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Defines runtime memory for use by a wasm program, along with facilities for accessing and
+mutating memory by the host JVM application.<p>From <a href="https://webassembly.github.io/spec/core/exec/runtime.html#memory-instances">the docs</a>:</p><p>A memory instance is the runtime representation of a linear memory. It holds a vector of bytes
+and an optional maximum size, if one was specified at the definition site of the memory.</p><pre><code class="language-">
+meminst ::= {data vec(byte), max u32?}
+</code></pre><p>The length of the vector always is a multiple of the WebAssembly page size, which is defined to
+be the constant <code>65536</code> – abbreviated <code>64Ki</code>. Like in a memory type, the maximum size in a memory
+instance is given in units of this page size.</p><p>The bytes can be mutated through memory instructions, the execution of a data segment, or by
+external means provided by the embedder.</p><p>It is an invariant of the semantics that the length of the byte vector, divided by page size,
+never exceeds the maximum size, if present.</p></p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="670b7ace280c8c4b17b3c2891e7a7dbab803a33f">
+
+
+  <p class="sourcedoc-section section-name"><strong>Fields</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="f6c20c8c5548f13f36acd3863d786a260e98d44d">
+        <td class="sourcedoc-section section-signature">
+          <code>const PAGE_SIZE: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="e03cc2db5517e9fec2e6ea3e89ae89818965a3ad">
+        <td class="sourcedoc-section section-signature">
+          <code>const GROW_FAILURE: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="4ad2dbda1441ea8464bbb9522b978219509416b4">
+
+
+  <h3 class="sourcedoc-section section-name">Methods</h3>
+  
+    <div class="sourcedoc-section section-element" id="72660b10734b52877874d50cc13926f0cdcc93b7">
+      
+      <h4 class="sourcedoc-section element-name">pagesForBytes</h4>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun pagesForBytes(bytes: Long): Int</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Returns the minimum number of pages required to hold the specified number of bytes.</p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-4" id="c2c01457852a28bca1b767ef11d033caa679bbef">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="29803dececcfe8f4c4e31f925e9b91a011d6348e">
+        <td class="sourcedoc-section section-signature">
+          <code>bytes: Long</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-4" id="10c1161d74be6f24d1360476596c147fde61bae6">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="5c89edcac2811a6a9e8072517cae7f3cbfd5049d">
+        <td class="sourcedoc-section section-signature">
+          <code>Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+
+</div>
+
+        
+      
+    </div>
+  
+
+</div>
+
+        
+      
+    </div>
+  
+
+</div>
+
+</div>
+
+
+
+
+
+
+                    
+                
+            
+        
+    
+    <!-- end:inject components -->
+
+
+                    </article>
+                </section>
+            
+        </div>
+        <hr>
+
+        <!-- Page Footer -->
+        <div class="inner">
+    <footer id="footer">
+        <div class="clearfix">
+            
+            
+        </div>
+    </footer>
+</div>
+
+    </div>
+
+    <!-- Sidebar -->
+    <div id="sidebar">
+    <div class="inner">
+
+        <!-- Search -->
+        <section id="search" class="alt">
+            <form data-orchid-search="">
+                <input type="text" name="query" id="query" placeholder="Search"/>
+            </form>
+            <div class="box" id="search-results" data-orchid-search-results style="display: none;">
+                <b>Search Results</b>
+                <ul></ul>
+            </div>
+            <div class="box" id="search-progress" data-orchid-search-progress style="display: none;">
+                <div class="loader">Loading...</div>
+            </div>
+        </section>
+
+        <!-- Menu -->
+        <nav id="siteNav" class="menu">
+            <header class="major">
+                <h2>KWasm</h2>
+            </header>
+            <ul class="top-level">
+                
+                    
+    
+    <li>
+        <a class="subheader">KWasm Library API Docs</a>
+    </li>
+    
+
+                
+                    
+    <li>
+        <span class="opener">Packages</span>
+        <ul>
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm">kwasm</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/api">kwasm.api</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast">kwasm.ast</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction">kwasm.ast.instruction</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module">kwasm.ast.module</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type">kwasm.ast.type</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/util">kwasm.ast.util</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format">kwasm.format</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/binary">kwasm.format.binary</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/binary/instruction">kwasm.format.binary.instruction</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/binary/module">kwasm.format.binary.module</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/binary/type">kwasm.format.binary.type</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/binary/value">kwasm.format.binary.value</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text">kwasm.format.text</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/instruction">kwasm.format.text.instruction</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/module">kwasm.format.text.module</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token">kwasm.format.text.token</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/util">kwasm.format.text.token.util</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/type">kwasm.format.text.type</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/whitespace">kwasm.format.text.whitespace</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime">kwasm.runtime</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/instruction">kwasm.runtime.instruction</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/memory">kwasm.runtime.memory</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/stack">kwasm.runtime.stack</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/util">kwasm.runtime.util</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/util">kwasm.util</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation">kwasm.validation</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/instruction">kwasm.validation.instruction</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/instruction/control">kwasm.validation.instruction.control</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/instruction/memory">kwasm.validation.instruction.memory</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/module">kwasm.validation.module</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/type">kwasm.validation.type</a>
+    </li>
+    
+
+        
+        </ul>
+    </li>
+
+                
+            </ul>
+        </nav>
+        
+        <nav class="menu">
+            <header class="major">
+                <h2>Memory</h2>
+            </header>
+            <ul class="top-level">
+                
+                    
+    <li>
+        <span class="opener">Fields</span>
+        <ul>
+        
+            
+    
+    <li>
+        <a href="#a32de0ac48f9478e7ad7331546f8e975409e6da5">abstract sizePages: Int</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#d01ef0d3073bc42b23d83134b4b59c5b944a7226">open sizeBytes: Int</a>
+    </li>
+    
+
+        
+        </ul>
+    </li>
+
+                
+                    
+    <li>
+        <span class="opener">Methods</span>
+        <ul>
+        
+            
+    
+    <li>
+        <a href="#90c1e69ff1827aba85eceb96c951ecab0aa408b0">abstract suspend fun &lt;T&gt; lock(block: suspend Memory.()-&gt;T): T</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#bf04c9b27340f470425cdaa45ccc38aa1ebb97d4">abstract fun readInt(offset: Int, byteWidth: Int, alignment: Int): Int</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#62fcdbd7d74e6164e720d5b3a75398230df38341">abstract fun readUInt(offset: Int, byteWidth: Int, alignment: Int): UInt</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#5db1e4b7c1717834c12add285637513f5655a6cc">abstract fun readLong(offset: Int, byteWidth: Int, alignment: Int): Long</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#77b6f7bc73a95c8003e931ca785a3d23d9c13b05">abstract fun readULong(offset: Int, byteWidth: Int, alignment: Int): ULong</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#1b51aeeb8d15ceabd10d81304edcdc4ff37c1b56">abstract fun readFloat(offset: Int, alignment: Int): Float</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#9476b298bf964f27e132fdf8a92ea886cbb4eac2">abstract fun readDouble(offset: Int, alignment: Int): Double</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#7bcd244fc38acaaadd844b7bc96904232c0d7ae2">abstract fun writeInt(value: Int, offset: Int, byteWidth: Int, alignment: Int)</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#a9662b1dc625d910ab2e184b27768fd1f9748123">abstract fun writeUInt(value: UInt, offset: Int, byteWidth: Int, alignment: Int)</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#0d0d99a213757066b2005563106e881f7f7f60ca">abstract fun writeLong(value: Long, offset: Int, byteWidth: Int, alignment: Int)</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#4e428929fc19da94105b2f753dd04001baee9f02">abstract fun writeULong(value: ULong, offset: Int, byteWidth: Int, alignment: Int)</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#594c4719422f76452c08f3aa287141971b1798cb">abstract fun writeFloat(value: Float, offset: Int, alignment: Int)</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#1f9cd330e0d13ef9baddd2115a3638ad5fb5dbd4">abstract fun writeDouble(value: Double, offset: Int, alignment: Int)</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#5a02788c432b463b921fa263ad520bd4f25c3ef0">abstract fun readBytes(out: ByteArray, memoryOffset: Int, outOffset: Int, length: Int): Int</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#4f094cd1522fd126952e38aa899cd4c96031823e">abstract fun writeBytes(value: ByteArray, offset: Int, valueOffset: Int, valueLength: Int)</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#0fd89c41be777c8d04a0c071d0de3eb180017b26">abstract fun growBy(newPages: Int): Int</a>
+    </li>
+    
+
+        
+        </ul>
+    </li>
+
+                
+                    
+    <li>
+        <span class="opener">CompanionObject</span>
+        <ul>
+        
+            
+    
+    <li>
+        <a href="#e0a9324a923812c52937c8e7506cc68b6709da87">interface Memory</a>
+    </li>
+    
+
+        
+        </ul>
+    </li>
+
+                
+            </ul>
+        </nav>
+        
+
+        <!-- Section -->
+        <section>
+            <p class="text-center">
+                Currently unspecified. Created with <a href="https://orchid.run">Orchid </a> and <b>Orchid Editorial Theme</b>.
+            </p>
+        </section>
+
+        <!-- Footer -->
+        <footer id="footer">
+            <p class="copyright text-center">&copy; KWasm. All rights reserved.<br>Design by <a href="https://html5up.net">HTML5 UP</a></p>
+        </footer>
+
+    </div>
+</div>
+
+</div>
+
+<!-- start:inject scripts -->
+<script  src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script  src="https://cdnjs.cloudflare.com/ajax/libs/skel/3.0.1/skel.min.js"></script>
+<script  src="https://jasonwyatt.github.io/KWasm/Editorial/9eb52517/assets/js/editorial_util.js"></script>
+<script  src="https://jasonwyatt.github.io/KWasm/Editorial/9eb52517/assets/js/editorial_main.js"></script>
+<script  src="https://jasonwyatt.github.io/KWasm/Editorial/9eb52517/assets/js/editorial_orchidCustomizations.js"></script>
+<script  src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script  src="https://unpkg.com/lunr/lunr.js"></script>
+<script  src="https://jasonwyatt.github.io/KWasm/assets/js/orchidSearch.js"></script>
+<!-- end:inject scripts -->
+
+</body>
+</html>

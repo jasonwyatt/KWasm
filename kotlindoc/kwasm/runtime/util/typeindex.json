@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/runtime/util/typeindex",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/util/typeindex"
+  },
+  "data": {},
+  "description": "",
+  "title": "TypeIndex",
+  "content": "<p>CommentComponent(kind=text, text=Implementation of MutableList which allows for lookups using , value=) CommentComponent(kind=typeName, text=Index.ByIdentifier, value=kwasm.ast.module.Index.ByIdentifier) CommentComponent(kind=text, text= values., value=null)<\/p>\n"
+}

@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/api/bytebuffermemoryprovider",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/api/bytebuffermemoryprovider"
+  },
+  "data": {},
+  "description": "",
+  "title": "ByteBufferMemoryProvider",
+  "content": "<p>CommentComponent(kind=text, text=Implementation of , value=) CommentComponent(kind=typeName, text=MemoryProvider, value=kwasm.api.MemoryProvider) CommentComponent(kind=text, text= which builds blank ByteBufferMemory memories., value=null)<\/p>\n"
+}

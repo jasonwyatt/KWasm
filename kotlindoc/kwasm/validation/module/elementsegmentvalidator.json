@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/validation/module/elementsegmentvalidator",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/module/elementsegmentvalidator"
+  },
+  "data": {},
+  "description": "",
+  "title": "ElementSegmentValidator",
+  "content": "<p>CommentComponent(kind=text, text=Validator of , value=) CommentComponent(kind=typeName, text=ElementSegment, value=kwasm.ast.module.ElementSegment) CommentComponent(kind=text, text= nodes.<p>From <a href=\"https://webassembly.github.io/spec/core/valid/modules.html#element-segments\">the docs<\/a>:<\/p><ul><li>The table <code>C.tables[x]<\/code> must be defined in the context.<\/li><li>Let <code>limits elemtype<\/code> be the table type <code>C.tables[x]<\/code>.<\/li><li>The element type <code>elemtype<\/code> must be <code>funcref<\/code>.<\/li><li>The expression <code>expr<\/code> must be valid with result type <code>[i32]<\/code>.<\/li><li>The expression <code>expr<\/code> must be constant.<\/li><li>For each <code>y_i<\/code> in <code>y*<\/code>, the function <code>C.funcs[y]<\/code> must be defined in the context.<\/li><li>Then the element segment is valid.<\/li><\/ul>, value=null)<\/p>\n"
+}

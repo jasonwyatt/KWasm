@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/module/table",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/table"
+  },
+  "data": {},
+  "description": "",
+  "title": "Table",
+  "content": "<p type=\"\" tabletype=\"\">CommentComponent(kind=text, text=Represents a table in a , value=) CommentComponent(kind=typeName, text=WasmModule, value=kwasm.ast.module.WasmModule) CommentComponent(kind=text, text=.<p>From <a href=\"https://webassembly.github.io/spec/core/syntax/modules.html#tables\">the docs<\/a>:<\/p><p>The <code>tables<\/code> component of a module defines a vector of tables described by their table type:<\/p><pre><code class=\"language-\">\ntable ::=<\/p>\n<\/code><\/pre><p>A table is a vector of opaque values of a particular table element type. The <code>min<\/code> size in the\nlimits of the table type specifies the initial size of that table, while its <code>max<\/code>, if present,\nrestricts the size to which it can grow later.<\/p><p>Tables can be initialized through element segments.<\/p><p>Tables are referenced through table indices, starting with the smallest index not referencing a\ntable import. Most constructs implicitly reference table index <code>0<\/code>.<\/p><p>Note:** In the current version of WebAssembly, at most one table may be defined or imported in a\nsingle module, and all constructs implicitly reference this table <code>0<\/code>. This restriction may be\nlifted in future versions.<\/p>, value=null)\n"
+}

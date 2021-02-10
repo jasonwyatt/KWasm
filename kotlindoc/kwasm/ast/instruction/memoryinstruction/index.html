@@ -1,0 +1,696 @@
+<!DOCTYPE HTML>
+<!--
+    Editorial by HTML5 UP
+    html5up.net | @ajlkn
+    Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<head>
+
+
+
+
+<meta charset="utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+<meta name="generator" content="Orchid 0.18.0-SNAPSHOT"/>
+<link rel="icon" href="https://jasonwyatt.github.io/KWasm/favicon.ico">
+
+
+<meta name="robots" content="index, follow">
+
+
+
+<title>MemoryInstruction</title>
+
+
+<meta name="description" content="An Embeddable WebAssembly Interpreter for the JVM">
+
+
+
+
+
+<script>
+    window.site = {"orchidVersion":"0.18.0-SNAPSHOT","baseUrl":"https://jasonwyatt.github.io/KWasm","environment":"debug","version":"unspecified"};
+</script>
+
+
+
+
+
+<!-- start:debug info -->
+
+<!-- THEME -->
+<!-- Type: Editorial -->
+<!-- Class: com.eden.orchid.editorial.EditorialTheme -->
+
+<!-- PAGE -->
+<!-- Type: classes -->
+<!-- Class: com.eden.orchid.sourcedoc.page.SourceDocPage -->
+<!-- Layout: index -->
+<!-- Resolved Layout: templates/layouts/index.peb -->
+<!-- Page Template: kotlindocClass, sourceDocPage, classes, page -->
+<!-- Resolved Page Template: templates/pages/sourceDocPage.peb -->
+
+<!-- RESOURCE -->
+<!-- Class: com.eden.orchid.sourcedoc.page.SourceDocResource -->
+<!-- Source Filename:  -->
+
+<!-- COMPLETE PAGE CONFIGURATION -->
+<script>
+    window.allData = {"reference":{"path":"kotlindoc","baseUrl":"https://jasonwyatt.github.io/KWasm","fileName":"kwasm/ast/instruction/memoryinstruction","extension":"html","usePrettyUrl":true,"link":"https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/memoryinstruction"},"description":"","title":"MemoryInstruction"};
+</script>
+
+<!-- end:debug info -->
+
+
+
+
+    <!-- start:inject components -->
+    
+        
+            
+        
+    
+    <!-- end:inject components -->
+
+
+
+    <!-- start:inject components -->
+    
+    <!-- end:inject components -->
+
+
+
+
+
+<!-- start:inject styles -->
+<link rel="stylesheet" type="text/css" href="https://jasonwyatt.github.io/KWasm/Editorial/9eb52517/assets/css/editorial_main.css"  />
+<link rel="stylesheet" type="text/css" href="https://jasonwyatt.github.io/KWasm/Editorial/9eb52517/assets/css/editorial_orchidCustomizations.css"  />
+<link rel="stylesheet" type="text/css" href="https://jasonwyatt.github.io/KWasm/Editorial/9eb52517/assets/css/orchidSearch.css"  />
+<link rel="stylesheet" type="text/css" href="https://jasonwyatt.github.io/KWasm/assets/css/orchidSearch.css"  />
+<link rel="stylesheet" type="text/css" href="https://jasonwyatt.github.io/KWasm/assets/css/orchidSourceDoc.css"  />
+<!-- end:inject styles -->
+
+</head>
+<body class="is-loading">
+
+
+<!-- Wrapper -->
+<div id="wrapper">
+
+    <!-- Main -->
+    <div id="main">
+        <div class="inner">
+
+            <!-- Header -->
+            
+                <header id="header">
+    <a href="https://jasonwyatt.github.io/KWasm" class="logo">KWasm</a>
+    <ul class="icons">
+    
+    
+        <li>
+            <a href="https://github.com/jasonwyatt/KWasm" class="icon fa-github">
+                <span class="label">github</span>
+            </a>
+        </li>
+    
+    
+    </ul>
+</header>
+            
+            
+            
+            
+                <section id="pageContent">
+                    <header class="major"><h2>MemoryInstruction</h2></header>
+                    <article>
+                        
+    <!-- start:inject components -->
+    
+        
+            
+                
+                    
+                        <div class="sourcedoc-page orchid-sourcedoc content">
+  
+<div class="sourcedoc-section section-root section-level-1" id="MemoryInstruction">
+
+
+  <h1 class="sourcedoc-section section-name">MemoryInstruction</h1>
+  
+    <div class="sourcedoc-section section-element" id="a052dfa9ac3a4a9146f0a5d46795f2d3e0a545aa">
+      
+      <p class="sourcedoc-section section-signature">
+        <code>sealed class <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/memoryinstruction">MemoryInstruction</a></code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Base class for all <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/instruction">Instruction</a>s dealing with memory.<p>From</p>
+<a href="https://webassembly.github.io/spec/core/syntax/instructions.html#memory-instructions">the docs</a>:</p><p>Instructions in this group are concerned with linear memory.</p><p>Memory is accessed with <code>load</code> and <code>store</code> instructions for the different value types. They all
+take a memory immediate <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/memarg">MemArg</a> that contains an address offset and the expected alignment
+(expressed as the exponent of a power of 2). Integer loads and stores can optionally specify a
+storage size that is smaller than the bit width of the respective value type. In the case of
+loads, a sign extension mode <code>sx</code> is then required to select appropriate behavior.</p><p>The static address offset is added to the dynamic address operand, yielding a 33 bit effective
+address that is the zero-based index at which the memory is accessed. All values are read and
+written in little endian byte order. A trap results if any of the accessed memory bytes lies
+outside the address range implied by the memory’s current size.</p><pre><code class="language-">
+instr  ::= inn.load memarg
+           fnn.load memarg
+           inn.store memarg
+           fnn.store memarg
+           inn.load8_sx memarg
+           inn.load16_sx memarg
+           i64.load32_sx memarg
+           inn.store8 memarg
+           inn.store16 memarg
+           i64.store32 memarg
+           memory.size
+           memory.grow
+</code></pre>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-2" id="extensions">
+
+
+  <h2 class="sourcedoc-section section-name">Extensions</h2>
+  
+    <div class="sourcedoc-section section-element" id="a982b7bf8d7f82df844b90d6164374e688e897e9">
+      
+      <h3 class="sourcedoc-section element-name">validate</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/instruction">Instruction</a>.validate(context: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext/functionbody">FunctionBody</a>): <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext/functionbody">FunctionBody</a></code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Validates the <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/instruction">Instruction</a>.</p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="f1523a4d98c315efa9df167b69cffaa4305f051b">
+
+
+  <p class="sourcedoc-section section-name"><strong>Receiver</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="d2bbe05f8fa95e1efc3d5bece8070fe298a07cc9">
+        <td class="sourcedoc-section section-signature">
+          <code><a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/instruction">Instruction</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="279ac4014da252b92cdaf75ca3dcfb657276c77e">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="e8d52089bceed45e6ca58bfdef48331a852c900a">
+        <td class="sourcedoc-section section-signature">
+          <code>context: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext/functionbody">FunctionBody</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="0c2e8d0d3a6c7a68f6ca27b57b48ba2c6ffb98ed">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="8aa65b90cfa1f9392425e0fd532374c477b9193d">
+        <td class="sourcedoc-section section-signature">
+          <code><a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext/functionbody">FunctionBody</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+
+</div>
+
+        
+      
+    </div>
+  
+
+</div>
+
+</div>
+
+
+
+
+
+
+                    
+                
+            
+        
+    
+    <!-- end:inject components -->
+
+
+                    </article>
+                </section>
+            
+        </div>
+        <hr>
+
+        <!-- Page Footer -->
+        <div class="inner">
+    <footer id="footer">
+        <div class="clearfix">
+            
+            
+        </div>
+    </footer>
+</div>
+
+    </div>
+
+    <!-- Sidebar -->
+    <div id="sidebar">
+    <div class="inner">
+
+        <!-- Search -->
+        <section id="search" class="alt">
+            <form data-orchid-search="">
+                <input type="text" name="query" id="query" placeholder="Search"/>
+            </form>
+            <div class="box" id="search-results" data-orchid-search-results style="display: none;">
+                <b>Search Results</b>
+                <ul></ul>
+            </div>
+            <div class="box" id="search-progress" data-orchid-search-progress style="display: none;">
+                <div class="loader">Loading...</div>
+            </div>
+        </section>
+
+        <!-- Menu -->
+        <nav id="siteNav" class="menu">
+            <header class="major">
+                <h2>KWasm</h2>
+            </header>
+            <ul class="top-level">
+                
+                    
+    
+    <li>
+        <a class="subheader">KWasm Library API Docs</a>
+    </li>
+    
+
+                
+                    
+    <li>
+        <span class="opener">Packages</span>
+        <ul>
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm">kwasm</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/api">kwasm.api</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast">kwasm.ast</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction">kwasm.ast.instruction</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module">kwasm.ast.module</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type">kwasm.ast.type</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/util">kwasm.ast.util</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format">kwasm.format</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/binary">kwasm.format.binary</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/binary/instruction">kwasm.format.binary.instruction</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/binary/module">kwasm.format.binary.module</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/binary/type">kwasm.format.binary.type</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/binary/value">kwasm.format.binary.value</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text">kwasm.format.text</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/instruction">kwasm.format.text.instruction</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/module">kwasm.format.text.module</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token">kwasm.format.text.token</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/util">kwasm.format.text.token.util</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/type">kwasm.format.text.type</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/whitespace">kwasm.format.text.whitespace</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime">kwasm.runtime</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/instruction">kwasm.runtime.instruction</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/memory">kwasm.runtime.memory</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/stack">kwasm.runtime.stack</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/util">kwasm.runtime.util</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/util">kwasm.util</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation">kwasm.validation</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/instruction">kwasm.validation.instruction</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/instruction/control">kwasm.validation.instruction.control</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/instruction/memory">kwasm.validation.instruction.memory</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/module">kwasm.validation.module</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/type">kwasm.validation.type</a>
+    </li>
+    
+
+        
+        </ul>
+    </li>
+
+                
+            </ul>
+        </nav>
+        
+        <nav class="menu">
+            <header class="major">
+                <h2>MemoryInstruction</h2>
+            </header>
+            <ul class="top-level">
+                
+                    
+    <li>
+        <span class="opener">Extensions</span>
+        <ul>
+        
+            
+    
+    <li>
+        <a href="#a982b7bf8d7f82df844b90d6164374e688e897e9">fun Instruction.validate(context: FunctionBody): FunctionBody</a>
+    </li>
+    
+
+        
+        </ul>
+    </li>
+
+                
+            </ul>
+        </nav>
+        
+
+        <!-- Section -->
+        <section>
+            <p class="text-center">
+                Currently unspecified. Created with <a href="https://orchid.run">Orchid </a> and <b>Orchid Editorial Theme</b>.
+            </p>
+        </section>
+
+        <!-- Footer -->
+        <footer id="footer">
+            <p class="copyright text-center">&copy; KWasm. All rights reserved.<br>Design by <a href="https://html5up.net">HTML5 UP</a></p>
+        </footer>
+
+    </div>
+</div>
+
+</div>
+
+<!-- start:inject scripts -->
+<script  src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script  src="https://cdnjs.cloudflare.com/ajax/libs/skel/3.0.1/skel.min.js"></script>
+<script  src="https://jasonwyatt.github.io/KWasm/Editorial/9eb52517/assets/js/editorial_util.js"></script>
+<script  src="https://jasonwyatt.github.io/KWasm/Editorial/9eb52517/assets/js/editorial_main.js"></script>
+<script  src="https://jasonwyatt.github.io/KWasm/Editorial/9eb52517/assets/js/editorial_orchidCustomizations.js"></script>
+<script  src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script  src="https://unpkg.com/lunr/lunr.js"></script>
+<script  src="https://jasonwyatt.github.io/KWasm/assets/js/orchidSearch.js"></script>
+<!-- end:inject scripts -->
+
+</body>
+</html>

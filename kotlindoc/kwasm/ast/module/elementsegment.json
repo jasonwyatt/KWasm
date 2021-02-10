@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/module/elementsegment",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/elementsegment"
+  },
+  "data": {},
+  "description": "",
+  "title": "ElementSegment",
+  "content": "<p>CommentComponent(kind=text, text=Representation of an element segment for a table.<p>From <a href=\"https://webassembly.github.io/spec/core/syntax/modules.html#element-segments\">the docs<\/a>:<\/p><p>The initial contents of a table is uninitialized. The <code>elem<\/code> component of a module defines a\nvector of element segments that initialize a subrange of a table, at a given offset, from a\nstatic vector of elements.<\/p><pre><code class=\"language-\">\nelem ::= {table tableidx, offset expr, init vec(funcidx)}<\/p>\n<\/code><\/pre><p>The <code>offset<\/code> is given by a constant expression.<\/p><p><b>Note:<\/b> In the current version of WebAssembly, at most one table is allowed in a module.\nConsequently, the only valid <code>tableidx<\/code> is <code>0<\/code>.<\/p>, value=null)\n"
+}

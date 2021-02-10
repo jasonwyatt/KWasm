@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/astnodelist",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnodelist"
+  },
+  "data": {},
+  "description": "",
+  "title": "AstNodeList",
+  "content": "<p>CommentComponent(kind=text, text=A list of , value=) CommentComponent(kind=typeName, text=AstNode, value=kwasm.ast.AstNode) CommentComponent(kind=text, text=s., value=null)<\/p>\n"
+}

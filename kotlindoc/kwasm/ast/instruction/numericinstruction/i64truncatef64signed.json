@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/instruction/numericinstruction/i64truncatef64signed",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/numericinstruction/i64truncatef64signed"
+  },
+  "data": {},
+  "description": "",
+  "title": "I64TruncateF64Signed",
+  "content": "<p>CommentComponent(kind=text, text=i64.trunc_f64_s, value=null)<\/p>\n"
+}

@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/instruction/variableinstruction/globalset",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/variableinstruction/globalset"
+  },
+  "data": {},
+  "description": "",
+  "title": "GlobalSet",
+  "content": "<p>CommentComponent(kind=text, text=Represents the global.set instruction., value=null)<\/p>\n"
+}

@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/instruction/expression",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/expression"
+  },
+  "data": {},
+  "description": "",
+  "title": "Expression",
+  "content": "<p>CommentComponent(kind=text, text=Representation of an &quot;expression&quot; in WASM.<p>According to\n<a href=\"https://webassembly.github.io/spec/core/text/instructions.html#expressions\">the docs<\/a>,\nan , value=) CommentComponent(kind=typeName, text=Expression, value=kwasm.ast.instruction.Expression) CommentComponent(kind=text, text= is a possibly-empty list of , value=) CommentComponent(kind=typeName, text=Instruction, value=kwasm.ast.instruction.Instruction) CommentComponent(kind=text, text=s.<\/p>, value=null)<\/p>\n"
+}

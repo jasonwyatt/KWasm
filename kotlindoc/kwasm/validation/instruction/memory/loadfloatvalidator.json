@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/validation/instruction/memory/loadfloatvalidator",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/instruction/memory/loadfloatvalidator"
+  },
+  "data": {},
+  "description": "",
+  "title": "LoadFloatValidator",
+  "content": "<p>CommentComponent(kind=text, text=Validator of , value=) CommentComponent(kind=typeName, text=MemoryInstruction.LoadFloat, value=kwasm.ast.instruction.MemoryInstruction.LoadFloat) CommentComponent(kind=text, text= nodes.<p>From\n<a href=\"https://webassembly.github.io/spec/core/valid/instructions.html#memory-instructions\">the docs<\/a>:<\/p><pre><code class=\"language-\">\nt.load memarg<\/p>\n<\/code><\/pre><ul><li>The memory <code>C.mems[0]<\/code> must be defined in the context.<\/li><li>The alignment <code>2^memarg.align<\/code> must not be larger than the bit width of <code>t<\/code> divided by <code>8<\/code>.<\/li><li>Then the instruction is valid with type <code>\\[i32] => \\[t]<\/code>.<\/li><\/ul>, value=null)\n"
+}

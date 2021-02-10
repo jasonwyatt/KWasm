@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/runtime/moduleinstance",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/moduleinstance"
+  },
+  "data": {},
+  "description": "",
+  "title": "ModuleInstance",
+  "content": "<p>CommentComponent(kind=text, text=Represents an instantiated , value=) CommentComponent(kind=typeName, text=kwasm.ast.module.WasmModule, value=kwasm.ast.module.WasmModule) CommentComponent(kind=text, text=.<p>From <a href=\"https://webassembly.github.io/spec/core/exec/runtime.html#module-instances\">the docs<\/a>:<\/p><p>A module instance is the runtime representation of a module. It is created by instantiating a\nmodule, and collects runtime representations of all entities that are imported, defined, or\nexported by the module.<\/p><pre><code class=\"language-\">\nmoduleinst ::= {\ntypes functype*,\nfuncaddrs funcaddr*,\ntableaddrs tableaddr*,\nmemaddrs memaddr*,\nglobaladdrs globaladdr*,\nexports exportinst*\n}\n<\/code><\/pre><p>Each component references runtime instances corresponding to respective declarations from the\noriginal module \u2013 whether imported or defined \u2013 in the order of their static indices. Function\ninstances, table instances, memory instances, and global instances are referenced with an\nindirection through their respective addresses in the store.<\/p><p>It is an invariant of the semantics that all export instances in a given module instance have\ndifferent names.<\/p>, value=null)<\/p>\n"
+}

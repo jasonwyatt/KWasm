@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/runtime/value",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/value"
+  },
+  "data": {},
+  "description": "",
+  "title": "Value",
+  "content": "<p>CommentComponent(kind=text, text=Defines a value for use in WebAssembly at runtime.<p>From <a href=\"https://webassembly.github.io/spec/core/exec/runtime.html#values\">the docs<\/a>:<\/p><p>WebAssembly computations manipulate values of the four basic value types: integers and\nfloating-point data of 32 or 64 bit width each, respectively.<\/p><p>In most places of the semantics, values of different types can occur. In order to avoid\nambiguities, values are therefore represented with an abstract syntax that makes their type\nexplicit. It is convenient to reuse the same notation as for the <code>const<\/code> instructions producing\nthem:<\/p><pre><code class=\"language-\">\nval    ::= i32.const i32\ni64.const i64\nf32.const f32\nf64.const f64<\/p>\n<\/code><\/pre>, value=null)\n"
+}

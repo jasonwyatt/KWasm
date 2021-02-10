@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/kwasmprogram",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/kwasmprogram"
+  },
+  "data": {},
+  "description": "",
+  "title": "KWasmProgram",
+  "content": "<p>CommentComponent(kind=text, text=A WebAssembly program.<p>Consisting of one or more , value=) CommentComponent(kind=typeName, text=WasmModule, value=kwasm.ast.module.WasmModule) CommentComponent(kind=text, text=s loaded either via Strings or from\nFiles/InputStreams, a KWasmProgram may expose to the caller any , value=) CommentComponent(kind=typeName, text=memory, value=kwasm.KWasmProgram.memory) CommentComponent(kind=text, text=, functions, globals\nexported by the loaded modules. Additionally, the caller may provide , value=) CommentComponent(kind=typeName, text=HostFunction, value=kwasm.api.HostFunction) CommentComponent(kind=text, text=s to those\nmodules to allow them to communicate with the external environment (e.g. i/o).<\/p>, value=null)<\/p>\n"
+}

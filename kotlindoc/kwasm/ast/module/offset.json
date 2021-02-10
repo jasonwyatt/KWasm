@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/module/offset",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/offset"
+  },
+  "data": {},
+  "description": "",
+  "title": "Offset",
+  "content": "<p>CommentComponent(kind=text, text=Container for an , value=) CommentComponent(kind=typeName, text=Expression, value=kwasm.ast.instruction.Expression) CommentComponent(kind=text, text= which resolves to a memory offset., value=null)<\/p>\n"
+}

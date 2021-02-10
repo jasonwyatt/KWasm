@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/module/typeuse",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/typeuse"
+  },
+  "data": {},
+  "description": "",
+  "title": "TypeUse",
+  "content": "<p>CommentComponent(kind=text, text=Represents a reference to a , value=) CommentComponent(kind=typeName, text=Type, value=kwasm.ast.module.Type) CommentComponent(kind=text, text= definition.<p>From <a href=\"https://webassembly.github.io/spec/core/text/modules.html#text-typeuse\">the docs<\/a>:<\/p><p>It may optionally be augmented by explicit inlined parameter and result declarations. That allows\nbinding symbolic identifiers to name the local indices of parameters. If inline declarations are\ngiven, then their types must match the referenced function type.<\/p><pre><code class=\"language-\">\ntypeuse(I) ::=\n\u2018(\u2019 \u2018type\u2019 x:typeidx(I) \u2018)\u2019\n=&gt; x,I\u2032 (if I.typedefs[x] = [t^n_1] -&gt; [t*^2] ∧ I\u2032 = {locals (ϵ)^n})\n\u2018(\u2019 \u2018type\u2019 x:typeidx(I) \u2018)\u2019 (t_1:param)* (t_2:result)*\n=&gt; x,I\u2032 (if I.typedefs[x] = [t*_1] -&gt; [t*_2] ∧ I\u2032 = {locals id(param)*} well-formed)<\/p>\n<\/code><\/pre><p><b>Note:<\/b>\nBoth productions overlap for the case that the function type is <code>[] -> []<\/code>. However, in that\ncase, they also produce the same results, so that the choice is immaterial. The well-formedness\ncondition on <code>I\u2032<\/code> ensures that the parameters do not contain duplicate identifier.<\/p><p>A <code>typeuse<\/code> may also be replaced entirely by inline parameter and result declarations. In that\ncase, a type index is automatically inserted:<\/p><pre><code class=\"language-\">\n(t_1:param)* (t_2:result)* ≡ \u2018(\u2019 \u2018type' x \u2018)\u2019 param* result*\n<\/code><\/pre><p>where <code>x<\/code> is the smallest existing type index whose definition in the current module is the\nfunction type <code>[t*_1] -> [t*_2]<\/code>. If no such index exists, then a new type definition of the\nform <code>\u2018(\u2019 \u2018type\u2019 \u2018(\u2019 \u2018func\u2019 param* result \u2018)\u2019 \u2018)\u2019<\/code> is inserted at the end of the module.<\/p><p>Abbreviations are expanded in the order they appear, such that previously inserted type\ndefinitions are reused by consecutive expansions.<\/p>, value=null)\n"
+}

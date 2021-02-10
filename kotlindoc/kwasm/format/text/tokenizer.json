@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/format/text/tokenizer",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/tokenizer"
+  },
+  "data": {},
+  "description": "",
+  "title": "Tokenizer",
+  "content": "<p>CommentComponent(kind=text, text=A tokenizer capable of splitting a raw text-format WASM file into its component tokens.<p>From <a href=\"https://webassembly.github.io/spec/core/text/lexical.html#tokens\">the docs<\/a>:<\/p><p>The character stream in the source text is divided, from left to right, into a sequence of\ntokens, as defined by the following grammar.<\/p><pre><code class=\"language-\">\ntoken      ::= keyword | uN | sN | fN | string | id | \u2018(\u2019 | \u2018)\u2019 | reserved\nkeyword    ::= (\u2018a\u2019 | \u2026 |\u2018z\u2019) idchar* (if occurring as a literal terminal in the grammar)\nreserved   ::= idchar+<\/p>\n<\/code><\/pre><p>Tokens are formed from the input character stream according to the <i>longest match rule<\/i>. That is,\nthe next token always consists of the longest possible sequence of characters that is recognized\nby the above lexical grammar. Tokens can be separated by white space, but except for strings,\nthey cannot themselves contain whitespace.<\/p>, value=null)\n"
+}

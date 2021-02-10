@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/validation/module/startfunctionvalidator",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/module/startfunctionvalidator"
+  },
+  "data": {},
+  "description": "",
+  "title": "StartFunctionValidator",
+  "content": "<p>CommentComponent(kind=text, text=Validator of , value=) CommentComponent(kind=typeName, text=StartFunction, value=kwasm.ast.module.StartFunction) CommentComponent(kind=text, text= nodes.<p>From <a href=\"https://webassembly.github.io/spec/core/valid/modules.html#start-function\">the docs<\/a>:<\/p><ul><li>The function <code>C.funcs[x]<\/code> must be defined in the context.<\/li><li>The type of <code>C.funcs[x]<\/code> must be <code>[] =&gt; []<\/code>.<\/li><li>Then the start function is valid.<\/li><\/ul>, value=null)<\/p>\n"
+}

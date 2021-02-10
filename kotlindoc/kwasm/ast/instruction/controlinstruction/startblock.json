@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/instruction/controlinstruction/startblock",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/controlinstruction/startblock"
+  },
+  "data": {},
+  "description": "",
+  "title": "StartBlock",
+  "content": "<p>CommentComponent(kind=text, text=Pseudo-instruction for runtime-only (not used during validation) which marks the start of a\nblock or a loop., value=null)<\/p>\n"
+}

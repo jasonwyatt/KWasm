@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/runtime/floatvalue",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/floatvalue"
+  },
+  "data": {},
+  "description": "",
+  "title": "FloatValue",
+  "content": "<p>CommentComponent(kind=text, text=Holds a 32-bit floating-point , value=) CommentComponent(kind=typeName, text=Value, value=kwasm.runtime.Value) CommentComponent(kind=text, text=., value=null)<\/p>\n"
+}

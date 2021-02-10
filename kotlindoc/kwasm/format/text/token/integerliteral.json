@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/format/text/token/integerliteral",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/integerliteral"
+  },
+  "data": {},
+  "description": "",
+  "title": "IntegerLiteral",
+  "content": "<p>CommentComponent(kind=text, text=From <a href=\"https://webassembly.github.io/spec/core/text/values.html#integers\">the docs<\/a>:<p>The allowed syntax for integer literals depends on size and signedness. Moreover, their value\nmust lie within the range of the respective type<\/p><pre><code class=\"language-\">\nsign       ::= empty =&gt; +\n'+' =&gt; +\n'-' =&gt; -\nuN         ::= n:num         =&gt; n (if n &lt; 2^N)\n'0x' n:hexnum =&gt; n (if n &lt; 2^N)\nsN         ::= plusminus:sign n:num =&gt; plusminus * n (if -2^(N-1) &lt;= plusminus n &lt; 2^(N-1))\nplusminus:sign n:hexnum =&gt; plusminus * n (same conditions as above)<\/p>\n<pre><code class=\"language-.\">\nUninterpreted integers can be written as either signed or unsigned, and are normalized to\nunsigned in the abstract syntax.\n\n&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;iN         ::= n:uN =&gt; n\n    i:sN =&gt; n (if i = signed(n))&lt;/p&gt;&lt;pre&gt;&lt;code class=&quot;language-&quot;&gt;&lt;/code&gt;&lt;/pre&gt;, value=null)<\/code><\/pre>\n"
+}

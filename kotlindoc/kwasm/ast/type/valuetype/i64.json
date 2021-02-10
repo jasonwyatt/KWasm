@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/type/valuetype/i64",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/valuetype/i64"
+  },
+  "data": {},
+  "description": "",
+  "title": "I64",
+  "content": "<p>CommentComponent(kind=text, text=, value=null)<\/p>\n"
+}

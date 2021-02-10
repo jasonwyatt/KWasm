@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/module/export",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/export"
+  },
+  "data": {},
+  "description": "",
+  "title": "Export",
+  "content": "<p>CommentComponent(kind=text, text=Defines an export for a , value=) CommentComponent(kind=typeName, text=WasmModule, value=kwasm.ast.module.WasmModule) CommentComponent(kind=text, text=.<p>From <a href=\"https://webassembly.github.io/spec/core/syntax/modules.html#exports\">the docs<\/a>:<\/p><p>The <code>exports<\/code> component of a module defines a set of exports that become accessible to the host\nenvironment once the module has been instantiated.<\/p><pre><code class=\"language-\">\nexport     ::= {name name, desc exportdesc}\nexportdesc ::= func funcidx\ntable tableidx\nmem memidx\nglobal globalidx\n<\/code><\/pre><p>Each export is labeled by a unique name. Exportable definitions are functions, tables, memories,\nand globals, which are referenced through a respective descriptor.<\/p>, value=null)<\/p>\n"
+}

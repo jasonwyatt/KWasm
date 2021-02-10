@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/format/binary/module/typesection",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/binary/module/typesection"
+  },
+  "data": {},
+  "description": "",
+  "title": "TypeSection",
+  "content": "<p>CommentComponent(kind=text, text=Represents a type section in a binary-encoded WASM module., value=null)<\/p>\n"
+}

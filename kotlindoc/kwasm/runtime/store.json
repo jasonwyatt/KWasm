@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/runtime/store",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/store"
+  },
+  "data": {},
+  "description": "",
+  "title": "Store",
+  "content": "<p>CommentComponent(kind=text, text=From <a href=\"https://webassembly.github.io/spec/core/exec/runtime.html#store\">the docs<\/a>:<p>The store represents all global state that can be manipulated by WebAssembly programs. It\nconsists of the runtime representation of all instances of functions, tables, memories, and\nglobals that have been allocated during the life time of the abstract machine.<\/p><p>Syntactically, the store is defined as a record listing the existing instances of each category:<\/p><pre><code class=\"language-\">\nstore  ::= {\nfuncs funcinst*,\ntables tableinst*,\nmems meminst*,\nglobals globalinst*\n}<\/p>\n<\/code><\/pre>, value=null)\n"
+}

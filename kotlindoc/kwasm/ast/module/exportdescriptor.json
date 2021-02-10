@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/module/exportdescriptor",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/exportdescriptor"
+  },
+  "data": {},
+  "description": "",
+  "title": "ExportDescriptor",
+  "content": "<p>CommentComponent(kind=text, text=See , value=) CommentComponent(kind=typeName, text=Export, value=kwasm.ast.module.Export) CommentComponent(kind=text, text=., value=null)<\/p>\n"
+}

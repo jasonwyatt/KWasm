@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/instruction/numericinstruction/i32greaterthanequaltosigned",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/numericinstruction/i32greaterthanequaltosigned"
+  },
+  "data": {},
+  "description": "",
+  "title": "I32GreaterThanEqualToSigned",
+  "content": "<p>CommentComponent(kind=text, text=i32.ge_s, value=null)<\/p>\n"
+}

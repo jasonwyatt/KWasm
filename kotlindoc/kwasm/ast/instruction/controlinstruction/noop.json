@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/instruction/controlinstruction/noop",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/controlinstruction/noop"
+  },
+  "data": {},
+  "description": "",
+  "title": "NoOp",
+  "content": "<p>CommentComponent(kind=text, text=, value=null)<\/p>\n"
+}

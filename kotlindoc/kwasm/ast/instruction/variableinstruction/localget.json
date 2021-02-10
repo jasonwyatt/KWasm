@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/instruction/variableinstruction/localget",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/variableinstruction/localget"
+  },
+  "data": {},
+  "description": "",
+  "title": "LocalGet",
+  "content": "<p>CommentComponent(kind=text, text=Represents the local.get instruction., value=null)<\/p>\n"
+}

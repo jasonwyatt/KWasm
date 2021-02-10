@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/runtime/memory",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/memory"
+  },
+  "data": {},
+  "description": "",
+  "title": "Memory",
+  "content": "<p>CommentComponent(kind=text, text=Defines runtime memory for use by a wasm program, along with facilities for accessing and\nmutating memory by the host JVM application.<p>From <a href=\"https://webassembly.github.io/spec/core/exec/runtime.html#memory-instances\">the docs<\/a>:<\/p><p>A memory instance is the runtime representation of a linear memory. It holds a vector of bytes\nand an optional maximum size, if one was specified at the definition site of the memory.<\/p><pre><code class=\"language-\">\nmeminst ::= {data vec(byte), max u32?}\n<\/code><\/pre><p>The length of the vector always is a multiple of the WebAssembly page size, which is defined to\nbe the constant <code>65536<\/code> \u2013 abbreviated <code>64Ki<\/code>. Like in a memory type, the maximum size in a memory\ninstance is given in units of this page size.<\/p><p>The bytes can be mutated through memory instructions, the execution of a data segment, or by\nexternal means provided by the embedder.<\/p><p>It is an invariant of the semantics that the length of the byte vector, divided by page size,\nnever exceeds the maximum size, if present.<\/p>, value=null)<\/p>\n"
+}

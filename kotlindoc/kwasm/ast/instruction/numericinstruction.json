@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/instruction/numericinstruction",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/numericinstruction"
+  },
+  "data": {},
+  "description": "",
+  "title": "NumericInstruction",
+  "content": "<p>CommentComponent(kind=text, text=Defines the various numeric , value=) CommentComponent(kind=typeName, text=Instruction, value=kwasm.ast.instruction.Instruction) CommentComponent(kind=text, text= variants.<p>See more in <a href=\"https://webassembly.github.io/spec/core/exec/numerics.html\">the docs<\/a>.<\/p>, value=null)<\/p>\n"
+}

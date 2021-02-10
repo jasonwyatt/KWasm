@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/instruction/controlinstruction/call",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/controlinstruction/call"
+  },
+  "data": {},
+  "description": "",
+  "title": "Call",
+  "content": "<p>CommentComponent(kind=text, text=, value=null)<\/p>\n"
+}

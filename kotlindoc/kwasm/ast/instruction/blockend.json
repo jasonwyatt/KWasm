@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/instruction/blockend",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/blockend"
+  },
+  "data": {},
+  "description": "",
+  "title": "BlockEnd",
+  "content": "<p>CommentComponent(kind=text, text=Marker of the end of , value=) CommentComponent(kind=typeName, text=BlockInstruction, value=kwasm.ast.instruction.BlockInstruction) CommentComponent(kind=text, text=, during execution, the , value=) CommentComponent(kind=typeName, text=startPosition, value=kwasm.ast.instruction.BlockEnd.startPosition) CommentComponent(kind=text, text= should be used to\nlocate the start of the block which is then used to locate the first instruction after the\noriginal , value=) CommentComponent(kind=typeName, text=BlockInstruction, value=kwasm.ast.instruction.BlockInstruction) CommentComponent(kind=text, text= (may not always be the next instruction after a , value=) CommentComponent(kind=typeName, text=BlockEnd, value=kwasm.ast.instruction.BlockEnd) CommentComponent(kind=text, text=, for\nexample, the , value=) CommentComponent(kind=typeName, text=BlockEnd, value=kwasm.ast.instruction.BlockEnd) CommentComponent(kind=text, text=s used for each branch of an if instruction)., value=null)<\/p>\n"
+}

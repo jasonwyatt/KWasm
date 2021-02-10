@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/format/parseexception",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/parseexception"
+  },
+  "data": {},
+  "description": "",
+  "title": "ParseException",
+  "content": "<p>CommentComponent(kind=text, text=An exception which is thrown by the text-based wasm interpreter when a parsing error occurs\nduring evaluation., value=null)<\/p>\n"
+}

@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/validation/instruction/numericinstructionvalidator",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/instruction/numericinstructionvalidator"
+  },
+  "data": {},
+  "description": "",
+  "title": "NumericInstructionValidator",
+  "content": "<p>CommentComponent(kind=text, text=Validates , value=) CommentComponent(kind=typeName, text=NumericInstruction, value=kwasm.ast.instruction.NumericInstruction) CommentComponent(kind=text, text= nodes.<p>From\n<a href=\"https://webassembly.github.io/spec/core/valid/instructions.html#numeric-instructions\">the docs<\/a>:<\/p><pre><code class=\"language-\">\nt.unop\n<\/code><\/pre><ul><li>The , value=) CommentComponent(kind=typeName, text=NumericInstruction, value=kwasm.ast.instruction.NumericInstruction) CommentComponent(kind=text, text= is valid with type <code>[t] =&gt; [t]<\/code>.<\/li><\/ul><pre><code class=\"language-\">\nt.binop\n<\/code><\/pre><ul><li>The , value=) CommentComponent(kind=typeName, text=NumericInstruction, value=kwasm.ast.instruction.NumericInstruction) CommentComponent(kind=text, text= is valid with type <code>[t t] =&gt; [t]<\/code>.<\/li><\/ul><pre><code class=\"language-\">\nt.testop\n<\/code><\/pre><ul><li>The , value=) CommentComponent(kind=typeName, text=NumericInstruction, value=kwasm.ast.instruction.NumericInstruction) CommentComponent(kind=text, text= is valid with type <code>[t] =&gt; [i32]<\/code>.<\/li><\/ul><pre><code class=\"language-\">\nt.relop\n<\/code><\/pre><ul><li>The , value=) CommentComponent(kind=typeName, text=NumericInstruction, value=kwasm.ast.instruction.NumericInstruction) CommentComponent(kind=text, text= is valid with type <code>[t t] =&gt; [i32]<\/code>.<\/li><\/ul><pre><code class=\"language-\">\nt2.cvtop_t1_sx?<\/p>\n<\/code><\/pre><ul><li>The , value=) CommentComponent(kind=typeName, text=NumericInstruction, value=kwasm.ast.instruction.NumericInstruction) CommentComponent(kind=text, text= is valid with type <code>\\[t1] => \\[t2]<\/code>.<\/li><\/ul>, value=null)\n"
+}

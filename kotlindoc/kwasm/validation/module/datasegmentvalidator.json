@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/validation/module/datasegmentvalidator",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/module/datasegmentvalidator"
+  },
+  "data": {},
+  "description": "",
+  "title": "DataSegmentValidator",
+  "content": "<p>CommentComponent(kind=text, text=Validator of , value=) CommentComponent(kind=typeName, text=DataSegment, value=kwasm.ast.module.DataSegment) CommentComponent(kind=text, text= nodes.<p>From <a href=\"https://webassembly.github.io/spec/core/valid/modules.html#data-segments\">the docs<\/a>:<\/p><ul><li>The memory <code>C.mems[x]<\/code> must be defined in the context.<\/li><li>The expression <code>expr<\/code> must be valid with result type <code>[i32]<\/code>.<\/li><li>The expression <code>expr<\/code> must be constant.<\/li><li>Then the data segment is valid.<\/li><\/ul>, value=null)<\/p>\n"
+}

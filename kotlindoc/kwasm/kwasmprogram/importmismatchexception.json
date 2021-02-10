@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/kwasmprogram/importmismatchexception",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/kwasmprogram/importmismatchexception"
+  },
+  "data": {},
+  "description": "",
+  "title": "ImportMismatchException",
+  "content": "<p>CommentComponent(kind=text, text=Thrown at linkage-time, when an import was found, but the value was a mismatch for what was\nrequired by the import., value=null)<\/p>\n"
+}

@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/module/import",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/import"
+  },
+  "data": {},
+  "description": "",
+  "title": "Import",
+  "content": "<p>CommentComponent(kind=text, text=Represents an import for a , value=) CommentComponent(kind=typeName, text=WasmModule, value=kwasm.ast.module.WasmModule) CommentComponent(kind=text, text=.<p>From <a href=\"https://webassembly.github.io/spec/core/syntax/modules.html#imports\">the docs<\/a>:<\/p><p>The <code>imports<\/code> component of a module defines a set of imports that are required for instantiation.<\/p><pre><code class=\"language-\">\nimport     ::= {module name, name name, desc importdesc}\nimportdesc ::= func typeidx\ntable tabletype\nmem memtype\nglobal globaltype<\/p>\n<\/code><\/pre><p>Each import is labeled by a two-level name space, consisting of a <code>module<\/code> name and a <code>name<\/code> for\nan entity within that module. Importable definitions are functions, tables, memories, and\nglobals. Each import is specified by a descriptor with a respective type that a definition\nprovided during instantiation is required to match.<\/p><p>Every import defines an index in the respective index space. In each index space, the indices of\nimports go before the first index of any definition contained in the module itself.<\/p>, value=null)\n"
+}

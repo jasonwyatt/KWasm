@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/instruction/blockstart",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/blockstart"
+  },
+  "data": {},
+  "description": "",
+  "title": "BlockStart",
+  "content": "<p>CommentComponent(kind=text, text=Marker of the start of a flattened , value=) CommentComponent(kind=typeName, text=BlockInstruction, value=kwasm.ast.instruction.BlockInstruction) CommentComponent(kind=text, text=. The , value=) CommentComponent(kind=typeName, text=endPosition, value=kwasm.ast.instruction.BlockStart.endPosition) CommentComponent(kind=text, text= is used to know which\ninstruction should be jumped-to when leaving the , value=) CommentComponent(kind=typeName, text=BlockInstruction, value=kwasm.ast.instruction.BlockInstruction) CommentComponent(kind=text, text=., value=null)<\/p>\n"
+}

@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/api/hostfunctioncontext",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/api/hostfunctioncontext"
+  },
+  "data": {},
+  "description": "",
+  "title": "HostFunctionContext",
+  "content": "<p>CommentComponent(kind=text, text=Additional context passed to a , value=) CommentComponent(kind=typeName, text=HostFunction, value=kwasm.api.HostFunction) CommentComponent(kind=text, text= at invocation-time., value=null)<\/p>\n"
+}

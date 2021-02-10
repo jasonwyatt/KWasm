@@ -1,0 +1,1025 @@
+<!DOCTYPE HTML>
+<!--
+    Editorial by HTML5 UP
+    html5up.net | @ajlkn
+    Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<head>
+
+
+
+
+<meta charset="utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+<meta name="generator" content="Orchid 0.18.0-SNAPSHOT"/>
+<link rel="icon" href="https://jasonwyatt.github.io/KWasm/favicon.ico">
+
+
+<meta name="robots" content="index, follow">
+
+
+
+<title>kwasm.validation.instruction.control</title>
+
+
+<meta name="description" content="An Embeddable WebAssembly Interpreter for the JVM">
+
+
+
+
+
+<script>
+    window.site = {"orchidVersion":"0.18.0-SNAPSHOT","baseUrl":"https://jasonwyatt.github.io/KWasm","environment":"debug","version":"unspecified"};
+</script>
+
+
+
+
+
+<!-- start:debug info -->
+
+<!-- THEME -->
+<!-- Type: Editorial -->
+<!-- Class: com.eden.orchid.editorial.EditorialTheme -->
+
+<!-- PAGE -->
+<!-- Type: packages -->
+<!-- Class: com.eden.orchid.sourcedoc.page.SourceDocPage -->
+<!-- Layout: index -->
+<!-- Resolved Layout: templates/layouts/index.peb -->
+<!-- Page Template: kotlindocPackage, sourceDocPage, packages, page -->
+<!-- Resolved Page Template: templates/pages/sourceDocPage.peb -->
+
+<!-- RESOURCE -->
+<!-- Class: com.eden.orchid.sourcedoc.page.SourceDocResource -->
+<!-- Source Filename:  -->
+
+<!-- COMPLETE PAGE CONFIGURATION -->
+<script>
+    window.allData = {"reference":{"path":"kotlindoc","baseUrl":"https://jasonwyatt.github.io/KWasm","fileName":"kwasm/validation/instruction/control","extension":"html","usePrettyUrl":true,"link":"https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/instruction/control"},"description":"","title":"kwasm.validation.instruction.control"};
+</script>
+
+<!-- end:debug info -->
+
+
+
+
+    <!-- start:inject components -->
+    
+        
+            
+        
+    
+    <!-- end:inject components -->
+
+
+
+    <!-- start:inject components -->
+    
+    <!-- end:inject components -->
+
+
+
+
+
+<!-- start:inject styles -->
+<link rel="stylesheet" type="text/css" href="https://jasonwyatt.github.io/KWasm/Editorial/9eb52517/assets/css/editorial_main.css"  />
+<link rel="stylesheet" type="text/css" href="https://jasonwyatt.github.io/KWasm/Editorial/9eb52517/assets/css/editorial_orchidCustomizations.css"  />
+<link rel="stylesheet" type="text/css" href="https://jasonwyatt.github.io/KWasm/Editorial/9eb52517/assets/css/orchidSearch.css"  />
+<link rel="stylesheet" type="text/css" href="https://jasonwyatt.github.io/KWasm/assets/css/orchidSearch.css"  />
+<link rel="stylesheet" type="text/css" href="https://jasonwyatt.github.io/KWasm/assets/css/orchidSourceDoc.css"  />
+<!-- end:inject styles -->
+
+</head>
+<body class="is-loading">
+
+
+<!-- Wrapper -->
+<div id="wrapper">
+
+    <!-- Main -->
+    <div id="main">
+        <div class="inner">
+
+            <!-- Header -->
+            
+                <header id="header">
+    <a href="https://jasonwyatt.github.io/KWasm" class="logo">KWasm</a>
+    <ul class="icons">
+    
+    
+        <li>
+            <a href="https://github.com/jasonwyatt/KWasm" class="icon fa-github">
+                <span class="label">github</span>
+            </a>
+        </li>
+    
+    
+    </ul>
+</header>
+            
+            
+            
+            
+                <section id="pageContent">
+                    <header class="major"><h2>kwasm.validation.instruction.control</h2></header>
+                    <article>
+                        
+    <!-- start:inject components -->
+    
+        
+            
+                
+                    
+                        <div class="sourcedoc-page orchid-sourcedoc content">
+  
+<div class="sourcedoc-section section-root section-level-1" id="kwasm.validation.instruction.control">
+
+
+  <h1 class="sourcedoc-section section-name">Kwasm.validation.instruction.control</h1>
+  
+    <div class="sourcedoc-section section-element" id="3f5dcaab5733a8caae987740f1fe80203bbea713">
+      
+      <p class="sourcedoc-section section-signature">
+        <code>package <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/instruction/control">kwasm.validation.instruction.control</a></code>
+      </p>
+      <div class="sourcedoc-section section-comments"></div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-2" id="classes">
+
+
+  <p class="sourcedoc-section section-name"><strong>Classes</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="6be1b2fd85c98b0d9c16202cd9f4252509b47f67">
+        <td class="sourcedoc-section section-signature">
+          <code>object <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/instruction/control/blockvalidator">BlockValidator</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        <p>Validator of <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/controlinstruction">kwasm.ast.instruction.BlockInstruction</a> nodes.<p>For specific validation requirements, see the docs for the <code>validate</code> extension functions on
+<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/controlinstruction/block">ControlInstruction.Block</a>, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/controlinstruction/loop">ControlInstruction.Loop</a>, and <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/controlinstruction/if">ControlInstruction.If</a>.</p></p>
+
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="db8c81d52f76033df779b8d125e2ee6a1b8df4aa">
+        <td class="sourcedoc-section section-signature">
+          <code>object <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/instruction/control/controlinstructionvalidator">ControlInstructionValidator</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        <p>Validator of <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/controlinstruction">ControlInstruction</a> nodes.<p>See: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/instruction/control/plainvalidator">PlainValidator</a> and <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/instruction/control/blockvalidator">BlockValidator</a> for more information.</p></p>
+
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="8a3ecaebd74ebb492f3cbc8e61c30c1a24a7be51">
+        <td class="sourcedoc-section section-signature">
+          <code>object <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/instruction/control/plainvalidator">PlainValidator</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        <p>Validator of &quot;plain&quot; (non-<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/blockinstruction">kwasm.ast.instruction.BlockInstruction</a>) <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/controlinstruction">ControlInstruction</a> nodes.<p>From
+<a href="https://webassembly.github.io/spec/core/valid/instructions.html#control-instructions">the docs</a>:</p><pre><code class="language-">
+nop
+</code></pre><ul><li>The instruction is valid with type <code>[] =&gt; []</code>.</li></ul><pre><code class="language-">
+unreachable</p>
+</code></pre><ul><li>The instruction is valid with type <code>[t*1] => [t*2]</code>, for any sequences of value types <code>t*1</code>
+and <code>t*2</code>.</li></ul><p>For the other types, see the <code>validate</code> extension functions on <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/controlinstruction/break">ControlInstruction.Break</a>,
+<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/controlinstruction/breakif">ControlInstruction.BreakIf</a>, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/controlinstruction/breaktable">ControlInstruction.BreakTable</a>, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/controlinstruction/return">ControlInstruction.Return</a>,
+<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/controlinstruction/call">ControlInstruction.Call</a>, and <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/controlinstruction/callindirect">ControlInstruction.CallIndirect</a>.</p>
+
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-2" id="methods">
+
+
+  <h2 class="sourcedoc-section section-name">Methods</h2>
+  
+    <div class="sourcedoc-section section-element" id="dee4216f22a986035788fd45913617116526af66">
+      
+      <h3 class="sourcedoc-section element-name">validateBlock</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/controlinstruction/block">Block</a>.validateBlock(context: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext/functionbody">FunctionBody</a>): <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext/functionbody">FunctionBody</a></code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>From <a href="https://webassembly.github.io/spec/core/valid/instructions.html#valid-block">the docs</a>:<pre><code class="language-">
+block [t?] instr* end</p>
+</code></pre><ul><li>Let <code>C′</code> be the same context as <code>C</code>, but with the result type <code>[t?]</code> prepended to the <code>labels</code>
+vector.</li><li>Under context <code>C′</code>, the instruction sequence <code>instr*</code> must be valid with type <code>[] => [t?]</code>.</li><li>Then the compound instruction is valid with type <code>[] => [t?]</code>.</li></ul>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="94c7294364dc1d7b3e72ba579304880a11b7554d">
+
+
+  <p class="sourcedoc-section section-name"><strong>Receiver</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="82dd2cdf36f9436d89f404454654ad3e53fd428d">
+        <td class="sourcedoc-section section-signature">
+          <code><a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/controlinstruction/block">Block</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="1dbfa7aae23c25641dfdf8ce9e558252792e8f0f">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="e8d52089bceed45e6ca58bfdef48331a852c900a">
+        <td class="sourcedoc-section section-signature">
+          <code>context: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext/functionbody">FunctionBody</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="ffd8afa852f966b3fc7cf24b82ab1809cc83ef03">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="8aa65b90cfa1f9392425e0fd532374c477b9193d">
+        <td class="sourcedoc-section section-signature">
+          <code><a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext/functionbody">FunctionBody</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="3e766464c8be13ebad7be5ecb6f935a62118686a">
+      
+      <h3 class="sourcedoc-section element-name">validateLoop</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/controlinstruction/loop">Loop</a>.validateLoop(context: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext/functionbody">FunctionBody</a>): <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext/functionbody">FunctionBody</a></code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>From <a href="https://webassembly.github.io/spec/core/valid/instructions.html#valid-block">the docs</a>:<pre><code class="language-">
+block [t?] instr* end</p>
+</code></pre><ul><li>Let <code>C′</code> be the same context as <code>C</code>, but with the result type <code>[t?]</code> prepended to the <code>labels</code>
+vector.</li><li>Under context <code>C′</code>, the instruction sequence <code>instr*</code> must be valid with type <code>[] => [t?]</code>.</li><li>Then the compound instruction is valid with type <code>[] => [t?]</code>.</li></ul>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="4864ff0202ba6c5880e4c3d4893f3a24d43481a3">
+
+
+  <p class="sourcedoc-section section-name"><strong>Receiver</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="dc7f77b4ccfc9f70a78bd97303bd10ba4c9d70c8">
+        <td class="sourcedoc-section section-signature">
+          <code><a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/controlinstruction/loop">Loop</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="e5de184900d5d9145821ae6c8a13763da0a294ac">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="e8d52089bceed45e6ca58bfdef48331a852c900a">
+        <td class="sourcedoc-section section-signature">
+          <code>context: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext/functionbody">FunctionBody</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="1558d4164af5ef39290aa6d4d308d60a2b4645e7">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="8aa65b90cfa1f9392425e0fd532374c477b9193d">
+        <td class="sourcedoc-section section-signature">
+          <code><a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext/functionbody">FunctionBody</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="15c5573fa7f5c8139b405e9f4c577f0017c60d77">
+      
+      <h3 class="sourcedoc-section element-name">validateIf</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/controlinstruction/if">If</a>.validateIf(context: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext/functionbody">FunctionBody</a>): <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext/functionbody">FunctionBody</a></code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>From <a href="https://webassembly.github.io/spec/core/valid/instructions.html#valid-if">the docs</a>:<pre><code class="language-">
+if [t?] instr*^1 else instr*^2 end</p>
+</code></pre><ul><li>Let <code>C′</code> be the same context as <code>C</code>, but with the result type <code>[t?]</code> prepended to the <code>labels</code>
+vector.</li><li>Under context <code>C′</code>, the instruction sequence <code>instr*^1</code> must be valid with type <code>[] => [t?]</code>.</li><li>Under context <code>C′</code>, the instruction sequence <code>instr*^2</code> must be valid with type <code>[] => </code><a href="#">t?</a>`.</li><li>Then the compound instruction is valid with type <code>\[i32] => </code><a href="#">t?</a>`.</li></ul>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="6cbe294c534c9ddb40c4c3d49e0ea9898320afc3">
+
+
+  <p class="sourcedoc-section section-name"><strong>Receiver</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="751c68a3471b1c791efaee0a8e7c24ea0c266efd">
+        <td class="sourcedoc-section section-signature">
+          <code><a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/controlinstruction/if">If</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="c81f6585ca529a83e0599a967ad9e982e389979b">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="e8d52089bceed45e6ca58bfdef48331a852c900a">
+        <td class="sourcedoc-section section-signature">
+          <code>context: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext/functionbody">FunctionBody</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="9f34ac37d1b3b81a9a69f3b69c476d3aa2a47540">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="8aa65b90cfa1f9392425e0fd532374c477b9193d">
+        <td class="sourcedoc-section section-signature">
+          <code><a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext/functionbody">FunctionBody</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+
+</div>
+
+        
+      
+    </div>
+  
+
+</div>
+
+</div>
+
+
+
+
+
+
+                    
+                
+            
+        
+    
+    <!-- end:inject components -->
+
+
+                    </article>
+                </section>
+            
+        </div>
+        <hr>
+
+        <!-- Page Footer -->
+        <div class="inner">
+    <footer id="footer">
+        <div class="clearfix">
+            
+            
+        </div>
+    </footer>
+</div>
+
+    </div>
+
+    <!-- Sidebar -->
+    <div id="sidebar">
+    <div class="inner">
+
+        <!-- Search -->
+        <section id="search" class="alt">
+            <form data-orchid-search="">
+                <input type="text" name="query" id="query" placeholder="Search"/>
+            </form>
+            <div class="box" id="search-results" data-orchid-search-results style="display: none;">
+                <b>Search Results</b>
+                <ul></ul>
+            </div>
+            <div class="box" id="search-progress" data-orchid-search-progress style="display: none;">
+                <div class="loader">Loading...</div>
+            </div>
+        </section>
+
+        <!-- Menu -->
+        <nav id="siteNav" class="menu">
+            <header class="major">
+                <h2>KWasm</h2>
+            </header>
+            <ul class="top-level">
+                
+                    
+    
+    <li>
+        <a class="subheader">KWasm Library API Docs</a>
+    </li>
+    
+
+                
+                    
+    <li>
+        <span class="opener">Packages</span>
+        <ul>
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm">kwasm</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/api">kwasm.api</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast">kwasm.ast</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction">kwasm.ast.instruction</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module">kwasm.ast.module</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type">kwasm.ast.type</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/util">kwasm.ast.util</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format">kwasm.format</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/binary">kwasm.format.binary</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/binary/instruction">kwasm.format.binary.instruction</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/binary/module">kwasm.format.binary.module</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/binary/type">kwasm.format.binary.type</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/binary/value">kwasm.format.binary.value</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text">kwasm.format.text</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/instruction">kwasm.format.text.instruction</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/module">kwasm.format.text.module</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token">kwasm.format.text.token</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/util">kwasm.format.text.token.util</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/type">kwasm.format.text.type</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/whitespace">kwasm.format.text.whitespace</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime">kwasm.runtime</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/instruction">kwasm.runtime.instruction</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/memory">kwasm.runtime.memory</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/stack">kwasm.runtime.stack</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/util">kwasm.runtime.util</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/util">kwasm.util</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation">kwasm.validation</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/instruction">kwasm.validation.instruction</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/instruction/control">kwasm.validation.instruction.control</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/instruction/memory">kwasm.validation.instruction.memory</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/module">kwasm.validation.module</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/type">kwasm.validation.type</a>
+    </li>
+    
+
+        
+        </ul>
+    </li>
+
+                
+            </ul>
+        </nav>
+        
+        <nav class="menu">
+            <header class="major">
+                <h2>kwasm.validation.instruction.control</h2>
+            </header>
+            <ul class="top-level">
+                
+                    
+    <li>
+        <span class="opener">Classes</span>
+        <ul>
+        
+            
+    
+    <li>
+        <a href="#6be1b2fd85c98b0d9c16202cd9f4252509b47f67">object BlockValidator</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#db8c81d52f76033df779b8d125e2ee6a1b8df4aa">object ControlInstructionValidator</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#8a3ecaebd74ebb492f3cbc8e61c30c1a24a7be51">object PlainValidator</a>
+    </li>
+    
+
+        
+        </ul>
+    </li>
+
+                
+                    
+    <li>
+        <span class="opener">Methods</span>
+        <ul>
+        
+            
+    
+    <li>
+        <a href="#dee4216f22a986035788fd45913617116526af66">fun Block.validateBlock(context: FunctionBody): FunctionBody</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#3e766464c8be13ebad7be5ecb6f935a62118686a">fun Loop.validateLoop(context: FunctionBody): FunctionBody</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#15c5573fa7f5c8139b405e9f4c577f0017c60d77">fun If.validateIf(context: FunctionBody): FunctionBody</a>
+    </li>
+    
+
+        
+        </ul>
+    </li>
+
+                
+            </ul>
+        </nav>
+        
+
+        <!-- Section -->
+        <section>
+            <p class="text-center">
+                Currently unspecified. Created with <a href="https://orchid.run">Orchid </a> and <b>Orchid Editorial Theme</b>.
+            </p>
+        </section>
+
+        <!-- Footer -->
+        <footer id="footer">
+            <p class="copyright text-center">&copy; KWasm. All rights reserved.<br>Design by <a href="https://html5up.net">HTML5 UP</a></p>
+        </footer>
+
+    </div>
+</div>
+
+</div>
+
+<!-- start:inject scripts -->
+<script  src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script  src="https://cdnjs.cloudflare.com/ajax/libs/skel/3.0.1/skel.min.js"></script>
+<script  src="https://jasonwyatt.github.io/KWasm/Editorial/9eb52517/assets/js/editorial_util.js"></script>
+<script  src="https://jasonwyatt.github.io/KWasm/Editorial/9eb52517/assets/js/editorial_main.js"></script>
+<script  src="https://jasonwyatt.github.io/KWasm/Editorial/9eb52517/assets/js/editorial_orchidCustomizations.js"></script>
+<script  src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script  src="https://unpkg.com/lunr/lunr.js"></script>
+<script  src="https://jasonwyatt.github.io/KWasm/assets/js/orchidSearch.js"></script>
+<!-- end:inject scripts -->
+
+</body>
+</html>

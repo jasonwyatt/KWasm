@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/instruction/numericconstantinstruction",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/numericconstantinstruction"
+  },
+  "data": {},
+  "description": "",
+  "title": "NumericConstantInstruction",
+  "content": "<p>CommentComponent(kind=text, text=Base for all numeric , value=) CommentComponent(kind=typeName, text=Constant, value=kwasm.ast.instruction.Instruction) CommentComponent(kind=text, text= implementations.<p>See\n<a href=\"https://webassembly.github.io/spec/core/syntax/instructions.html#numeric-instructions\">the docs<\/a>\nfor more information.<\/p>, value=null)<\/p>\n"
+}

@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/format/text/token/util/num",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/util/num"
+  },
+  "data": {},
+  "description": "",
+  "title": "Num",
+  "content": "<p>CommentComponent(kind=text, text=From <a href=\"https://webassembly.github.io/spec/core/text/values.html#integers\">the docs<\/a>.<p>All integers can be written in either decimal or hexadecimal notation. In both cases, digits can\noptionally be separated by underscores.<\/p><pre><code class=\"language-\">\ndigit      ::= '0' =&gt; 0, '1' =&gt; 1, ... '9' =&gt; 9\nhexdigit   ::= d:digit =&gt; d\n'A' =&gt; 10, 'B' =&gt; 11, ... 'F' =&gt; 15\n'a' =&gt; 10, 'b' =&gt; 11, ... 'f' =&gt; 15\nnum        ::= d:digit =&gt; d\nn:num '<em>'? d:digit =&gt; n * 10 + d\nhexnum     ::= h:hexdigit =&gt; h\nn:hexnum '<\/em>'? h:hexdigit =&gt; n * 16 + h<\/p>\n<\/code><\/pre>, value=null)\n"
+}

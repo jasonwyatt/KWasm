@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/instruction/numericinstruction/i32dividesigned",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/numericinstruction/i32dividesigned"
+  },
+  "data": {},
+  "description": "",
+  "title": "I32DivideSigned",
+  "content": "<p>CommentComponent(kind=text, text=i32.div_s, value=null)<\/p>\n"
+}

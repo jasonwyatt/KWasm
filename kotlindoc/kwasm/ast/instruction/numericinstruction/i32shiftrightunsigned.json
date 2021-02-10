@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/instruction/numericinstruction/i32shiftrightunsigned",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/numericinstruction/i32shiftrightunsigned"
+  },
+  "data": {},
+  "description": "",
+  "title": "I32ShiftRightUnsigned",
+  "content": "<p>CommentComponent(kind=text, text=i32.shr_u, value=null)<\/p>\n"
+}

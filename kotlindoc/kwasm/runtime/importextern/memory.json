@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/runtime/importextern/memory",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/importextern/memory"
+  },
+  "data": {},
+  "description": "",
+  "title": "Memory",
+  "content": "<p>CommentComponent(kind=text, text=, value=null)<\/p>\n"
+}

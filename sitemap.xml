@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/siteindex.xsd"
+    xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <sitemap>
+        <loc>https://jasonwyatt.github.io/KWasm/sitemap-assets.xml</loc>
+        <lastmod>2021-02-10</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://jasonwyatt.github.io/KWasm/sitemap-home.xml</loc>
+        <lastmod>2021-02-10</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://jasonwyatt.github.io/KWasm/sitemap-kotlindoc.xml</loc>
+        <lastmod>2021-02-10</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://jasonwyatt.github.io/KWasm/sitemap-pages.xml</loc>
+        <lastmod>2021-02-10</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://jasonwyatt.github.io/KWasm/sitemap-wiki.xml</loc>
+        <lastmod>2021-02-10</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://jasonwyatt.github.io/KWasm/sitemap-changelog.xml</loc>
+        <lastmod>2021-02-10</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://jasonwyatt.github.io/KWasm/sitemap-forms.xml</loc>
+        <lastmod>2021-02-10</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://jasonwyatt.github.io/KWasm/sitemap-external.xml</loc>
+        <lastmod>2021-02-10</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://jasonwyatt.github.io/KWasm/sitemap-sitemap.xml</loc>
+        <lastmod>2021-02-10</lastmod>
+    </sitemap>
+    <sitemap>
+        <loc>https://jasonwyatt.github.io/KWasm/sitemap-indices.xml</loc>
+        <lastmod>2021-02-10</lastmod>
+    </sitemap>
+    
+</sitemapindex>

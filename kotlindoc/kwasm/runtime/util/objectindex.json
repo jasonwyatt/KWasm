@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/runtime/util/objectindex",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/util/objectindex"
+  },
+  "data": {},
+  "description": "",
+  "title": "ObjectIndex",
+  "content": "<p>CommentComponent(kind=text, text=Index of arbitrary values of type , value=) CommentComponent(kind=typeName, text=T, value=kwasm.runtime.util.ObjectIndex.T) CommentComponent(kind=text, text=. Can be looked-up into by position, or by , value=) CommentComponent(kind=typeName, text=Index, value=kwasm.ast.module.Index) CommentComponent(kind=text, text=., value=null)<\/p>\n"
+}

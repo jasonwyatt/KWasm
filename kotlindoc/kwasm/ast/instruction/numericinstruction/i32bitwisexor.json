@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/instruction/numericinstruction/i32bitwisexor",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/numericinstruction/i32bitwisexor"
+  },
+  "data": {},
+  "description": "",
+  "title": "I32BitwiseXor",
+  "content": "<p>CommentComponent(kind=text, text=i32.xor, value=null)<\/p>\n"
+}

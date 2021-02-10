@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/instruction/controlinstruction/endblock",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/controlinstruction/endblock"
+  },
+  "data": {},
+  "description": "",
+  "title": "EndBlock",
+  "content": "<p>CommentComponent(kind=text, text=Pseudo-instruction for runtime-only (not used during validation) which marks the end of a\nblock, loop, or if (as well as the ends of each branch of an if)., value=null)<\/p>\n"
+}

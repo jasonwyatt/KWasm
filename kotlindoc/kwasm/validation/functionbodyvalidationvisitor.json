@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/validation/functionbodyvalidationvisitor",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/functionbodyvalidationvisitor"
+  },
+  "data": {},
+  "description": "",
+  "title": "FunctionBodyValidationVisitor",
+  "content": "<p>CommentComponent(kind=text, text=Describes a , value=) CommentComponent(kind=typeName, text=ValidationVisitor, value=kwasm.validation.ValidationVisitor) CommentComponent(kind=text, text= intended for validating parts of the body of a\n<a href=\"#\">kwasm.ast.WasmFunction<\/a> or an <a href=\"#\">kwasm.ast.Expression<\/a>., value=null)<\/p>\n"
+}

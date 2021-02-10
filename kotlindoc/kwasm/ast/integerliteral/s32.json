@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/integerliteral/s32",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/integerliteral/s32"
+  },
+  "data": {},
+  "description": "",
+  "title": "S32",
+  "content": "<p>CommentComponent(kind=text, text=, value=) CommentComponent(kind=typeName, text=Literal, value=kwasm.ast.Literal) CommentComponent(kind=text, text= Representation of a signed Int., value=null)<\/p>\n"
+}

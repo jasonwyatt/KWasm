@@ -1,0 +1,4169 @@
+<!DOCTYPE HTML>
+<!--
+    Editorial by HTML5 UP
+    html5up.net | @ajlkn
+    Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<head>
+
+
+
+
+<meta charset="utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+<meta name="generator" content="Orchid 0.18.0-SNAPSHOT"/>
+<link rel="icon" href="https://jasonwyatt.github.io/KWasm/favicon.ico">
+
+
+<meta name="robots" content="index, follow">
+
+
+
+<title>kwasm.format.text.module</title>
+
+
+<meta name="description" content="An Embeddable WebAssembly Interpreter for the JVM">
+
+
+
+
+
+<script>
+    window.site = {"orchidVersion":"0.18.0-SNAPSHOT","baseUrl":"https://jasonwyatt.github.io/KWasm","environment":"debug","version":"unspecified"};
+</script>
+
+
+
+
+
+<!-- start:debug info -->
+
+<!-- THEME -->
+<!-- Type: Editorial -->
+<!-- Class: com.eden.orchid.editorial.EditorialTheme -->
+
+<!-- PAGE -->
+<!-- Type: packages -->
+<!-- Class: com.eden.orchid.sourcedoc.page.SourceDocPage -->
+<!-- Layout: index -->
+<!-- Resolved Layout: templates/layouts/index.peb -->
+<!-- Page Template: kotlindocPackage, sourceDocPage, packages, page -->
+<!-- Resolved Page Template: templates/pages/sourceDocPage.peb -->
+
+<!-- RESOURCE -->
+<!-- Class: com.eden.orchid.sourcedoc.page.SourceDocResource -->
+<!-- Source Filename:  -->
+
+<!-- COMPLETE PAGE CONFIGURATION -->
+<script>
+    window.allData = {"reference":{"path":"kotlindoc","baseUrl":"https://jasonwyatt.github.io/KWasm","fileName":"kwasm/format/text/module","extension":"html","usePrettyUrl":true,"link":"https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/module"},"description":"","title":"kwasm.format.text.module"};
+</script>
+
+<!-- end:debug info -->
+
+
+
+
+    <!-- start:inject components -->
+    
+        
+            
+        
+    
+    <!-- end:inject components -->
+
+
+
+    <!-- start:inject components -->
+    
+    <!-- end:inject components -->
+
+
+
+
+
+<!-- start:inject styles -->
+<link rel="stylesheet" type="text/css" href="https://jasonwyatt.github.io/KWasm/Editorial/9eb52517/assets/css/editorial_main.css"  />
+<link rel="stylesheet" type="text/css" href="https://jasonwyatt.github.io/KWasm/Editorial/9eb52517/assets/css/editorial_orchidCustomizations.css"  />
+<link rel="stylesheet" type="text/css" href="https://jasonwyatt.github.io/KWasm/Editorial/9eb52517/assets/css/orchidSearch.css"  />
+<link rel="stylesheet" type="text/css" href="https://jasonwyatt.github.io/KWasm/assets/css/orchidSearch.css"  />
+<link rel="stylesheet" type="text/css" href="https://jasonwyatt.github.io/KWasm/assets/css/orchidSourceDoc.css"  />
+<!-- end:inject styles -->
+
+</head>
+<body class="is-loading">
+
+
+<!-- Wrapper -->
+<div id="wrapper">
+
+    <!-- Main -->
+    <div id="main">
+        <div class="inner">
+
+            <!-- Header -->
+            
+                <header id="header">
+    <a href="https://jasonwyatt.github.io/KWasm" class="logo">KWasm</a>
+    <ul class="icons">
+    
+    
+        <li>
+            <a href="https://github.com/jasonwyatt/KWasm" class="icon fa-github">
+                <span class="label">github</span>
+            </a>
+        </li>
+    
+    
+    </ul>
+</header>
+            
+            
+            
+            
+                <section id="pageContent">
+                    <header class="major"><h2>kwasm.format.text.module</h2></header>
+                    <article>
+                        
+    <!-- start:inject components -->
+    
+        
+            
+                
+                    
+                        <div class="sourcedoc-page orchid-sourcedoc content">
+  
+<div class="sourcedoc-section section-root section-level-1" id="kwasm.format.text.module">
+
+
+  <h1 class="sourcedoc-section section-name">Kwasm.format.text.module</h1>
+  
+    <div class="sourcedoc-section section-element" id="4f401eac69a4c025e78b80df283836810227916f">
+      
+      <p class="sourcedoc-section section-signature">
+        <code>package <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/module">kwasm.format.text.module</a></code>
+      </p>
+      <div class="sourcedoc-section section-comments"></div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-2" id="methods">
+
+
+  <h2 class="sourcedoc-section section-name">Methods</h2>
+  
+    <div class="sourcedoc-section section-element" id="b68a1a41c7dc0510afeebacdc8c26f1b78e8d33e">
+      
+      <h3 class="sourcedoc-section element-name">parseDataSegment</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;.parseDataSegment(fromIndex: Int, counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>): Pair<ParseResult<DataSegment>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/datasegment">DataSegment</a>&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Parses a <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/datasegment">DataSegment</a> from the receiving List of <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>s.<p>From <a href="https://webassembly.github.io/spec/core/text/modules.html#data-segments">the docs</a>:</p><pre><code class="language-">
+data_I     ::= ‘(’ ‘data’ x:memidx_I ‘(’ ‘offset’ e:expr_I ‘)’ b*:datastring ‘)’
+=&gt; {data x′, offset e, init b*}
+datastring ::= (b*:string)*
+=&gt; concat((b*)*)</p>
+</code></pre><p><b>Note:</b>* In the current version of WebAssembly, the only valid memory index is <code>0</code> or a
+symbolic memory identifier resolving to the same value.</p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="39ce8a31a9242d1b746b80c3a8fb14eb215b237e">
+
+
+  <p class="sourcedoc-section section-name"><strong>Receiver</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="d531ff5b4bd4f64efc0bc1728e4a15e51ce29a73">
+        <td class="sourcedoc-section section-signature">
+          <code>List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="1050eba87996ebe79aaec45769f84abd51dbdd6f">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="154093896b8c3e0b528d89ebd3f12744e8573e83">
+        <td class="sourcedoc-section section-signature">
+          <code>fromIndex: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="d5aa4118b30a5ed253cf8c8ad788e8e6cef17ab3">
+        <td class="sourcedoc-section section-signature">
+          <code>counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="56e7c483f3779594204711082d9c2721df547d8e">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="09e0801a99c3d4453b0443ad109b60edbe191f38">
+        <td class="sourcedoc-section section-signature">
+          <code>Pair<ParseResult<DataSegment>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/datasegment">DataSegment</a>&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="403c9d03a7632ba26413adcd5e24f85590c636f8">
+      
+      <h3 class="sourcedoc-section element-name">parseElementSegment</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;.parseElementSegment(fromIndex: Int, counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>): Pair<ParseResult<ElementSegment>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/elementsegment">ElementSegment</a>&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Parses an <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/elementsegment">ElementSegment</a> from the receiving List of <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>s.<p>From <a href="https://webassembly.github.io/spec/core/text/modules.html#element-segments">the docs</a>:</p><pre><code class="language-">
+elem_I ::= ‘(’ ‘elem’ x:tableidx_I ‘(’ ‘offset’ e:expr_I ‘)’ y*:vec(funcidx_I) ‘)’
+\          =&gt; {table x, offset e, init y*}</p>
+</code></pre>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="a1b6c0713cd2320bb3d0dab52cd414b0585546e8">
+
+
+  <p class="sourcedoc-section section-name"><strong>Receiver</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="d531ff5b4bd4f64efc0bc1728e4a15e51ce29a73">
+        <td class="sourcedoc-section section-signature">
+          <code>List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="df6e7fca57d98399832726812be72bd732cefa8b">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="154093896b8c3e0b528d89ebd3f12744e8573e83">
+        <td class="sourcedoc-section section-signature">
+          <code>fromIndex: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="d5aa4118b30a5ed253cf8c8ad788e8e6cef17ab3">
+        <td class="sourcedoc-section section-signature">
+          <code>counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="d92c9a8a7f1134cad492c34f20b49553dade457e">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="64460a58e2eaf83e6411f7210f927743ca14c797">
+        <td class="sourcedoc-section section-signature">
+          <code>Pair<ParseResult<ElementSegment>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/elementsegment">ElementSegment</a>&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="3c51228a3ff67af2a2c0622809d8c54c4ee0dcc1">
+      
+      <h3 class="sourcedoc-section element-name">parseExport</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;.parseExport(fromIndex: Int, counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>): Pair<ParseResult<Export>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/export">Export</a>&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Parses an <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/export">Export</a> from the receiving List of <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>s.<p>From <a href="https://webassembly.github.io/spec/core/text/modules.html#exports">the docs</a>:</p><pre><code class="language-">
+export_I ::= ‘(’ ‘export’ nm:name d:exportdesc_I ‘)’ =&gt; {name nm, desc d}</p>
+</code></pre>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="9e189800b327e8f9cf61096c1960579ffdf9ed80">
+
+
+  <p class="sourcedoc-section section-name"><strong>Receiver</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="d531ff5b4bd4f64efc0bc1728e4a15e51ce29a73">
+        <td class="sourcedoc-section section-signature">
+          <code>List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="12d317564cf08a4d68f9518a43f945868fd7156b">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="154093896b8c3e0b528d89ebd3f12744e8573e83">
+        <td class="sourcedoc-section section-signature">
+          <code>fromIndex: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="d5aa4118b30a5ed253cf8c8ad788e8e6cef17ab3">
+        <td class="sourcedoc-section section-signature">
+          <code>counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="a28d08c50a3286f7b2bec7b0340bccd69e2b995a">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="61b2a4b9a8b408dc9c4578715a63e4e19b1474ce">
+        <td class="sourcedoc-section section-signature">
+          <code>Pair<ParseResult<Export>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/export">Export</a>&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="1ac27ccf7d668ea790b2a7b983c244dd2fe0fde9">
+      
+      <h3 class="sourcedoc-section element-name">parseExportDescriptor</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;.parseExportDescriptor(fromIndex: Int): <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/exportdescriptor">ExportDescriptor</a>&lt;*&gt;&gt;</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Parses an <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/exportdescriptor">ExportDescriptor</a> from the receiving List of <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>s.<p>From <a href="https://webassembly.github.io/spec/core/text/modules.html#exports">the docs</a>:</p><pre><code class="language-">
+exportdesc_I    ::= ‘(’ ‘func’ x:funcidx_I ‘)’      =&gt; func x
+‘(’ ‘table’ x:tableidx_I ‘)’    =&gt; table x
+‘(’ ‘memory’ x:memidx_I ‘)’     =&gt; mem x
+‘(’ ‘global’ x:globalidx_I ‘)’  =&gt; global x</p>
+</code></pre>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="124fb4a0bef14a7916813431ab39f4d736f2a30b">
+
+
+  <p class="sourcedoc-section section-name"><strong>Receiver</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="d531ff5b4bd4f64efc0bc1728e4a15e51ce29a73">
+        <td class="sourcedoc-section section-signature">
+          <code>List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="8c08e0fc8fe0f62d26631ee860ad817cc2229f5b">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="154093896b8c3e0b528d89ebd3f12744e8573e83">
+        <td class="sourcedoc-section section-signature">
+          <code>fromIndex: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="d6af67cb51f2b9df1bbdfcba764029c8fb55cde7">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="fbd557f6f95bf135e07443c61447cfc955204904">
+        <td class="sourcedoc-section section-signature">
+          <code><a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/exportdescriptor">ExportDescriptor</a>&lt;*&gt;&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="cf128832cdb0af371dff9ab187aa80c6235a7c9e">
+      
+      <h3 class="sourcedoc-section element-name">parseGlobal</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;.parseGlobal(fromIndex: Int, counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>): Pair<ParseResult<Global>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/global">Global</a>&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Parses a <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/global">Global</a> from the receiving List of <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>s.<p>From <a href="https://webassembly.github.io/spec/core/text/modules.html#globals">the docs</a>:</p><pre><code class="language-">
+global_I   ::= ‘(’ ‘global’ id? gt:globaltype  e:expr_I ‘)’    =&gt; {type gt, init e}</p>
+</code></pre>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="28a1e395eb2c384edd7665ee05e66166b650f7e3">
+
+
+  <p class="sourcedoc-section section-name"><strong>Receiver</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="d531ff5b4bd4f64efc0bc1728e4a15e51ce29a73">
+        <td class="sourcedoc-section section-signature">
+          <code>List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="14d05691cc9a743f533f62d87f37ba52ccab3125">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="154093896b8c3e0b528d89ebd3f12744e8573e83">
+        <td class="sourcedoc-section section-signature">
+          <code>fromIndex: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="d5aa4118b30a5ed253cf8c8ad788e8e6cef17ab3">
+        <td class="sourcedoc-section section-signature">
+          <code>counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="7cf4fa603a5fa32728a924619e377e34153719eb">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="a699683dd378212a60175177bdd4cb689e594245">
+        <td class="sourcedoc-section section-signature">
+          <code>Pair<ParseResult<Global>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/global">Global</a>&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="eeb9b0811a2bc18cf3f5ec43c0db65af2041f38d">
+      
+      <h3 class="sourcedoc-section element-name">parseInlineGlobalImport</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;.parseInlineGlobalImport(fromIndex: Int, counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>): Pair<ParseResult<Import>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/import">Import</a>&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Parses an inline <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/global">Global</a>-<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/import">Import</a> from the receiving List of <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>s.<p>From <a href="https://webassembly.github.io/spec/core/text/modules.html#text-global-abbrev">the docs</a>:</p><pre><code class="language-">
+‘(’ ‘global’ id? ‘(’ ‘import’ name^1 name^2 ‘)’ globaltype ‘)’
+== ‘(’ ‘import’ name^1 name^2 ‘(’ ‘global’ id? globaltype ‘)’ ‘)’</p>
+</code></pre>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="f8b1788b50ee7a5ef6a65e47b348ce747b7ffd79">
+
+
+  <p class="sourcedoc-section section-name"><strong>Receiver</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="d531ff5b4bd4f64efc0bc1728e4a15e51ce29a73">
+        <td class="sourcedoc-section section-signature">
+          <code>List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="6578116c454b1947f1e73ea213e73c58a7a0913a">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="154093896b8c3e0b528d89ebd3f12744e8573e83">
+        <td class="sourcedoc-section section-signature">
+          <code>fromIndex: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="d5aa4118b30a5ed253cf8c8ad788e8e6cef17ab3">
+        <td class="sourcedoc-section section-signature">
+          <code>counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="5ff8cb391415c4b7b1f653f9e82fe4dbeb8a1767">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="1a6bf32224a6f1cd4acdb11caf53fcbbbda6c572">
+        <td class="sourcedoc-section section-signature">
+          <code>Pair<ParseResult<Import>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/import">Import</a>&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="841e14c58d3ff0025547d83e98fb7f463994b64c">
+      
+      <h3 class="sourcedoc-section element-name">parseInlineGlobalExport</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;.parseInlineGlobalExport(fromIndex: Int, counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>): Pair<ParseResult<AstNodeList<AstNode>>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnodelist">AstNodeList</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnode">AstNode</a>&gt;&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Parses an inline <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/global">Global</a>-<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/export">Export</a> from the receiving List of <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>s.<p>From <a href="https://webassembly.github.io/spec/core/text/modules.html#text-global-abbrev">the docs</a>:</p><pre><code class="language-">
+‘(’ ‘global’ id? ‘(’ ‘export’ name ‘)’ ... ‘)’
+== ‘(’ ‘export’ name ‘(’ ‘global’ id′ ‘)’ ‘)’ ‘(’ ‘global’ id′ ... ‘)’
+(if id′ = id? != ϵ ∨ id′ fresh)</p>
+</code></pre><p>Where “...” can contain another import or export.</p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="c01165f1e1c9d6ef6cc60c5ae09822cea1cb3276">
+
+
+  <p class="sourcedoc-section section-name"><strong>Receiver</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="d531ff5b4bd4f64efc0bc1728e4a15e51ce29a73">
+        <td class="sourcedoc-section section-signature">
+          <code>List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="4b93884dee4e26ef758cda261908a47657243a6c">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="154093896b8c3e0b528d89ebd3f12744e8573e83">
+        <td class="sourcedoc-section section-signature">
+          <code>fromIndex: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="d5aa4118b30a5ed253cf8c8ad788e8e6cef17ab3">
+        <td class="sourcedoc-section section-signature">
+          <code>counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="173294b3d63ad653547a5cdeca0b6168349b0b08">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="6a398ef4f4afb5b9f2d73239195881350dc0d806">
+        <td class="sourcedoc-section section-signature">
+          <code>Pair<ParseResult<AstNodeList<AstNode>>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnodelist">AstNodeList</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnode">AstNode</a>&gt;&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="5261bceb9c052cdb19c23c92d9f173979508cef8">
+      
+      <h3 class="sourcedoc-section element-name">parseImport</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;.parseImport(fromIndex: Int, counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>): Pair<ParseResult<Import>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/import">Import</a>&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Parses an <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/import">Import</a> from the receiving List of <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>s.<p>From <a href="https://webassembly.github.io/spec/core/text/modules.html#imports">the docs</a>:</p><pre><code class="language-">
+import_I ::= ‘(’ ‘import’ mod:name nm:name d:importdesc_I ‘)’ =&gt; {module mod, name nm, desc d}</p>
+</code></pre>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="2f3d4e89d9ec7c22773b2b7b120dcb97330ecf01">
+
+
+  <p class="sourcedoc-section section-name"><strong>Receiver</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="d531ff5b4bd4f64efc0bc1728e4a15e51ce29a73">
+        <td class="sourcedoc-section section-signature">
+          <code>List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="e53de35a7c094a37c5c48d4513a2ae39daafc559">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="154093896b8c3e0b528d89ebd3f12744e8573e83">
+        <td class="sourcedoc-section section-signature">
+          <code>fromIndex: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="d5aa4118b30a5ed253cf8c8ad788e8e6cef17ab3">
+        <td class="sourcedoc-section section-signature">
+          <code>counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="1efcda203ab24c90bd5749eb4a0ee83978e40562">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="1a6bf32224a6f1cd4acdb11caf53fcbbbda6c572">
+        <td class="sourcedoc-section section-signature">
+          <code>Pair<ParseResult<Import>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/import">Import</a>&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="3816c3b39bb0bf239d10957cccd90d81777a04a5">
+      
+      <h3 class="sourcedoc-section element-name">parseImportDescriptor</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;.parseImportDescriptor(fromIndex: Int, counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>): Pair<ParseResult<out ImportDescriptor>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/importdescriptor">ImportDescriptor</a>&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Parses an <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/importdescriptor">ImportDescriptor</a> of type <a href="#">T</a> from the receiving List of <a href="#">Tokens</a>.<p>From <a href="https://webassembly.github.io/spec/core/text/modules.html#imports">the docs</a>:</p><pre><code class="language-">
+importdesc_I  ::= ‘(’ ‘func’ id? x,I':typeuse_I ‘)’  =&gt; func x
+‘(’ ‘table’ id? tt:tabletype ‘)’   =&gt; table tt
+‘(’ ‘memory’ id? mt:memtype ‘)’    =&gt; mem mt
+‘(’ ‘global’ id? gt:globaltype ‘)’ =&gt; global gt</p>
+</code></pre>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="31020a606612d1eecd8b8044dee072ee76be318a">
+
+
+  <p class="sourcedoc-section section-name"><strong>Receiver</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="d531ff5b4bd4f64efc0bc1728e4a15e51ce29a73">
+        <td class="sourcedoc-section section-signature">
+          <code>List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="d55ab604f60e3e011e67c0b6ea48270926e1b4c1">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="154093896b8c3e0b528d89ebd3f12744e8573e83">
+        <td class="sourcedoc-section section-signature">
+          <code>fromIndex: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="d5aa4118b30a5ed253cf8c8ad788e8e6cef17ab3">
+        <td class="sourcedoc-section section-signature">
+          <code>counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="f515e1b941879608f21f2b5389d3a0e1bb9b7352">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="cd069fed55c005252e6790146c7c6a8bd33ee658">
+        <td class="sourcedoc-section section-signature">
+          <code>Pair<ParseResult<out ImportDescriptor>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/importdescriptor">ImportDescriptor</a>&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="0210ceb7838fc357a33bd58048dc2a3026f9302b">
+      
+      <h3 class="sourcedoc-section element-name">parseIndex</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun &lt;T : Identifier&gt; List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;.parseIndex(fromIndex: Int): <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/index">Index</a>&lt;T&gt;&gt;</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Parses an <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/index">Index</a> from the receiving List of <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>s.<p>For details on the grammar, see <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/index">Index</a>.</p></p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="4f5d7cea53f2f6a65ab067db718a66ed7211089f">
+
+
+  <p class="sourcedoc-section section-name"><strong>Receiver</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="d531ff5b4bd4f64efc0bc1728e4a15e51ce29a73">
+        <td class="sourcedoc-section section-signature">
+          <code>List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="448771ab4cb3249be9fdbfbc13a5aaada0e1d34b">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="154093896b8c3e0b528d89ebd3f12744e8573e83">
+        <td class="sourcedoc-section section-signature">
+          <code>fromIndex: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="2ab44736d5b7c2e15281256c1c2acb9bb92d884d">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="a492c4b88b8600faf92c3c5cf572e8f37228443f">
+        <td class="sourcedoc-section section-signature">
+          <code><a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/index">Index</a>&lt;T&gt;&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="765d8886541dc746028c806fc168fac4df14f62e">
+      
+      <h3 class="sourcedoc-section element-name">parseIndices</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun &lt;T : Identifier&gt; List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;.parseIndices(fromIndex: Int, min: Int, max: Int): <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnodelist">AstNodeList</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/index">Index</a>&lt;T&gt;&gt;&gt;</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Parses up to <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/index">max</a>es from the receiving List of <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>s starting at fromIndex.
+If no indices are found, returns a <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a> with an empty <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnodelist">AstNodeList</a>.</p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="5f07711ea228a5055902e928c3b4a6bdc6bfb82e">
+
+
+  <p class="sourcedoc-section section-name"><strong>Receiver</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="d531ff5b4bd4f64efc0bc1728e4a15e51ce29a73">
+        <td class="sourcedoc-section section-signature">
+          <code>List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="c1d9b76ef68a95f60b2e2738d09b85eb9734c1a6">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="154093896b8c3e0b528d89ebd3f12744e8573e83">
+        <td class="sourcedoc-section section-signature">
+          <code>fromIndex: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="0093fc0fc6b342e629b46f7b0b55cc71b7dac680">
+        <td class="sourcedoc-section section-signature">
+          <code>min: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="b832cb309950ed3e95a46888e30a0b62290e76dc">
+        <td class="sourcedoc-section section-signature">
+          <code>max: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="8f898fb2708130ba9d264b4a9f9bd8efae46df7a">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="dad51b8d2e4a90f4ac661a053b963874ade0ff2a">
+        <td class="sourcedoc-section section-signature">
+          <code><a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnodelist">AstNodeList</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/index">Index</a>&lt;T&gt;&gt;&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="e61369fca112acf6c84ea92a69175dd36fea31a9">
+      
+      <h3 class="sourcedoc-section element-name">parseLocal</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;.parseLocal(fromIndex: Int): <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnodelist">AstNodeList</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/local">Local</a>&gt;&gt;?</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Parses a <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/local">Local</a> from the receiving List of <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>s.<p>From <a href="https://webassembly.github.io/spec/core/text/modules.html#functions">the docs</a>:</p><pre><code class="language-">
+local ::= ‘(’ ‘local’ id? t:valtype ‘)’ =&gt; t</p>
+</code></pre>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="cd7cd25f87b6f1fcc012d0d48db7934cbc971a0d">
+
+
+  <p class="sourcedoc-section section-name"><strong>Receiver</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="d531ff5b4bd4f64efc0bc1728e4a15e51ce29a73">
+        <td class="sourcedoc-section section-signature">
+          <code>List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="90ec323a4c1342de181ceb4ff0e87d341c585f9e">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="154093896b8c3e0b528d89ebd3f12744e8573e83">
+        <td class="sourcedoc-section section-signature">
+          <code>fromIndex: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="823813ff3a8263f11c478702f64040253ebea98f">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="a47279ffa6c36c22c0d267ca7f3b5e22321de39b">
+        <td class="sourcedoc-section section-signature">
+          <code><a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnodelist">AstNodeList</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/local">Local</a>&gt;&gt;?</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="91cca0c564e0cf15800c8c5509c908cc3aa4ce6f">
+      
+      <h3 class="sourcedoc-section element-name">parseLocals</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;.parseLocals(fromIndex: Int): <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnodelist">AstNodeList</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/local">Local</a>&gt;&gt;</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Parses an <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnodelist">AstNodeList</a> of <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/local">Local</a>s from the receiving List of <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>s.<p>See parseLocal.</p></p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="09fa269223e23b5e9cff19b03d1ec7a3e93b0814">
+
+
+  <p class="sourcedoc-section section-name"><strong>Receiver</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="d531ff5b4bd4f64efc0bc1728e4a15e51ce29a73">
+        <td class="sourcedoc-section section-signature">
+          <code>List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="0f7c0697ab8a845b2f8201a4a3a7a48b44ad6658">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="154093896b8c3e0b528d89ebd3f12744e8573e83">
+        <td class="sourcedoc-section section-signature">
+          <code>fromIndex: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="03f66478e15975a1dbed0e62d75792877e2b47e2">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="114d3b4640241884dacc806ccca0eceb91f333cb">
+        <td class="sourcedoc-section section-signature">
+          <code><a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnodelist">AstNodeList</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/local">Local</a>&gt;&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="70ed9e7c68ed02253cee866dddbcc2292efa1e82">
+      
+      <h3 class="sourcedoc-section element-name">parseMemory</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;.parseMemory(fromIndex: Int, counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>): Pair<ParseResult<AstNodeList<AstNode>>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnodelist">AstNodeList</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnode">AstNode</a>&gt;&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p type="" mt="">Parses a <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/memory">Memory</a> from the receiving List of <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>s.<p>From <a href="https://webassembly.github.io/spec/core/text/modules.html#memories">the docs</a>:</p><pre><code class="language-">
+mem_I  ::= ‘(’ 'memory'  id?  mt:memtype ‘)’   =&gt;</p>
+</code></pre><p><b>Abbreviations</b></p><p>A data segment can be given inline with a memory definition, in which case its offset is <code>0</code> the
+limits of the memory type are inferred from the length of the data, rounded up to page size:</p><pre><code class="language-">
+‘(’ ‘memory’  id?  ‘(’ ‘data’  bn:datastring ‘)’  ‘)’
+   ≡   ‘(’ ‘memory’  id′  m  m ‘)’ ‘(’ ‘data’  id′  ‘(’ ‘i32.const’  ‘0’ ‘)’  datastring ‘)’
+       (if id′ = id? != ϵ ∨ id′ fresh, m=ceil(n/64Ki))
+</code></pre>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="34e737c012f78f6372f48a1857f6cb70c92d3286">
+
+
+  <p class="sourcedoc-section section-name"><strong>Receiver</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="d531ff5b4bd4f64efc0bc1728e4a15e51ce29a73">
+        <td class="sourcedoc-section section-signature">
+          <code>List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="794376d6eb62b42dc56edc1444826897082ff70a">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="154093896b8c3e0b528d89ebd3f12744e8573e83">
+        <td class="sourcedoc-section section-signature">
+          <code>fromIndex: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="d5aa4118b30a5ed253cf8c8ad788e8e6cef17ab3">
+        <td class="sourcedoc-section section-signature">
+          <code>counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="ef4ccafd59e8e4f4fe7f857f3ce8a32254a5e51f">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="6a398ef4f4afb5b9f2d73239195881350dc0d806">
+        <td class="sourcedoc-section section-signature">
+          <code>Pair<ParseResult<AstNodeList<AstNode>>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnodelist">AstNodeList</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnode">AstNode</a>&gt;&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="a7418babdbc7dc130caaf5a07fb9e07f711ee906">
+      
+      <h3 class="sourcedoc-section element-name">parseInlineMemoryImport</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;.parseInlineMemoryImport(fromIndex: Int, counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>): Pair<ParseResult<Import>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/import">Import</a>&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Parses an inline <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/memory">Memory</a>-<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/import">Import</a> from the receiving List of <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>s.<p>From <a href="https://webassembly.github.io/spec/core/text/modules.html#text-mem-abbrev">the docs</a>:</p><pre><code class="language-">
+‘(’ ‘memory’ id? ‘(’ ‘import’ name^1 name^2 ‘)’ memtype ‘)’
+== ‘(’ ‘import’ name^1 name^2 ‘(’ ‘memory’ id? memtype ‘)’ ‘)’</p>
+</code></pre>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="3b4592031b19c82a6f44cdcaa0a19d25c8ca8471">
+
+
+  <p class="sourcedoc-section section-name"><strong>Receiver</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="d531ff5b4bd4f64efc0bc1728e4a15e51ce29a73">
+        <td class="sourcedoc-section section-signature">
+          <code>List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="7965fd7c2099b6b97a65d6ffc76b4c1f28a0583b">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="154093896b8c3e0b528d89ebd3f12744e8573e83">
+        <td class="sourcedoc-section section-signature">
+          <code>fromIndex: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="d5aa4118b30a5ed253cf8c8ad788e8e6cef17ab3">
+        <td class="sourcedoc-section section-signature">
+          <code>counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="34ac21cb1b6f5cc2a822cf2e3d9c0cb8a806ec2b">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="1a6bf32224a6f1cd4acdb11caf53fcbbbda6c572">
+        <td class="sourcedoc-section section-signature">
+          <code>Pair<ParseResult<Import>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/import">Import</a>&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="9e20f1ad9d014f5bd7da23fc6912272c0c6fce4d">
+      
+      <h3 class="sourcedoc-section element-name">parseInlineMemoryExport</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;.parseInlineMemoryExport(fromIndex: Int, counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>): Pair<ParseResult<AstNodeList<AstNode>>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnodelist">AstNodeList</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnode">AstNode</a>&gt;&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Parses an inline <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/memory">Memory</a>-<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/export">Export</a> from the receiving List of <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>s.<p>From <a href="https://webassembly.github.io/spec/core/text/modules.html#text-mem-abbrev">the docs</a>:</p><pre><code class="language-">
+‘(’ ‘memory’ id? ‘(’ ‘export’ name ‘)’ ... ‘)’
+== ‘(’ ‘export’ name ‘(’ ‘memory’ id′ ‘)’ ‘)’ ‘(’ ‘memory’ id′ ... ‘)’
+(if id′ = id? != ϵ ∨ id′ fresh)</p>
+</code></pre><p>Where “...” can contain another import or export or an inline data segment.</p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="1faeaaebae6b8752a384b84073d5122e6b090a56">
+
+
+  <p class="sourcedoc-section section-name"><strong>Receiver</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="d531ff5b4bd4f64efc0bc1728e4a15e51ce29a73">
+        <td class="sourcedoc-section section-signature">
+          <code>List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="db394220396bf3501edc11bfa9a1dbbeea48833f">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="154093896b8c3e0b528d89ebd3f12744e8573e83">
+        <td class="sourcedoc-section section-signature">
+          <code>fromIndex: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="d5aa4118b30a5ed253cf8c8ad788e8e6cef17ab3">
+        <td class="sourcedoc-section section-signature">
+          <code>counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="a5311db31cd7fb1858751ec4c77222455a6555fe">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="6a398ef4f4afb5b9f2d73239195881350dc0d806">
+        <td class="sourcedoc-section section-signature">
+          <code>Pair<ParseResult<AstNodeList<AstNode>>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnodelist">AstNodeList</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnode">AstNode</a>&gt;&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="0370cbadd44a5f6c07df17630cf81d8217e16ea2">
+      
+      <h3 class="sourcedoc-section element-name">parseOffset</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;.parseOffset(fromIndex: Int, maxExpressionLength: Int): <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/offset">Offset</a>&gt;</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Parses an <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/offset">Offset</a> from the receiving List of <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>s.</p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="b306b34e6e7e97120a42530a8ffa4296156792d7">
+
+
+  <p class="sourcedoc-section section-name"><strong>Receiver</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="d531ff5b4bd4f64efc0bc1728e4a15e51ce29a73">
+        <td class="sourcedoc-section section-signature">
+          <code>List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="8e33bdff4eccd8788d3f9781c0625df47e5b80b5">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="154093896b8c3e0b528d89ebd3f12744e8573e83">
+        <td class="sourcedoc-section section-signature">
+          <code>fromIndex: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="f27489305cc4bc47c3b6c7694ebd00b383b2fbe2">
+        <td class="sourcedoc-section section-signature">
+          <code>maxExpressionLength: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="ebfdf18af4c184efff531b2646b4668419f9b816">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="9bb7b61dbfafa6a9188ace379ea2f7a525575f69">
+        <td class="sourcedoc-section section-signature">
+          <code><a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/offset">Offset</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="a12fef1d775bc3fddd03bf27aa729f0cbe3d8520">
+      
+      <h3 class="sourcedoc-section element-name">parseStartFunction</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;.parseStartFunction(fromIndex: Int, counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>): Pair<ParseResult<StartFunction>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/startfunction">StartFunction</a>&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p func="" x="">Parses a <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/startfunction">StartFunction</a> from the receiving List of <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>s.<p>From <a href="https://webassembly.github.io/spec/core/text/modules.html#start-function">the docs</a>:</p><p>A start function is defined in terms of its index.</p><pre><code class="language-">
+start_I ::= ‘(’ ‘start’ x:funcidx_I ‘)’ =&gt;</p>
+</code></pre>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="116823c118f9addf9c98de670e3d4b144e609388">
+
+
+  <p class="sourcedoc-section section-name"><strong>Receiver</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="d531ff5b4bd4f64efc0bc1728e4a15e51ce29a73">
+        <td class="sourcedoc-section section-signature">
+          <code>List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="558f7ff86615821d8093adf8e784ed124e4828ca">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="154093896b8c3e0b528d89ebd3f12744e8573e83">
+        <td class="sourcedoc-section section-signature">
+          <code>fromIndex: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="d5aa4118b30a5ed253cf8c8ad788e8e6cef17ab3">
+        <td class="sourcedoc-section section-signature">
+          <code>counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="d026075b99a15b10cbf924da66c6fa9114ea909f">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="8c7a4422c94f13cc7a0efb96ab06af725699237c">
+        <td class="sourcedoc-section section-signature">
+          <code>Pair<ParseResult<StartFunction>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/startfunction">StartFunction</a>&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="3c40e026564533c88050f2668d2bc7b7ad45baa6">
+      
+      <h3 class="sourcedoc-section element-name">parseTable</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;.parseTable(fromIndex: Int, counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>): Pair<ParseResult<AstNodeList<AstNode>>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnodelist">AstNodeList</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnode">AstNode</a>&gt;&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p type="" tt="">Parses a <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/table">Table</a> and (optionally) an <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/elementtype">ElementType</a> from the receiving List of <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>s.<p>From <a href="https://webassembly.github.io/spec/core/text/modules.html#tables">the docs</a>:</p><pre><code class="language-">
+table_I ::= ‘(’ ‘table’ id? tt:tabletype ‘)’ =&gt;</p>
+</code></pre><p><b>Abbreviations</b></p><p>An element segment can be given inline with a table definition, in which case its offset is <code>0</code>
+and the limits of the table type are inferred from the length of the given segment:</p><pre><code class="language-">
+‘(’ ‘table’ id? elemtype ‘(’ ‘elem’ xn:vec(funcidx) ‘)’ ‘)’
+   == ‘(’ ‘table’ id′ n n elemtype ‘)’ ‘(’ ‘elem’ id′ ‘(’ ‘i32.const’ ‘0’ ‘)’ vec(funcidx) ‘)’
+       (if id′ == id? != ϵ ∨ id′ fresh)
+</code></pre>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="64b8d16def40d0387870f27e0f90ccc54faba5c1">
+
+
+  <p class="sourcedoc-section section-name"><strong>Receiver</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="d531ff5b4bd4f64efc0bc1728e4a15e51ce29a73">
+        <td class="sourcedoc-section section-signature">
+          <code>List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="e25224fbac0c32eda35edb463ca1cb370c272383">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="154093896b8c3e0b528d89ebd3f12744e8573e83">
+        <td class="sourcedoc-section section-signature">
+          <code>fromIndex: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="d5aa4118b30a5ed253cf8c8ad788e8e6cef17ab3">
+        <td class="sourcedoc-section section-signature">
+          <code>counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="62f041c4a37c59e25d476b90f51437ce60148f25">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="6a398ef4f4afb5b9f2d73239195881350dc0d806">
+        <td class="sourcedoc-section section-signature">
+          <code>Pair<ParseResult<AstNodeList<AstNode>>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnodelist">AstNodeList</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnode">AstNode</a>&gt;&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="f809da6f4ce66bbc537ecdc6865a8049dabc3637">
+      
+      <h3 class="sourcedoc-section element-name">parseInlineTableImport</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;.parseInlineTableImport(fromIndex: Int, counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>): Pair<ParseResult<Import>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/import">Import</a>&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Parses an inline <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/table">Table</a>-<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/import">Import</a> from the receiving List of <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>s.<p>From <a href="https://webassembly.github.io/spec/core/text/modules.html#text-table-abbrev">the docs</a>:</p><pre><code class="language-">
+‘(’ ‘table’ id? ‘(’ ‘import’ name^1 name^2 ‘)’ tabletype ‘)’
+== ‘(’ ‘import’ name^1 name^2 ‘(’ ‘table’ id? tabletype ‘)’ ‘)’</p>
+</code></pre>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="6e4d0be8a14724c98a8a2aea00b9d8c061dd2c55">
+
+
+  <p class="sourcedoc-section section-name"><strong>Receiver</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="d531ff5b4bd4f64efc0bc1728e4a15e51ce29a73">
+        <td class="sourcedoc-section section-signature">
+          <code>List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="0372b60ba1317fa08d8989c3859b2330f8af594b">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="154093896b8c3e0b528d89ebd3f12744e8573e83">
+        <td class="sourcedoc-section section-signature">
+          <code>fromIndex: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="d5aa4118b30a5ed253cf8c8ad788e8e6cef17ab3">
+        <td class="sourcedoc-section section-signature">
+          <code>counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="272996a476f7bc321ab1daf3853f79808db523c3">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="1a6bf32224a6f1cd4acdb11caf53fcbbbda6c572">
+        <td class="sourcedoc-section section-signature">
+          <code>Pair<ParseResult<Import>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/import">Import</a>&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="45be856abba687f930f40f3466b27940c665b066">
+      
+      <h3 class="sourcedoc-section element-name">parseInlineTableExport</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;.parseInlineTableExport(fromIndex: Int, counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>): Pair<ParseResult<AstNodeList<AstNode>>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnodelist">AstNodeList</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnode">AstNode</a>&gt;&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Parses an inline <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/table">Table</a>-<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/export">Export</a> from the receiving List of <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>s.<p>From <a href="https://webassembly.github.io/spec/core/text/modules.html#text-table-abbrev">the docs</a>:</p><pre><code class="language-">
+‘(’ ‘table’ id? ‘(’ ‘export’ name ‘)’ ... ‘)’
+== ‘(’ ‘export’ name ‘(’ ‘table’ id′ ‘)’ ‘)’ ‘(’ ‘table’ id′ ... ‘)’
+(if id′ = id? != ϵ ∨ id′ fresh)</p>
+</code></pre><p>Where “...” can contain another import or export or an inline elements segment.</p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="4e39102729c6e5f191b2f4e34e448416c6a30415">
+
+
+  <p class="sourcedoc-section section-name"><strong>Receiver</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="d531ff5b4bd4f64efc0bc1728e4a15e51ce29a73">
+        <td class="sourcedoc-section section-signature">
+          <code>List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="7fbbd6b1714851a4a1c2a4e5698a24db2dc4e5a4">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="154093896b8c3e0b528d89ebd3f12744e8573e83">
+        <td class="sourcedoc-section section-signature">
+          <code>fromIndex: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="d5aa4118b30a5ed253cf8c8ad788e8e6cef17ab3">
+        <td class="sourcedoc-section section-signature">
+          <code>counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="3f47c2f8661d163b978ee4502762122c41904eb2">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="6a398ef4f4afb5b9f2d73239195881350dc0d806">
+        <td class="sourcedoc-section section-signature">
+          <code>Pair<ParseResult<AstNodeList<AstNode>>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnodelist">AstNodeList</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnode">AstNode</a>&gt;&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="1a3d46d1ac0280b2cde9030b9a7b30da71a7804f">
+      
+      <h3 class="sourcedoc-section element-name">parseType</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;.parseType(fromIndex: Int, counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>): Pair<ParseResult<Type>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/type">Type</a>&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Parses a type as a <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/functiontype">FunctionType</a> from the receiving List of <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>s.<p>From <a href="https://webassembly.github.io/spec/core/text/modules.html#types">the docs</a>:</p><pre><code class="language-">
+type ::= ‘(’ ‘type’ id? ft:functype ‘)’ =&gt; ft</p>
+</code></pre>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="ca008dcd3f58df166b63066e1bf1fbf0fb9fe0d1">
+
+
+  <p class="sourcedoc-section section-name"><strong>Receiver</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="d531ff5b4bd4f64efc0bc1728e4a15e51ce29a73">
+        <td class="sourcedoc-section section-signature">
+          <code>List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="66ed1428339605f2d480a070acfb02b897e8f0bf">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="154093896b8c3e0b528d89ebd3f12744e8573e83">
+        <td class="sourcedoc-section section-signature">
+          <code>fromIndex: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="d5aa4118b30a5ed253cf8c8ad788e8e6cef17ab3">
+        <td class="sourcedoc-section section-signature">
+          <code>counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="c6310d53aa3974ea323830083ba797bbc1f85130">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="8dd338046bf78b0b466cf7ac45cafa563da095db">
+        <td class="sourcedoc-section section-signature">
+          <code>Pair<ParseResult<Type>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/type">Type</a>&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="4a2b4bacfb78c1cb12c49dc0290e3619ca307ead">
+      
+      <h3 class="sourcedoc-section element-name">parseTypeUse</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;.parseTypeUse(fromIndex: Int): <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/typeuse">TypeUse</a>&gt;</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Parses a <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/typeuse">TypeUse</a> out of the Token according to the following grammar from
+<a href="https://webassembly.github.io/spec/core/text/modules.html#text-typeuse">the docs</a>.<p>For the required runtime checks are see <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/typeuse">TypeUse</a>:</p><pre><code class="language-">
+typeuse(I) ::=
+empty                                                   =&gt; TypeUse(null)
+(t_1:param)* (t_2:result)*                              =&gt; TypeUse(x, [t_1], [t_2])
+‘(’ ‘type’ x:typeidx(I) ‘)’                             =&gt; TypeUse(x)
+‘(’ ‘type’ x:typeidx(I) ‘)’ (t_1:param)* (t_2:result)*  =&gt; TypeUse(x, [t_1], [t_2])</p>
+</code></pre>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="1c972e2ee5a0d727879203f9af15131ce2d1923a">
+
+
+  <p class="sourcedoc-section section-name"><strong>Receiver</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="d531ff5b4bd4f64efc0bc1728e4a15e51ce29a73">
+        <td class="sourcedoc-section section-signature">
+          <code>List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="1f9115221bef6b74d4991a6061307b30db55015e">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="154093896b8c3e0b528d89ebd3f12744e8573e83">
+        <td class="sourcedoc-section section-signature">
+          <code>fromIndex: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="4c70ad97714e11f9415eab2f823c06db363e2ac4">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="750fe53b332a45571d8187ffb8470fe4a72401da">
+        <td class="sourcedoc-section section-signature">
+          <code><a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/typeuse">TypeUse</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="a32767e65a033787d0a20730d051d26e899a89fa">
+      
+      <h3 class="sourcedoc-section element-name">parseWasmFunction</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;.parseWasmFunction(fromIndex: Int, counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>): Pair<ParseResult<WasmFunction>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/wasmfunction">WasmFunction</a>&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Parses a <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/wasmfunction">WasmFunction</a> from the receiving List of <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>s.<p>From <a href="https://webassembly.github.io/spec/core/text/modules.html#functions">the docs</a>:</p><pre><code class="language-">
+func_I ::= ‘(’ ‘func’ id? x,I′:typeuse_I (t:local)* (in:instr_I′‘)‘* ‘)’
+=&gt; {type x, locals t*, body in* end}</p>
+</code></pre>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="887fcf1ea5499b36d5dfe65acd6bce5e5a279875">
+
+
+  <p class="sourcedoc-section section-name"><strong>Receiver</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="d531ff5b4bd4f64efc0bc1728e4a15e51ce29a73">
+        <td class="sourcedoc-section section-signature">
+          <code>List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="36db6fd44af928b85364ca39fe889ecfee681527">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="154093896b8c3e0b528d89ebd3f12744e8573e83">
+        <td class="sourcedoc-section section-signature">
+          <code>fromIndex: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="d5aa4118b30a5ed253cf8c8ad788e8e6cef17ab3">
+        <td class="sourcedoc-section section-signature">
+          <code>counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="b80a5e215cf701664e1e9a8e6e526038b7fc38fa">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="cf8e5ffb0522d5cd028b88aaf2c3491914839863">
+        <td class="sourcedoc-section section-signature">
+          <code>Pair<ParseResult<WasmFunction>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/wasmfunction">WasmFunction</a>&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="279acba32623c586b820ce6f156db9295b81d3bb">
+      
+      <h3 class="sourcedoc-section element-name">parseInlineWasmFunctionImport</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;.parseInlineWasmFunctionImport(fromIndex: Int, counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>): Pair<ParseResult<Import>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/import">Import</a>&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Parses an inline-import function declaration from the receiving List of <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>s.<p>From <a href="https://webassembly.github.io/spec/core/text/modules.html#text-func-abbrev">the docs</a>:</p><pre><code class="language-">
+‘(’ ‘func’ id? ‘(’ ‘import’ name^1 name^2 ‘)’ typeuse ‘)’
+== ‘(’ ‘import’ name^1 name^2 ‘(’ ‘func’ id? typeuse ‘)’ ‘)’</p>
+</code></pre>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="8181a94ee596b47311781f79649762bfc9679473">
+
+
+  <p class="sourcedoc-section section-name"><strong>Receiver</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="d531ff5b4bd4f64efc0bc1728e4a15e51ce29a73">
+        <td class="sourcedoc-section section-signature">
+          <code>List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="a3d4c06eb2110363b2ca2b8898522702bd0d9916">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="154093896b8c3e0b528d89ebd3f12744e8573e83">
+        <td class="sourcedoc-section section-signature">
+          <code>fromIndex: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="d5aa4118b30a5ed253cf8c8ad788e8e6cef17ab3">
+        <td class="sourcedoc-section section-signature">
+          <code>counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="7bade55015fc5c1f4bfec08bd5e305b180c0ba60">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="1a6bf32224a6f1cd4acdb11caf53fcbbbda6c572">
+        <td class="sourcedoc-section section-signature">
+          <code>Pair<ParseResult<Import>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/import">Import</a>&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="bb871acf0da8af8dd2862cdbae0f635974c56dad">
+      
+      <h3 class="sourcedoc-section element-name">parseInlineWasmFunctionExport</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;.parseInlineWasmFunctionExport(fromIndex: Int, counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>): Pair<ParseResult<AstNodeList<AstNode>>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnodelist">AstNodeList</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnode">AstNode</a>&gt;&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Parses an inline-export function from the receiving List of <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>s.<p>From <a href="https://webassembly.github.io/spec/core/text/modules.html#text-func-abbrev">the docs</a>:</p><pre><code class="language-">
+‘(’ ‘func’ id? ‘(’ ‘export’ name ‘)’ … ‘)’
+== ‘(’ ‘export’ name ‘(’ ‘func’ id′ ‘)’ ‘)’ ‘(’ ‘func’ id′ … ‘)’
+(if id′ == id? != ϵ ∨ id′ fresh)</p>
+</code></pre>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="5fca3c887d5aaad7f816131c33fcd1f448bd1103">
+
+
+  <p class="sourcedoc-section section-name"><strong>Receiver</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="d531ff5b4bd4f64efc0bc1728e4a15e51ce29a73">
+        <td class="sourcedoc-section section-signature">
+          <code>List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="3ad7c86f05bdd7af81341507910fb3afe5e0ae9a">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="154093896b8c3e0b528d89ebd3f12744e8573e83">
+        <td class="sourcedoc-section section-signature">
+          <code>fromIndex: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="d5aa4118b30a5ed253cf8c8ad788e8e6cef17ab3">
+        <td class="sourcedoc-section section-signature">
+          <code>counts: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="3cf53fbcf4d951460c76c6db4ce2ceb599d2c41d">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="6a398ef4f4afb5b9f2d73239195881350dc0d806">
+        <td class="sourcedoc-section section-signature">
+          <code>Pair<ParseResult<AstNodeList<AstNode>>, TextModuleCounts>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnodelist">AstNodeList</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/astnode">AstNode</a>&gt;&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/textmodulecounts">TextModuleCounts</a>&gt;?</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="b54ce52a89c8e65d5a289e18a85c62c893b6dda2">
+      
+      <h3 class="sourcedoc-section element-name">parseModule</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;.parseModule(fromIndex: Int): <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/wasmmodule">WasmModule</a>&gt;?</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p data="" da="">Parses a <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/wasmmodule">WasmModule</a> from the receiving List of <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>s.<p>From <a href="https://webassembly.github.io/spec/core/text/modules.html#text-module">the docs</a>:</p><p>A module consists of a sequence of fields that can occur in any order. All definitions and their
+respective bound identifiers scope over the entire module, including the text preceding them.</p><p>A module may optionally bind an identifier that names the module. The name serves a documentary
+role only.</p><pre><code class="language-"><span types="" ty="">
+module         ::= ‘(’ ‘module’ id? (m:modulefield_I)* ‘)’     =&gt; ⨁m*
+(if I = ⨁ idc(modulefield)* well-formed)
+modulefield_I  ::= ty:type                                     =&gt; </span><span imports="" im="">
+im:import_I                                 =&gt; </span><span funcs="" fn="">
+fn:func_I                                   =&gt; </span><span tables="" ta="">
+ta:table_I                                  =&gt; </span><span mems="" me="">
+me:mem_I                                    =&gt; </span><span globals="" gl="">
+gl:global_I                                 =&gt; </span><span exports="" ex="">
+ex:export_I                                 =&gt; </span><span start="" st="">
+st:start_I                                  =&gt; </span><span elem="" el="">
+el:elem_I                                   =&gt; </span>
+da:data_I                                   =&gt;</p>
+</code></pre>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="82a633acdbd41406988ee9d9485a357d7792b1ec">
+
+
+  <p class="sourcedoc-section section-name"><strong>Receiver</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="d531ff5b4bd4f64efc0bc1728e4a15e51ce29a73">
+        <td class="sourcedoc-section section-signature">
+          <code>List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/token">Token</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="1c79bc8937532215c790ff391cdbd30f0a44492e">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="154093896b8c3e0b528d89ebd3f12744e8573e83">
+        <td class="sourcedoc-section section-signature">
+          <code>fromIndex: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="bbd0b0f90456cc58c91d74af02a433566db9e527">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="a3fd168d0d13bd4d50d227a4ba18f9fef10bdce3">
+        <td class="sourcedoc-section section-signature">
+          <code><a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/parseresult">ParseResult</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/wasmmodule">WasmModule</a>&gt;?</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+
+</div>
+
+        
+      
+    </div>
+  
+
+</div>
+
+</div>
+
+
+
+
+
+
+                    
+                
+            
+        
+    
+    <!-- end:inject components -->
+
+
+                    </article>
+                </section>
+            
+        </div>
+        <hr>
+
+        <!-- Page Footer -->
+        <div class="inner">
+    <footer id="footer">
+        <div class="clearfix">
+            
+            
+        </div>
+    </footer>
+</div>
+
+    </div>
+
+    <!-- Sidebar -->
+    <div id="sidebar">
+    <div class="inner">
+
+        <!-- Search -->
+        <section id="search" class="alt">
+            <form data-orchid-search="">
+                <input type="text" name="query" id="query" placeholder="Search"/>
+            </form>
+            <div class="box" id="search-results" data-orchid-search-results style="display: none;">
+                <b>Search Results</b>
+                <ul></ul>
+            </div>
+            <div class="box" id="search-progress" data-orchid-search-progress style="display: none;">
+                <div class="loader">Loading...</div>
+            </div>
+        </section>
+
+        <!-- Menu -->
+        <nav id="siteNav" class="menu">
+            <header class="major">
+                <h2>KWasm</h2>
+            </header>
+            <ul class="top-level">
+                
+                    
+    
+    <li>
+        <a class="subheader">KWasm Library API Docs</a>
+    </li>
+    
+
+                
+                    
+    <li>
+        <span class="opener">Packages</span>
+        <ul>
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm">kwasm</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/api">kwasm.api</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast">kwasm.ast</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction">kwasm.ast.instruction</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module">kwasm.ast.module</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type">kwasm.ast.type</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/util">kwasm.ast.util</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format">kwasm.format</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/binary">kwasm.format.binary</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/binary/instruction">kwasm.format.binary.instruction</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/binary/module">kwasm.format.binary.module</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/binary/type">kwasm.format.binary.type</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/binary/value">kwasm.format.binary.value</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text">kwasm.format.text</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/instruction">kwasm.format.text.instruction</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/module">kwasm.format.text.module</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token">kwasm.format.text.token</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/util">kwasm.format.text.token.util</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/type">kwasm.format.text.type</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/whitespace">kwasm.format.text.whitespace</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime">kwasm.runtime</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/instruction">kwasm.runtime.instruction</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/memory">kwasm.runtime.memory</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/stack">kwasm.runtime.stack</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/util">kwasm.runtime.util</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/util">kwasm.util</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation">kwasm.validation</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/instruction">kwasm.validation.instruction</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/instruction/control">kwasm.validation.instruction.control</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/instruction/memory">kwasm.validation.instruction.memory</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/module">kwasm.validation.module</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/type">kwasm.validation.type</a>
+    </li>
+    
+
+        
+        </ul>
+    </li>
+
+                
+            </ul>
+        </nav>
+        
+        <nav class="menu">
+            <header class="major">
+                <h2>kwasm.format.text.module</h2>
+            </header>
+            <ul class="top-level">
+                
+                    
+    <li>
+        <span class="opener">Methods</span>
+        <ul>
+        
+            
+    
+    <li>
+        <a href="#b68a1a41c7dc0510afeebacdc8c26f1b78e8d33e">fun List&lt;Token&gt;.parseDataSegment(fromIndex: Int, counts: TextModuleCounts): Pair&lt;ParseResult&lt;DataSegment&gt;, TextModuleCounts&gt;&lt;ParseResult&lt;DataSegment&gt;, TextModuleCounts&gt;?</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#403c9d03a7632ba26413adcd5e24f85590c636f8">fun List&lt;Token&gt;.parseElementSegment(fromIndex: Int, counts: TextModuleCounts): Pair&lt;ParseResult&lt;ElementSegment&gt;, TextModuleCounts&gt;&lt;ParseResult&lt;ElementSegment&gt;, TextModuleCounts&gt;?</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#3c51228a3ff67af2a2c0622809d8c54c4ee0dcc1">fun List&lt;Token&gt;.parseExport(fromIndex: Int, counts: TextModuleCounts): Pair&lt;ParseResult&lt;Export&gt;, TextModuleCounts&gt;&lt;ParseResult&lt;Export&gt;, TextModuleCounts&gt;?</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#1ac27ccf7d668ea790b2a7b983c244dd2fe0fde9">fun List&lt;Token&gt;.parseExportDescriptor(fromIndex: Int): ParseResult&lt;ExportDescriptor&lt;*&gt;&gt;</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#cf128832cdb0af371dff9ab187aa80c6235a7c9e">fun List&lt;Token&gt;.parseGlobal(fromIndex: Int, counts: TextModuleCounts): Pair&lt;ParseResult&lt;Global&gt;, TextModuleCounts&gt;&lt;ParseResult&lt;Global&gt;, TextModuleCounts&gt;?</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#eeb9b0811a2bc18cf3f5ec43c0db65af2041f38d">fun List&lt;Token&gt;.parseInlineGlobalImport(fromIndex: Int, counts: TextModuleCounts): Pair&lt;ParseResult&lt;Import&gt;, TextModuleCounts&gt;&lt;ParseResult&lt;Import&gt;, TextModuleCounts&gt;?</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#841e14c58d3ff0025547d83e98fb7f463994b64c">fun List&lt;Token&gt;.parseInlineGlobalExport(fromIndex: Int, counts: TextModuleCounts): Pair&lt;ParseResult&lt;AstNodeList&lt;AstNode&gt;&gt;, TextModuleCounts&gt;&lt;ParseResult&lt;AstNodeList&lt;AstNode&gt;&gt;, TextModuleCounts&gt;?</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#5261bceb9c052cdb19c23c92d9f173979508cef8">fun List&lt;Token&gt;.parseImport(fromIndex: Int, counts: TextModuleCounts): Pair&lt;ParseResult&lt;Import&gt;, TextModuleCounts&gt;&lt;ParseResult&lt;Import&gt;, TextModuleCounts&gt;?</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#3816c3b39bb0bf239d10957cccd90d81777a04a5">fun List&lt;Token&gt;.parseImportDescriptor(fromIndex: Int, counts: TextModuleCounts): Pair&lt;ParseResult&lt;out ImportDescriptor&gt;, TextModuleCounts&gt;&lt;ParseResult&lt;ImportDescriptor&gt;, TextModuleCounts&gt;?</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#0210ceb7838fc357a33bd58048dc2a3026f9302b">fun &lt;T : Identifier&gt; List&lt;Token&gt;.parseIndex(fromIndex: Int): ParseResult&lt;Index&lt;T&gt;&gt;</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#765d8886541dc746028c806fc168fac4df14f62e">fun &lt;T : Identifier&gt; List&lt;Token&gt;.parseIndices(fromIndex: Int, min: Int, max: Int): ParseResult&lt;AstNodeList&lt;Index&lt;T&gt;&gt;&gt;</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#e61369fca112acf6c84ea92a69175dd36fea31a9">fun List&lt;Token&gt;.parseLocal(fromIndex: Int): ParseResult&lt;AstNodeList&lt;Local&gt;&gt;?</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#91cca0c564e0cf15800c8c5509c908cc3aa4ce6f">fun List&lt;Token&gt;.parseLocals(fromIndex: Int): ParseResult&lt;AstNodeList&lt;Local&gt;&gt;</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#70ed9e7c68ed02253cee866dddbcc2292efa1e82">fun List&lt;Token&gt;.parseMemory(fromIndex: Int, counts: TextModuleCounts): Pair&lt;ParseResult&lt;AstNodeList&lt;AstNode&gt;&gt;, TextModuleCounts&gt;&lt;ParseResult&lt;AstNodeList&lt;AstNode&gt;&gt;, TextModuleCounts&gt;?</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#a7418babdbc7dc130caaf5a07fb9e07f711ee906">fun List&lt;Token&gt;.parseInlineMemoryImport(fromIndex: Int, counts: TextModuleCounts): Pair&lt;ParseResult&lt;Import&gt;, TextModuleCounts&gt;&lt;ParseResult&lt;Import&gt;, TextModuleCounts&gt;?</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#9e20f1ad9d014f5bd7da23fc6912272c0c6fce4d">fun List&lt;Token&gt;.parseInlineMemoryExport(fromIndex: Int, counts: TextModuleCounts): Pair&lt;ParseResult&lt;AstNodeList&lt;AstNode&gt;&gt;, TextModuleCounts&gt;&lt;ParseResult&lt;AstNodeList&lt;AstNode&gt;&gt;, TextModuleCounts&gt;?</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#0370cbadd44a5f6c07df17630cf81d8217e16ea2">fun List&lt;Token&gt;.parseOffset(fromIndex: Int, maxExpressionLength: Int): ParseResult&lt;Offset&gt;</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#a12fef1d775bc3fddd03bf27aa729f0cbe3d8520">fun List&lt;Token&gt;.parseStartFunction(fromIndex: Int, counts: TextModuleCounts): Pair&lt;ParseResult&lt;StartFunction&gt;, TextModuleCounts&gt;&lt;ParseResult&lt;StartFunction&gt;, TextModuleCounts&gt;?</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#3c40e026564533c88050f2668d2bc7b7ad45baa6">fun List&lt;Token&gt;.parseTable(fromIndex: Int, counts: TextModuleCounts): Pair&lt;ParseResult&lt;AstNodeList&lt;AstNode&gt;&gt;, TextModuleCounts&gt;&lt;ParseResult&lt;AstNodeList&lt;AstNode&gt;&gt;, TextModuleCounts&gt;?</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#f809da6f4ce66bbc537ecdc6865a8049dabc3637">fun List&lt;Token&gt;.parseInlineTableImport(fromIndex: Int, counts: TextModuleCounts): Pair&lt;ParseResult&lt;Import&gt;, TextModuleCounts&gt;&lt;ParseResult&lt;Import&gt;, TextModuleCounts&gt;?</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#45be856abba687f930f40f3466b27940c665b066">fun List&lt;Token&gt;.parseInlineTableExport(fromIndex: Int, counts: TextModuleCounts): Pair&lt;ParseResult&lt;AstNodeList&lt;AstNode&gt;&gt;, TextModuleCounts&gt;&lt;ParseResult&lt;AstNodeList&lt;AstNode&gt;&gt;, TextModuleCounts&gt;?</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#1a3d46d1ac0280b2cde9030b9a7b30da71a7804f">fun List&lt;Token&gt;.parseType(fromIndex: Int, counts: TextModuleCounts): Pair&lt;ParseResult&lt;Type&gt;, TextModuleCounts&gt;&lt;ParseResult&lt;Type&gt;, TextModuleCounts&gt;?</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#4a2b4bacfb78c1cb12c49dc0290e3619ca307ead">fun List&lt;Token&gt;.parseTypeUse(fromIndex: Int): ParseResult&lt;TypeUse&gt;</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#a32767e65a033787d0a20730d051d26e899a89fa">fun List&lt;Token&gt;.parseWasmFunction(fromIndex: Int, counts: TextModuleCounts): Pair&lt;ParseResult&lt;WasmFunction&gt;, TextModuleCounts&gt;&lt;ParseResult&lt;WasmFunction&gt;, TextModuleCounts&gt;?</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#279acba32623c586b820ce6f156db9295b81d3bb">fun List&lt;Token&gt;.parseInlineWasmFunctionImport(fromIndex: Int, counts: TextModuleCounts): Pair&lt;ParseResult&lt;Import&gt;, TextModuleCounts&gt;&lt;ParseResult&lt;Import&gt;, TextModuleCounts&gt;?</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#bb871acf0da8af8dd2862cdbae0f635974c56dad">fun List&lt;Token&gt;.parseInlineWasmFunctionExport(fromIndex: Int, counts: TextModuleCounts): Pair&lt;ParseResult&lt;AstNodeList&lt;AstNode&gt;&gt;, TextModuleCounts&gt;&lt;ParseResult&lt;AstNodeList&lt;AstNode&gt;&gt;, TextModuleCounts&gt;?</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#b54ce52a89c8e65d5a289e18a85c62c893b6dda2">fun List&lt;Token&gt;.parseModule(fromIndex: Int): ParseResult&lt;WasmModule&gt;?</a>
+    </li>
+    
+
+        
+        </ul>
+    </li>
+
+                
+            </ul>
+        </nav>
+        
+
+        <!-- Section -->
+        <section>
+            <p class="text-center">
+                Currently unspecified. Created with <a href="https://orchid.run">Orchid </a> and <b>Orchid Editorial Theme</b>.
+            </p>
+        </section>
+
+        <!-- Footer -->
+        <footer id="footer">
+            <p class="copyright text-center">&copy; KWasm. All rights reserved.<br>Design by <a href="https://html5up.net">HTML5 UP</a></p>
+        </footer>
+
+    </div>
+</div>
+
+</div>
+
+<!-- start:inject scripts -->
+<script  src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script  src="https://cdnjs.cloudflare.com/ajax/libs/skel/3.0.1/skel.min.js"></script>
+<script  src="https://jasonwyatt.github.io/KWasm/Editorial/9eb52517/assets/js/editorial_util.js"></script>
+<script  src="https://jasonwyatt.github.io/KWasm/Editorial/9eb52517/assets/js/editorial_main.js"></script>
+<script  src="https://jasonwyatt.github.io/KWasm/Editorial/9eb52517/assets/js/editorial_orchidCustomizations.js"></script>
+<script  src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script  src="https://unpkg.com/lunr/lunr.js"></script>
+<script  src="https://jasonwyatt.github.io/KWasm/assets/js/orchidSearch.js"></script>
+<!-- end:inject scripts -->
+
+</body>
+</html>

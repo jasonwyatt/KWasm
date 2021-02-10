@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/module/wasmmodule",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/wasmmodule"
+  },
+  "data": {},
+  "description": "",
+  "title": "WasmModule",
+  "content": "<p>CommentComponent(kind=text, text=Represents a WebAssembly module.<p>From <a href=\"https://webassembly.github.io/spec/core/syntax/modules.html#globals\">the docs<\/a>:<\/p><p>WebAssembly programs are organized into modules, which are the unit of deployment, loading, and\ncompilation. A module collects definitions for types, functions, tables, memories, and globals.\nIn addition, it can declare imports and exports and provide initialization logic in the form of\ndata and element segments or a start function.<\/p>, value=null)<\/p>\n"
+}

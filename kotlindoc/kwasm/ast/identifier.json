@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/identifier",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/identifier"
+  },
+  "data": {},
+  "description": "",
+  "title": "Identifier",
+  "content": "<p>CommentComponent(kind=text, text=From <a href=\"https://webassembly.github.io/spec/core/text/conventions.html#contexts\">the docs<\/a>:<p>Where <code>I<\/code> is a <a href=\"#\">IdentifierContext<\/a>:<\/p><pre><code class=\"language-\">\nI  ::=   { types       (id?)<em>,\nfuncs       (id?)<\/em>,\ntables      (id?)<em>,\nmems        (id?)<\/em>,\nglobals     (id?)<em>,\nlocals      (id?)<\/em>,\nlabels      (id?)<em>,\ntypedefs    functype<\/em>   }<\/p>\n<\/code><\/pre>, value=null)\n"
+}

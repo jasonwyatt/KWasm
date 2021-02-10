@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/format/text/token/stringliteral",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/stringliteral"
+  },
+  "data": {},
+  "description": "",
+  "title": "StringLiteral",
+  "content": "<p>CommentComponent(kind=text, text=A String literal.<p>From <a href=\"https://webassembly.github.io/spec/core/text/values.html#strings\">the docs<\/a>:<\/p><pre><code class=\"language-\">\nstring ::= \u2018&quot;\u2019 (b*:stringelem)* \u2018&quot;\u2019 =&gt; concat((b*)<em>) (if |concat((b<\/em>)*)| &lt; 2^32)<\/p>\n<\/code><\/pre><p>The JVM will crash if the string is 4 billion characters, so no need to perform the check.<\/p>, value=null)\n"
+}

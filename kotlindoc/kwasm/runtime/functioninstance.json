@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/runtime/functioninstance",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/functioninstance"
+  },
+  "data": {},
+  "description": "",
+  "title": "FunctionInstance",
+  "content": "<p>CommentComponent(kind=text, text=Represents either a , value=) CommentComponent(kind=typeName, text=WasmFunction, value=kwasm.ast.module.WasmFunction) CommentComponent(kind=text, text= from a , value=) CommentComponent(kind=typeName, text=ModuleInstance, value=kwasm.runtime.ModuleInstance) CommentComponent(kind=text, text=, or a , value=) CommentComponent(kind=typeName, text=HostFunction, value=kwasm.api.HostFunction) CommentComponent(kind=text, text= exposed to the\n, value=) CommentComponent(kind=typeName, text=ModuleInstance, value=kwasm.runtime.ModuleInstance) CommentComponent(kind=text, text= via imports.<p>From <a href=\"https://webassembly.github.io/spec/core/exec/runtime.html#function-instances\">the docs<\/a>:<\/p><p>A function instance is the runtime representation of a function. It effectively is a closure of\nthe original function over the runtime module instance of its originating module. The module\ninstance is used to resolve references to other definitions during execution of the function.<\/p><pre><code class=\"language-\">\nfuncinst   ::= {type functype, module moduleinst, code func}\n{type functype, hostcode hostfunc}\nhostfunc ::= ...<\/p>\n<\/code><\/pre><p>A host function is a function expressed outside WebAssembly but passed to a module as an import.<\/p>, value=null)\n"
+}

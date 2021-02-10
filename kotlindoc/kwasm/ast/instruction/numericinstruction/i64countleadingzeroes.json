@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/instruction/numericinstruction/i64countleadingzeroes",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/numericinstruction/i64countleadingzeroes"
+  },
+  "data": {},
+  "description": "",
+  "title": "I64CountLeadingZeroes",
+  "content": "<p>CommentComponent(kind=text, text=i64.clz, value=null)<\/p>\n"
+}

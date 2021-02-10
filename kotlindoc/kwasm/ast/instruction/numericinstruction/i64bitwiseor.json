@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/instruction/numericinstruction/i64bitwiseor",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/numericinstruction/i64bitwiseor"
+  },
+  "data": {},
+  "description": "",
+  "title": "I64BitwiseOr",
+  "content": "<p>CommentComponent(kind=text, text=i64.or, value=null)<\/p>\n"
+}

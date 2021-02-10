@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/format/binary/module/functionsection",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/binary/module/functionsection"
+  },
+  "data": {},
+  "description": "",
+  "title": "FunctionSection",
+  "content": "<p>CommentComponent(kind=text, text=Represents the function section of a binary-encoded WebAssembly module., value=null)<\/p>\n"
+}

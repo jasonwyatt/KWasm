@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/runtime/table",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/table"
+  },
+  "data": {},
+  "description": "",
+  "title": "Table",
+  "content": "<p>CommentComponent(kind=text, text=Runtime representation of a WebAssembly Table.<p>From <a href=\"https://webassembly.github.io/spec/core/exec/runtime.html#table-instances\">the docs<\/a>:<\/p><p>A table instance is the runtime representation of a table. It holds a vector of function elements\nand an optional maximum size, if one was specified in the table type at the table\u2019s definition\nsite.<\/p><p>Each function element is either empty, representing an uninitialized table entry, or a function\naddress. Function elements can be mutated through the execution of an element segment or by\nexternal means provided by the embedder.<\/p><pre><code class=\"language-\">\ntableinst ::= {elem vec(funcelem), max u32?}\nfuncelem ::= funcaddr?\n<\/code><\/pre><p>It is an invariant of the semantics that the length of the element vector never exceeds the\nmaximum size, if present.<\/p>, value=null)<\/p>\n"
+}

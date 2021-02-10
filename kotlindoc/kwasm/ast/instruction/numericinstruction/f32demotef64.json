@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/instruction/numericinstruction/f32demotef64",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/numericinstruction/f32demotef64"
+  },
+  "data": {},
+  "description": "",
+  "title": "F32DemoteF64",
+  "content": "<p>CommentComponent(kind=text, text=f32.demote_f64, value=null)<\/p>\n"
+}

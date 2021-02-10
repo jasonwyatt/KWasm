@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/validation/type/memorytypevalidator",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/type/memorytypevalidator"
+  },
+  "data": {},
+  "description": "",
+  "title": "MemoryTypeValidator",
+  "content": "<p>CommentComponent(kind=text, text=Validator of , value=) CommentComponent(kind=typeName, text=MemoryType, value=kwasm.ast.type.MemoryType) CommentComponent(kind=text, text= nodes.<p>From <a href=\"https://webassembly.github.io/spec/core/valid/types.html#memory-types\">the docs<\/a>:<\/p><ul><li>The limits <code>limits<\/code> must be valid within range <code>2^16<\/code>.<\/li><li>Then the memory type is valid.<\/li><\/ul>, value=null)<\/p>\n"
+}

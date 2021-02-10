@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/instruction/controlinstruction",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/controlinstruction"
+  },
+  "data": {},
+  "description": "",
+  "title": "ControlInstruction",
+  "content": "<p>CommentComponent(kind=text, text=Base class for all control , value=) CommentComponent(kind=typeName, text=Instruction, value=kwasm.ast.instruction.Instruction) CommentComponent(kind=text, text= implementations.<p>From\n<a href=\"https://webassembly.github.io/spec/core/text/instructions.html#control-instructions\">the docs<\/a>:<\/p><p>Structured control instructions can bind an optional symbolic label identifier. The same label\nidentifier may optionally be repeated after the corresponding <code>end<\/code> and <code>else<\/code> pseudo\ninstructions, to indicate the matching delimiters.<\/p><pre><code class=\"language-\">\nblockinstr(I) ::=\n\u2018block\u2019 I\u2032:label(I) rt:resulttype (in:instr(I\u2032))* \u2018end\u2019 id?\n=&gt; block rt in* end (if id? = ϵ ∨ id? = label)\n\u2018loop\u2019 I\u2032:label(I) rt:resulttype (in:instr(I\u2032))* \u2018end\u2019 id?\n=&gt; loop rt in* end (if id? = ϵ ∨ id? = label)\n\u2018if\u2019 I\u2032:label(I) rt:resulttype (in^1:instr(I\u2032))* (\u2018else\u2019 id?^1 (in^2:instr(I'))<em>)? \u2018end\u2019 id?^2\n=&gt; if rt in<\/em>^1 else in<em>2 end (if id?^1 = ϵ ∨ id?^1 = label, id?^2 = ϵ ∨ id?^2 = label)\n<\/code><\/pre><p>All other control instruction are represented verbatim.<\/p><pre><code class=\"language-\">\nplaininstr(I)  ::= \u2018unreachable\u2019                                   =&gt; unreachable\n\u2018nop\u2019                                           =&gt; nop\n\u2018br\u2019 l:labelidx(I)                              =&gt; br l\n\u2018br_if\u2019 l:labelidx(I)                           =&gt; br_if l\n\u2018br_table' l<\/em>:vec(labelidx(I)) l^N:labelidx(I)  =&gt; br_table l∗ l^N\n\u2018return\u2019                                        =&gt; return\n\u2018call\u2019 x:funcidx(I)                             =&gt; call x\n\u2018call_indirect\u2019 x,I\u2032:typeuse(I)                 =&gt; call_indirect x (if I\u2032={})<\/p>\n<\/code><\/pre><p><b>Note<\/b> The side condition stating that the identifier context <code>I\u2032<\/code> must be empty in the rule\nfor <code>call_indirect<\/code> enforces that no identifier can be bound in any <code>param<\/code> declaration appearing\nin the type annotation.<\/p>, value=null)\n"
+}

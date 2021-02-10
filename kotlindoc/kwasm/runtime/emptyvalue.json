@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/runtime/emptyvalue",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/emptyvalue"
+  },
+  "data": {},
+  "description": "",
+  "title": "EmptyValue",
+  "content": "<p>CommentComponent(kind=text, text=Represents an empty value. Should only ever be used as a return-type for a void/Unit\n, value=) CommentComponent(kind=typeName, text=kwasm.api.HostFunction, value=kwasm.api.HostFunction) CommentComponent(kind=text, text=., value=null)<\/p>\n"
+}

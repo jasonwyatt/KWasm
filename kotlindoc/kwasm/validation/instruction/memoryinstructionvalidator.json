@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/validation/instruction/memoryinstructionvalidator",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/instruction/memoryinstructionvalidator"
+  },
+  "data": {},
+  "description": "",
+  "title": "MemoryInstructionValidator",
+  "content": "<p>CommentComponent(kind=text, text=Validator of , value=) CommentComponent(kind=typeName, text=MemoryInstruction, value=kwasm.ast.instruction.MemoryInstruction) CommentComponent(kind=text, text= nodes by multiplexing into specific validators for each type.<p>See: , value=) CommentComponent(kind=typeName, text=LoadIntValidator, value=kwasm.validation.instruction.memory.LoadIntValidator) CommentComponent(kind=text, text=, , value=) CommentComponent(kind=typeName, text=StoreIntValidator, value=kwasm.validation.instruction.memory.StoreIntValidator) CommentComponent(kind=text, text=, , value=) CommentComponent(kind=typeName, text=LoadFloatValidator, value=kwasm.validation.instruction.memory.LoadFloatValidator) CommentComponent(kind=text, text=, , value=) CommentComponent(kind=typeName, text=StoreFloatValidator, value=kwasm.validation.instruction.memory.StoreFloatValidator) CommentComponent(kind=text, text=,\n, value=) CommentComponent(kind=typeName, text=SizeValidator, value=kwasm.validation.instruction.memory.SizeValidator) CommentComponent(kind=text, text=, , value=) CommentComponent(kind=typeName, text=GrowValidator, value=kwasm.validation.instruction.memory.GrowValidator) CommentComponent(kind=text, text=<\/p>, value=null)<\/p>\n"
+}

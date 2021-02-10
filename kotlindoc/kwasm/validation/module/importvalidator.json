@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/validation/module/importvalidator",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/module/importvalidator"
+  },
+  "data": {},
+  "description": "",
+  "title": "ImportValidator",
+  "content": "<p>CommentComponent(kind=text, text=Validator of , value=) CommentComponent(kind=typeName, text=Import, value=kwasm.ast.module.Import) CommentComponent(kind=text, text= nodes.<p>From <a href=\"https://webassembly.github.io/spec/core/valid/modules.html#imports\">the docs<\/a>:<\/p><ul><li>The import description <code>importdesc<\/code> must be valid with type <code>externtype<\/code>.<\/li><li>Then the import is valid with type <code>externtype<\/code>.<\/li><\/ul>, value=null)<\/p>\n"
+}

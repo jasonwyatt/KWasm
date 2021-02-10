@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/runtime/functioninstance/module",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/functioninstance/module"
+  },
+  "data": {},
+  "description": "",
+  "title": "Module",
+  "content": "<p>CommentComponent(kind=text, text=A function from within a , value=) CommentComponent(kind=typeName, text=kwasm.ast.module.WasmModule, value=kwasm.ast.module.WasmModule) CommentComponent(kind=text, text='s , value=) CommentComponent(kind=typeName, text=ModuleInstance, value=kwasm.runtime.ModuleInstance) CommentComponent(kind=text, text=.<p>From\n<a href=\"https://webassembly.github.io/spec/core/exec/instructions.html#function-calls\">the docs<\/a>:<\/p><pre><code class=\"language-\">\nInvocation of function address <code>a<\/code>\n<\/code><\/pre><ol><li>Assert: due to validation, <code>S.funcs[a]<\/code> exists. (note: already done by this point)<\/li><li>Let <code>f<\/code> be the function instance, <code>S.funcs[a]<\/code>.<\/li><li>Let <code>[t^n_1] -&gt; [t^m_2]<\/code> be the function type <code>f.type<\/code>.<\/li><li>Assert: due to validation, <code>m &lt;= 1<\/code>.<\/li><li>Let <code>t*<\/code> be the list of value types <code>f.code.locals<\/code>.<\/li><li>Let <code>instr* end<\/code> be the expression <code>f.code.body<\/code>.<\/li><li>Assert: due to validation, <code>n<\/code> values are on the top of the stack.<\/li><li>Pop the values <code>val_n<\/code> from the stack.<\/li><li>Let <code>val*_0<\/code> be the list of zero values of types <code>t*<\/code>.<\/li><li>Let <code>F<\/code> be the frame <code>{module f.module, locals val_n val*_0}<\/code>.<\/li><li>Push the activation of <code>F<\/code> with arity <code>m<\/code> to the stack.<\/li><li>Execute the instruction <code>block [t^m_2] instr* end<\/code>.<\/li><\/ol><pre><code class=\"language-\">\nReturning from a function<\/p>\n<\/code><\/pre><p>When the end of a function is reached without a jump (i.e., <code>return<\/code>) or trap aborting it,\nthen the following steps are performed.<\/p><ol><li>Let <code>F<\/code> be the current frame.<\/li><li>Let <code>n<\/code> be the arity of the activation of <code>F<\/code>.<\/li><li>Assert: due to validation, there are <code>n<\/code> values on the top of the stack.<\/li><li>Pop the results <code>val_n<\/code> from the stack.<\/li><li>Assert: due to validation, the frame <code>F<\/code> is now on the top of the stack.<\/li><li>Pop the frame from the stack.<\/li><li>Push <code>val_n<\/code> back to the stack.<\/li><li>Jump to the instruction after the original call.<\/li><\/ol>, value=null)\n"
+}

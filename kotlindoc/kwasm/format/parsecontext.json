@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/format/parsecontext",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/parsecontext"
+  },
+  "data": {},
+  "description": "",
+  "title": "ParseContext",
+  "content": "<p>CommentComponent(kind=text, text=Reflects the current location within a text-based wasm module.<p>Primarily used in conjunction with , value=) CommentComponent(kind=typeName, text=ParseException, value=kwasm.format.ParseException) CommentComponent(kind=text, text=.<\/p>, value=null)<\/p>\n"
+}

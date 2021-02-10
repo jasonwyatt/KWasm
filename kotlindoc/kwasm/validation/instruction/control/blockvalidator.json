@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/validation/instruction/control/blockvalidator",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/instruction/control/blockvalidator"
+  },
+  "data": {},
+  "description": "",
+  "title": "BlockValidator",
+  "content": "<p>CommentComponent(kind=text, text=Validator of , value=) CommentComponent(kind=typeName, text=kwasm.ast.instruction.BlockInstruction, value=kwasm.ast.instruction.ControlInstruction) CommentComponent(kind=text, text= nodes.<p>For specific validation requirements, see the docs for the <code>validate<\/code> extension functions on\n, value=) CommentComponent(kind=typeName, text=ControlInstruction.Block, value=kwasm.ast.instruction.ControlInstruction.Block) CommentComponent(kind=text, text=, , value=) CommentComponent(kind=typeName, text=ControlInstruction.Loop, value=kwasm.ast.instruction.ControlInstruction.Loop) CommentComponent(kind=text, text=, and , value=) CommentComponent(kind=typeName, text=ControlInstruction.If, value=kwasm.ast.instruction.ControlInstruction.If) CommentComponent(kind=text, text=.<\/p>, value=null)<\/p>\n"
+}

@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/validation/instruction/parametricinstructionvalidator",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/instruction/parametricinstructionvalidator"
+  },
+  "data": {},
+  "description": "",
+  "title": "ParametricInstructionValidator",
+  "content": "<p>CommentComponent(kind=text, text=Validator of , value=) CommentComponent(kind=typeName, text=ParametricInstruction, value=kwasm.ast.instruction.ParametricInstruction) CommentComponent(kind=text, text= nodes.<p>From <a href=\"https://webassembly.github.io/spec/core/valid/instructions.html#parametric-instructions\">the docs<\/a>:<\/p><p>, value=) CommentComponent(kind=typeName, text=ParametricInstruction.Drop, value=kwasm.ast.instruction.ParametricInstruction.Drop) CommentComponent(kind=text, text=<\/p><ul><li>The instruction is valid with type <code>[t] =&gt;[]<\/code>, for any value type <code>t<\/code>.<\/li><\/ul><p>, value=) CommentComponent(kind=typeName, text=ParametricInstruction.Select, value=kwasm.ast.instruction.ParametricInstruction.Select) CommentComponent(kind=text, text=<\/p><ul><li>The instruction is valid with type <code>[t t i32] =&gt; [t]<\/code>, for any value type <code>t<\/code>.<\/li><\/ul>, value=null)<\/p>\n"
+}

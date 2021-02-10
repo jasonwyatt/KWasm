@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/runtime/importextern",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/importextern"
+  },
+  "data": {},
+  "description": "",
+  "title": "ImportExtern",
+  "content": "<p>CommentComponent(kind=text, text=Represents an external value imported by a , value=) CommentComponent(kind=typeName, text=WasmModule, value=kwasm.ast.module.WasmModule) CommentComponent(kind=text, text=. Its address will be used to populate a\n, value=) CommentComponent(kind=typeName, text=ModuleInstance, value=kwasm.runtime.ModuleInstance) CommentComponent(kind=text, text= so that lookups happen correctly at runtime.<ol><li>Parse WasmModules<\/li><li>Build ImportExterns from the modules' declared imports.<\/li><li>Allocate the modules with their import externs.<\/li><li>Using the allocations, update the addresses from the import externs appropriately.<\/li><\/ol>, value=null)<\/p>\n"
+}

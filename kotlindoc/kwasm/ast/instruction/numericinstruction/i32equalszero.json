@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/instruction/numericinstruction/i32equalszero",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/numericinstruction/i32equalszero"
+  },
+  "data": {},
+  "description": "",
+  "title": "I32EqualsZero",
+  "content": "<p>CommentComponent(kind=text, text=i32.eqz, value=null)<\/p>\n"
+}

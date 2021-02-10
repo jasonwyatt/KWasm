@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/type/valuetype",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/valuetype"
+  },
+  "data": {},
+  "description": "",
+  "title": "ValueType",
+  "content": "<p>CommentComponent(kind=text, text=From <a href=\"https://webassembly.github.io/spec/core/text/types.html#value-types\">the docs<\/a>:<pre><code class=\"language-\">\nvaltype ::=  { 'i32' -&gt; I32\n'i64' -&gt; I64\n'f32' -&gt; F32\n'f64' -&gt; F64 }<\/p>\n<\/code><\/pre>, value=null)\n"
+}

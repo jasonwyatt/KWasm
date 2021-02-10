@@ -1,0 +1,1371 @@
+<!DOCTYPE HTML>
+<!--
+    Editorial by HTML5 UP
+    html5up.net | @ajlkn
+    Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<head>
+
+
+
+
+<meta charset="utf-8"/>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+<meta name="generator" content="Orchid 0.18.0-SNAPSHOT"/>
+<link rel="icon" href="https://jasonwyatt.github.io/KWasm/favicon.ico">
+
+
+<meta name="robots" content="index, follow">
+
+
+
+<title>FunctionBody</title>
+
+
+<meta name="description" content="An Embeddable WebAssembly Interpreter for the JVM">
+
+
+
+
+
+<script>
+    window.site = {"orchidVersion":"0.18.0-SNAPSHOT","baseUrl":"https://jasonwyatt.github.io/KWasm","environment":"debug","version":"unspecified"};
+</script>
+
+
+
+
+
+<!-- start:debug info -->
+
+<!-- THEME -->
+<!-- Type: Editorial -->
+<!-- Class: com.eden.orchid.editorial.EditorialTheme -->
+
+<!-- PAGE -->
+<!-- Type: classes -->
+<!-- Class: com.eden.orchid.sourcedoc.page.SourceDocPage -->
+<!-- Layout: index -->
+<!-- Resolved Layout: templates/layouts/index.peb -->
+<!-- Page Template: kotlindocClass, sourceDocPage, classes, page -->
+<!-- Resolved Page Template: templates/pages/sourceDocPage.peb -->
+
+<!-- RESOURCE -->
+<!-- Class: com.eden.orchid.sourcedoc.page.SourceDocResource -->
+<!-- Source Filename:  -->
+
+<!-- COMPLETE PAGE CONFIGURATION -->
+<script>
+    window.allData = {"reference":{"path":"kotlindoc","baseUrl":"https://jasonwyatt.github.io/KWasm","fileName":"kwasm/validation/validationcontext/functionbody","extension":"html","usePrettyUrl":true,"link":"https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext/functionbody"},"description":"","title":"FunctionBody"};
+</script>
+
+<!-- end:debug info -->
+
+
+
+
+    <!-- start:inject components -->
+    
+        
+            
+        
+    
+    <!-- end:inject components -->
+
+
+
+    <!-- start:inject components -->
+    
+    <!-- end:inject components -->
+
+
+
+
+
+<!-- start:inject styles -->
+<link rel="stylesheet" type="text/css" href="https://jasonwyatt.github.io/KWasm/Editorial/9eb52517/assets/css/editorial_main.css"  />
+<link rel="stylesheet" type="text/css" href="https://jasonwyatt.github.io/KWasm/Editorial/9eb52517/assets/css/editorial_orchidCustomizations.css"  />
+<link rel="stylesheet" type="text/css" href="https://jasonwyatt.github.io/KWasm/Editorial/9eb52517/assets/css/orchidSearch.css"  />
+<link rel="stylesheet" type="text/css" href="https://jasonwyatt.github.io/KWasm/assets/css/orchidSearch.css"  />
+<link rel="stylesheet" type="text/css" href="https://jasonwyatt.github.io/KWasm/assets/css/orchidSourceDoc.css"  />
+<!-- end:inject styles -->
+
+</head>
+<body class="is-loading">
+
+
+<!-- Wrapper -->
+<div id="wrapper">
+
+    <!-- Main -->
+    <div id="main">
+        <div class="inner">
+
+            <!-- Header -->
+            
+                <header id="header">
+    <a href="https://jasonwyatt.github.io/KWasm" class="logo">KWasm</a>
+    <ul class="icons">
+    
+    
+        <li>
+            <a href="https://github.com/jasonwyatt/KWasm" class="icon fa-github">
+                <span class="label">github</span>
+            </a>
+        </li>
+    
+    
+    </ul>
+</header>
+            
+            
+            
+            
+                <section id="pageContent">
+                    <header class="major"><h2>FunctionBody</h2></header>
+                    <article>
+                        
+    <!-- start:inject components -->
+    
+        
+            
+                
+                    
+                        <div class="sourcedoc-page orchid-sourcedoc content">
+  
+<div class="sourcedoc-section section-root section-level-1" id="FunctionBody">
+
+
+  <h1 class="sourcedoc-section section-name">FunctionBody</h1>
+  
+    <div class="sourcedoc-section section-element" id="ec4665f0b45215faca9f4dd9015492de374f7c97">
+      
+      <p class="sourcedoc-section section-signature">
+        <code>data class <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext/functionbody">FunctionBody</a></code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>For validating <a href="#">Instruction</a>s within a <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/wasmfunction">WasmFunction</a> body or <a href="#">Expression</a>.<p>See <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext">ValidationContext</a>.</p></p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-2" id="fields">
+
+
+  <p class="sourcedoc-section section-name"><strong>Fields</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="05acc852e19c584532addc513c05682a85198dd9">
+        <td class="sourcedoc-section section-signature">
+          <code>val types: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/util/astnodeindex">AstNodeIndex</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/type">Type</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="c5c2784131c55413da4af030e0a74ea937942c32">
+        <td class="sourcedoc-section section-signature">
+          <code>val functions: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/util/astnodeindex">AstNodeIndex</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/typeuse">TypeUse</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="cb92ec53ff30cb47d129e88a9010c10e870fd830">
+        <td class="sourcedoc-section section-signature">
+          <code>val tables: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/util/astnodeindex">AstNodeIndex</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/tabletype">TableType</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="a619086024641418b1675424ad8ad4169eb171b0">
+        <td class="sourcedoc-section section-signature">
+          <code>val memories: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/util/astnodeindex">AstNodeIndex</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/memorytype">MemoryType</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="1e537222fc850c1b267e9811c83b1f9974f8412a">
+        <td class="sourcedoc-section section-signature">
+          <code>val globals: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/util/astnodeindex">AstNodeIndex</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/globaltype">GlobalType</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="f518a0f8541925904e28f6061816493b7d8bec6f">
+        <td class="sourcedoc-section section-signature">
+          <code>val locals: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/util/astnodeindex">AstNodeIndex</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/valuetype">ValueType</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="38f63ac8e248df25cc9361ddd23951b2601e0758">
+        <td class="sourcedoc-section section-signature">
+          <code>val labels: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/util/astnodeindex">AstNodeIndex</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/resulttype">ResultType</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="bb1bf3b87e7b5eb1d7276263eb34f63f6987d1c5">
+        <td class="sourcedoc-section section-signature">
+          <code>val stack: List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/valuetype">ValueType</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="3618988fd0179ef8ba648a4fb0d411212ccdb7f5">
+        <td class="sourcedoc-section section-signature">
+          <code>val returnType: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/resulttype">ResultType</a>?</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-2" id="constructors">
+
+
+  <h2 class="sourcedoc-section section-name">Constructors</h2>
+  
+    <div class="sourcedoc-section section-element" id="5cecae266766a0676d2e39c49e5e3094a4941a95">
+      
+      <h3 class="sourcedoc-section element-name">&lt;init&gt;</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>constructor(types: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/util/astnodeindex">AstNodeIndex</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/type">Type</a>&gt;, functions: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/util/astnodeindex">AstNodeIndex</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/typeuse">TypeUse</a>&gt;, tables: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/util/astnodeindex">AstNodeIndex</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/tabletype">TableType</a>&gt;, memories: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/util/astnodeindex">AstNodeIndex</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/memorytype">MemoryType</a>&gt;, globals: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/util/astnodeindex">AstNodeIndex</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/globaltype">GlobalType</a>&gt;, locals: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/util/astnodeindex">AstNodeIndex</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/valuetype">ValueType</a>&gt;, labels: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/util/astnodeindex">AstNodeIndex</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/resulttype">ResultType</a>&gt;, stack: List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/valuetype">ValueType</a>&gt;, returnType: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/resulttype">ResultType</a>?)</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>For validating <a href="#">Instruction</a>s within a <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/wasmfunction">WasmFunction</a> body or <a href="#">Expression</a>.<p>See <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext">ValidationContext</a>.</p></p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="9f5c6aea24d7a8ed5a6c5655aac0eb8ae18f9d76">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="6b3872ab191ee2ba72ed0f68845d87b650406565">
+        <td class="sourcedoc-section section-signature">
+          <code>types: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/util/astnodeindex">AstNodeIndex</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/type">Type</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="d61eab374f76163b3f2e427bf84f8e8a4d921459">
+        <td class="sourcedoc-section section-signature">
+          <code>functions: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/util/astnodeindex">AstNodeIndex</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module/typeuse">TypeUse</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="4fe1bb60caffce022b35de624f2a5a88ee62b02a">
+        <td class="sourcedoc-section section-signature">
+          <code>tables: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/util/astnodeindex">AstNodeIndex</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/tabletype">TableType</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="f71ec9d5e8ec739523ddb5c761d77d87631defc5">
+        <td class="sourcedoc-section section-signature">
+          <code>memories: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/util/astnodeindex">AstNodeIndex</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/memorytype">MemoryType</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="8f0fa376aec7ffed78441987208bd5cd623a25b6">
+        <td class="sourcedoc-section section-signature">
+          <code>globals: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/util/astnodeindex">AstNodeIndex</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/globaltype">GlobalType</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="07af0d4b487ab0e6efdf1a2bf6605ffa78eccea8">
+        <td class="sourcedoc-section section-signature">
+          <code>locals: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/util/astnodeindex">AstNodeIndex</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/valuetype">ValueType</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="89151a1261e488176bdbf1ae544ce36ace5ede82">
+        <td class="sourcedoc-section section-signature">
+          <code>labels: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/util/astnodeindex">AstNodeIndex</a>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/resulttype">ResultType</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="7589b78abf5ab36a5801aa8f246cc9b2ca09b40b">
+        <td class="sourcedoc-section section-signature">
+          <code>stack: List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/valuetype">ValueType</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="1c49c85c1ebac623c6aade18cfa964fc4a817ef3">
+        <td class="sourcedoc-section section-signature">
+          <code>returnType: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/resulttype">ResultType</a>?</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-2" id="methods">
+
+
+  <h2 class="sourcedoc-section section-name">Methods</h2>
+  
+    <div class="sourcedoc-section section-element" id="050bb08f5ee60ab4295297e21f374a65b9ac4149">
+      
+      <h3 class="sourcedoc-section element-name">peekStack</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun peekStack(): <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/valuetype">ValueType</a>?</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Returns the <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/valuetype">ValueType</a> at the top of the stack without popping it.</p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="21e491df39077edab0a96a23a00497357309cb42">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="9f6df19987ab9a609b488fa4aeee50afba524aa7">
+        <td class="sourcedoc-section section-signature">
+          <code><a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/valuetype">ValueType</a>?</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="110400a4adae2f805027cc33a40be47a9f2df4c6">
+      
+      <h3 class="sourcedoc-section element-name">pushStack</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun pushStack(valueType: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/valuetype">ValueType</a>): <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext/functionbody">FunctionBody</a></code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Returns a new <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext/functionbody">FunctionBody</a>, with the given valueType pushed onto the stack.</p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="bf284c8997323a07f64ebd29537f27da79bef2d8">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="4ad3c9ba42b8f89bf6280f4616f6b3e1f81cc5f1">
+        <td class="sourcedoc-section section-signature">
+          <code>valueType: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/valuetype">ValueType</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="c3d50a678030a440de890c6542649094bc1a6300">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="8aa65b90cfa1f9392425e0fd532374c477b9193d">
+        <td class="sourcedoc-section section-signature">
+          <code><a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext/functionbody">FunctionBody</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="83953de346e209e664b05f7cc3a0c1568eea3c53">
+      
+      <h3 class="sourcedoc-section element-name">popStack</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun popStack(): Pair<ValueType?, FunctionBody>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/valuetype">ValueType</a>?, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext/functionbody">FunctionBody</a>&gt;</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Returns the top <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/valuetype">ValueType</a> from the stack, and a new <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext/functionbody">FunctionBody</a> with that top item
+removed.</p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="8627de8ec2e818d2683e09b857a1ae4dcacfd6f0">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="3076cea99a77759b8312a1089f51caf07b861b30">
+        <td class="sourcedoc-section section-signature">
+          <code>Pair<ValueType?, FunctionBody>&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/valuetype">ValueType</a>?, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext/functionbody">FunctionBody</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="2207a428e54e39fc02837627260e191eeeda8bbe">
+      
+      <h3 class="sourcedoc-section element-name">popStack</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun popStack(count: Int): Pair<List<ValueType>, FunctionBody>&lt;List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/valuetype">ValueType</a>&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext/functionbody">FunctionBody</a>&gt;</code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Returns the top <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/valuetype">count</a>s from the stack, and a new <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext/functionbody">FunctionBody</a> with
+those items removed.</p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="d6d08be8b0e5b39b9863a7cd9760580b3372ce51">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="e83b3d0cf6c0129ef5b19a68ea99304033905aa7">
+        <td class="sourcedoc-section section-signature">
+          <code>count: Int</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="3f4030f6586860a47bd5d23856de205f28df9125">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="9c3fc6596907d655b303abf60d4f4934b15ed31e">
+        <td class="sourcedoc-section section-signature">
+          <code>Pair<List<ValueType>, FunctionBody>&lt;List&lt;<a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/valuetype">ValueType</a>&gt;, <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext/functionbody">FunctionBody</a>&gt;</code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="17d22b8b562edd043fca0be2cd210a99ead8d0fe">
+      
+      <h3 class="sourcedoc-section element-name">prependLabel</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun prependLabel(identifier: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/identifier/label">Label</a>, label: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/resulttype">ResultType</a>): <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext/functionbody">FunctionBody</a></code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Prepends a <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/resulttype">ResultType</a> onto the labels list with the given identifier.</p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="41d2a12e07a7537c019411810553bb5fc3205a91">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="bd1cde41b4c89cc3ec3ec14d7981930dd31c55c2">
+        <td class="sourcedoc-section section-signature">
+          <code>identifier: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/identifier/label">Label</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      <tr class="sourcedoc-section section-element" id="0ff201682487aff80ad5920ae96de1de4fbe0656">
+        <td class="sourcedoc-section section-signature">
+          <code>label: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/resulttype">ResultType</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="56e9558f0b87c49db142355d01a341d106da6100">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="8aa65b90cfa1f9392425e0fd532374c477b9193d">
+        <td class="sourcedoc-section section-signature">
+          <code><a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext/functionbody">FunctionBody</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+    <div class="sourcedoc-section section-element" id="6f4afe7ea43e49d81dd152d42396c1abb3c89a62">
+      
+      <h3 class="sourcedoc-section element-name">prependLabel</h3>
+      
+      <p class="sourcedoc-section section-signature">
+        <code>fun prependLabel(label: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/resulttype">ResultType</a>): <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext/functionbody">FunctionBody</a></code>
+      </p>
+      <div class="sourcedoc-section section-comments"><p>Prepends a <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/resulttype">ResultType</a> onto the labels list.</p>
+</div>
+
+      
+      
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="ef9a2a5e6935ea46365983560a56baf3c9f52d6b">
+
+
+  <p class="sourcedoc-section section-name"><strong>Parameters</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="0ff201682487aff80ad5920ae96de1de4fbe0656">
+        <td class="sourcedoc-section section-signature">
+          <code>label: <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/resulttype">ResultType</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+          
+<div class="sourcedoc-section section-root section-level-3" id="0356d68cb144c5db3dcf8568b1c4f02ead58e52d">
+
+
+  <p class="sourcedoc-section section-name"><strong>ReturnValue</strong></p>
+
+  <div class="table-container">
+    <table class="table is-fullwidth is-bordered">
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+      </thead>
+      <tbody>
+      
+      <tr class="sourcedoc-section section-element" id="8aa65b90cfa1f9392425e0fd532374c477b9193d">
+        <td class="sourcedoc-section section-signature">
+          <code><a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/validationcontext/functionbody">FunctionBody</a></code>
+        </td>
+        <td class="sourcedoc-section section-comments content">
+        
+        </td>
+      </tr>
+      
+      </tbody>
+    </table>
+  </div>
+
+
+</div>
+
+        
+      
+    </div>
+  
+
+</div>
+
+        
+      
+    </div>
+  
+
+</div>
+
+</div>
+
+
+
+
+
+
+                    
+                
+            
+        
+    
+    <!-- end:inject components -->
+
+
+                    </article>
+                </section>
+            
+        </div>
+        <hr>
+
+        <!-- Page Footer -->
+        <div class="inner">
+    <footer id="footer">
+        <div class="clearfix">
+            
+            
+        </div>
+    </footer>
+</div>
+
+    </div>
+
+    <!-- Sidebar -->
+    <div id="sidebar">
+    <div class="inner">
+
+        <!-- Search -->
+        <section id="search" class="alt">
+            <form data-orchid-search="">
+                <input type="text" name="query" id="query" placeholder="Search"/>
+            </form>
+            <div class="box" id="search-results" data-orchid-search-results style="display: none;">
+                <b>Search Results</b>
+                <ul></ul>
+            </div>
+            <div class="box" id="search-progress" data-orchid-search-progress style="display: none;">
+                <div class="loader">Loading...</div>
+            </div>
+        </section>
+
+        <!-- Menu -->
+        <nav id="siteNav" class="menu">
+            <header class="major">
+                <h2>KWasm</h2>
+            </header>
+            <ul class="top-level">
+                
+                    
+    
+    <li>
+        <a class="subheader">KWasm Library API Docs</a>
+    </li>
+    
+
+                
+                    
+    <li>
+        <span class="opener">Packages</span>
+        <ul>
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm">kwasm</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/api">kwasm.api</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast">kwasm.ast</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction">kwasm.ast.instruction</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/module">kwasm.ast.module</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type">kwasm.ast.type</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/util">kwasm.ast.util</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format">kwasm.format</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/binary">kwasm.format.binary</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/binary/instruction">kwasm.format.binary.instruction</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/binary/module">kwasm.format.binary.module</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/binary/type">kwasm.format.binary.type</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/binary/value">kwasm.format.binary.value</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text">kwasm.format.text</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/instruction">kwasm.format.text.instruction</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/module">kwasm.format.text.module</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token">kwasm.format.text.token</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/util">kwasm.format.text.token.util</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/type">kwasm.format.text.type</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/whitespace">kwasm.format.text.whitespace</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime">kwasm.runtime</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/instruction">kwasm.runtime.instruction</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/memory">kwasm.runtime.memory</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/stack">kwasm.runtime.stack</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/runtime/util">kwasm.runtime.util</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/util">kwasm.util</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation">kwasm.validation</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/instruction">kwasm.validation.instruction</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/instruction/control">kwasm.validation.instruction.control</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/instruction/memory">kwasm.validation.instruction.memory</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/module">kwasm.validation.module</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/validation/type">kwasm.validation.type</a>
+    </li>
+    
+
+        
+        </ul>
+    </li>
+
+                
+            </ul>
+        </nav>
+        
+        <nav class="menu">
+            <header class="major">
+                <h2>FunctionBody</h2>
+            </header>
+            <ul class="top-level">
+                
+                    
+    <li>
+        <span class="opener">Fields</span>
+        <ul>
+        
+            
+    
+    <li>
+        <a href="#05acc852e19c584532addc513c05682a85198dd9">val types: AstNodeIndex&lt;Type&gt;</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#c5c2784131c55413da4af030e0a74ea937942c32">val functions: AstNodeIndex&lt;TypeUse&gt;</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#cb92ec53ff30cb47d129e88a9010c10e870fd830">val tables: AstNodeIndex&lt;TableType&gt;</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#a619086024641418b1675424ad8ad4169eb171b0">val memories: AstNodeIndex&lt;MemoryType&gt;</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#1e537222fc850c1b267e9811c83b1f9974f8412a">val globals: AstNodeIndex&lt;GlobalType&gt;</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#f518a0f8541925904e28f6061816493b7d8bec6f">val locals: AstNodeIndex&lt;ValueType&gt;</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#38f63ac8e248df25cc9361ddd23951b2601e0758">val labels: AstNodeIndex&lt;ResultType&gt;</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#bb1bf3b87e7b5eb1d7276263eb34f63f6987d1c5">val stack: List&lt;ValueType&gt;</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#3618988fd0179ef8ba648a4fb0d411212ccdb7f5">val returnType: ResultType?</a>
+    </li>
+    
+
+        
+        </ul>
+    </li>
+
+                
+                    
+    <li>
+        <span class="opener">Constructors</span>
+        <ul>
+        
+            
+    
+    <li>
+        <a href="#5cecae266766a0676d2e39c49e5e3094a4941a95">constructor(types: AstNodeIndex&lt;Type&gt;, functions: AstNodeIndex&lt;TypeUse&gt;, tables: AstNodeIndex&lt;TableType&gt;, memories: AstNodeIndex&lt;MemoryType&gt;, globals: AstNodeIndex&lt;GlobalType&gt;, locals: AstNodeIndex&lt;ValueType&gt;, labels: AstNodeIndex&lt;ResultType&gt;, stack: List&lt;ValueType&gt;, returnType: ResultType?)</a>
+    </li>
+    
+
+        
+        </ul>
+    </li>
+
+                
+                    
+    <li>
+        <span class="opener">Methods</span>
+        <ul>
+        
+            
+    
+    <li>
+        <a href="#050bb08f5ee60ab4295297e21f374a65b9ac4149">fun peekStack(): ValueType?</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#110400a4adae2f805027cc33a40be47a9f2df4c6">fun pushStack(valueType: ValueType): FunctionBody</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#83953de346e209e664b05f7cc3a0c1568eea3c53">fun popStack(): Pair&lt;ValueType?, FunctionBody&gt;&lt;ValueType?, FunctionBody&gt;</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#2207a428e54e39fc02837627260e191eeeda8bbe">fun popStack(count: Int): Pair&lt;List&lt;ValueType&gt;, FunctionBody&gt;&lt;List&lt;ValueType&gt;, FunctionBody&gt;</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#17d22b8b562edd043fca0be2cd210a99ead8d0fe">fun prependLabel(identifier: Label, label: ResultType): FunctionBody</a>
+    </li>
+    
+
+        
+            
+    
+    <li>
+        <a href="#6f4afe7ea43e49d81dd152d42396c1abb3c89a62">fun prependLabel(label: ResultType): FunctionBody</a>
+    </li>
+    
+
+        
+        </ul>
+    </li>
+
+                
+            </ul>
+        </nav>
+        
+
+        <!-- Section -->
+        <section>
+            <p class="text-center">
+                Currently unspecified. Created with <a href="https://orchid.run">Orchid </a> and <b>Orchid Editorial Theme</b>.
+            </p>
+        </section>
+
+        <!-- Footer -->
+        <footer id="footer">
+            <p class="copyright text-center">&copy; KWasm. All rights reserved.<br>Design by <a href="https://html5up.net">HTML5 UP</a></p>
+        </footer>
+
+    </div>
+</div>
+
+</div>
+
+<!-- start:inject scripts -->
+<script  src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script  src="https://cdnjs.cloudflare.com/ajax/libs/skel/3.0.1/skel.min.js"></script>
+<script  src="https://jasonwyatt.github.io/KWasm/Editorial/9eb52517/assets/js/editorial_util.js"></script>
+<script  src="https://jasonwyatt.github.io/KWasm/Editorial/9eb52517/assets/js/editorial_main.js"></script>
+<script  src="https://jasonwyatt.github.io/KWasm/Editorial/9eb52517/assets/js/editorial_orchidCustomizations.js"></script>
+<script  src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script  src="https://unpkg.com/lunr/lunr.js"></script>
+<script  src="https://jasonwyatt.github.io/KWasm/assets/js/orchidSearch.js"></script>
+<!-- end:inject scripts -->
+
+</body>
+</html>

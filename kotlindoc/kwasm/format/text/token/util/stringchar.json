@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/format/text/token/util/stringchar",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/format/text/token/util/stringchar"
+  },
+  "data": {},
+  "description": "",
+  "title": "StringChar",
+  "content": "<p>CommentComponent(kind=text, text=Represents a single character as a unicode codepoint, and its original length in a wast file as\npart of a string literal., value=null)<\/p>\n"
+}

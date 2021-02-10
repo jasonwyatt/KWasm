@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/type/elementtype",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/type/elementtype"
+  },
+  "data": {},
+  "description": "",
+  "title": "ElementType",
+  "content": "<p>CommentComponent(kind=text, text=Represents an element type. As of the current version of WebAssembly, only , value=) CommentComponent(kind=typeName, text=FunctionReference, value=kwasm.ast.type.ElementType.FunctionReference) CommentComponent(kind=text, text=\nis supported., value=null)<\/p>\n"
+}

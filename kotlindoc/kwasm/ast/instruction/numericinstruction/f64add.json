@@ -1,0 +1,14 @@
+{
+  "reference": {
+    "path": "kotlindoc",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "kwasm/ast/instruction/numericinstruction/f64add",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm/kotlindoc/kwasm/ast/instruction/numericinstruction/f64add"
+  },
+  "data": {},
+  "description": "",
+  "title": "F64Add",
+  "content": "<p>CommentComponent(kind=text, text=f64.add, value=null)<\/p>\n"
+}

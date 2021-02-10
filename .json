@@ -1,0 +1,17 @@
+{
+  "reference": {
+    "path": "",
+    "baseUrl": "https://jasonwyatt.github.io/KWasm",
+    "fileName": "",
+    "extension": "html",
+    "usePrettyUrl": true,
+    "link": "https://jasonwyatt.github.io/KWasm"
+  },
+  "data": {"components": [
+    {"type": "pageContent"},
+    {"type": "readme"}
+  ]},
+  "description": "",
+  "title": "Home",
+  "content": ""
+}
