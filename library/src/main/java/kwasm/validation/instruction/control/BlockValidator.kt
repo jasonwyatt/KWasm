@@ -47,17 +47,6 @@ object BlockValidator : FunctionBodyValidationVisitor<ControlInstruction> {
     }
 }
 
-/**
- * From [the docs](https://webassembly.github.io/spec/core/valid/instructions.html#valid-block):
- *
- * ```
- *   block [t?] instr* end
- * ```
- * * Let `C′` be the same context as `C`, but with the result type `[t?]` prepended to the `labels`
- *   vector.
- * * Under context `C′`, the instruction sequence `instr*` must be valid with type `[] => [t?]`.
- * * Then the compound instruction is valid with type `[] => [t?]`.
- */
 fun ControlInstruction.Block.validateBlock(
     context: ValidationContext.FunctionBody
 ): ValidationContext.FunctionBody {
